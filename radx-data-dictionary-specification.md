@@ -148,6 +148,10 @@ The above examples use integers as the values but values may be other types of n
 
 Datafiles contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
 
+For a given row, the value of this column is OPTIONAL.
+
 ### Column: Notes
 
-The `Notes` column may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding column in the datafile. 
+The `Notes` column may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding column in the datafile.  The values of this column are for human use and are not parsed to be used in a computational way.
+
+For a given row, the value of this column is OPTIONAL.
