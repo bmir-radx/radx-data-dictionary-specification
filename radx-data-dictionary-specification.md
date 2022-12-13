@@ -32,29 +32,29 @@ Each row in a data dictionary MUST contain the following columns.  Since columns
 
 ### Column: Id
 
-The column contains a column identifier for the datafile column being described.  Column identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a column identifier.  Column identifiers may, for example, contain spaces.
+The `Id` column contains a column identifier for the datafile column being described.  Column identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a column identifier.  Column identifiers may, for example, contain spaces.
 
 For a given row, the value in this column is REQUIRED and MUST NOT be empty.
 
 ### Column: Label
 
-This column contains a presentation label for the datafile column being described.  Labels are strings.
+The `Label` column contains a presentation label for the datafile column being described.  Labels are strings.
 
-For a given row, the value of this column is optional but recommended.
+For a given row, the value of this column is OPTIONAL but recommended.
 
 ### Column: Description
 
-This value of this column contains a description of datafile column being described.  In the case where data represents the response to survery questions, the description is equal to the text of the question that was asked.
+The `Description` column contains a description of datafile column being described.  In the case where data represents the response to survery questions, the description is equal to the text of the question that was asked.
 
-For a given row, the value of this column is optional.
+For a given row, the value of this column is OPTIONAL.
 
 ### Column: Required
 
-The value of this column specified whether a data-value is required in a datafile  may contain true, false or be empty.
+The `Required` column specifies whether a datafile value is required and may contain `true`, `false` or be empty.  An empty value is assumed to be false.
 
 ### Column: Datatype
 
-The value of this column is a datatype name.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms.  We use XML Schema Datatypes because this a set of datatypes with precisely defined syntax and semantics.  
+The `Datatype` column contains a datatype name.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms.  We use XML Schema Datatypes because this a set of datatypes with precisely defined syntax and semantics.  
 
 If an enumeration is supplied to provide a list of controlled values the the data type should be set as the datatype of the values in the enumeration.  See the description of [Column 7 (Column H): Enumeration](#column-7-column-h-enumeration).
 
@@ -84,11 +84,13 @@ timestamp | `[0-9]+` | A long integer number that represents a Unix timestamp | 
 
 ### Column: Pattern
 
-The value of this column may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
+The `Pattern` column may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
+
+For a given row the value of this column is OPTIONAL.
 
 ### Column: Units
 
-If the datafile values that this column describes represent quantities then the value of this column may be used to document the quantity units.
+The `Units` column describes represent quantities then the value of this column may be used to document the quantity units.
 
 For a given row, the value of this column is OPTIONAL.
 
@@ -117,7 +119,7 @@ We recommend that, where possible, SI units are used.
 
 ### Column: Enumeration
 
-For a given row, this column specifies a controlled list of values for datafile values.  The list is specified as `value0=label0 ; value1=label1 ... ; valueN=labelN`. Each item in the list is a value-label pair, separated by a semi-colon character (;).  This pair is written out in the format `value=label`.  White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples: 
+The `Enumeration` column specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 ; value1=label1 ... ; valueN=labelN`. Each item in the list is a value-label pair, separated by a semi-colon character (;).  This pair is written out in the format `value=label`.  White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples: 
 
 `0=Saliva ; 1=Blood`
 
@@ -130,3 +132,5 @@ The above examples use integers as the values.
 `Saliva=Saliva ; Blood=Blood`
 
 `RBC = Red Blood Cells ; WBC = White Blood Cells`
+
+Datafiles contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
