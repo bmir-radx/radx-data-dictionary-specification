@@ -1,13 +1,19 @@
 # RADx Data Dictionary Specification
 
-A RADx data dictionary is a Comma Separated Values (CSV) file that describes how data contained in another CSV file is structured.  A Comma Separated File represents a grid or table with rows and columns.   The first row of a CSV file is a __header__ row that contains __column identifiers__ (or ids for short) for columns.  We some times refer to rows and columns by their zero-based indexes.
+A RADx data dictionary is a Comma Separated Values (CSV) file that describes how data contained in another CSV file is structured.  A Comma Separated File represents a grid or table with rows and columns.   The first row of a CSV file is typically a __header__ row that contains __column identifiers__ (or ids for short) for columns.  We some times refer to rows and columns by their zero-based indexes.
 
 The following table shows a CSV containing some example _data_ that contains two columns and three rows.  The first column (index 0) has a column identifier, or column id, of *Participant_Id* and the second column (index 1) has a column identifier of *SampleType*.
 
-The actual data is is provided in the rows that follow the header row.
+The actual data (records) is provided in the rows that follow the header row.
 
 | Participant_Id | SampleType |
-|----------|------------|
+|-------|------------|
+| P27   | Blood      |
+| P35   | Saliva     |
+
+While desirable, not all datafiles have header rows.  In these cases, the first row contains a data record, for example,
+
+|-------|------------|
 | P27   | Blood      |
 | P35   | Saliva     |
 
@@ -21,7 +27,13 @@ While the format of a published RADx Data Dictionary MUST be CSV, tools like Goo
 
 ## Layout
 
-A data dictionary CSV file contains a header row plus _one row for each column_ in the datafile (a row in a data dictionary describes a column in a data file).  Thus, if a datafile has five columns in it (corresponding to five variables), the data dictionary for such a datafile will contain _six_ rows – one header row plus five further rows.
+A data dictionary CSV file contains a header row plus _one row for each column_ in a target datafile (a row in a data dictionary describes a column in a data file).  Thus, if a datafile has five columns in it (corresponding to five variables), the data dictionary for that datafile will contain _six_ rows – one header row plus five further non-header rows that describe the five columns.
+
+### Data Dictionary Row Ordering
+
+The ordering of rows in a data dictionary is SIGNIFICANT.  The ordering of rows in a data dictionary must correspond to the ordering columns in a target datafile.  Thus, the first non-header row in a data dictionary file describes the first column in a target datafile, the second non-header row in a data dictionary describes the second column in a datafile, and so on.
+
+### Data Dictionary Columns
 
 The data dictionary header row contains the following strings that identify columns in the data dictionary:  
 
@@ -29,7 +41,8 @@ The data dictionary header row contains the following strings that identify colu
 
 These data dictionary columns are described in more detail below.
 
-## Data Dictionary Columns
+
+## Data Dictionary Columns Specification
 
 Each row in a data dictionary MUST contain the following columns.  Since columns are identified by column headers the ordering of these columns is not significant.  However, we recommend that the ordering specified here is followed for the purposes of clarity.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
 
