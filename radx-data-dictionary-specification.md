@@ -25,7 +25,7 @@ A data dictionary CSV file contains a header row plus _one row for each column_ 
 
 The data dictionary header row contains the following strings that identify columns in the data dictionary:  
 
-[Id](#column-id), [Label](#column-label), [Description](#column-description), [Required](#column-required), [Datatype](#column-datatype), [Pattern](#column-pattern), [Units](#column-units), [Enumeration](#column-enumeration).
+[Id](#column-id), [Label](#column-label), [Description](#column-description), [Required](#column-required), [Datatype](#column-datatype), [Pattern](#column-pattern), [Units](#column-units), [Enumeration](#column-enumeration), [Notes](#column-notes).
 
 These data dictionary columns are described in more detail below.
 
@@ -143,3 +143,7 @@ The above examples use integers as the values but values may be other types of n
 `RBC = Red Blood Cells ; WBC = White Blood Cells` (Values are an abbreviation of the string).
 
 Datafiles contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
+
+### Column: Notes
+
+The `Notes` column may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding column in the datafile. 
