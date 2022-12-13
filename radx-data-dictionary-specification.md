@@ -57,9 +57,9 @@ For a given row, the value of this column is OPTIONAL but recommended.
 
 ### Column: Required
 
-The `Required` column specifies whether a datafile value is required and may contain `true`, `false` or be empty.  If, for a given datafile column, datafile values are specified as being required then a non-empty value MUST be specified for values in the datafile column.
+The `Required` column specifies whether a datafile value is required and may contain `TRUE`, `FALSE` or be empty.  If, for a given datafile column, datafile values are specified as being required then a non-empty value MUST be specified for values in the datafile column.  The values for this column are case insensitive thus, "True", "true" and "TRUE" all map to boolean `TRUE`.
 
-For a given row, the value of this column is OPTIONAL.  An empty value is the same as a `false` value.
+For a given row, the value of this column is OPTIONAL.  An empty value is the same as a `FALSE` value.
 
 ### Column: Datatype
 
@@ -68,6 +68,8 @@ The `Datatype` column contains a datatype name.  Possible values are drawn from 
 If an enumeration is supplied to provide a list of controlled values the the data type should be set as the datatype of the values in the enumeration.  See the description of [Column: Enumeration](#column-enumeration).
 
 For a given row the value of this column is REQUIRED and MUST NOT be empty.
+
+Values for this column are case insensitive, thus `Integer` and `integer` mean the same thing.
 
 #### Common Datatype Names
 
