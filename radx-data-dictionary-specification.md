@@ -68,7 +68,7 @@ Values for this column are case insensitive, thus `Integer` and `integer` mean t
 
 #### Common Datatype Names
 
-The following are the most common XML schema datatype names:  
+The following are the most common XML schema datatype names.  For each datatype name we provide a brief description of the valid lexical form for the datatype.  For more precise details follow the relevant datatype link to the XML schema datatypes specification.  
 
 | Datatype Name | Brief Description |
 | -- | -- |
