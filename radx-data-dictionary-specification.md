@@ -119,7 +119,7 @@ We recommend that, where possible, SI units are used.
 
 ### Column: Enumeration
 
-The `Enumeration` column specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 ; value1=label1 ... ; valueN=labelN`. Each item in the list is a value-label pair, separated by a semi-colon character (;).  This pair is written out in the format `value=label`.  White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples: 
+The `Enumeration` column specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 ; value1=label1 ; ... ; valueN=labelN`. Each item in the list is a value-label pair, separated by a semi-colon character (;).  This pair is written out in the format `value=label`.  White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples: 
 
 `0=Saliva ; 1=Blood`
 
