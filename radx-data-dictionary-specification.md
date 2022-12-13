@@ -11,14 +11,11 @@ The actual data (records) is provided in the rows that follow the header row.
 | P27   | Blood      |
 | P35   | Saliva     |
 
-While desirable, not all datafiles have header rows.  In these cases, the first row contains a data record, for example,
-
-|-------|------------|
-| P27   | Blood      |
-| P35   | Saliva     |
+While desirable, not all datafiles have header rows.  In these cases, the first row contains a data record.
 
 ## CSV Format
 
+Data Dictionaries should use the CSV format specified by [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180#page-2).  Data dictionaries my be created with tools such as Google Sheets or Microsoft Excel.  Both of these tools produce CSV files in accordance with this specification.  When saving a CSV file in Microsoft Excel be sure to choose the "CSV UTF-8 (Comma delimited) (.CSV)" file format.
 
 ## Template
 
