@@ -13,7 +13,10 @@ The actual data is is provided in the rows that follow the header row.
 
 ## CSV Format
 
-New lines, escaping
+
+## Template
+
+While the format of a published RADx Data Dictionary MUST be CSV, tools like Google Sheets or Excel can be used for editing/producing the CSV file.  A Google Sheet template data dictionary may be found [here](https://docs.google.com/spreadsheets/d/1f5KcnCx7fEHcC8uSS5CB71-D-y51BDxFfGltSbj85iw/edit?usp=sharing).
 
 
 ## Layout
