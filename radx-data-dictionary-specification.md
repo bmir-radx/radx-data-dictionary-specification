@@ -1,0 +1,134 @@
+# RADx Data Dictionary Specification
+
+A RADx data dictionary is a Comma Separated Values (CSV) file that describes how data contained in another CSV file is structured.  A Comma Separated File represents a grid or table with rows and columns.   The first row of a CSV file is a __header__ row that contains __column identifiers__ (or ids for short) for columns.  We some times refer to rows and columns by their zero-based indexes.
+
+The following table shows a CSV containing some example _data_ that contains two columns and three rows.  The first column (index 0) has a column identifier, or column id, of *Participant_Id* and the second column (index 1) has a column identifier of *SampleType*.
+
+The actual data is is provided in the rows that follow the header row.
+
+| Participant_Id | SampleType |
+|----------|------------|
+| P27   | Blood      |
+| P35   | Saliva     |
+
+## CSV Format
+
+New lines, escaping
+
+
+## Layout
+
+A data dictionary CSV file contains a header row plus _one row for each column_ in the datafile (a row in a data dictionary describes a column in a data file).  Thus, if a datafile has five columns in it (corresponding to five variables), the data dictionary for such a datafile will contain _six_ rows – one header row plus five further rows.
+
+The data dictionary header row contains the following strings that identify columns in the data dictionary:  
+
+`Id`, `Label`, `Description`, `Required`, `Datatype`, `Pattern`, `Units`, `Enumeration`, `Terms`, `Logic`
+
+These data dictionary columns are described in more detail below.
+
+## Data Dictionary Columns
+
+Each row in a data dictionary MUST contain the following columns as the first eight columns (Columns 0-7, or Columns A-H in a spreadsheet).  The ordering of these columns is significant and MUST be preserved.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
+
+Recall that each row in a data dictionary describes a column and aspects of the column values in a target datafile.
+
+### Column 0 (Column A): Id
+
+This column contains a column identifier for the datafile column being described.  Column identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a column identifier.  Column identifiers may, for example, contain spaces.
+
+For a given row, the value in this column is REQUIRED and MUST NOT be empty.
+
+### Column 1 (Column B): Label
+
+This column contains a presentation label for the datafile column being described.  Labels are strings.
+
+For a given row, the value of this column is optional but recommended.
+
+### Column 2 (Column C): Description
+
+This value of this column contains a description of datafile column being described.  In the case where data represents the response to survery questions, the description is equal to the text of the question that was asked.
+
+For a given row, the value of this column is optional.
+
+### Column 3 (Column D): Required
+
+The value of this column specified whether a data-value is required in a datafile  may contain true, false or be empty.
+
+### Column 4 (Column E): Datatype
+
+The value of this column is a datatype name.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms.  We use XML Schema Datatypes because this a set of datatypes with precisely defined syntax and semantics.  
+
+If an enumeration is supplied to provide a list of controlled values the the data type should be set as the datatype of the values in the enumeration.  See the description of [Column 7 (Column H): Enumeration](#column-7-column-h-enumeration).
+
+For a given row the value of this column is REQUIRED and MUST NOT be empty.
+
+The following are the most common XML schema datatype names:  
+
+| Datatype Name | Brief Description |
+| -- | -- |
+[integer](https://www.w3.org/TR/xmlschema-2/#integer) | integer has a lexical representation consisting of a finite-length sequence of decimal digits (#x30-#x39) with an optional leading sign. If the sign is omitted, "+" is assumed. For example: -1, 0, 12678967543233, +100000.
+[float](https://www.w3.org/TR/xmlschema-2/#float) | float values have a lexical representation consisting of a mantissa followed, optionally, by the character "E" or "e", followed by an exponent. The exponent must be an integer. The mantissa must be a decimal number. If the "E" or "e" and the following exponent are omitted, an exponent value of 0 is assumed. The special values positive and negative infinity and not-a-number have lexical representations INF, -INF and NaN, respectively. Lexical representations for zero may take a positive or negative sign.  For example, -1E4, 1267.43233E12, 12.78e-2, 12 , -0, 0 and INF are all legal literals for float.
+[double](https://www.w3.org/TR/xmlschema-2/#double) | double values have a lexical representaton that is the same as float.
+[boolean](https://www.w3.org/TR/xmlschema-2/#boolean) | boolean values can have the following legal literals, true, false, 1, 0
+[string](https://www.w3.org/TR/xmlschema-2/#string) | string values are finite sequences of character
+[decimal](https://www.w3.org/TR/xmlschema-2/#decimal) | decimal has a lexical representation consisting of a finite-length sequence of decimal digits (#x30-#x39) separated by a period as a decimal indicator. An optional leading sign is allowed. If the sign is omitted, "+" is assumed. Leading and trailing zeroes are optional. If the fractional part is zero, the period and following zero(es) can be omitted. For example: -1.23, 12678967.543233, +100000.00, 210.
+[dateTime](https://www.w3.org/TR/xmlschema-2/#dateTime) | dateTime has a lexical representation that consists of finite-length sequences of characters of the form: `'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?`.  For example, 2002-10-10T12:00:00-05:00 (noon on 10 October 2002, Central Daylight Savings Time as well as Eastern Standard Time in the U.S.) is 2002-10-10T17:00:00Z, five hours later than 2002-10-10T12:00:00Z.
+[date](https://www.w3.org/TR/xmlschema-2/#date) | The lexical space of date consists of finite-length sequences of characters of the form: `'-'? yyyy '-' mm '-' dd zzzzzz?`.  
+[time](https://www.w3.org/TR/xmlschema-2/#time) | The lexical representation for time is the left truncated lexical representation for dateTime: `hh:mm:ss.sss` with optional following time zone indicator. For example, to indicate 1:20 pm for Eastern Standard Time which is 5 hours behind Coordinated Universal Time (UTC), one would write: 13:20:00-05:00.
+
+The set of allowable datatype names also includes the following.  These map to well-defined XML schema datatypes as follows:
+
+| Datatype Name | Lexical Format | Comments | XML Schema Datatype Name | Lexical Format |
+| -- | -- | -- | -- | -- |
+date_mdy | mm/dd/yyyy | US formatted date with slashes | Date | yyyy-mm-dd
+date_dmy | dd/mm/yyy  | International formatted date with slashes | date | yyyy-mm-dd
+timestamp | `[0-9]+` | A long integer number that represents a Unix timestamp | long | `[0-9]+` 
+
+### Column 5 (Column F): Pattern
+
+The value of this column may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
+
+### Column 6 (Column G): Units
+
+If the datafile values that this column describes represent quantities then the value of this column may be used to document the quantity units.
+
+For a given row, the value of this column is OPTIONAL.
+
+Since there is no standardized list of units used for RADx studies we do not provide a controlled list of units here.  However, here are some common units that we have observed being used in RADx data dictionaries.
+
+| Unit | Abbreviation | Dimension |
+| -- | -- | -- |
+millimeters | mm | length
+metres | m | length
+inches | in | length
+feet | ft | length
+seconds | s | time
+hours | hr | time
+days | d | time
+weeks | w | time
+celcius | C | temperature
+faranheit | F | temperature
+kelvin | K | temperature
+milligrams | mg | mass
+grams | g | mass
+kilograms | kg| mass
+pounds | lbs | mass
+mols / litre | ml / l | concentration
+
+We recommend that, where possible, SI units are used.
+
+### Column 7 (Column H): Enumeration
+
+For a given row, this column specifies a controlled list of values for datafile values.  The list is specified as `value0=label0 ; value1=label1 ... ; valueN=labelN`. Each item in the list is a value-label pair, separated by a semi-colon character (;).  This pair is written out in the format `value=label`.  White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples: 
+
+`0=Saliva ; 1=Blood`
+
+`0=Saliva;1=Blood`
+
+`0 = Saliva ; 1 = Blood`
+
+The above examples use integers as the values.
+
+`Saliva=Saliva ; Blood=Blood`
+
+`RBC = Red Blood Cells ; WBC = White Blood Cells`
