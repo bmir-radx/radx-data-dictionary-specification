@@ -28,33 +28,31 @@ These data dictionary columns are described in more detail below.
 
 ## Data Dictionary Columns
 
-Each row in a data dictionary MUST contain the following columns as the first eight columns (Columns 0-7, or Columns A-H in a spreadsheet).  The ordering of these columns is significant and MUST be preserved.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
+Each row in a data dictionary MUST contain the following columns.  Since columns are identified by column headers the ordering of these columns is not significant.  However, we recommend that the ordering specified here is followed for the purposes of clarity.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
 
-Recall that each row in a data dictionary describes a column and aspects of the column values in a target datafile.
+### Column: Id
 
-### Column 0 (Column A): Id
-
-This column contains a column identifier for the datafile column being described.  Column identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a column identifier.  Column identifiers may, for example, contain spaces.
+The column contains a column identifier for the datafile column being described.  Column identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a column identifier.  Column identifiers may, for example, contain spaces.
 
 For a given row, the value in this column is REQUIRED and MUST NOT be empty.
 
-### Column 1 (Column B): Label
+### Column: Label
 
 This column contains a presentation label for the datafile column being described.  Labels are strings.
 
 For a given row, the value of this column is optional but recommended.
 
-### Column 2 (Column C): Description
+### Column: Description
 
 This value of this column contains a description of datafile column being described.  In the case where data represents the response to survery questions, the description is equal to the text of the question that was asked.
 
 For a given row, the value of this column is optional.
 
-### Column 3 (Column D): Required
+### Column: Required
 
 The value of this column specified whether a data-value is required in a datafile  may contain true, false or be empty.
 
-### Column 4 (Column E): Datatype
+### Column: Datatype
 
 The value of this column is a datatype name.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms.  We use XML Schema Datatypes because this a set of datatypes with precisely defined syntax and semantics.  
 
@@ -84,11 +82,11 @@ date_mdy | mm/dd/yyyy | US formatted date with slashes | Date | yyyy-mm-dd
 date_dmy | dd/mm/yyy  | International formatted date with slashes | date | yyyy-mm-dd
 timestamp | `[0-9]+` | A long integer number that represents a Unix timestamp | long | `[0-9]+` 
 
-### Column 5 (Column F): Pattern
+### Column: Pattern
 
 The value of this column may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
 
-### Column 6 (Column G): Units
+### Column: Units
 
 If the datafile values that this column describes represent quantities then the value of this column may be used to document the quantity units.
 
@@ -117,7 +115,7 @@ mols / litre | ml / l | concentration
 
 We recommend that, where possible, SI units are used.
 
-### Column 7 (Column H): Enumeration
+### Column: Enumeration
 
 For a given row, this column specifies a controlled list of values for datafile values.  The list is specified as `value0=label0 ; value1=label1 ... ; valueN=labelN`. Each item in the list is a value-label pair, separated by a semi-colon character (;).  This pair is written out in the format `value=label`.  White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples: 
 
