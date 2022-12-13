@@ -119,9 +119,9 @@ seconds | s | time
 hours | hr | time
 days | d | time
 weeks | w | time
-celcius | C | temperature
-faranheit | F | temperature
-kelvin | K | temperature
+Celcius | C | temperature
+Farenheit | F | temperature
+Kelvin | K | temperature
 milligrams | mg | mass
 grams | g | mass
 kilograms | kg| mass
