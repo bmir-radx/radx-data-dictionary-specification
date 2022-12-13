@@ -25,7 +25,7 @@ A data dictionary CSV file contains a header row plus _one row for each column_ 
 
 The data dictionary header row contains the following strings that identify columns in the data dictionary:  
 
-[Id](#column-id), [Label](#column-label), [Description](#column-description), [Required](#column-required), [Datatype](#column-datatype), [Pattern](#column-pattern), [Units](#column-units), [Enumeration](#column-enumeration), [Notes](#column-notes).
+[Id](#column-id), [Label](#column-label), [Required](#column-required), [Datatype](#column-datatype), [Pattern](#column-pattern), [Units](#column-units), [Enumeration](#column-enumeration), [Notes](#column-notes).
 
 These data dictionary columns are described in more detail below.
 
@@ -41,15 +41,9 @@ For a given row, the value in this column is REQUIRED and MUST NOT be empty.
 
 ### Column: Label
 
-The `Label` column contains a presentation label for the datafile column being described.  Labels are strings.
+The `Label` column contains a presentation label for the datafile column being described.  Labels are strings and they are usually a human readable form of the [Id](#column-id) column.   In the case where data represents the response to survery questions, the label is typically equal to the text of the question that was asked.
 
 For a given row, the value of this column is OPTIONAL but recommended.
-
-### Column: Description
-
-The `Description` column contains a description of datafile column being described.  In the case where data represents the response to survery questions, the description is equal to the text of the question that was asked.
-
-For a given row, the value of this column is OPTIONAL.
 
 ### Column: Required
 
