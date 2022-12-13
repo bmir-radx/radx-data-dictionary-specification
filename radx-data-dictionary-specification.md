@@ -17,11 +17,6 @@ While header rows are desirable, not all datafiles have header rows.  In these c
 
 Data Dictionaries MUST use the CSV format specified by [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180#page-2).  Data dictionaries my be created with tools such as Google Sheets or Microsoft Excel.  Both of these tools produce CSV files in accordance with this specification.  When saving a CSV file in Microsoft Excel be sure to choose the "CSV UTF-8 (Comma delimited) (.CSV)" file format.
 
-## Template
-
-While the format of a published RADx Data Dictionary MUST be CSV, tools like Google Sheets or Excel can be used for editing/producing the CSV file.  A Google Sheet template data dictionary may be found [here](https://docs.google.com/spreadsheets/d/1f5KcnCx7fEHcC8uSS5CB71-D-y51BDxFfGltSbj85iw/edit?usp=sharing).
-
-
 ## Layout
 
 A data dictionary CSV file contains a header row plus _one row for each column_ in a target datafile (a row in a data dictionary describes a column in a data file).  Thus, if a datafile has five columns in it (corresponding to five variables), the data dictionary for that datafile will contain _six_ rows – one header row plus five further non-header rows that describe the five columns.
@@ -157,3 +152,7 @@ For a given row, the value of this column is OPTIONAL.
 The `Notes` column may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding column in the datafile.  The values of this column are for human use and are not parsed to be used in a computational way.
 
 For a given row, the value of this column is OPTIONAL.
+
+## Template
+
+While the format of a published RADx Data Dictionary MUST be CSV, tools like Google Sheets or Excel can be used for editing/producing the CSV file.  A Google Sheet template data dictionary may be found [here](https://docs.google.com/spreadsheets/d/1f5KcnCx7fEHcC8uSS5CB71-D-y51BDxFfGltSbj85iw/edit?usp=sharing).
