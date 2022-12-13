@@ -11,7 +11,7 @@ The actual data (records) is provided in the rows that follow the header row.
 | P27   | Blood      |
 | P35   | Saliva     |
 
-While desirable, not all datafiles have header rows.  In these cases, the first row contains a data record.
+While header rows are desirable, not all datafiles have header rows.  In these cases, the first row contains a data record.
 
 ## CSV Format
 
