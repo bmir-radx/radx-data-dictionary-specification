@@ -56,7 +56,7 @@ The `Required` column specifies whether a datafile value is required and may con
 
 The `Datatype` column contains a datatype name.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms.  We use XML Schema Datatypes because this a set of datatypes with precisely defined syntax and semantics.  
 
-If an enumeration is supplied to provide a list of controlled values the the data type should be set as the datatype of the values in the enumeration.  See the description of [Column 7 (Column H): Enumeration](#column-7-column-h-enumeration).
+If an enumeration is supplied to provide a list of controlled values the the data type should be set as the datatype of the values in the enumeration.  See the description of [Column: Enumeration](#column-enumeration).
 
 For a given row the value of this column is REQUIRED and MUST NOT be empty.
 
