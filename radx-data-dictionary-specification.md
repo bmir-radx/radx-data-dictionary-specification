@@ -62,6 +62,8 @@ If an enumeration is supplied to provide a list of controlled values the the dat
 
 For a given row the value of this column is REQUIRED and MUST NOT be empty.
 
+#### Common Datatype Names
+
 The following are the most common XML schema datatype names:  
 
 | Datatype Name | Brief Description |
