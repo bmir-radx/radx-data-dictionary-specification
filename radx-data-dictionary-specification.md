@@ -22,7 +22,7 @@ A data dictionary CSV file contains a header row plus _one row for each column_ 
 
 The data dictionary header row contains the following strings that identify columns in the data dictionary:  
 
-`Id`, `Label`, `Description`, `Required`, `Datatype`, `Pattern`, `Units`, `Enumeration`
+[Id](#column-id), [Label](#column-label), [Description](#column-description), [Required](#column-required), [Datatype](#column-datatype), [Pattern](#column-pattern), [Units](#column-units), [Enumeration](#column-enumeration).
 
 These data dictionary columns are described in more detail below.
 
