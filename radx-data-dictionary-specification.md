@@ -50,7 +50,9 @@ For a given row, the value of this column is OPTIONAL.
 
 ### Column: Required
 
-The `Required` column specifies whether a datafile value is required and may contain `true`, `false` or be empty.  An empty value is assumed to be false.
+The `Required` column specifies whether a datafile value is required and may contain `true`, `false` or be empty.  If, for a given datafile column, datafile values are specified as being required then a non-empty value MUST be specified for values in the datafile column.
+
+For a given row, the value of this column is OPTIONAL.  An empty value is the same as a `false` value.
 
 ### Column: Datatype
 
@@ -119,7 +121,9 @@ We recommend that, where possible, SI units are used.
 
 ### Column: Enumeration
 
-The `Enumeration` column specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 ; value1=label1 ; ... ; valueN=labelN`. Each item in the list is a value-label pair, separated by a semi-colon character (;).  This pair is written out in the format `value=label`.  White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples and are equivalent: 
+The `Enumeration` column specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 ; value1=label1 ; ... ; valueN=labelN`. Each item in the list is a value-label pair, separated by a semi-colon character (;).  This pair is written out in the format `value=label`.  
+
+White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples and are equivalent: 
 
 `0=Saliva ; 1=Blood`
 
@@ -127,10 +131,10 @@ The `Enumeration` column specifies a controlled list of values that datafile val
 
 `0 = Saliva ; 1 = Blood`
 
-The above examples use integers as the values.
+The above examples use integers as the values but values may be other types of numbers, strings, dateTimes etc.  For example, 
 
-`Saliva=Saliva ; Blood=Blood`
+`Saliva=Saliva ; Blood=Blood` (Values and labels are the same string)
 
-`RBC = Red Blood Cells ; WBC = White Blood Cells`
+`RBC = Red Blood Cells ; WBC = White Blood Cells` (Values are an abbreviation of the string).
 
 Datafiles contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
