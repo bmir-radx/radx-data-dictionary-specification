@@ -36,7 +36,7 @@ These data dictionary columns are described in more detail below.
 
 ## Data Dictionary Columns Specification
 
-Each row in a data dictionary MUST contain the following columns.  Since columns are identified by column headers the ordering of these columns is not significant.  However, we recommend that the ordering specified here is followed for the purposes of clarity.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
+Each row in a data dictionary MUST contain the following, possibly blank, columns.  Since columns are identified by column headers the ordering of these columns is not significant.  However, we recommend that the ordering specified here is followed for the purposes of clarity.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
 
 ### Column: Id
 
