@@ -1,19 +1,23 @@
 # RADx Data Dictionary Specification
 
-A RADx data dictionary is a Comma Separated Values (CSV) file that describes how data contained in another CSV file is structured.  A Comma Separated File represents a grid or table with rows and columns.   The first row of a CSV file is typically a __header__ row that contains __column identifiers__ (or ids for short) for columns.  We sometimes refer to rows and columns by their zero-based indexes.
+## Introduction
 
-The following table shows a CSV containing some example _data_ that contains two columns and three rows.  The first column (index 0) has a column identifier, or column id, of *Participant_Id* and the second column (index 1) has a column identifier of *SampleType*.
+A data dictionary is a form of _metadata_ that describes _data_.  No matter what the concrete serialization format may be, we assume that data is essentially a list of _records_ that contain _fields_.  A field comprises a _field identifier and a _field value_.   
 
-The actual data (records) are provided in the rows that follow the header row.
+When data is stored in a Comma Separated Values (CSV) file, records are stored in _rows_, and fields are stored as cells within the rows.   The first row is typically a _header row_ that specifies the field identifiers.  For a given column, the field identifier in the header row essentially "names" the fields that are contained within that column. 
 
-| Participant_Id | SampleType |
-|-------|------------|
-| P27   | Blood      |
-| P35   | Saliva     |
+The table below shows an example CSV file that contains some data.  The data contains two records (orange boxes) made up of seven fields (blue boxes).   In this example, the field identifiers are:  `PartId`, `Date`, `Time`, `Age`, `Mental Status`, `FS LL`, and `FS RL`.  Thus, the 4th column contains `Age` fields.  In the first record (second row) the `Age` field has a field value of `67`.  In the second record (third row), the `FS RL` field value does not have a value and we say that this field is _blank_.
 
-Though not all datafiles have header rows, we expect RADx datafiles to have a header row, with the entries in the header row being the variable names for the data in the corresponding columns.
+Though not all datafiles have header rows, we expect RADx datafiles to have header rows.
 
-Whereas the datafile has its variable names in the cells of the first row, the data dictionary describes each datafile _variable_ in a separate row, and the columns contain the attributes of the datafile variables. You can think of each row of a data dictionary as a data element that defines a single question about a variable in the datafile.
+![Records, Fields and Field Values](schematic.png)
+
+
+## RADx Data Dictionaries
+
+A RADx data dictionary is a Comma Separated Values (CSV) file that describes how RADx _data_ contained in another CSV file is structured.
+
+Whereas a datafile has its field identifiers in the cells of the header row, its corresponding data dictionary describes each type of _field_ in a separate row, and the columns contain the descriptive attributes of the datafile fields. You can think of each row of a data dictionary as a data element that defines a single question about a field in the datafile.
 
 ## CSV Format
 
@@ -21,68 +25,69 @@ Data dictionaries MUST use the CSV format specified by [RFC 4180](https://datatr
 
 ## Layout
 
-A data dictionary CSV file contains a header row plus _one row for each of the target datafile's data variables_. (Since the datafile's variables are in columns, that means a row in a data dictionary describes a column in a data file.)  Thus, if a datafile has five columns in it (corresponding to five variables), the data dictionary for that datafile will contain _six_ rows – one header row plus five non-header rows that describe the five columns.
+A data dictionary CSV file contains a header row plus _one row for each of the target datafile's data fields_. (Since the datafile's fields are in columns, that means a row in a data dictionary describes a column in a data file.)  Thus, if a datafile has five columns in it (corresponding to five fields), the data dictionary for that datafile will contain _six_ rows – one header row plus five non-header rows that describe the five columns.
 
 ### Data Dictionary Row Ordering
 
 The ordering of rows in a data dictionary is SIGNIFICANT.  The order of rows in a data dictionary MUST correspond to the order of columns in a target datafile.  Thus, the first non-header row in a data dictionary file describes the first column in a target datafile, the second non-header row in a data dictionary describes the second column in a datafile, and so on. 
 
-While the Id of the data dictionary row should match the variable name of the datafile column, if the datafile's header row is missing or has mis-matched names, the data dictionary order is used to understand the datafile columns.
+While the Id of the data dictionary row should match the field name of the datafile column, if the datafile's header row is missing or has mis-matched names, the data dictionary order is used to understand the datafile columns.
 
-### Data Dictionary Columns
+### Data Dictionary Fields
 
 The data dictionary header row contains the following strings that identify columns in the data dictionary (click on the name to be taken to a description of that column's values):
 
-[Id](#column-id), [Label](#column-label), [Required](#column-required), [Datatype](#column-datatype), [Pattern](#column-pattern), [Units](#column-units), [Enumeration](#column-enumeration), [Notes](#column-notes).
+[Id](#field-id), [Label](#field-label), [Required](#field-required), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Notes](#field-notes).
 
 These data dictionary columns are chosen to match the format used for REDCap data dictionary exports, and the columns are described in more detail below. 
 
-The data dictionary header row may contain additional columns of the user's choosing, to capture richer information about each of the variables described by the data dictionary. We offer some recommended names to use for the most common cases of additional columns.
+The data dictionary header row may contain additional columns of the user's choosing, to capture richer information about each of the fields described by the data dictionary. We offer some recommended names to use for the most common cases of additional columns.
 
 Since columns are identified by column headers the ordering of these columns is not significant.  However, for maximum interoperability and ease of use, we strongly recommend following the ordering specified here.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
 
 ## Data Dictionary Columns Specification
 
-Each row in a data dictionary MUST contain the following columns. Depending on the *Value Status* of the column, values may or may not be REQUIRED in that column for every row in the data dictionary
+Each row in a data dictionary MUST contain the following fields. Depending on the *Value Status* of the field, values may or may not be REQUIRED in that field for every row in the data dictionary.
 
-### Column: Id
+### Field: Id
 
 __Value Status__: REQUIRED (the value for Id MUST NOT be empty)
 
-The `Id` column in the data dictionary contains an identifier for the datafile column being described.  Datafile column identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a column identifier, except that it may not include a comma, quote, or semi-colon.  Column identifiers may contain spaces, for example.
+The `Id` field in the data dictionary contains an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a field identifier, except that it may not include a comma, quote, or semi-colon.  Field identifiers may contain spaces, for example.
 
-In RADx harmonized data, the Id typically begins with `nih_`, reflecting the NIH variable name assigned to RADx harmonized variables (and corresponding Common Data Elements).
+In RADx harmonized data, the Id typically begins with `nih_`, reflecting the NIH field name assigned to RADx harmonized fields (and corresponding Common Data Elements).
 
-### Column: Label
+### Field: Label
 
 __Value Status__: RECOMMENDED 
 
-The `Label` column in the data dictionary contains a presentation label for the datafile column being described.  Labels are strings; they may be a human readable form of the [Id](#column-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
+The `Label` field in the data dictionary contains a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
 
 Because the Label can be used in many presentations of RADx data, it would not be unusual for entries without a Label to cause issues in some software. 
 
-### Column: Required
+### Field: Required
 
 __Value Status__: OPTIONAL
+
 __Default Value__: FALSE
 
-The `Required` column in the data dictionary specifies whether a datafile value must be present. The Required value itself may contain `TRUE`, `FALSE` or be empty.  An empty value is considered to be FALSE. If, for a given datafile column, datafile values are specified as being required (TRUE), then a non-empty value MUST be specified for all values in that datafile column.  
+The `Required` field in the data dictionary specifies whether a datafile value must be present. The Required value itself may contain `TRUE`, `FALSE` or be empty.  An empty value is considered to be FALSE. If, for a given datafile field, datafile values are specified as being required (TRUE), then a non-empty value MUST be specified for all values in that datafile field.  
 
-The values for the data dictionary's Required column are case insensitive: "True", "true" and "TRUE" all map to boolean `TRUE`.
+The values for the data dictionary's Required field are case insensitive: "True", "true" and "TRUE" all map to boolean `TRUE`.
 
-For a given row, the value of this column is OPTIONAL.  An empty value is the same as a `FALSE` value.
+For a given row, the value of this field is OPTIONAL.  An empty value is the same as a `FALSE` value.
 
-### Column: Datatype
+### Field: Datatype
 
 __Value Status__: REQUIRED (the value MUST NOT be empty)
 
-The `Datatype` column in the data dictionary contains a datatype name that describes what kind of data is in the datafile column.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names, extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms (see below).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.  
+The `Datatype` field in the data dictionary contains a datatype name that describes what kind of data is in the datafile field.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names, extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms (see below).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.  
 
-If an enumeration is supplied to provide a list of controlled values, then the Datatype should be set as the datatype of the values in the enumeration.  See the description of [Column: Enumeration](#column-enumeration).
+If an enumeration is supplied to provide a list of controlled values, then the Datatype should be set as the datatype of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).
 
-Values for this column are case insensitive, thus `Integer` and `integer` mean the same thing.
+Values for this field are case insensitive, thus `Integer` and `integer` mean the same thing.
 
-#### Common Datatype Names
+#### Field Datatype Names
 
 The following are the most common XML schema datatype names.  For each datatype name we provide a brief description of the valid lexical form for the datatype.  For more precise details follow the relevant datatype link to the XML schema datatypes specification.  
 
@@ -106,17 +111,17 @@ date_mdy | mm/dd/yyyy | US-formatted date with slashes | date | yyyy-mm-dd
 date_dmy | dd/mm/yyy  | International-formatted date with slashes | date | yyyy-mm-dd
 timestamp | `[0-9]+` | A long integer number that represents a Unix timestamp | long | `[0-9]+` 
 
-### Column: Pattern
+### Field: Pattern
 
 __Value Status__: OPTIONAL
 
-The `Pattern` column in the data dictionary may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
+The `Pattern` field in the data dictionary may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
 
-### Column: Units
+### Field: Units
 
 __Value Status__: OPTIONAL
 
-The `Units` column in the data dictionary describes represent quantities then the value of this column may be used to document the quantity units.
+The `Units` field in the data dictionary describes represent quantities then the value of this field may be used to document the quantity units.
 
 Since there is no standardized list of units used for RADx studies we do not provide a controlled list of units here.  However, here are some common units that we have observed being used in RADx data dictionaries.
 
@@ -141,11 +146,11 @@ mole per litre | ml/l | concentration
 
 We recommend that, where possible, SI units and abbreviations are used.
 
-### Column: Enumeration
+### Field: Enumeration
 
 __Value Status__: OPTIONAL
 
-The `Enumeration` column in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 , value1=label1 , ... , valueN=labelN`. Each item in the list is a value-label pair, written in the format`value=label`, and separated from surrounding items by a comma character (,).   
+The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 , value1=label1 , ... , valueN=labelN`. Each item in the list is a value-label pair, written in the format`value=label`, and separated from surrounding items by a comma character (,).   
 
 White space surrounding the comma (,) and equals (=) characters is not significant.  Thus, the following are valid examples and are equivalent: 
 
@@ -163,11 +168,11 @@ The above examples use integers as the values but values may be other datatypes:
 
 Datafiles contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
 
-### Column: Notes
+### Field: Notes
 
 __Value Status__: OPTIONAL
 
-The `Notes` column in the data description may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding column in the datafile.  The values of this column are for human use and are not parsed to be used in a computational way.
+The `Notes` field in the data description may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding field in the datafile.  The values of this field are for human use and are not parsed to be used in a computational way.
 
 ## Template
 
