@@ -15,7 +15,7 @@ Though not all datafiles have header rows, we expect RADx datafiles to have head
 
 ## RADx Data Dictionaries
 
-A RADx data dictionary is a Comma Separated Values (CSV) file that describes how RADx _data_ contained in another CSV file is structured.
+A RADx data dictionary is a Comma Separated Values (CSV) file that describes how RADx _data_ contained in another CSV file is structured.  A data dictionary CSV file contains EXACTLY ONE data dictionary.
 
 Whereas a datafile has its field identifiers in the cells of the header row, its corresponding data dictionary describes each type of _field_ in a separate row, and the columns contain the descriptive attributes of the datafile fields.
 
@@ -25,11 +25,11 @@ Data dictionaries MUST use the CSV format specified by [RFC 4180](https://datatr
 
 ## Layout
 
-A data dictionary CSV file contains a header row plus _one row for each of the target datafile's data fields_. (Since the datafile's fields are in columns, that means a row in a data dictionary describes a column in a data file.)  Thus, if a datafile has five columns in it (corresponding to five fields), the data dictionary for that datafile will contain _six_ rows – one header row plus five non-header rows that describe the five columns.
+A data dictionary CSV file contains a header row plus _one record row for each of the target datafile's fields_. (Since the datafile's fields are in columns, that means a row in a data dictionary describes a field column in a data file.)  Thus, if a datafile has five fields in it (stored in five columns), the data dictionary for that datafile will contain _six_ rows – one header row plus five non-header rows that describe the five datafile fields.
 
 ### Data Dictionary Row Ordering
 
-The ordering of rows in a data dictionary is SIGNIFICANT.  The order of rows in a data dictionary MUST correspond to the order of columns in a target datafile.  Thus, the first non-header row in a data dictionary file describes the first column in a target datafile, the second non-header row in a data dictionary describes the second column in a datafile, and so on. 
+The ordering of rows in a data dictionary is SIGNIFICANT.  The order of rows in a data dictionary MUST correspond to the order of columns in a target datafile.  Thus, the first non-header row in a data dictionary file describes the first field column in a target datafile, the second non-header row in a data dictionary describes the second field column in a datafile, and so on. 
 
 While the Id of the data dictionary row should match the field name of the datafile column, if the datafile's header row is missing or has mis-matched names, the data dictionary order is used to understand the datafile columns.
 
