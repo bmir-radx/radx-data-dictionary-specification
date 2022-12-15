@@ -47,7 +47,7 @@ Each row in a data dictionary MUST contain the following columns. Depending on t
 
 ### Column: Id
 
-*Value Status*: REQUIRED (the value for Id MUST NOT be empty)
+__Value Status__: REQUIRED (the value for Id MUST NOT be empty)
 
 The `Id` column in the data dictionary contains an identifier for the datafile column being described.  Datafile column identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a column identifier, except that it may not include a comma, quote, or semi-colon.  Column identifiers may contain spaces, for example.
 
@@ -55,7 +55,7 @@ In RADx harmonized data, the Id typically begins with `nih_`, reflecting the NIH
 
 ### Column: Label
 
-*Value Status*: RECOMMENDED 
+__Value Status__: RECOMMENDED 
 
 The `Label` column in the data dictionary contains a presentation label for the datafile column being described.  Labels are strings; they may be a human readable form of the [Id](#column-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
 
@@ -63,8 +63,8 @@ Because the Label can be used in many presentations of RADx data, it would not b
 
 ### Column: Required
 
-*Value Status*: OPTIONAL
-*Default Value*: FALSE
+__Value Status__: OPTIONAL
+__Default Value__: FALSE
 
 The `Required` column in the data dictionary specifies whether a datafile value must be present. The Required value itself may contain `TRUE`, `FALSE` or be empty.  An empty value is considered to be FALSE. If, for a given datafile column, datafile values are specified as being required (TRUE), then a non-empty value MUST be specified for all values in that datafile column.  
 
@@ -74,7 +74,7 @@ For a given row, the value of this column is OPTIONAL.  An empty value is the sa
 
 ### Column: Datatype
 
-*Value Status*: REQUIRED (the value MUST NOT be empty)
+__Value Status__: REQUIRED (the value MUST NOT be empty)
 
 The `Datatype` column in the data dictionary contains a datatype name that describes what kind of data is in the datafile column.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names, extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms (see below).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.  
 
@@ -108,13 +108,13 @@ timestamp | `[0-9]+` | A long integer number that represents a Unix timestamp | 
 
 ### Column: Pattern
 
-*Value Status*: OPTIONAL
+__Value Status__: OPTIONAL
 
 The `Pattern` column in the data dictionary may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
 
 ### Column: Units
 
-*Value Status*: OPTIONAL
+__Value Status__: OPTIONAL
 
 The `Units` column in the data dictionary describes represent quantities then the value of this column may be used to document the quantity units.
 
@@ -143,7 +143,7 @@ We recommend that, where possible, SI units and abbreviations are used.
 
 ### Column: Enumeration
 
-*Value Status*: OPTIONAL
+__Value Status__: OPTIONAL
 
 The `Enumeration` column in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 , value1=label1 , ... , valueN=labelN`. Each item in the list is a value-label pair, written in the format`value=label`, and separated from surrounding items by a comma character (,).   
 
@@ -165,7 +165,7 @@ Datafiles contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`
 
 ### Column: Notes
 
-*Value Status*: OPTIONAL
+__Value Status__: OPTIONAL
 
 The `Notes` column in the data description may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding column in the datafile.  The values of this column are for human use and are not parsed to be used in a computational way.
 
