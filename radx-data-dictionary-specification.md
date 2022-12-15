@@ -4,7 +4,7 @@
 
 A data dictionary is a form of _metadata_ that describes _data_.  No matter what the concrete serialization format may be, we assume that data is essentially a list of _records_ that contain _fields_.  A field comprises a _field identifier and a _field value_.   
 
-When data is stored in a Comma Separated Values (CSV) file, records are stored in _rows_, and fields are stored as cells within the rows.   The first row is typically a _header row_ that specifies the field identifiers.  For a given column, the field identifier in the header row essentially "names" the fields that are contained within that column. 
+When data is stored in a Comma Separated Values (CSV) file, records are stored in _rows_, and fields are stored as cells within the rows.   The first row is typically a _header row_ that specifies the field identifiers.  For a given column, the field identifier in the header row essentially "names" the fields that are contained within that column.
 
 The table below shows an example CSV file that contains some data.  The data contains two records (orange boxes) made up of seven fields (blue boxes).   In this example, the field identifiers are:  `PartId`, `Date`, `Time`, `Age`, `Mental Status`, `FS LL`, and `FS RL`.  Thus, the 4th column contains `Age` fields.  In the first record (second row) the `Age` field has a field value of `67`.  In the second record (third row), the `FS RL` field value does not have a value and we say that this field is _blank_.
 
@@ -17,7 +17,7 @@ Though not all datafiles have header rows, we expect RADx datafiles to have head
 
 A RADx data dictionary is a Comma Separated Values (CSV) file that describes how RADx _data_ contained in another CSV file is structured.
 
-Whereas a datafile has its field identifiers in the cells of the header row, its corresponding data dictionary describes each type of _field_ in a separate row, and the columns contain the descriptive attributes of the datafile fields. You can think of each row of a data dictionary as a data element that defines a single question about a field in the datafile.
+Whereas a datafile has its field identifiers in the cells of the header row, its corresponding data dictionary describes each type of _field_ in a separate row, and the columns contain the descriptive attributes of the datafile fields.
 
 ## CSV Format
 
