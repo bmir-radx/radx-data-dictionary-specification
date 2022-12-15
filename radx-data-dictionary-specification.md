@@ -25,7 +25,7 @@ A data dictionary CSV file contains a header row plus _one row for each of the t
 
 ### Data Dictionary Row Ordering
 
-The ordering of rows in a data dictionary is SIGNIFICANT.  The order of rows in a data dictionary must correspond to the order of columns in a target datafile.  Thus, the first non-header row in a data dictionary file describes the first column in a target datafile, the second non-header row in a data dictionary describes the second column in a datafile, and so on. 
+The ordering of rows in a data dictionary is SIGNIFICANT.  The order of rows in a data dictionary MUST correspond to the order of columns in a target datafile.  Thus, the first non-header row in a data dictionary file describes the first column in a target datafile, the second non-header row in a data dictionary describes the second column in a datafile, and so on. 
 
 While the Id of the data dictionary row should match the variable name of the datafile column, if the datafile's header row is missing or has mis-matched names, the data dictionary order is used to understand the datafile columns.
 
