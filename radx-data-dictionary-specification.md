@@ -46,9 +46,9 @@ A data dictionary header record contains the following sequence of strings as it
 
 These data dictionary columns are described in more detail below. 
 
-The data dictionary header record may contain additional columns of the user's choosing, to capture richer information about each of the fields described by the data dictionary. We offer some recommended names to use for the most common cases of additional columns.
+Since columns are identified by column headers the ordering of these columns is not significant.  However, for maximum interoperability and ease of use, we strongly recommend following the ordering specified here.  
 
-Since columns are identified by column headers the ordering of these columns is not significant.  However, for maximum interoperability and ease of use, we strongly recommend following the ordering specified here.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
+If necessary, susequent fields/columns may be appended to a data dictionary to support the preservation of extra information that is not provided for by the columns here.
 
 ## Data Dictionary Columns Specification
 
