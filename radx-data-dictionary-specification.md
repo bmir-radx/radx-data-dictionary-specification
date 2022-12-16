@@ -4,44 +4,49 @@
 
 A data dictionary is a form of _metadata_ that describes _data_.  No matter what the concrete serialization format may be, we assume that data is essentially a list of _records_ that contain _fields_.  A field comprises a _field identifier and a _field value_.   
 
-When data is stored in a Comma Separated Values (CSV) file, records are stored in _rows_, and fields are stored as cells within the rows.   The first row is typically a _header row_ that specifies the field identifiers.  For a given column, the field identifier in the header row essentially "names" the fields that are contained within that column.
+When data is stored in a tabular Comma Separated Values (CSV) file format, records are stored in _rows_, and fields are stored as cells within the rows.   The first row typically represents a _header record_ that contains field identifiers.  For a given column, the field identifier in the header record essentially "names" the fields that are contained within that column.
 
 The table below shows an example CSV file that contains some data.  The data contains two records (orange boxes) made up of seven fields (blue boxes).   In this example, the field identifiers are:  `PartId`, `Date`, `Time`, `Age`, `Mental Status`, `FS LL`, and `FS RL`.  Thus, the 4th column contains `Age` fields.  In the first record (second row) the `Age` field has a field value of `67`.  In the second record (third row), the `FS RL` field value does not have a value and we say that this field is _blank_.
 
-Though not all datafiles have header rows, we expect RADx datafiles to have header rows.
+Though not all datafiles have header records, we expect RADx datafiles to have header records.
 
 ![Records, Fields and Field Values](schematic.png)
 
-
 ## RADx Data Dictionaries
 
-A RADx data dictionary is a Comma Separated Values (CSV) file that describes how RADx _data_ contained in another CSV file is structured.  A data dictionary CSV file contains EXACTLY ONE data dictionary.
+A RADx _data dictionary_ is a Comma Separated Values (CSV) file that describes how RADx _data_ contained in another CSV file, a _datafile_, is structured.  A data dictionary CSV file contains EXACTLY ONE data dictionary.
 
-Whereas a datafile has its field identifiers in the cells of the header row, its corresponding data dictionary describes each type of _field_ in a separate row, and the columns contain the descriptive attributes of the datafile fields.
+## Data Dictionary CSV Format
 
-## CSV Format
+Data dictionaries MUST use the CSV format specified by [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180#page-2). 
 
-Data dictionaries MUST use the CSV format specified by [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180#page-2).  Data dictionaries may be created with cell-based tools such as Google Sheets or Microsoft Excel.  Both of these tools produce CSV files in accordance with this specification.  When saving a CSV file in Microsoft Excel be sure to choose the "CSV UTF-8 (Comma delimited) (.CSV)" file format.
+Each record in a data dictionary has the same number of fields.  In other words, each record has the same length, or each row the same number of columns.  
 
-## Layout
+Data dictionaries may be created with tools such as Google Sheets or Microsoft Excel.  Both of these tools produce CSV files in accordance with this specification.  When saving a CSV file in Microsoft Excel be sure to choose the "CSV UTF-8 (Comma delimited) (.CSV)" file format.
 
-A data dictionary CSV file contains a header row plus _one record row for each of the target datafile's fields_. (Since the datafile's fields are in columns, that means a row in a data dictionary describes a field column in a data file.)  Thus, if a datafile has five fields in it (stored in five columns), the data dictionary for that datafile will contain _six_ rows – one header row plus five non-header rows that describe the five datafile fields.
+## Data Dictionary Layout
 
+A data dictionary contains a list of records, represented as rows, that describe the sequence of fields in a target datafile.  There is exactly one data dictionary record per datafile field. 
+
+A data dictionary CSV file contains a header record plus _one record for each of the target datafile's fields_.  Since the target datafile's fields are in columns, this means a record in a data dictionary essentially describes a column in the target data file.  Thus, if the target datafile has five columns in it, the data dictionary will contain _six_ records – one header record plus five non-header records that describe the five datafile fields.
+
+ Each data dictionary record describes the particular features, or attributes, of the target datafile field that it represents.  For example, taking the `PartId` field in the above datafile, the data dictionary would describe this field as having an identifier of `PartId`, having field-values that have a datatype of `string` and a pattern of `^[NP](\d+)$`, and requiring a non-blank value.
+ 
 ### Data Dictionary Row Ordering
 
-The ordering of rows in a data dictionary is SIGNIFICANT.  The order of rows in a data dictionary MUST correspond to the order of columns in a target datafile.  Thus, the first non-header row in a data dictionary file describes the first field column in a target datafile, the second non-header row in a data dictionary describes the second field column in a datafile, and so on. 
+The ordering of records in a data dictionary is SIGNIFICANT.  The sequence of records in a data dictionary MUST correspond to the sequence of fields in the target datafile.  Thus, the first non-header record in a data dictionary file describes the first field in the target datafile, the second non-header record in a data dictionary describes the second field in a datafile, and so on. 
 
-While the Id of the data dictionary row should match the field name of the datafile column, if the datafile's header row is missing or has mis-matched names, the data dictionary order is used to understand the datafile columns.
+While the Id of a data dictionary record SHOULD match the target datafile Field Id, it is the sequence order of data dictionary records that is matched to the sequence order of data file fields.
 
 ### Data Dictionary Fields
 
-The data dictionary header row contains the following strings that identify columns in the data dictionary (click on the name to be taken to a description of that column's values):
+A data dictionary header record contains the following sequence of strings as its field identifiers:
 
 [Id](#field-id), [Label](#field-label), [Required](#field-required), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Notes](#field-notes).
 
 These data dictionary columns are chosen to match the format used for REDCap data dictionary exports, and the columns are described in more detail below. 
 
-The data dictionary header row may contain additional columns of the user's choosing, to capture richer information about each of the fields described by the data dictionary. We offer some recommended names to use for the most common cases of additional columns.
+The data dictionary header record may contain additional columns of the user's choosing, to capture richer information about each of the fields described by the data dictionary. We offer some recommended names to use for the most common cases of additional columns.
 
 Since columns are identified by column headers the ordering of these columns is not significant.  However, for maximum interoperability and ease of use, we strongly recommend following the ordering specified here.  If necessary, susequent columns may be appended to a data dictionary row to support the preservation of extra information that is not provided for by the columns here.
 
