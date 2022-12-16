@@ -18,9 +18,7 @@ A RADx _data dictionary_ is a Comma Separated Values (CSV) file that describes h
 
 ## Data Dictionary CSV Format
 
-Data dictionaries MUST use the CSV format specified by [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180#page-2). 
-
-Each record in a data dictionary has the same number of fields.  In other words, each record has the same length, or each row the same number of columns.  
+Data dictionaries MUST use the CSV format specified by [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180#page-2).  
 
 Data dictionaries may be created with tools such as Google Sheets or Microsoft Excel.  Both of these tools produce CSV files in accordance with this specification.  When saving a CSV file in Microsoft Excel be sure to choose the "CSV UTF-8 (Comma delimited) (.CSV)" file format.
 
@@ -31,6 +29,8 @@ A data dictionary contains a list of records, represented as rows, that describe
 A data dictionary CSV file contains a header record plus _one record for each of the target datafile's fields_.  Since the target datafile's fields are in columns, this means a record in a data dictionary essentially describes a column in the target data file.  Thus, if the target datafile has five columns in it, the data dictionary will contain _six_ records – one header record plus five non-header records that describe the five datafile fields.
 
  Each data dictionary record describes the particular features, or attributes, of the target datafile field that it represents.  For example, taking the `PartId` field in the above datafile, the data dictionary would describe this field as having an identifier of `PartId`, having field-values that have a datatype of `string` and a pattern of `^[NP](\d+)$`, and requiring a non-blank value.
+
+Each record in a data dictionary has the same number of fields.  In other words, each record has the same length, or each row the same number of columns.
  
 ### Data Dictionary Row Ordering
 
