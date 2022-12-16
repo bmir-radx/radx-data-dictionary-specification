@@ -155,23 +155,23 @@ We recommend that, where possible, SI units and abbreviations are used.
 
 __Value Status__: OPTIONAL
 
-The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 , value1=label1 , ... , valueN=labelN`. Each item in the list is a value-label pair, written in the format`value=label`, and separated from surrounding items by a comma character (,).   
+The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 ; value1=label1 ; ... ; valueN=labelN`. Each item in the list is a value-label pair, written in the format`value=label`, and separated from surrounding items by a semi-colon character (;).   
 
-White space surrounding the comma (,) and equals (=) characters is not significant.  Thus, the following are valid examples and are equivalent: 
+White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples and are equivalent: 
 
-`0=Saliva , 1=Blood`
+`0=Saliva ; 1=Blood`
 
-`0=Saliva,1=Blood`
+`0=Saliva;1=Blood`
 
-`0 = Saliva , 1 = Blood`
+`0 = Saliva ; 1 = Blood`
 
 The above examples use integers as the values but values may be other datatypes: numbers, strings, dateTimes, etc.  For example, 
 
 `Saliva=Saliva , Blood=Blood` (Values and labels are the same string)
 
-`RBC = Red Blood Cells , WBC = White Blood Cells` (Values are an abbreviation of or a cod for the string).
+`RBC = Red Blood Cells , WBC = White Blood Cells` (Values are an abbreviation of or a code for the string).
 
-Datafiles contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
+Note that the target datafile would contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
 
 ### Field: Notes
 
