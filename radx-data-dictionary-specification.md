@@ -58,7 +58,7 @@ Each record in a data dictionary MUST contain the following, possibly empty, fie
 
 __Value Status__: REQUIRED (the value for the `Id` field MUST NOT be empty)
 
-The `Id` field in the data dictionary contains an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a field identifier.  Field identifiers may contain spaces.
+The `Id` field in the data dictionary specifies an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a field identifier.  Field identifiers may contain spaces.
 
 Note: In RADx harmonized data, the Id typically begins with `nih_`, reflecting the NIH field name assigned to RADx harmonized fields (and corresponding Common Data Elements).
 
@@ -66,7 +66,7 @@ Note: In RADx harmonized data, the Id typically begins with `nih_`, reflecting t
 
 __Value Status__: RECOMMENDED 
 
-The `Label` field in the data dictionary contains a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
+The `Label` field in the data dictionary specifies a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
 
 Because the Label can be used in many presentations of RADx data, it would not be unusual for entries without a Label to cause issues in some software. 
 
@@ -86,11 +86,11 @@ For a given row, the value of this field is OPTIONAL.  An empty value is the sam
 
 __Value Status__: REQUIRED (the value MUST NOT be empty)
 
-The `Datatype` field in the data dictionary contains a datatype name that describes what kind of data is in the datafile field.  Possible values are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names, extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms (see below).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.  
+The `Datatype` field in the data dictionary specifies a datatype name that types field values.  Possible datatype names are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names, extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms (see below).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.  
 
-If an enumeration is supplied to provide a list of controlled values, then the Datatype should be set as the datatype of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).
+If an enumeration is supplied to provide a list of controlled values, then the datatype name should be set as the datatype name of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).  For example, if an enumeration of `0 = Blood ; 1 = Saliva` was specified for a field the datatype name for this field would be `integer`, since the values of this enumeration are integers.  Similarly, if an enumeration of `RBC = Red Blood Cells; WBC = White Blood Cells` is specified for a field then the datatype name for that field would be `string`, since the values of this enumeration are strings.
 
-Values for this field are case insensitive, thus `Integer` and `integer` mean the same thing.
+Datatype names are case insensitive, thus `Integer` and `integer` mean the same thing.
 
 #### Field Datatype Names
 
