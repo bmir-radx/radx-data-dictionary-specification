@@ -50,17 +50,17 @@ Since columns are identified by column headers the ordering of these columns is 
 
 If necessary, susequent fields/columns may be appended to a data dictionary to support the preservation of extra information that is not provided for by the columns here.
 
-## Data Dictionary Columns Specification
+## Data Dictionary Fields Specification
 
-Each row in a data dictionary MUST contain the following fields. Depending on the *Value Status* of the field, values may or may not be REQUIRED in that field for every row in the data dictionary.
+Each record in a data dictionary MUST contain the following, possibly empty, fields.  For each field, the *Value Status* specifies whether a non-blank value is required or whether a blank value is acceptable.
 
 ### Field: Id
 
-__Value Status__: REQUIRED (the value for Id MUST NOT be empty)
+__Value Status__: REQUIRED (the value for the `Id` field MUST NOT be empty)
 
-The `Id` field in the data dictionary contains an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a field identifier, except that it may not include a comma, quote, or semi-colon.  Field identifiers may contain spaces, for example.
+The `Id` field in the data dictionary contains an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a field identifier.  Field identifiers may contain spaces.
 
-In RADx harmonized data, the Id typically begins with `nih_`, reflecting the NIH field name assigned to RADx harmonized fields (and corresponding Common Data Elements).
+Note: In RADx harmonized data, the Id typically begins with `nih_`, reflecting the NIH field name assigned to RADx harmonized fields (and corresponding Common Data Elements).
 
 ### Field: Label
 
