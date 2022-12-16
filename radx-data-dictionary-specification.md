@@ -44,7 +44,7 @@ A data dictionary header record contains the following sequence of strings as it
 
 [Id](#field-id), [Label](#field-label), [Required](#field-required), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Notes](#field-notes).
 
-These data dictionary columns are chosen to match the format used for REDCap data dictionary exports, and the columns are described in more detail below. 
+These data dictionary columns are described in more detail below. 
 
 The data dictionary header record may contain additional columns of the user's choosing, to capture richer information about each of the fields described by the data dictionary. We offer some recommended names to use for the most common cases of additional columns.
 
