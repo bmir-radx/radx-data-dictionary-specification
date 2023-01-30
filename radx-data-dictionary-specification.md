@@ -173,7 +173,9 @@ Note that the target datafile would contain the `value` part of the pairs.  For 
 
 __Value Status__: OPTIONAL
 
-The `Meaning` field in the data dictionary specifies an ontology term that provides a precise meaning for the field being described.  This is optional but we strongly encourage its use in order to make data more easily searchable.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.
+The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms, separated by white spaces (0x00A0), may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.
+
+This field is optional but we strongly encourage its use in order to make data more easily searchable.  
 
 ### Field: Notes
 
