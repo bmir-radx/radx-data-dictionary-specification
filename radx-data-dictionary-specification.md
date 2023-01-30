@@ -82,7 +82,7 @@ For a given row, the value of this field is OPTIONAL.  An empty value is the sam
 
 __Value Status__: REQUIRED (the value MUST NOT be empty)
 
-The `Datatype` field in the data dictionary specifies a datatype name that types field values.  Possible datatype names are drawn from the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names, extended with a few datatype names that cover US date formats that are present in RADx data and also ontology terms (see below).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.  
+The `Datatype` field in the data dictionary specifies a datatype name that types field values.  Datatype names MUST be from the set of allowable datatype names.  This set is defined as the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names, defined below, that cover US date formats (that are present in RADx data).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.
 
 If an enumeration is supplied to provide a list of controlled values, then the datatype name should be set as the datatype name of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).  For example, if an enumeration of `0 = Blood ; 1 = Saliva` was specified for a field the datatype name for this field would be `integer`, since the values of this enumeration are integers.  Similarly, if an enumeration of `RBC = Red Blood Cells; WBC = White Blood Cells` is specified for a field then the datatype name for that field would be `string`, since the values of this enumeration are strings.
 
