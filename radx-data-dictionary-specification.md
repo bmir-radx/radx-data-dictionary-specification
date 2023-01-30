@@ -60,15 +60,11 @@ __Value Status__: REQUIRED (the value for the `Id` field MUST NOT be empty)
 
 The `Id` field in the data dictionary specifies an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a field identifier.  Field identifiers may contain spaces.
 
-Note: In RADx harmonized data, the Id typically begins with `nih_`, reflecting the NIH field name assigned to RADx harmonized fields (and corresponding Common Data Elements).
-
 ### Field: Label
 
 __Value Status__: OPTIONAL (but recommended) 
 
 The `Label` field in the data dictionary specifies a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
-
-Because the Label can be used in many presentations of RADx data, it would not be unusual for entries without a Label to cause issues in some software. 
 
 ### Field: Required
 
