@@ -179,7 +179,9 @@ Note that the target datafile would contain the `value` part of the pairs.  For 
 
 #### Semantics of Enumeration Values
 
-Each value in the list may have an ontology term IRI attached to it that specifies the precise meaning of the value.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.  To attach terms to values the following syntax, with square and round brackets (inspired by Markdown) is used:
+Each value in the list may have an ontology term IRI attached to it that specifies the precise meaning of the value.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.  
+
+To attach terms to values the following syntax, with square and round brackets (inspired by Markdown) is used:
 
 `value = [label](TermIRI) ; ...`
 
