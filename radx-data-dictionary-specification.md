@@ -66,6 +66,14 @@ __Value Status__: OPTIONAL (but recommended)
 
 The `Label` field in the data dictionary specifies a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
 
+### Field: Meaning
+
+__Value Status__: OPTIONAL
+
+The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms, separated by white spaces (0x00A0), may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.
+
+This field is optional but we strongly encourage its use in order to make data more easily searchable.  
+
 ### Field: Required
 
 __Value Status__: OPTIONAL
@@ -151,7 +159,7 @@ We recommend that, where possible, SI units and abbreviations are used.
 
 __Value Status__: OPTIONAL
 
-The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  The list is specified as `value0=label0 ; value1=label1 ; ... ; valueN=labelN`. Each item in the list is a value-label pair, written in the format`value=label`, and separated from surrounding items by a semi-colon character (;).   
+The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  It its most basic form, the list is specified as `value0=label0 ; value1=label1 ; ... ; valueN=labelN`. Each item in the list is a value-label pair, written in the format`value=label`, and separated from surrounding items by a semi-colon character (;).   
 
 White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples and are equivalent: 
 
@@ -169,13 +177,20 @@ The above examples use integers as the values but values may be other datatypes:
 
 Note that the target datafile would contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
 
-### Field: Meaning
+#### Semantics of Enumeration Values
 
-__Value Status__: OPTIONAL
+Each value in the list may have an ontology term IRI attached to it that specifies the precise meaning of the value.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.  To attach terms to values the following syntax, with square and round brackets (inspired by Markdown) is used:
 
-The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms, separated by white spaces (0x00A0), may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.
+`value = [label](TermIRI) ; ...`
 
-This field is optional but we strongly encourage its use in order to make data more easily searchable.  
+For example,
+
+`0=[Saliva](http://purl.obolibrary.org/obo/UBERON_0001836) ; 1=[Blood](http://purl.obolibrary.org/obo/UBERON_0000178)`
+
+Labels are surrounded in square brackets and term IRIs for the labels immediately follow surrounded by round brackets.  The above example can also be written using OBO-style identifiers (for ontologies form the OBO foundry):
+
+`0=[Saliva](UBERON:0001836) ; 1=[Blood](UBERON:0000178)`
+
 
 ### Field: Notes
 
