@@ -70,7 +70,7 @@ The `Label` field in the data dictionary specifies a presentation label for the 
 
 __Value Status__: OPTIONAL
 
-The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms, separated by white spaces (0x00A0), may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.
+The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms, separated by white spaces (0x00A0), may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs), for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906).  While not required, we strongly recommend that term identifiers are resolvable.
 
 This field is optional but we strongly encourage its use in order to make data more easily searchable.  
 
@@ -179,7 +179,7 @@ Note that the target datafile would contain the `value` part of the pairs.  For 
 
 #### Semantics of Enumeration Values
 
-Each value in the list may have an ontology term IRI attached to it that specifies the precise meaning of the value.  Terms may be drawn from any published ontology.  The identifiers for terms MUST either be fully qualified Internationalized Resource Identifiers (IRIs) that are resolvable, for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906), or OBO-style identifiers, for example `MESH:D004096`.  
+Each value in the list may have an ontology term IRI attached to it that specifies the precise meaning of the value.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs).  While not required, we strongly recommend that term identifiers are resolvable.
 
 To attach terms to values the following syntax, with square and round brackets (inspired by Markdown) is used:
 
@@ -189,9 +189,7 @@ For example,
 
 `0=[Saliva](http://purl.obolibrary.org/obo/UBERON_0001836) ; 1=[Blood](http://purl.obolibrary.org/obo/UBERON_0000178)`
 
-Labels are surrounded in square brackets and term IRIs for the labels immediately follow surrounded by round brackets.  The above example can also be written using OBO-style identifiers (for ontologies form the OBO foundry):
-
-`0=[Saliva](UBERON:0001836) ; 1=[Blood](UBERON:0000178)`
+Labels are surrounded in square brackets and term IRIs for the labels immediately follow surrounded by round brackets.
 
 
 ### Field: Notes
