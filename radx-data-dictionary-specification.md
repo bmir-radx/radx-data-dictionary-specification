@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A data dictionary is a form of _metadata_ that describes _data_.  No matter what the concrete serialization format may be, we assume that data is essentially a list of _records_ that contain _fields_.  A field comprises a _field identifier and a _field value_.   
+A data dictionary is a form of _metadata_ that describes _data_.  No matter what the concrete serialization format may be, we assume that data is essentially a list of _records_ that contain _fields_.  A field comprises a _field identifier_ and a _field value_.   
 
 When data is stored in a tabular Comma Separated Values (CSV) file format, records are stored in _rows_, and fields are stored as cells within the rows.   The first row typically represents a _header record_ that contains field identifiers.  For a given column, the field identifier in the header record essentially "names" the fields that are contained within that column.
 
