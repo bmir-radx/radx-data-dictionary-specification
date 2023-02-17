@@ -8,7 +8,7 @@ When data is stored in a tabular Comma Separated Values (CSV) file format, recor
 
 The table below shows an example CSV file that contains some data.  The data contains two records (orange boxes) made up of seven fields (blue boxes).   In this example, the field identifiers are:  `PartId`, `Date`, `Time`, `Age`, `Mental Status`, `FS LL`, and `FS RL`.  Thus, the 4th column contains `Age` fields.  In the first record (second row) the `Age` field has a field value of `67`.  In the second record (third row), the `FS RL` field value does not have a value and we say that this field is _blank_.
 
-Though not all datafiles have header records, we expect RADx datafiles to have header records.
+All RADx datafiles SHOULD have header records.
 
 ![Records, Fields and Field Values](schematic.png)
 
