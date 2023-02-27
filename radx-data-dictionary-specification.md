@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Meaning](#field-meaning), [Required](#field-required), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Notes](#field-notes).
+[Id](#field-id), [Label](#field-label), [Meaning](#field-meaning), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Notes](#field-notes).
 
 These data dictionary columns are described in more detail below. 
 
@@ -73,18 +73,6 @@ __Value Status__: OPTIONAL
 The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms, separated by white spaces (0x00A0), may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs), for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906).  While not required, we strongly recommend that term identifiers are resolvable.
 
 This field is optional but we strongly encourage its use in order to make data more easily searchable.  
-
-### Field: Required
-
-__Value Status__: OPTIONAL
-
-__Default Value__: FALSE
-
-The `Required` field in the data dictionary specifies whether a datafile value must be present. The Required value itself may contain `TRUE`, `FALSE` or be empty.  An empty value is considered to be FALSE. If, for a given datafile field, datafile values are specified as being required (TRUE), then a non-empty value MUST be specified for all values in that datafile field.  
-
-The values for the data dictionary's Required field are case insensitive: "True", "true" and "TRUE" all map to boolean `TRUE`.
-
-For a given row, the value of this field is OPTIONAL.  An empty value is the same as a `FALSE` value.
 
 ### Field: Datatype
 
