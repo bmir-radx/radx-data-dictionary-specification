@@ -179,6 +179,18 @@ For example,
 
 Labels are surrounded in square brackets and term IRIs for the labels immediately follow surrounded by round brackets.
 
+### Field: Missing Value Codes
+
+__Value Status__: REQUIRED
+
+The `Missing Value Codes` field specifies, as an enumeration in the same format as the `Enumeration` field, codes that signify the reasons as to missing data values in _transformcopy_ data files.  
+
+The standard set of codes, and default value for this field in the data dictionary, is show below.
+
+#### Standard Codes:
+
+`-9999 = Reason Unknown;  -9980 = Not Sent to Data Hub;  -9981 = Data Transfer Agreement;  -9982 = No Participant Consent To Share;  -9983 = Not Available Or Mappable;  -9984 = Data Lost Or Inaccessible;  -9985 = Data Invalid;  -9986 = Anonymization Or Privacy Concerns;  -9987 = Other Unsent Reason Not Specified;  -9960 = Not Entered By Originator;  -9961 = Omitted This Value;  -9962 = Originator Chose to Omit;  -9963 = Question Not Applicable;  -9964 = Answer Not Known;  -9965 = Record Not Provided;  -9966 = All Originators Omitted Element;  -9967 = CDE Omitted With Exception;  -9968 = Other Unentered Reason Not Specified;  -9940 = Not Presented To Participant;  -9941 = Skip Logic;  -9942 = No Participant Consent to Ask;  -9943 = CDE Not Presented Due to Exception;  -9944 = Element Never Presented for Collection;  -9945 = Process Error;  -9946 = Other Unpresented Reason Not Specified`.
+
 
 ### Field: Notes
 
