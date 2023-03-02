@@ -70,7 +70,7 @@ The `Label` field in the data dictionary specifies a presentation label for the 
 
 __Value Status__: OPTIONAL
 
-The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms, separated by white spaces (0x00A0), may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs), for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906).  While not required, we strongly recommend that term identifiers are resolvable.
+The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms (separated by white spaces (0x0020 or 0x00A0) or newline characters (0x000A) with appropriate escaping) may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs), for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906).  While not required, we strongly recommend that term identifiers are resolvable.
 
 This field is optional but we strongly encourage its use in order to make data more easily searchable.  
 
