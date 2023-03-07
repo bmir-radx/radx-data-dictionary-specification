@@ -62,7 +62,7 @@ The `Id` field in the data dictionary specifies an identifier for the datafile f
 
 ### Field: Label
 
-__Value Status__: OPTIONAL (but recommended) 
+__Value Status__: REQUIRED (the value MUST NOT be empty)
 
 The `Label` field in the data dictionary specifies a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
 
