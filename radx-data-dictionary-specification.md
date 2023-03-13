@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Meaning](#field-meaning), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
+[Id](#field-id), [Label](#field-label), [Multivalued](#field-multivalued), [Meaning](#field-meaning), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
 
 These data dictionary columns are described in more detail below. 
 
@@ -73,6 +73,22 @@ __Value Status__: OPTIONAL
 The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms (separated by white spaces (0x0020 or 0x00A0) or newline characters (0x000A) with appropriate escaping) may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs), for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906).  While not required, we strongly recommend that term identifiers are resolvable.
 
 This field is optional but we strongly encourage its use in order to make data more easily searchable.  
+
+### Field: Multivalued
+
+__Value Status__: REQUIRED (default value is `false`).
+
+The `Multivalued` field in the data dictionary specifies whether multiple values are allowed in a single field in a datafile.  Multiple values in datafile field MUST be separated with a pipe character, without surrounding white space.  Values for this field in the data dictionary are either `true` (the associated datafile field is multivalued) or `false` (the associated datafile field is NOT multivalued). If no value is specified then the default value of `false` is assumed.
+
+As an example, consider a "symptoms" field which can accept multiple values within a single datafile field. The data file for such a field may look like this:
+
+|participantId|symptoms|
+|--|--|
+p1|cough
+p2|cough \| sorethroat \| headache
+p3|cough \| headache
+
+
 
 ### Field: Datatype
 
