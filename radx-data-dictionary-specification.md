@@ -140,30 +140,34 @@ The `Pattern` field in the data dictionary may contain a regular expression that
 
 __Value Status__: OPTIONAL
 
-The `Units` field in the data dictionary describes represent quantities then the value of this field may be used to document the quantity units.
+The `Units` field in the data dictionary may be used to document the units for datafile values that represent quantities.
 
 Since there is no standardized list of units used for RADx studies we do not provide a controlled list of units here.  However, here are some common units that we have observed being used in RADx data dictionaries.
 
-| Unit | Abbreviation | Dimension |
+| Unit name | Symbol | Dimension |
 | -- | -- | -- |
-millimeter | mm | length
-meter | m | length
-inch | in | length
-foot | ft | length
-second | s | time
-hour | hr | time
-day | d | time
-week | w | time
-Celsius degree | C | temperature
-Fahrenheit degree | F | temperature
-Kelvin degree | K | temperature
-milligram | mg | mass
-gram | g | mass
-kilogram | kg | mass
-pound | lbs | mass
-mole per litre | ml/l | concentration
+millimeter | mm | [length](https://www.nist.gov/pml/owm/si-units-length)
+meter | m | [length](https://www.nist.gov/pml/owm/si-units-length)
+inch | in | [length](https://www.nist.gov/pml/owm/si-units-length)
+foot | ft | [length](https://www.nist.gov/pml/owm/si-units-length)
+liter | L | [volume](https://www.nist.gov/pml/owm/si-units-volume)
+milliliter | mL | [volume](https://www.nist.gov/pml/owm/si-units-volume)
+second | s | [time](https://www.nist.gov/pml/owm/si-units-time)
+hour | hr | [time](https://www.nist.gov/pml/owm/si-units-time)
+day | d | [time](https://www.nist.gov/pml/owm/si-units-time)
+week | w | [time](https://www.nist.gov/pml/owm/si-units-time)
+Celcius | C | [temperature](https://www.nist.gov/pml/owm/si-units-temperature)
+Fahrenheit | F | [temperature](https://www.nist.gov/pml/owm/si-units-temperature)
+kelvin | K | [temperature](https://www.nist.gov/pml/owm/si-units-temperature)
+milligram | mg | [mass](https://www.nist.gov/pml/owm/si-units-mass)
+gram | g | [mass](https://www.nist.gov/pml/owm/si-units-mass)
+kilogram | kg |[mass](https://www.nist.gov/pml/owm/si-units-mass)
+pound | lb | [mass](https://www.nist.gov/pml/owm/si-units-mass)
+mole | mol | [amount of substance](https://www.nist.gov/pml/owm/si-units-amount-substance)
+ampere | A | [electric current](https://www.nist.gov/pml/owm/si-units-electric-current)
+mole per litre | mol/L | concentration
 
-We recommend that, where possible, SI units and abbreviations are used.
+We recommend that, where possible, SI unit names are used and that the [NIST guidelines for printing and using units](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-6-rules-and-style-conventions-printing-and-using) is used.  In particular, unit symbols are printed in lower-case letters except that (a) the symbol or the first letter of the symbol is an upper-case letter when the name of the unit is derived from the name of a person; and (b) the recommended symbol for the liter in the United States is L.
 
 ### Field: Enumeration
 
