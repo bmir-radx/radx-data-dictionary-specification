@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Multivalued](#field-multivalued), [Meaning](#field-meaning), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
+[Id](#field-id), [Label](#field-label), [Section](#field-section), [Multivalued](#field-multivalued), [Meaning](#field-meaning), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
 
 These data dictionary columns are described in more detail below. 
 
@@ -65,6 +65,12 @@ The `Id` field in the data dictionary specifies an identifier for the datafile f
 __Value Status__: REQUIRED (the value MUST NOT be empty)
 
 The `Label` field in the data dictionary specifies a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
+
+### Field: Section
+
+__Value Status__: OPTIONAL
+
+The `Section` field in the data dictionary specifies a section, or group name, for each entry.  Section names may be used for organizing or clarifying purposes and are optional. 
 
 ### Field: Meaning
 
