@@ -171,21 +171,23 @@ We recommend that, where possible, SI unit names are used and that the [NIST gui
 
 __Value Status__: OPTIONAL
 
-The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  It its most basic form, the list is specified as `value0=label0 ; value1=label1 ; ... ; valueN=labelN`. Each item in the list is a value-label pair, written in the format`value=label`, and separated from surrounding items by a semi-colon character (;).   
+The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  It its most basic form, the list is specified as `value0=[label0] | value1=[label1] | ... | valueN=[labelN]`. Each item in the list is a value-label pair, written in the format`value=[label]`, and separated from surrounding items by a pipe character (`|`).  The label portion of the pair is surrounded by square brackets.
 
-White space surrounding the semi-colon (;) and equals (=) characters is not significant.  Thus, the following are valid examples and are equivalent: 
+White space surrounding the pipe (`|`), equals (`=`) and brackets (`[` or `]`) characters is not significant.  Thus, the following are valid examples and are equivalent: 
 
-`0=Saliva ; 1=Blood`
+`0=[Saliva] | 1=[Blood]`
 
-`0=Saliva;1=Blood`
+`0=[Saliva]|1=[Blood]`
 
-`0 = Saliva ; 1 = Blood`
+`0=[ Saliva ]|1=[ Blood ]`
+
+`0 = [Saliva] ; 1 = [Blood]`
 
 The above examples use integers as the values but values may be other datatypes: numbers, strings, dateTimes, etc.  For example, 
 
-`Saliva=Saliva , Blood=Blood` (Values and labels are the same string)
+`Saliva=[Saliva] | Blood=[Blood]` (Values and labels are the same string)
 
-`RBC = Red Blood Cells , WBC = White Blood Cells` (Values are an abbreviation of or a code for the string).
+`RBC = [Red Blood Cells] | WBC = [White Blood Cells]` (Values are an abbreviation of or a code for the string).
 
 Note that the target datafile would contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
 
@@ -201,7 +203,7 @@ For example,
 
 `0=[Saliva](http://purl.obolibrary.org/obo/UBERON_0001836) ; 1=[Blood](http://purl.obolibrary.org/obo/UBERON_0000178)`
 
-Labels are surrounded in square brackets and term IRIs for the labels immediately follow surrounded by round brackets.
+Labels are as before, surrounded in square brackets, and term IRIs for the labels immediately follow surrounded by round brackets.
 
 ### Field: Missing Value Codes
 
