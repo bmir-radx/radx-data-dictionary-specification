@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Section](#field-section), [Multivalued](#field-multivalued), [Meaning](#field-meaning), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
+[Id](#field-id), [Label](#field-label), [Section](#field-section), [Cardinality](#field-multivalued), [Meaning](#field-meaning), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
 
 These data dictionary columns are described in more detail below. 
 
@@ -80,21 +80,19 @@ The `Meaning` field in the data dictionary specifies a list of ontology terms th
 
 This field is optional but we strongly encourage its use in order to make data more easily searchable.  
 
-### Field: Multivalued
+### Field: Cardinality
 
 __Value Status__: REQUIRED (default value is `false`).
 
-The `Multivalued` field in the data dictionary specifies whether multiple values are allowed in a single field in a datafile.  Multiple values in datafile field MUST be separated with a pipe character, without surrounding white space.  Values for this field in the data dictionary are either `true` (the associated datafile field is multivalued) or `false` (the associated datafile field is NOT multivalued). If no value is specified then the default value of `false` is assumed.
+The `Cardinality` field in the data dictionary specifies whether a field is expected to be single valued or muti-valued in a datafile. Multiple values in datafile field MUST be separated with a pipe character, without surrounding white space.  Acceptable values for the cardinality field in the data dictionary are either `single` (the associated datafile field has at most a single value) or `multiple` (the associated datafile field may have multiple values). If no value is specified then the default value of `single` is assumed.
 
-As an example, consider a "symptoms" field which can accept multiple values within a single datafile field. The data file for such a field may look like this:
+As an example, consider a "symptoms" field which can accept multiple values within a single datafile field and thus has a cardinality of `multiple`. The data file for such a field may look like this:
 
 |participantId|symptoms|
 |--|--|
 p1|cough
 p2|cough \| sorethroat \| headache
 p3|cough \| headache
-
-
 
 ### Field: Datatype
 
