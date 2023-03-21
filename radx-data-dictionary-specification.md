@@ -173,6 +173,12 @@ __Value Status__: OPTIONAL
 
 The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  It its most basic form, the list is specified as `value0=[label0] | value1=[label1] | ... | valueN=[labelN]`. Each item in the list is a value-label pair, written in the format`value=[label]`, and separated from surrounding items by a pipe character (`|`).  The label portion of the pair is surrounded by square brackets.
 
+A valid single value-label enumeration pair matches the following regular expression:
+
+```regex
+([^=]+)\s*=\s*\[\s*([^]]+)\s*\]\s*(\s*\(\s*([^\s\)]+)\s*\))?
+```
+
 White space surrounding the pipe (`|`), equals (`=`) and brackets (`[` or `]`) characters is not significant.  Thus, the following are valid examples and are equivalent: 
 
 `0=[Saliva] | 1=[Blood]`
