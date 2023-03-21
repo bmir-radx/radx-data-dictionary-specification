@@ -100,7 +100,7 @@ __Value Status__: REQUIRED (the value MUST NOT be empty)
 
 The `Datatype` field in the data dictionary specifies a datatype name that types field values.  Datatype names MUST be from the set of allowable datatype names.  This set is defined as the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names, defined below, that cover US date formats (that are present in RADx data).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.
 
-If an enumeration is supplied to provide a list of controlled values, then the datatype name should be set as the datatype name of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).  For example, if an enumeration of `0 = Blood ; 1 = Saliva` was specified for a field the datatype name for this field would be `integer`, since the values of this enumeration are integers.  Similarly, if an enumeration of `RBC = Red Blood Cells; WBC = White Blood Cells` is specified for a field then the datatype name for that field would be `string`, since the values of this enumeration are strings.
+If an enumeration is supplied to provide a list of controlled values, then the datatype name should be set as the datatype name of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).  For example, if an enumeration of `0 = Blood | 1 = Saliva` was specified for a field the datatype name for this field would be `integer`, since the values of this enumeration are integers.  Similarly, if an enumeration of `RBC = Red Blood Cells | WBC = White Blood Cells` is specified for a field then the datatype name for that field would be `string`, since the values of this enumeration are strings.
 
 Datatype names MUST be all lowercase, thus `integer` rather than `Integer`.
 
@@ -192,7 +192,7 @@ White space surrounding the pipe (`|`), equals (`=`) and brackets (`[` or `]`) c
 
 `0=[ Saliva ]|1=[ Blood ]`
 
-`0 = [Saliva] ; 1 = [Blood]`
+`0 = [Saliva] | 1 = [Blood]`
 
 The above examples use integers as the values but values may be other datatypes: numbers, strings, dateTimes, etc.  For example, 
 
@@ -208,11 +208,11 @@ Each value in the list may have an ontology term IRI attached to it that specifi
 
 To attach terms to values the following syntax, with square and round brackets (inspired by Markdown) is used:
 
-`value = [label](TermIRI) ; ...`
+`value = [label](TermIRI) | ...`
 
 For example,
 
-`0=[Saliva](http://purl.obolibrary.org/obo/UBERON_0001836) ; 1=[Blood](http://purl.obolibrary.org/obo/UBERON_0000178)`
+`0=[Saliva](http://purl.obolibrary.org/obo/UBERON_0001836) | 1=[Blood](http://purl.obolibrary.org/obo/UBERON_0000178)`
 
 Labels are as before, surrounded in square brackets, and term IRIs for the labels immediately follow surrounded by round brackets.
 
