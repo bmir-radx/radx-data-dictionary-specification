@@ -171,36 +171,23 @@ We recommend that, where possible, SI unit names are used and that the [NIST gui
 
 __Value Status__: OPTIONAL
 
-The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  It its most basic form, the list is specified as `value0=[label0] | value1=[label1] | ... | valueN=[labelN]`. Each item in the list is a value-label pair, written in the format`value=[label]`, and separated from surrounding items by a pipe character (`|`).  The label portion of the pair is surrounded by square brackets.
+The `Enumeration` field in the data dictionary specifies a controlled list of values that datafile values must be drawn from.  In its most basic form, the list is specified as `"value0"=[label0] | "value1"=[label1] | ... | "valueN"=[labelN]`. Each item in the list is a value-label pair, written in the format`"value"=[label]`, and separated from surrounding items by a pipe character (`|`).  The value portion of the pair is surrounded by double quotes characters (`"`).  The label portion of the pair is surrounded by square brackets (`[` and `]`).
 
-A valid single value-label enumeration pair matches the following regular expression:
+White space surrounding the pipe (`|`) and equals (`=`) characters is not significant.  Thus, the following are valid examples and are equivalent: 
 
-```regex
-([^=]+)\s*=\s*\[\s*([^]]+)\s*\]\s*(\s*\(\s*([^\s\)]+)\s*\))?
-```
-A list of value-label enumeration pairs matches the following regular expression:
+`"0"=[Saliva] | "1"=[Blood]`
 
-```regex
-/(([^=]+)\s*=\s*\[\s*([^]]+)\s*\]\s*(\s*\(\s*([^\s\)]+)\s*\))?)(\s*\|\s*(([^=]+)\s*=\s*\[\s*([^]]+)\s*\]\s*(\s*\(\s*([^\s\)]+)\s*\))?))?/gm
-```
+`"0"=[Saliva]|"1"=[Blood]`
 
-White space surrounding the pipe (`|`), equals (`=`) and brackets (`[` or `]`) characters is not significant.  Thus, the following are valid examples and are equivalent: 
-
-`0=[Saliva] | 1=[Blood]`
-
-`0=[Saliva]|1=[Blood]`
-
-`0=[ Saliva ]|1=[ Blood ]`
-
-`0 = [Saliva] | 1 = [Blood]`
+`"0" = [Saliva] | "1" = [Blood]`
 
 The above examples use integers as the values but values may be other datatypes: numbers, strings, dateTimes, etc.  For example, 
 
-`Saliva=[Saliva] | Blood=[Blood]` (Values and labels are the same string)
+`"Saliva"=[Saliva] | "Blood"=[Blood]` (Values and labels are the same string)
 
-`RBC = [Red Blood Cells] | WBC = [White Blood Cells]` (Values are an abbreviation of or a code for the string).
+`"RBC" = [Red Blood Cells] | "WBC" = [White Blood Cells]` (Values are an abbreviation of or a code for the string).
 
-Note that the target datafile would contain the `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
+Note that the target datafile would contain the unqouted form of the quoted `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
 
 #### Semantics of Enumeration Values
 
@@ -208,11 +195,11 @@ Each value in the list may have an ontology term IRI attached to it that specifi
 
 To attach terms to values the following syntax, with square and round brackets (inspired by Markdown) is used:
 
-`value = [label](TermIRI) | ...`
+`"value" = [label](TermIRI) | ...`
 
 For example,
 
-`0=[Saliva](http://purl.obolibrary.org/obo/UBERON_0001836) | 1=[Blood](http://purl.obolibrary.org/obo/UBERON_0000178)`
+`"0"=[Saliva](http://purl.obolibrary.org/obo/UBERON_0001836) | "1"=[Blood](http://purl.obolibrary.org/obo/UBERON_0000178)`
 
 Labels are as before, surrounded in square brackets, and term IRIs for the labels immediately follow surrounded by round brackets.
 
@@ -226,7 +213,7 @@ The standard set of codes, and default value for this field in the data dictiona
 
 #### Standard Codes (Default value):
 
-`-9999=[Reason Unknown] | -9980=[Not Sent to Data Hub] | -9981=[Data Transfer Agreement] | -9982=[No Participant Consent To Share] | -9983=[Not Available Or Mappable] | -9984=[Data Lost Or Inaccessible] | -9985=[Data Invalid] | -9986=[Anonymization Or Privacy Concerns] | -9987=[Other Unsent Reason Not Specified] | -9960=[Not Entered By Originator] | -9961=[Omitted This Value] | -9962=[Originator Chose to Omit] | -9963=[Question Not Applicable] | -9964=[Answer Not Known] | -9965=[Record Not Provided] | -9966=[All Originators Omitted Element] | -9967=[CDE Omitted With Exception] | -9968=[Other Unentered Reason Not Specified] | -9940=[Not Presented To Participant] | -9941=[Skip Logic] | -9942=[No Participant Consent to Ask] | -9943=[CDE Not Presented Due to Exception] | -9944=[Element Never Presented for Collection] | -9945=[Process Error] | -9946=[Other Unpresented Reason Not Specified]`.
+`"-9999"=[Reason Unknown] | "-9980"=[Not Sent to Data Hub] | "-9981"=[Data Transfer Agreement] | "-9982"=[No Participant Consent To Share] | "-9983"=[Not Available Or Mappable] | "-9984"=[Data Lost Or Inaccessible] | "-9985"=[Data Invalid] | "-9986"=[Anonymization Or Privacy Concerns] | "-9987"=[Other Unsent Reason Not Specified] | "-9960"=[Not Entered By Originator] | "-9961"=[Omitted This Value] | "-9962"=[Originator Chose to Omit] | "-9963"=[Question Not Applicable] | "-9964"=[Answer Not Known] | "-9965"=[Record Not Provided] | "-9966"=[All Originators Omitted Element] | "-9967"=[CDE Omitted With Exception] | "-9968"=[Other Unentered Reason Not Specified] | "-9940"=[Not Presented To Participant] | "-9941"=[Skip Logic] | "-9942"=[No Participant Consent to Ask] | "-9943"=[CDE Not Presented Due to Exception] | "-9944"=[Element Never Presented for Collection] | "-9945"=[Process Error] | "-9946"=[Other Unpresented Reason Not Specified]`.
 
 
 ### Field: Notes
