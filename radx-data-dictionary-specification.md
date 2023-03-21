@@ -203,6 +203,22 @@ For example,
 
 Labels are as before, surrounded in square brackets, and term IRIs for the labels immediately follow surrounded by round brackets.
 
+The following is an extended BNF that specifies a grammar for enumerations.  In this BNF terminals are enclosed in single quotes, non-terminals are written in a bold face, curly braces represent zero or more, square brackets brackets represent zero or one.  White space surrounding terminals is not significant.
+
+__enumeration__ :=  __enumerationValuePair__ {‘|’ __enumerationValuePair__ }
+
+__enumerationValuePair__ := __value__ ‘=‘ __label__ [ __fullIri__ ]
+
+__value__ := __quotedString__
+
+__label__ := __boxedString__
+
+__fullIri__ := an IRI as defined in [RFC3987] surrounded by parenthesis 
+
+__quotedString__ := _a finite sequence of characters in which `"` (U+22) and `\` (U+5C) occur only in pairs of the form `\"` (U+5C, U+22) and `\\` (U+5C, U+5C), enclosed in a pair of `"` (U+22) characters_
+
+__boxedString__ := _a finite sequence of characters in which `]` (U+5D) and `\` (U+5C) occur only in pairs of the form `\]` (U+5C, U+5D) and `\\` (U+5C, U+5C), enclosed in `[` (U+5B) and `]` (U+5C) characters_
+
 ### Field: Missing Value Codes
 
 __Value Status__: OPTIONAL
