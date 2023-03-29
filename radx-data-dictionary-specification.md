@@ -218,9 +218,9 @@ bracketedIri = "(" fullIri ")" ;
 
 fullIri = ? an IRI as defined in [RFC3987] ?
 
-boxedString = '['([^]\\]|\\]|\\\\)+']' ; (* A finite sequence of characters surrounded by [ and ] *)
+boxedString = ? A finite sequence of letters or numbers surrounded by [ and ] ?
 
-quotedString = '"'([^"\\]|\\"|\\\\)+'"' ; (* A finite sequence of characters surrounded by " *)
+quotedString = ? A finite sequence of letters or numbers surrounded by double quotation marks " ?
 
 ```
 
