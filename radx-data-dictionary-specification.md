@@ -226,11 +226,17 @@ quotedString = ? A finite sequence of letters or numbers surrounded by double qu
 
 #### Converting from REDCap Choices format
 
-Given a string representing the REDCap choices format, the following regular expression and regular expression replacement can be used to convert the string into a RADx Enumeration format.
+The online survey software [REDCap](https://www.project-redcap.org) has a syntax that supports choices for questions.  The syntax we use here is a more precisely specified while also being more general.  In particular, we support embedding semantic identifiers for choices where as REDCap syntax does not.  In addition to this, it is possible to produce choices using the REDCap software that cannot be round tripped using REDCap choices syntax (a REDCap data dictionary can be exported that cannot be reimported by REDCap).
+
+Given a string that represents a list of choices in the REDCap choices format, the following regular expression and regular expression replacement can be used to convert the string into a RADx Enumeration format.
+
+Match,
 
 ```regex
 ((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N})*)\s*,\s*((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N})*) /gu
 ```
+
+Replace with,
 
 ```regex
 "$1$=[$4]
