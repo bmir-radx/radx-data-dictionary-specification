@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Section](#field-section), [Cardinality](#field-multivalued), [Meaning](#field-meaning), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
+[Id](#field-id), [Label](#field-label), [Section](#field-section), [Cardinality](#field-multivalued), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
 
 These data dictionary columns are described in more detail below. 
 
