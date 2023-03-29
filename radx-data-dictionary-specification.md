@@ -72,11 +72,11 @@ __Value Status__: OPTIONAL
 
 The `Section` field in the data dictionary specifies a section, or group name, for each entry.  Section names may be used for organizing or clarifying purposes and are optional. 
 
-### Field: Meaning
+### Field: Terms
 
 __Value Status__: OPTIONAL
 
-The `Meaning` field in the data dictionary specifies a list of ontology terms that provides a precise meaning for the field being described.  Multiple terms (separated by white spaces (0x0020 or 0x00A0) or newline characters (0x000A) with appropriate escaping) may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs), for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906).  While not required, we strongly recommend that term identifiers are resolvable.
+The `Terms` field in the data dictionary specifies a list of ontology terms that describe key concepts in the meaning of the field being described.  Multiple terms (separated by white spaces (0x0020 or 0x00A0) or newline characters (0x000A) with appropriate escaping) may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs), for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906).  While not required, we strongly recommend that term identifiers are resolvable.
 
 This field is optional but we strongly encourage its use in order to make data more easily searchable.  
 
@@ -203,21 +203,26 @@ For example,
 
 Labels are as before, surrounded in square brackets, and term IRIs for the labels immediately follow surrounded by round brackets.
 
-The following is an extended BNF that specifies a grammar for enumerations.  In this BNF terminals are enclosed in single quotes, non-terminals are written in a bold face, curly braces represent zero or more, square brackets brackets represent zero or one.  White space surrounding terminals is not significant.
+The following is an extended BNF that specifies a grammar for enumerations.  White space surrounding terminals is not significant.
 
-__enumeration__ :=  __enumerationValuePair__ {‘|’ __enumerationValuePair__ }
+```ebnf
+enumeration =  enumerationValuePair {'|' enumerationValuePair } ;
 
-__enumerationValuePair__ := __value__ ‘=‘ __label__ [ __fullIri__ ]
+enumerationValuePair = value '=' label [ bracketedIri ] ;
 
-__value__ := __quotedString__
+value = quotedString ;
 
-__label__ := __boxedString__
+label = boxedString ;
 
-__fullIri__ := an IRI as defined in [RFC3987] surrounded by parenthesis 
+bracketedIri = "(" fullIri ")" ;
 
-__quotedString__ := _a finite sequence of characters in which `"` (U+22) and `\` (U+5C) occur only in pairs of the form `\"` (U+5C, U+22) and `\\` (U+5C, U+5C), enclosed in a pair of `"` (U+22) characters_
+fullIri = ? an IRI as defined in [RFC3987] ?
 
-__boxedString__ := _a finite sequence of characters in which `]` (U+5D) and `\` (U+5C) occur only in pairs of the form `\]` (U+5C, U+5D) and `\\` (U+5C, U+5C), enclosed in `[` (U+5B) and `]` (U+5C) characters_
+boxedString = '['([^]\\]|\\]|\\\\)+']' ; (* A finite sequence of characters surrounded by [ and ] *)
+
+quotedString = '"'([^"\\]|\\"|\\\\)+'"' ; (* A finite sequence of characters surrounded by " *)
+
+```
 
 ### Field: Missing Value Codes
 
