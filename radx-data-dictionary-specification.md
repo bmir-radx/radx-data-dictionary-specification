@@ -224,6 +224,18 @@ quotedString = ? A finite sequence of letters or numbers surrounded by double qu
 
 ```
 
+#### Converting from REDCap Choices format
+
+Given a string representing the REDCap choices format, the following regular expression and regular expression replacement can be used to convert the string into a RADx Enumeration format.
+
+```regex
+((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N})*)\s*,\s*((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N})*) /gu
+```
+
+```regex
+"$1$=[$4]
+```
+
 ### Field: Missing Value Codes
 
 __Value Status__: OPTIONAL
