@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Section](#field-section), [Cardinality](#field-multivalued), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Units](#field-units), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
+[Id](#field-id), [Label](#field-label), [Section](#field-section), [Cardinality](#field-multivalued), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
 
 These data dictionary columns are described in more detail below. 
 
@@ -134,11 +134,11 @@ __Value Status__: OPTIONAL
 
 The `Pattern` field in the data dictionary may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
 
-### Field: Units
+### Field: Unit
 
 __Value Status__: OPTIONAL
 
-The `Units` field in the data dictionary may be used to document the units for datafile values that represent quantities.
+The `Unit` field in the data dictionary may be used to document the units for datafile values that represent quantities.
 
 Since there is no standardized list of units used for RADx studies we do not provide a controlled list of units here.  However, here are some common units that we have observed being used in RADx data dictionaries.
 
