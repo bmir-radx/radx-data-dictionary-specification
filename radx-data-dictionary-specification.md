@@ -163,7 +163,7 @@ kilogram | kg |[mass](https://www.nist.gov/pml/owm/si-units-mass)
 pound | lb | [mass](https://www.nist.gov/pml/owm/si-units-mass)
 mole | mol | [amount of substance](https://www.nist.gov/pml/owm/si-units-amount-substance)
 ampere | A | [electric current](https://www.nist.gov/pml/owm/si-units-electric-current)
-mole per litre | mol/L | concentration
+moles per liter | mol/L | concentration
 
 We recommend that, where possible, SI unit names are used and that the [NIST guidelines for printing and using units](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-6-rules-and-style-conventions-printing-and-using) is used.  In particular, unit symbols are printed in lower-case letters except that (a) the symbol or the first letter of the symbol is an upper-case letter when the name of the unit is derived from the name of a person; and (b) the recommended symbol for the liter in the United States is L.
 
