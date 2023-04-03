@@ -24,7 +24,7 @@ Data dictionaries may be created with tools such as Google Sheets or Microsoft E
 
 ## Data Dictionary Layout
 
-A data dictionary contains a list of records, represented as rows, that describe the sequence of fields in a target datafile.  There is exactly one data dictionary record per datafile field. 
+A data dictionary contains a list of records (known as _Data Elements_ in RADx terminology), represented as rows, that describe the sequence of fields in a target datafile.  There is exactly one data dictionary record per datafile field. 
 
 A data dictionary CSV file contains a header record plus _one record for each of the target datafile's fields_.  Since the target datafile's fields are in columns, this means a record in a data dictionary essentially describes a column in the target data file.  Thus, if the target datafile has five columns in it, the data dictionary will contain _six_ records – one header record plus five non-header records that describe the five datafile fields.
 
