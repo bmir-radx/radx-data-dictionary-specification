@@ -48,7 +48,7 @@ These data dictionary columns are described in more detail below.
 
 Since columns are identified by column headers the ordering of these columns is not significant.  However, for maximum interoperability and ease of use, we strongly recommend following the ordering specified here.  
 
-If necessary, susequent fields/columns may be appended to a data dictionary to support the preservation of extra information that is not provided for by the columns here.
+If necessary, subsequent fields/columns may be appended to a data dictionary to support the preservation of extra information that is not provided for by the columns here.
 
 ## Data Dictionary Fields Specification
 
