@@ -84,7 +84,7 @@ This field is optional but we strongly encourage its use in order to make data m
 
 __Value Status__: OPTIONAL (default value is `false`).
 
-The `Cardinality` field in the data dictionary specifies whether a field is expected to be single valued or muti-valued in a datafile. Multiple values in datafile field MUST be separated with a pipe character, without surrounding white space.  Acceptable values for the cardinality field in the data dictionary are either `single` (the associated datafile field has at most a single value) or `multiple` (the associated datafile field may have multiple values). If no value is specified then the default value of `single` is assumed.
+The `Cardinality` field in the data dictionary specifies whether a field is expected to be single valued or multi-valued in a datafile. Multiple values in datafile field MUST be separated with a pipe character, without surrounding white space.  Acceptable values for the cardinality field in the data dictionary are either `single` (the associated datafile field has at most a single value) or `multiple` (the associated datafile field may have multiple values). If no value is specified then the default value of `single` is assumed.
 
 As an example, consider a "symptoms" field which can accept multiple values within a single datafile field and thus has a cardinality of `multiple`. The data file for such a field may look like this:
 
