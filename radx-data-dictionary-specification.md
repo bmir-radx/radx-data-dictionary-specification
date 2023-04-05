@@ -91,8 +91,8 @@ As an example, consider a "symptoms" field which can accept multiple values with
 |participantId|symptoms|
 |--|--|
 p1|cough
-p2|cough \| sorethroat \| headache
-p3|cough \| headache
+p2|cough\|sorethroat\|headache
+p3|cough\|headache
 
 ### Field: Datatype
 
