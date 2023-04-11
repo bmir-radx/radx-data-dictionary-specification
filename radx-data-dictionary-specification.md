@@ -192,7 +192,7 @@ Note that the target datafile would contain the unqouted form of the quoted `val
 
 #### Semantics of Enumeration Values
 
-Each value in the list may have an ontology term IRI attached to it that specifies the precise meaning of the value.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs).  While not required, we strongly recommend that term identifiers are resolvable.
+Each value in the list may have an ontology term identifier attached to it that specifies the precise meaning of the value.  Terms may be drawn from any published ontology.  The identifiers for terms MUST follow the syntax described in the [Ontology Term Identifiers](#ontology-term-identifiers) section below.  While not required, we strongly recommend that term identifiers are resolvable.
 
 To attach terms to values the following syntax, with square and round brackets (inspired by Markdown) is used:
 
@@ -202,7 +202,11 @@ For example,
 
 `"0"=[Saliva](http://purl.obolibrary.org/obo/UBERON_0001836) | "1"=[Blood](http://purl.obolibrary.org/obo/UBERON_0000178)`
 
-Labels are as before, surrounded in square brackets, and term IRIs for the labels immediately follow surrounded by round brackets.
+Since UBERON (The Uber Anatomy Ontology) is an OBO Foundry ontology, it is also acceptable to use the more compact OBO identifiers for terms from this ontology.  Thus, the following is also allowed:
+
+`"0"=[Saliva](UBERON:0001836) | "1"=[Blood](UBERON:0000178)`
+
+Labels are as before, surrounded in square brackets, and term identifiers for the labels immediately follow surrounded by round brackets.
 
 The following is an extended BNF that specifies a grammar for enumerations.  White space surrounding terminals is not significant.
 
@@ -215,9 +219,11 @@ value = quotedString ;
 
 label = boxedString ;
 
-bracketedIri = "(" fullIri ")" ;
+bracketedIri = "(" (fullIri | oboId) ")" ;
 
 fullIri = ? an IRI as defined in [RFC3987] ?
+
+oboId = ? a compact OBO Identifier for terms that come from OBO Foundry ontologies ?
 
 boxedString = ? A finite sequence of letters or numbers surrounded by [ and ] ?
 
