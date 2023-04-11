@@ -280,4 +280,4 @@ OBO term identifiers consist of an Id Space followed by a colon (:) followed by 
 
 Each OBO term identifier has an unambiguous way of converting it to a full IRI, without requiring any kind of lookup in a prefix map.  To convert any OBO Foundry term identifier of the form `IDSPACE:LOCALID` to an IRI, map the prefix and localid to the pattern `http://purl.obolibrary.org/obo/PREFIX_LOCALID`.  For example, for the OBO Id `MONDO:0004979`, whose Id Space is `MONDO` and local id `0004979`, the corresonding full IRI is `http://purl.obolibrary.org/obo/MONDO_0004979`.  
 
-For a more detailed discussion of OBO Term Identifiers see the [OBO Foundry Identifier Policy](http://obofoundry.org/id-policy) document.
+For a more detailed discussion of OBO Term Identifiers see the [OBO Foundry Identifier Policy](http://obofoundry.org/id-policy) document. 
