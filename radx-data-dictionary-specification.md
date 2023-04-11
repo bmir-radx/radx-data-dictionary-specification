@@ -265,3 +265,7 @@ The `Notes` field in the data description may be used to store annotations, note
 ## Template
 
 While the format of a published RADx Data Dictionary MUST be CSV, tools like Google Sheets or Excel can be used for editing/producing the CSV file.  A Google Sheet template data dictionary may be found [here](https://docs.google.com/spreadsheets/d/1f5KcnCx7fEHcC8uSS5CB71-D-y51BDxFfGltSbj85iw/edit?usp=sharing).
+
+## Ontology Term Identifiers
+
+Ontology term identifiers are [internationalized resource identifiers (IRIs)](https://en.wikipedia.org/wiki/Internationalized_Resource_Identifier).  In general, ontology term identifiers used in data dictionaries MUST be specified as full IRIs.  The exception to this is for term identifiers that are Open Biological and Biomedical Ontology (OBO) Foudary Compact Identifiers, which have a very specific pattern and unambiguous way of converting to them full IRIs.  OBO term identifiers consist of a prefix followed by a colon (:) and then an alphanumeric local identifier.  For example, the identifier `MONDO:0004979` (Asthma) consists of the `MONDO` prefix followed by a colon, followed by a local identifier of `0004979`.  The corresonding full IRI is `http://purl.obolibrary.org/obo/MONDO_0004979`.  To convert any OBO Foundry term identifier of the form `prefix:localid` to an IRI, map the prefix and localid to the pattern `http://purl.obolibrary.org/obo/${prefix}_${localid}`.
