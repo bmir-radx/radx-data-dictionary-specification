@@ -76,7 +76,7 @@ The `Section` field in the data dictionary specifies a section, or group name, f
 
 __Value Status__: OPTIONAL
 
-The `Terms` field in the data dictionary specifies a list of ontology terms that describe key concepts in the meaning of the field being described.  Multiple terms (separated by white spaces (0x0020 or 0x00A0) or newline characters (0x000A) with appropriate escaping) may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The identifiers for terms MUST be fully qualified Internationalized Resource Identifiers (IRIs), for example, [http://purl.bioontology.org/ontology/MESH/D004906](http://purl.bioontology.org/ontology/MESH/D004906).  While not required, we strongly recommend that term identifiers are resolvable.
+The `Terms` field in the data dictionary specifies a list of ontology terms that describe key concepts in the meaning of the field being described.  Multiple ontology term identifiers  (separated by white spaces (0x0020 or 0x00A0) or newline characters (0x000A) with appropriate escaping) may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The format used for ontology terms is described below in the [Ontology Term Identifiers](#ontology-term-identifiers) section.  While not required, we strongly recommend that term identifiers are resolvable.
 
 This field is optional but we strongly encourage its use in order to make data more easily searchable.  
 
