@@ -240,7 +240,7 @@ Match,
 Replace with,
 
 ```regex
-"$1$=[$4]
+"$1"=[$4]
 ```
 
 ### Field: Missing Value Codes
