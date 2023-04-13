@@ -82,7 +82,7 @@ This field is optional but we strongly encourage its use in order to make data m
 
 ### Field: Cardinality
 
-__Value Status__: OPTIONAL (default value is `false`).
+__Value Status__: OPTIONAL (default value is `single`).
 
 The `Cardinality` field in the data dictionary specifies whether a field is expected to be single valued or multi-valued in a datafile. Multiple values in datafile field MUST be separated with a pipe character, without surrounding white space.  Acceptable values for the cardinality field in the data dictionary are either `single` (the associated datafile field has at most a single value) or `multiple` (the associated datafile field may have multiple values). If no value is specified then the default value of `single` is assumed.
 
