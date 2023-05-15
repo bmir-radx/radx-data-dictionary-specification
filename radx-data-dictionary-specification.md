@@ -44,11 +44,11 @@ A data dictionary header record contains the following sequence of strings as it
 
 [Id](#field-id), [Label](#field-label), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
 
-These data dictionary columns are described in more detail below. 
+These data dictionary fields are described in more detail below. 
 
 Since columns are identified by column headers the ordering of these columns is not significant.  However, for maximum interoperability and ease of use, we strongly recommend following the ordering specified here.  
 
-If necessary, subsequent fields/columns may be appended to a data dictionary to support the preservation of extra information that is not provided for by the columns here.
+If necessary, subsequent fields/columns may be appended to a data dictionary to support the preservation of extra information that is not provided for by the fields here.
 
 ## Data Dictionary Fields Specification
 
