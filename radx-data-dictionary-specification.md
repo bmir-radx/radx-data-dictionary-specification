@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
+[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes), [CDE Reference](#field-cde-reference).
 
 These data dictionary fields are described in more detail below. 
 
@@ -273,6 +273,12 @@ The standard set of codes, and default value for this field in the data dictiona
 __Value Status__: OPTIONAL
 
 The `Notes` field in the data description may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding field in the datafile.  The values of this field are for human use and are not parsed to be used in a computational way.
+
+### Field: CDE Reference 
+
+__Value Status__: OPTIONAL
+
+The `CDE Reference` field may be used to identify a Common Data Element that the field being described is based on.  Ideally, the value for this field should be a URL that points to a structured description of a CDE in a CDE reposity but it may also be the name of a well-known CDE.
 
 ## Template
 
