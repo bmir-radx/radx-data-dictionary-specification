@@ -278,7 +278,7 @@ The `Notes` field in the data description may be used to store annotations, note
 
 __Value Status__: OPTIONAL
 
-The `CDE Reference` field may be used to identify a Common Data Element that the field being described is based on.  Ideally, the value for this field should be a URL that points to a structured description of a CDE in a CDE reposity but it may also be the name of a well-known CDE.
+The `CDE Reference` field may be used to identify a Common Data Element that the field being described is based on.  Ideally, the value for this field should be a URL that points to a structured description of a CDE in a CDE reposity, for example the "Age" CDE, identified by [https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS](https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS) in the [NIH CDE Repository](https://cde.nlm.nih.gov/), but it may also be a string that represents an unambiguous name of a well-known CDE.
 
 ## Template
 
