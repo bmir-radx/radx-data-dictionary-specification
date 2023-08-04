@@ -70,7 +70,7 @@ The `Label` field in the data dictionary specifies a presentation label for the 
 
 __Value Status__: OPTIONAL
 
-The `Description` field in the data dictionary specifies a detailed textual definition, explanation or context, of the field being described.  We strongly recommend that the `Description` field is filled out so that a third party that is trying to understand the meaning of a field in a data dictionary can do so in an unambiguous way.
+The `Description` field in the data dictionary specifies a detailed textual definition, explanation or context, of the field being described.  We strongly recommend that the `Description` field is filled (in addition to other fields) out so that a third party that is trying to understand the meaning of a field in a data dictionary can do so in an unambiguous way.
 
 ### Field: Section
 
