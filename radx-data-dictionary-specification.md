@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
+[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes).
 
 These data dictionary fields are described in more detail below. 
 
@@ -65,6 +65,12 @@ The `Id` field in the data dictionary specifies an identifier for the datafile f
 __Value Status__: REQUIRED (the value MUST NOT be empty)
 
 The `Label` field in the data dictionary specifies a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
+
+### Field: Description
+
+__Value Status__: OPTIONAL
+
+The `Description` field in the data dictionary specifies a detailed textual definition, explanation or context, of the field being described.  We strongly recommend that the `Description` field is filled out so that a third party that is trying to understand the meaning of a field in a data dictionary can do so in an unambiguous way.
 
 ### Field: Section
 
