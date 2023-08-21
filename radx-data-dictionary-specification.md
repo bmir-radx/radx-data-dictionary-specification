@@ -131,7 +131,7 @@ The set of allowable datatype names also includes the following.  These map to w
 | Datatype Name | Lexical Format | Comments | XML Schema Datatype Name | Lexical Format |
 | -- | -- | -- | -- | -- |
 date_mdy | mm/dd/yyyy | US-formatted date with slashes | date | yyyy-mm-dd
-date_dmy | dd/mm/yyy  | International-formatted date with slashes | date | yyyy-mm-dd
+date_dmy | dd/mm/yyyy  | International-formatted date with slashes | date | yyyy-mm-dd
 timestamp | `[0-9]+` | A long integer number that represents a Unix timestamp | long | `[0-9]+` 
 
 ### Field: Pattern
