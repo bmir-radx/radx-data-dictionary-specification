@@ -108,7 +108,7 @@ The `Datatype` field in the data dictionary specifies a datatype name that types
 
 If an enumeration is supplied to provide a list of controlled values, then the datatype name should be set as the datatype name of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).  For example, if an enumeration of `0 = Blood | 1 = Saliva` was specified for a field the datatype name for this field would be `integer`, since the values of this enumeration are integers.  Similarly, if an enumeration of `RBC = Red Blood Cells | WBC = White Blood Cells` is specified for a field then the datatype name for that field would be `string`, since the values of this enumeration are strings.
 
-Datatype names MUST be all lowercase, thus `integer` rather than `Integer`.
+Datatype names are CASE SENSITIVE.  The case used MUST be the same as in the XML Schema Datatypes specification.  For example, `integer` is valid while `Integer` is not valid.
 
 #### Field Datatype Names
 
