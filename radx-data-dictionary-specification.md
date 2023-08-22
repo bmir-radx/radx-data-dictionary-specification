@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Notes](#field-notes), [CDE Reference](#field-cde-reference).
+[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Notes](#field-notes), [Provenance](#field-provenance), [SeeAlso](#seealso).
 
 These data dictionary fields are described in more detail below. 
 
@@ -274,11 +274,17 @@ __Value Status__: OPTIONAL
 
 The `Notes` field in the data description may be used to store annotations, notes, comments on the row in the data dictionary and the corresponding field in the datafile.  The values of this field are for human use and are not parsed to be used in a computational way.
 
-### Field: CDE Reference 
+### Field: Provenance 
 
 __Value Status__: OPTIONAL
 
-The `CDE Reference` field may be used to identify a Common Data Element that the field being described is based on.  Ideally, the value for this field should be a URL that points to a structured description of a CDE in a CDE reposity, for example the "Age" CDE, identified by [https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS](https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS) in the [NIH CDE Repository](https://cde.nlm.nih.gov/), but it may also be a string that represents an unambiguous name of a well-known CDE.
+The `Provenance` field may be used to identify a Common Data Element that the field being described is based on or any other provenance for the field.  Ideally, the value for this field should be a URL that points to a structured description of a CDE in a CDE reposity, for example the "Age" CDE, identified by [https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS](https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS) in the [NIH CDE Repository](https://cde.nlm.nih.gov/), but it may also be a string that represents an unambiguous name of a well-known CDE.
+
+### Field:  SeeAlso
+
+__Value Status__: OPTIONAL
+
+The `SeeAlso` field may be used to hold a URL that, when resolved, provides further information about the data field being described.  Only syntactically well-formed and resolvable URLs should be entered into this field.
 
 ## Template
 
