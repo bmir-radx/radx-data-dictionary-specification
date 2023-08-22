@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [Missing Value Codes](#field-missing-value-codes), [Notes](#field-notes), [CDE Reference](#field-cde-reference).
+[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Notes](#field-notes), [CDE Reference](#field-cde-reference).
 
 These data dictionary fields are described in more detail below. 
 
@@ -255,11 +255,11 @@ Replace with,
 "$1"=[$4]
 ```
 
-### Field: Missing Value Codes
+### Field: MissingValueCodes
 
 __Value Status__: OPTIONAL
 
-The `Missing Value Codes` field specifies, as an enumeration in the same format as the `Enumeration` field, codes that signify the reasons as to missing data values in _transformcopy_ data files.  
+The `MissingValueCodes` field specifies, as an enumeration in the same format as the `Enumeration` field, codes that signify the reasons as to missing data values in _transformcopy_ data files.  
 
 The standard set of codes, and default value for this field in the data dictionary if the values are blank, is shown below.
 
