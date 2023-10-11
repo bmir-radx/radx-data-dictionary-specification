@@ -246,7 +246,7 @@ Given a string that represents a list of choices in the REDCap choices format, t
 Match,
 
 ```regex
-((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N})*)\s*,\s*((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N})*) /gu
+((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N})*)\s*,\s*((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N}|,|\/)*)
 ```
 
 Replace with,
