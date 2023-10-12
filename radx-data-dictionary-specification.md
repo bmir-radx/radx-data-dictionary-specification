@@ -246,13 +246,13 @@ Given a string that represents a list of choices in the REDCap choices format, t
 Match,
 
 ```regex
-((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N})*)\s*,\s*((\p{L}|\p{N})(\p{L}| \p{L}|\p{N}| \p{N}|,|\/)*)
+([A-Za-z0-9]+)\s*,\s*((([^|\n ])|( [^|\n]))+)
 ```
 
 Replace with,
 
 ```regex
-"$1"=[$4]
+"$1"=[$2]
 ```
 
 ### Field: MissingValueCodes
