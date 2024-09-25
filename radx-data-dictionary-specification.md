@@ -52,7 +52,7 @@ If necessary, subsequent fields/columns may be appended to a data dictionary to 
 
 ## Data Dictionary Fields Specification
 
-Each record in a data dictionary MUST contain the following, possibly empty, fields.  For each field, the *Value Status* specifies whether a non-blank value is required or whether a blank value is acceptable.
+Each record in a data dictionary SHOULD contain the following, possibly empty, fields.  For each field, the *Value Status* specifies whether a non-blank value is required or whether a blank value is acceptable.  If a field is REQUIRED then it MUST be present the data dictionary with the associated column header.  If a field is OPTIONAL then it MAY be present in the data dictionary.
 
 ### Field: Id
 
