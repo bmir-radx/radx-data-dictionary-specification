@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Notes](#field-notes), [Provenance](#field-provenance), [SeeAlso](#field-seealso).
+[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Examples](#field-examples), [Notes](#field-notes), [Provenance](#field-provenance), [SeeAlso](#field-seealso).
 
 These data dictionary fields are described in more detail below. 
 
@@ -275,6 +275,16 @@ The standard set of codes shown below always applies.  When the `MissingValueCod
 
 `"-9999"=[Reason Unknown] | "-9980"=[Not Sent to Data Hub] | "-9981"=[Data Transfer Agreement] | "-9982"=[No Participant Consent To Share] | "-9983"=[Not Available Or Mappable] | "-9984"=[Data Lost Or Inaccessible] | "-9985"=[Data Invalid] | "-9986"=[Anonymization Or Privacy Concerns] | "-9987"=[Other Unsent Reason Not Specified] | "-9960"=[Not Entered By Originator] | "-9961"=[Omitted This Value] | "-9962"=[Originator Chose to Omit] | "-9963"=[Question Not Applicable] | "-9964"=[Answer Not Known] | "-9965"=[Record Not Provided] | "-9966"=[All Originators Omitted Element] | "-9967"=[CDE Omitted With Exception] | "-9968"=[Other Unentered Reason Not Specified] | "-9940"=[Not Presented To Participant] | "-9941"=[Skip Logic] | "-9942"=[No Participant Consent to Ask] | "-9943"=[CDE Not Presented Due to Exception] | "-9944"=[Element Never Presented for Collection] | "-9945"=[Process Error] | "-9946"=[Other Unpresented Reason Not Specified]`.
 
+
+### Field: Examples
+
+__Value Status__: OPTIONAL
+
+The `Examples` field in the data dictionary may be used to provide one or more example values for the datafile field being described.  Examples help a third party to understand the kind of values that the field is expected to contain, and unlike the [Notes](#field-notes) field they are intended to be machine readable so that they can be processed by downstream tools.
+
+Multiple examples MUST be separated with a pipe character (`|`), without surrounding white space, in the same way as multi-valued datafile fields (see [Cardinality](#field-cardinality)).  For example, a field representing a participant identifier might have an `Examples` value of `N001|N002|P517`.
+
+Each example SHOULD be a valid value for the field being described.  That is, each example should conform to the field's [Datatype](#field-datatype), match its [Pattern](#field-pattern) (if any), and, where an [Enumeration](#field-enumeration) is specified, be a member of that enumeration.
 
 ### Field: Notes
 
