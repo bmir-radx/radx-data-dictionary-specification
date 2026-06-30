@@ -64,7 +64,7 @@ The `Id` field in the data dictionary specifies an identifier for the datafile f
 
 __Value Status__: REQUIRED (the value MUST NOT be empty)
 
-The `Label` field in the data dictionary specifies a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survery questions, the label is often the text of the question that was asked.
+The `Label` field in the data dictionary specifies a presentation label for the datafile field being described.  Labels are strings; they may be a human readable form of the [Id](#field-id).   In the case where data represents the response to survey questions, the label is often the text of the question that was asked.
 
 ### Field: Description
 
@@ -77,14 +77,6 @@ The `Description` field in the data dictionary specifies a detailed textual defi
 __Value Status__: OPTIONAL
 
 The `Section` field in the data dictionary specifies a section, or group name, for each entry.  Section names may be used for organizing or clarifying purposes and are optional. 
-
-### Field: Terms
-
-__Value Status__: OPTIONAL
-
-The `Terms` field in the data dictionary specifies a list of ontology terms that describe key concepts in the meaning of the field being described.  Multiple ontology term identifiers  (separated by white spaces (0x0020 or 0x00A0) or newline characters (0x000A) with appropriate escaping) may be specified but terms should be as specific as possible.  Terms may be drawn from any published ontology.  The format used for ontology terms is described below in the [Ontology Term Identifiers](#ontology-term-identifiers) section.  While not required, we strongly recommend that term identifiers are resolvable.
-
-This field is optional but we strongly encourage its use in order to make data more easily searchable.  
 
 ### Field: Cardinality
 
@@ -100,13 +92,21 @@ p1|cough
 p2|cough\|sorethroat\|headache
 p3|cough\|headache
 
+### Field: Terms
+
+__Value Status__: OPTIONAL
+
+The `Terms` field in the data dictionary specifies a list of ontology terms that describe key concepts in the meaning of the field being described.  Multiple ontology term identifiers (separated by white spaces (0x0020 or 0x00A0) or newline characters (0x000A)) may be specified but terms should be as specific as possible.  Where a newline character is used to separate terms, the field MUST be quoted in accordance with the CSV quoting rules of [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180#page-2) (that is, the whole field value is enclosed in double quotes so that the embedded newline is treated as data rather than a record separator).  Space separation avoids the need for quoting and is recommended.  Terms may be drawn from any published ontology.  The format used for ontology terms is described below in the [Ontology Term Identifiers](#ontology-term-identifiers) section.  While not required, we strongly recommend that term identifiers are resolvable.
+
+This field is optional but we strongly encourage its use in order to make data more easily searchable.  
+
 ### Field: Datatype
 
 __Value Status__: REQUIRED (the value MUST NOT be empty)
 
 The `Datatype` field in the data dictionary specifies a datatype name that types field values.  Datatype names MUST be from the set of allowable datatype names.  This set is defined as the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names, defined below, that cover US date formats (that are present in RADx data).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.
 
-If an enumeration is supplied to provide a list of controlled values, then the datatype name should be set as the datatype name of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).  For example, if an enumeration of `0 = Blood | 1 = Saliva` was specified for a field the datatype name for this field would be `integer`, since the values of this enumeration are integers.  Similarly, if an enumeration of `RBC = Red Blood Cells | WBC = White Blood Cells` is specified for a field then the datatype name for that field would be `string`, since the values of this enumeration are strings.
+If an enumeration is supplied to provide a list of controlled values, then the datatype name should be set as the datatype name of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).  For example, if an enumeration of `0 = Blood | 1 = Saliva` was specified for a field the datatype name for this field would be `integer`, since the values of this enumeration are integers.  Similarly, if an enumeration of `RBC = Red Blood Cells | WBC = White Blood Cells` is specified for a field then the datatype name for that field would be `string`, since the values of this enumeration are strings.  If the values of an enumeration are intended to represent boolean flags (for example `"0"=[No] | "1"=[Yes]`) then the datatype name `integer` should be used rather than `boolean`, since the enumeration values `0` and `1` are written as integers.
 
 Datatype names are CASE SENSITIVE.  The case used MUST be the same as in the XML Schema Datatypes specification.  For example, `integer` is valid while `Integer` is not valid.
 
@@ -118,7 +118,7 @@ The following are the most common XML schema datatype names.  For each datatype 
 | -- | -- |
 [integer](https://www.w3.org/TR/xmlschema-2/#integer) | integer has a lexical representation consisting of a finite-length sequence of decimal digits (#x30-#x39) with an optional leading sign. If the sign is omitted, "+" is assumed. For example: -1, 0, 12678967543233, +100000.
 [float](https://www.w3.org/TR/xmlschema-2/#float) | float values have a lexical representation consisting of a mantissa followed, optionally, by the character "E" or "e", followed by an exponent. The exponent must be an integer. The mantissa must be a decimal number. If the "E" or "e" and the following exponent are omitted, an exponent value of 0 is assumed. The special values positive and negative infinity and not-a-number have lexical representations INF, -INF and NaN, respectively. Lexical representations for zero may take a positive or negative sign.  For example, -1E4, 1267.43233E12, 12.78e-2, 12 , -0, 0 and INF are all legal literals for float.
-[double](https://www.w3.org/TR/xmlschema-2/#double) | double values have a lexical representaton that is the same as float.
+[double](https://www.w3.org/TR/xmlschema-2/#double) | double values have a lexical representation that is the same as float.  The difference between the two is one of precision and range: `float` corresponds to an IEEE single-precision (32-bit) value, whereas `double` corresponds to an IEEE double-precision (64-bit) value.
 [boolean](https://www.w3.org/TR/xmlschema-2/#boolean) | boolean values can have the following legal literals, true, false, 1, 0
 [string](https://www.w3.org/TR/xmlschema-2/#string) | string values are finite sequences of characters; this is the datatype to use if none of the other datatypes are appropriate.
 [decimal](https://www.w3.org/TR/xmlschema-2/#decimal) | decimal has a lexical representation consisting of a finite-length sequence of decimal digits (#x30-#x39) separated by a period as a decimal indicator. An optional leading sign is allowed. If the sign is omitted, "+" is assumed. Leading and trailing zeroes are optional. If the fractional part is zero, the period and following zero(es) can be omitted. For example: -1.23, 12678967.543233, +100000.00, 210.
@@ -134,11 +134,15 @@ date_mdy | mm/dd/yyyy | US-formatted date with slashes | date | yyyy-mm-dd
 date_dmy | dd/mm/yyyy  | International-formatted date with slashes | date | yyyy-mm-dd
 timestamp | `[0-9]+` | A long integer number that represents a Unix timestamp | long | `[0-9]+` 
 
+Note that the table of common datatype names above is not exhaustive: the full set of [XML Schema datatype](https://www.w3.org/TR/xmlschema-2/) names is admitted by reference.  For example, [`long`](https://www.w3.org/TR/xmlschema-2/#long) (used above as the mapping target for `timestamp`) is a valid datatype name even though it does not appear in the table of common datatype names.
+
 ### Field: Pattern
 
 __Value Status__: OPTIONAL
 
 The `Pattern` field in the data dictionary may contain a regular expression that specifies a pattern that must be matched by datafile values.  For a given datafile value, the complete value must match the pattern.
+
+Regular expressions in the `Pattern` field MUST use the [XML Schema regular expression](https://www.w3.org/TR/xmlschema-2/#regexs) dialect.  We use this dialect for consistency with the use of XML Schema datatypes for the [Datatype](#field-datatype) field.  Note that, as in XML Schema, the pattern is implicitly anchored: the complete datafile value must match the regular expression (as if the expression were surrounded by `^` and `$`).
 
 ### Field: Unit
 
@@ -161,7 +165,7 @@ minute | min | [time](https://www.nist.gov/pml/owm/si-units-time)
 hour | h | [time](https://www.nist.gov/pml/owm/si-units-time)
 day | d | [time](https://www.nist.gov/pml/owm/si-units-time)
 week | w | [time](https://www.nist.gov/pml/owm/si-units-time)
-degrees Celcius | °C | [temperature](https://www.nist.gov/pml/owm/si-units-temperature)
+degrees Celsius | °C | [temperature](https://www.nist.gov/pml/owm/si-units-temperature)
 Fahrenheit | °F | [temperature](https://www.nist.gov/pml/owm/si-units-temperature)
 kelvin | K | [temperature](https://www.nist.gov/pml/owm/si-units-temperature)
 milligram | mg | [mass](https://www.nist.gov/pml/owm/si-units-mass)
@@ -194,7 +198,9 @@ The above examples use integers as the values but values may be other datatypes:
 
 `"RBC" = [Red Blood Cells] | "WBC" = [White Blood Cells]` (Values are an abbreviation of or a code for the string).
 
-Note that the target datafile would contain the unqouted form of the quoted `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
+Note that the target datafile would contain the unquoted form of the quoted `value` part of the pairs.  For example, `RBC`, `WBC`, `0`, `1` etc.
+
+When a field has a [Cardinality](#field-cardinality) of `multiple` and an `Enumeration` is specified, each pipe-separated value within a datafile field MUST individually be a member of the enumeration.  For example, given the enumeration `"0"=[Saliva] | "1"=[Blood]` and a cardinality of `multiple`, a datafile value of `0|1` is valid because both `0` and `1` are members of the enumeration.
 
 #### Semantics of Enumeration Values
 
@@ -231,9 +237,9 @@ fullIri = ? an IRI as defined in [RFC3987] ?
 
 oboId = ? a compact OBO Identifier for terms that come from OBO Foundry ontologies ?
 
-boxedString = ? A finite sequence of letters or numbers surrounded by [ and ] ?
+boxedString = ? A finite sequence of characters, which may include letters, numbers, spaces and punctuation, surrounded by [ and ] ; the sequence MUST NOT contain an unescaped ] character ?
 
-quotedString = ? A finite sequence of letters or numbers surrounded by double quotation marks " ?
+quotedString = ? A finite sequence of characters, which may include letters, numbers, signs (for example a leading -) and punctuation, surrounded by double quotation marks " ; the sequence MUST NOT contain an unescaped " character ?
 
 ```
 
@@ -255,13 +261,15 @@ Replace with,
 "$1"=[$2]
 ```
 
+This conversion is a best-effort heuristic intended to handle the common case.  It assumes that choice codes consist only of alphanumeric characters (`[A-Za-z0-9]`); codes containing other characters will not be converted correctly.  The result should be reviewed, and any resulting labels with surrounding white space trimmed, before use.
+
 ### Field: MissingValueCodes
 
 __Value Status__: OPTIONAL
 
 The `MissingValueCodes` field specifies, as an enumeration in the same format as the `Enumeration` field, codes that signify the reasons as to missing data values in _transformcopy_ data files.  
 
-The standard set of codes, and default value for this field in the data dictionary if the values are blank, is shown below.
+The standard set of codes shown below always applies.  When the `MissingValueCodes` field is blank, only the standard set of codes applies.  When the `MissingValueCodes` field contains a value, the codes it specifies _augment_ (are added to) the standard set rather than replacing it; both the specified codes and the standard codes apply for that field.  A code specified in the `MissingValueCodes` field that uses the same value as a standard code overrides the label of that standard code.
 
 #### Standard Codes (Default value):
 
@@ -278,7 +286,7 @@ The `Notes` field in the data description may be used to store annotations, note
 
 __Value Status__: OPTIONAL
 
-The `Provenance` field may be used to identify a Common Data Element that the field being described is based on or any other provenance for the field.  Ideally, the value for this field should be a URL that points to a structured description of a CDE in a CDE reposity, for example the "Age" CDE, identified by [https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS](https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS) in the [NIH CDE Repository](https://cde.nlm.nih.gov/), but it may also be a string that represents an unambiguous name of a well-known CDE.
+The `Provenance` field may be used to identify a Common Data Element that the field being described is based on or any other provenance for the field.  Ideally, the value for this field should be a URL that points to a structured description of a CDE in a CDE repository, for example the "Age" CDE, identified by [https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS](https://cde.nlm.nih.gov/deView?tinyId=fmMMaUGpKS) in the [NIH CDE Repository](https://cde.nlm.nih.gov/), but it may also be a string that represents an unambiguous name of a well-known CDE.
 
 ### Field: SeeAlso
 
@@ -296,6 +304,6 @@ Ontology term identifiers are [internationalized resource identifiers (IRIs)](ht
 
 OBO term identifiers consist of an Id Space followed by a colon (:) followed by an alphanumeric Local Identifier.  For example, the identifier `MONDO:0004979` (Asthma) consists of the `MONDO` Id Space followed by a colon, followed by a Local Identifier of `0004979`.  
 
-Each OBO term identifier has an unambiguous way of converting it to a full IRI, without requiring any kind of lookup in a prefix map.  To convert any OBO Foundry term identifier of the form `IDSPACE:LOCALID` to an IRI, map the IDSPACE and LOCALID to the pattern `http://purl.obolibrary.org/obo/IDSPACE_LOCALID`.  For example, for the OBO Id `MONDO:0004979`, whose Id Space is `MONDO` and local id `0004979`, the corresonding full IRI is `http://purl.obolibrary.org/obo/MONDO_0004979`.  
+Each OBO term identifier has an unambiguous way of converting it to a full IRI, without requiring any kind of lookup in a prefix map.  To convert any OBO Foundry term identifier of the form `IDSPACE:LOCALID` to an IRI, map the IDSPACE and LOCALID to the pattern `http://purl.obolibrary.org/obo/IDSPACE_LOCALID`.  For example, for the OBO Id `MONDO:0004979`, whose Id Space is `MONDO` and local id `0004979`, the corresponding full IRI is `http://purl.obolibrary.org/obo/MONDO_0004979`.  
 
 For a more detailed discussion of OBO Term Identifiers see the [OBO Foundry Identifier Policy](http://obofoundry.org/id-policy) document. 
