@@ -42,7 +42,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Examples](#field-examples), [Notes](#field-notes), [Provenance](#field-provenance), [SeeAlso](#field-seealso).
+[Id](#field-id), [Aliases](#field-aliases), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Examples](#field-examples), [Notes](#field-notes), [Provenance](#field-provenance), [SeeAlso](#field-seealso).
 
 These data dictionary fields are described in more detail below. 
 
@@ -59,6 +59,16 @@ Each record in a data dictionary SHOULD contain the following, possibly empty, f
 __Value Status__: REQUIRED (the value for the `Id` field MUST NOT be empty)
 
 The `Id` field in the data dictionary specifies an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a field identifier.  Field identifiers may contain spaces.
+
+### Field: Aliases
+
+__Value Status__: OPTIONAL
+
+The `Aliases` field in the data dictionary specifies a list of alternative or previous identifiers for the datafile field being described.  Over time the [Id](#field-id) of a field may change &mdash; for example to correct a misspelling, to follow a versioning practice, or as the result of a simple rename.  Recording the former identifiers as aliases allows a datafile that uses an older identifier in its header record to be keyed to the correct data dictionary record.
+
+Multiple aliases MUST be separated with a pipe character (`|`), without surrounding white space, in the same way as multi-valued datafile fields (see [Cardinality](#field-cardinality)).  Like the [Id](#field-id), aliases are strings and no restrictions are imposed on the characters that make up an alias; aliases may contain spaces.  For example, a field whose `Id` is `PartId` and that was previously called `ParticipantID` or `Participant Id` might have an `Aliases` value of `ParticipantID|Participant Id`.
+
+Aliases MUST be unique across the whole data dictionary: an alias MUST NOT be equal to the [Id](#field-id) of any record (other than, redundantly, the record it appears on) and MUST NOT be equal to an alias of any other record.  This ensures that any identifier, whether an `Id` or an alias, resolves to at most one data dictionary record.
 
 ### Field: Label
 
