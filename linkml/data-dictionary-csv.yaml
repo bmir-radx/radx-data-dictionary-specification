@@ -2,7 +2,7 @@
 #
 # This schema models a data dictionary EXACTLY as it appears on the wire: a
 # single CSV file in which each row is one DataElement and every column is a
-# single string cell. Structure that the companion schema (specification.yaml)
+# single string cell. Structure that the companion schema (data-dictionary.yaml)
 # models as nested objects -- enumerations, missing-value codes and ontology
 # terms -- is, in the CSV, encoded INSIDE a single string cell using the
 # mini-grammars defined in the specification (e.g. `"0"=[Saliva] | "1"=[Blood]`).
@@ -14,7 +14,7 @@
 # one column per attribute, one row per data element.
 #
 # For the parsed, object-oriented model (useful once cell grammars have been
-# parsed) see specification.yaml in this repository.
+# parsed) see data-dictionary.yaml in this repository.
 #
 # NOTE: the `id` and the `dd` prefix use a w3id.org permanent identifier. The
 # redirect for this namespace still needs to be registered at
