@@ -1,0 +1,322 @@
+# NOTE: the `id` and the `dd` prefix use a w3id.org permanent identifier. The
+# redirect for this namespace still needs to be registered at
+# https://github.com/perma-id/w3id.org before these URIs will resolve.
+id: https://w3id.org/radx/data-dictionary
+name: radxdatadictionary
+title: RADx Data Dictionary Schema
+description: >-
+  A LinkML rendering of the RADx Data Dictionary Specification. It models a RADx
+  data dictionary as a list of DataElement records, each describing one field
+  (column) of a target datafile. See the `source` for the authoritative prose
+  specification.
+license: https://opensource.org/licenses/BSD-2-Clause
+version: 0.1.0
+source: https://github.com/bmir-radx/radx-data-dictionary-specification
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  dd: https://w3id.org/radx/data-dictionary/
+default_prefix: dd
+
+imports:
+  - linkml:types
+
+
+classes:
+
+  DataElement:
+    description: >-
+      A single record in a data dictionary, describing the features of one field
+      (column) in a target datafile. There is exactly one DataElement per
+      datafile field, and the order of DataElements corresponds to the order of
+      the fields in the target datafile.
+    attributes:
+
+      # --- Identity -------------------------------------------------------
+
+      Id:
+        identifier: true
+        required: true
+        range: string
+        description: >-
+          The Id field in the data dictionary specifies an identifier for the
+          datafile field being described. Datafile field identifiers are
+          strings. To cater for pre-existing RADx study data we do not impose
+          any restrictions on the format or characters that make up a field
+          identifier. Field identifiers may contain spaces.
+
+      Aliases:
+        range: string
+        multivalued: true
+        description: >-
+          The Aliases field in the data dictionary specifies a list of
+          alternative or previous identifiers for the datafile field being
+          described. Recording former identifiers as aliases allows a datafile
+          that uses an older identifier in its header record to be keyed to the
+          correct data dictionary record. Like the Id, aliases are strings with
+          no restrictions on their characters and may contain spaces. Aliases
+          MUST be unique across the whole data dictionary: an alias MUST NOT be
+          equal to the Id or an alias of any other record, so that any
+          identifier resolves to at most one data dictionary record.
+
+      # --- Human-readable metadata ----------------------------------------
+
+      Label:
+        required: true
+        range: string
+        description: >-
+          The Label field in the data dictionary specifies a presentation label
+          for the datafile field being described. Labels are strings; they may
+          be a human readable form of the Id. In the case where data represents
+          the response to survey questions, the label is often the text of the
+          question that was asked.
+
+      Description:
+        required: false
+        range: string
+        description: >-
+          The Description field in the data dictionary specifies a detailed
+          textual definition, explanation or context, of the field being
+          described. We strongly recommend that the Description field is filled
+          (in addition to other fields) out so that a third party that is trying
+          to understand the meaning of a field in a data dictionary can do so in
+          an unambiguous way.
+
+      Section:
+        required: false
+        range: string
+        description: >-
+          The Section field in the data dictionary specifies a section, or
+          group name, for each entry. Section names may be used for organizing
+          or clarifying purposes and are optional.
+
+      # --- Value constraints ----------------------------------------------
+
+      Cardinality:
+        range: CardinalityEnum
+        ifabsent: CardinalityEnum(single)
+        description: >-
+          The Cardinality field in the data dictionary specifies whether a field
+          is expected to be single valued or multi-valued in a datafile.
+          Multiple values in datafile field MUST be separated with a pipe
+          character, without surrounding white space. Acceptable values for the
+          cardinality field in the data dictionary are either single (the
+          associated datafile field has at most a single value) or multiple (the
+          associated datafile field may have multiple values). If no value is
+          specified then the default value of single is assumed.
+
+      Terms:
+        range: uriorcurie
+        multivalued: true
+        description: >-
+          The Terms field in the data dictionary specifies a list of ontology
+          terms that describe key concepts in the meaning of the field being
+          described. Multiple ontology term identifiers may be specified but
+          terms should be as specific as possible. Terms may be drawn from any
+          published ontology and are identified by IRIs, or by compact OBO
+          identifiers for terms from OBO Foundry ontologies. While not required,
+          we strongly recommend that term identifiers are resolvable.
+
+      Datatype:
+        required: true
+        range: DatatypeEnum
+        description: >-
+          The Datatype field in the data dictionary specifies a datatype name
+          that types field values. Datatype names MUST be from the set of
+          allowable datatype names and are case sensitive. If an enumeration is
+          supplied then the datatype name should be the datatype name of the
+          values in the enumeration.
+
+      Pattern:
+        range: string
+        description: >-
+          The Pattern field in the data dictionary may contain a regular
+          expression that specifies a pattern that must be matched by datafile
+          values. The complete datafile value must match the pattern. Regular
+          expressions use the XML Schema regular expression dialect and are
+          implicitly anchored.
+
+      Unit:
+        range: string
+        description: >-
+          The Unit field in the data dictionary may be used to document the
+          units for datafile values that represent quantities. Where possible we
+          recommend that SI unit names are used.
+
+      Enumeration:
+        range: EnumerationValue
+        multivalued: true
+        description: >-
+          The Enumeration field in the data dictionary specifies a controlled
+          list of values that datafile values must be drawn from. Each entry is
+          a value-label pair that may optionally carry an ontology term
+          identifier specifying the precise meaning of the value.
+
+      MissingValueCodes:
+        range: MissingValueCode
+        multivalued: true
+        description: >-
+          The MissingValueCodes field specifies codes that signify the reasons
+          for missing data values in transformcopy data files. A standard set of
+          codes always applies; codes specified here augment (are added to) that
+          standard set rather than replacing it.
+
+      # --- Documentation and provenance -----------------------------------
+
+      Examples:
+        range: string
+        multivalued: true
+        description: >-
+          The Examples field in the data dictionary may be used to provide one
+          or more example values for the datafile field being described. Unlike
+          the Notes field, examples are intended to be machine readable so that
+          they can be processed by downstream tools. Each example SHOULD be a
+          valid value for the field being described.
+
+      Notes:
+        range: string
+        description: >-
+          The Notes field in the data dictionary may be used to store
+          annotations, notes and comments on the row in the data dictionary and
+          the corresponding field in the datafile. The values of this field are
+          for human use and are not parsed to be used in a computational way.
+
+      Provenance:
+        range: string
+        description: >-
+          The Provenance field may be used to identify a Common Data Element
+          (CDE) that the field being described is based on, or any other
+          provenance for the field. Ideally the value is a URL that points to a
+          structured description of a CDE in a CDE repository, but it may also be
+          a string that represents an unambiguous name of a well-known CDE.
+
+      SeeAlso:
+        range: uri
+        description: >-
+          The SeeAlso field may be used to hold a URL that, when resolved,
+          provides further information about the data field being described.
+          Only syntactically well-formed and resolvable URLs should be entered
+          into this field.
+
+
+  EnumerationValue:
+    description: >-
+      A single value-label pair within an Enumeration, optionally carrying an
+      ontology term identifier that specifies the precise meaning of the value.
+    attributes:
+
+      value:
+        required: true
+        range: string
+        description: >-
+          The controlled value that a conforming datafile value must match. This
+          is the unquoted form of the value that appears in the datafile.
+
+      label:
+        required: true
+        range: string
+        description: A human readable label for the value.
+
+      iri:
+        range: uriorcurie
+        description: >-
+          An optional ontology term identifier, as a full IRI or a compact OBO
+          identifier, that specifies the precise meaning of the value.
+
+
+  MissingValueCode:
+    description: >-
+      A single value-label pair that gives a code signifying a reason for a
+      missing data value, together with a human readable description of that
+      reason.
+    attributes:
+
+      value:
+        required: true
+        range: string
+        description: The code that appears in the datafile to signify a missing value.
+
+      label:
+        required: true
+        range: string
+        description: A human readable description of the reason for the missing value.
+
+
+enums:
+
+  CardinalityEnum:
+    description: >-
+      Whether a datafile field is expected to hold a single value or may hold
+      multiple values. This is the set of values permitted for the Cardinality
+      field; when no value is given the default is single.
+    permissible_values:
+      single:
+        description: >-
+          The associated datafile field holds at most a single value. This is
+          the default when no cardinality is specified.
+      multiple:
+        description: >-
+          The associated datafile field may hold multiple values. Multiple
+          values within the field are separated with a pipe character, without
+          surrounding white space.
+
+  DatatypeEnum:
+    description: >-
+      The set of allowable datatype names. This is the set of XML Schema Part 2
+      built-in datatype names (the 19 primitive datatypes and the 25 datatypes
+      derived from them), extended with the RADx-specific datatype names
+      date_mdy, date_dmy and timestamp.
+    permissible_values:
+
+      # XML Schema primitive datatypes
+      string:
+      boolean:
+      decimal:
+      float:
+      double:
+      duration:
+      dateTime:
+      time:
+      date:
+      gYearMonth:
+      gYear:
+      gMonthDay:
+      gDay:
+      gMonth:
+      hexBinary:
+      base64Binary:
+      anyURI:
+      QName:
+      NOTATION:
+
+      # XML Schema datatypes derived from the primitives
+      normalizedString:
+      token:
+      language:
+      NMTOKEN:
+      NMTOKENS:
+      Name:
+      NCName:
+      ID:
+      IDREF:
+      IDREFS:
+      ENTITY:
+      ENTITIES:
+      integer:
+      nonPositiveInteger:
+      negativeInteger:
+      long:
+      int:
+      short:
+      byte:
+      nonNegativeInteger:
+      unsignedLong:
+      unsignedInt:
+      unsignedShort:
+      unsignedByte:
+      positiveInteger:
+
+      # RADx-specific datatype names
+      date_mdy:
+      date_dmy:
+      timestamp:
