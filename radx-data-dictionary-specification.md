@@ -16,6 +16,8 @@ All RADx datafiles SHOULD have header records.
 
 A RADx _data dictionary_ is a Comma Separated Values (CSV) file that describes how RADx _data_ contained in another CSV file, a _datafile_, is structured.  A data dictionary CSV file contains EXACTLY ONE data dictionary.
 
+A machine-processable [LinkML](https://linkml.io) rendering of this specification is available in the [`linkml/`](linkml/) folder of this repository (see the [`linkml/` README section](README.md#linkml-representation) for an overview).  This Markdown document remains the authoritative specification.
+
 ## Data Dictionary CSV Format
 
 Data dictionaries MUST use the CSV format specified by [RFC 4180](https://datatracker.ietf.org/doc/html/rfc4180#page-2).  
