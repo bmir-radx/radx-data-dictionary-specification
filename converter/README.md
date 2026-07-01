@@ -24,9 +24,12 @@ Work in progress. Implemented so far:
   `CustomType` the emitter must add to the schema's `types:` block. Covers all
   47 allowable names (a test checks this against the schema's `DatatypeEnum`);
   case-sensitive, unknown names raise.
+- **Constant tables** — `missing_values.py` holds the 25 standard
+  missing-value codes (stored as the spec's verbatim default string and parsed
+  by the converter's own parser); `units.py` provides `lookup_unit`, mapping a
+  raw `Unit` cell (by name or symbol) to a structured `UnitOfMeasure`.
 
-Not yet implemented: unit/missing-value tables, the schema emitter, and the
-CLI.
+Not yet implemented: the schema emitter and the CLI.
 
 ## Development
 

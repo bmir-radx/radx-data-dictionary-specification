@@ -14,6 +14,11 @@ from .datatypes import (
     UnknownDatatypeError,
     resolve_datatype,
 )
+from .missing_values import (
+    STANDARD_ENUM_NAME,
+    STANDARD_MISSING_VALUE_CODES,
+    STANDARD_MISSING_VALUE_CODES_TEXT,
+)
 from .reader import (
     KNOWN_COLUMNS,
     REQUIRED_COLUMNS,
@@ -21,6 +26,7 @@ from .reader import (
     Row,
     read_data_dictionary,
 )
+from .units import UnitOfMeasure, lookup_unit
 
 __all__ = [
     "BUILTIN_RANGES",
@@ -28,6 +34,11 @@ __all__ = [
     "CustomType",
     "UnknownDatatypeError",
     "resolve_datatype",
+    "STANDARD_ENUM_NAME",
+    "STANDARD_MISSING_VALUE_CODES",
+    "STANDARD_MISSING_VALUE_CODES_TEXT",
+    "UnitOfMeasure",
+    "lookup_unit",
     "KNOWN_COLUMNS",
     "REQUIRED_COLUMNS",
     "ReadError",
