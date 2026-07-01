@@ -1,0 +1,277 @@
+# CSV-faithful rendering of the RADx Data Dictionary Specification.
+#
+# This schema models a data dictionary EXACTLY as it appears on the wire: a
+# single CSV file in which each row is one DataElement and every column is a
+# single string cell. Structure that the companion schema (specification.yaml)
+# models as nested objects -- enumerations, missing-value codes and ontology
+# terms -- is, in the CSV, encoded INSIDE a single string cell using the
+# mini-grammars defined in the specification (e.g. `"0"=[Saliva] | "1"=[Blood]`).
+#
+# Consequently, every attribute here has range `string` (or a string-valued
+# enum), and none are `multivalued`: multiplicity lives inside the cell via the
+# pipe (`|`) or whitespace delimiters, not across columns. Generating a CSV/TSV
+# from this schema therefore yields a file that matches the published format
+# one column per attribute, one row per data element.
+#
+# For the parsed, object-oriented model (useful once cell grammars have been
+# parsed) see specification.yaml in this repository.
+#
+# NOTE: the `id` and the `dd` prefix use a w3id.org permanent identifier. The
+# redirect for this namespace still needs to be registered at
+# https://github.com/perma-id/w3id.org before these URIs will resolve.
+id: https://w3id.org/radx/data-dictionary-csv
+name: radxdatadictionarycsv
+title: RADx Data Dictionary Schema (CSV-faithful)
+description: >-
+  A CSV-faithful LinkML rendering of the RADx Data Dictionary Specification.
+  Each row of the CSV is one DataElement and every column is a single string
+  cell; rich values (enumerations, missing-value codes, ontology terms) are
+  encoded within a single cell using the grammars defined in the specification.
+  See the `source` for the authoritative prose specification.
+license: https://opensource.org/licenses/BSD-2-Clause
+version: 0.1.0
+source: https://github.com/bmir-radx/radx-data-dictionary-specification
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  dd: https://w3id.org/radx/data-dictionary-csv/
+default_prefix: dd
+
+imports:
+  - linkml:types
+
+
+classes:
+
+  DataElement:
+    description: >-
+      A single row of a data dictionary CSV, describing one field (column) of a
+      target datafile. Every column is a single string cell; there is exactly
+      one DataElement per datafile field, and the order of DataElements
+      corresponds to the order of the fields in the target datafile.
+    attributes:
+
+      # --- Identity -------------------------------------------------------
+
+      Id:
+        identifier: true
+        required: true
+        range: string
+        description: >-
+          The Id field specifies an identifier for the datafile field being
+          described. Field identifiers are strings; no restrictions are imposed
+          on their format or characters, and they may contain spaces.
+
+      Aliases:
+        range: string
+        # A pipe-delimited list of one or more non-empty items: no empty items,
+        # no leading or trailing pipe. (Uniqueness across the dictionary cannot
+        # be expressed as a per-cell pattern and is enforced by validators.)
+        pattern: '^[^|]+(\|[^|]+)*$'
+        description: >-
+          A single string cell holding a list of alternative or previous
+          identifiers for the field. Multiple aliases are separated by a pipe
+          character (`|`) without surrounding white space; for example
+          `ParticipantID|Participant Id`. Aliases MUST be unique across the
+          whole data dictionary so that any identifier resolves to at most one
+          data element.
+
+      # --- Human-readable metadata ----------------------------------------
+
+      Label:
+        required: true
+        range: string
+        description: >-
+          The Label field specifies a presentation label for the field being
+          described. Labels are strings and may be a human readable form of the
+          Id; for survey data the label is often the text of the question asked.
+
+      Description:
+        range: string
+        description: >-
+          A detailed textual definition, explanation or context for the field
+          being described.
+
+      Section:
+        range: string
+        description: >-
+          A section or group name for the entry, used for organizing or
+          clarifying purposes.
+
+      # --- Value constraints ----------------------------------------------
+
+      Cardinality:
+        range: CardinalityEnum
+        ifabsent: CardinalityEnum(single)
+        description: >-
+          Whether the datafile field is single valued (`single`) or may hold
+          multiple pipe-separated values (`multiple`). If the cell is blank the
+          value `single` is assumed.
+
+      Terms:
+        range: string
+        description: >-
+          A single string cell holding a list of ontology term identifiers that
+          describe key concepts in the meaning of the field. Multiple terms are
+          separated by white space (0x0020 or 0x00A0); where a newline is used
+          the whole cell must be quoted per RFC 4180. Terms are full IRIs, or
+          compact OBO identifiers for OBO Foundry ontologies (e.g.
+          `UBERON:0001836`).
+
+      Datatype:
+        required: true
+        range: DatatypeEnum
+        description: >-
+          A datatype name that types the field's values. Datatype names are case
+          sensitive and MUST come from the set of allowable datatype names. If
+          an enumeration is supplied, this is the datatype of the enumeration's
+          values.
+
+      Pattern:
+        range: string
+        description: >-
+          A regular expression that the complete datafile value must match.
+          Regular expressions use the XML Schema regular expression dialect and
+          are implicitly anchored.
+
+      Unit:
+        range: string
+        description: >-
+          The units for datafile values that represent quantities. Where
+          possible, SI unit names are recommended.
+
+      Enumeration:
+        range: string
+        # A pipe-delimited list of `"value"=[label]` pairs, each optionally
+        # followed by a `(term)` in round brackets. White space around `=` and
+        # `|` is not significant. Anchored so the whole cell must match.
+        pattern: '^\s*"[^"]*"\s*=\s*\[[^\]]*\](\s*\([^)]*\))?(\s*\|\s*"[^"]*"\s*=\s*\[[^\]]*\](\s*\([^)]*\))?)*\s*$'
+        description: >-
+          A single string cell holding a controlled list of values that datafile
+          values must be drawn from, in the format
+          `"value"=[label](optionalTermIRI) | ...`. Each item is a value-label
+          pair separated from surrounding items by a pipe character (`|`); an
+          ontology term identifier may optionally follow the label in round
+          brackets. For example: `"0"=[Saliva](UBERON:0001836) | "1"=[Blood]`.
+
+      MissingValueCodes:
+        range: string
+        # Same enumeration grammar as the Enumeration cell.
+        pattern: '^\s*"[^"]*"\s*=\s*\[[^\]]*\](\s*\([^)]*\))?(\s*\|\s*"[^"]*"\s*=\s*\[[^\]]*\](\s*\([^)]*\))?)*\s*$'
+        description: >-
+          A single string cell, in the same format as the Enumeration cell, of
+          codes signifying reasons for missing data values in transformcopy data
+          files. A standard set of codes always applies; codes given here augment
+          that standard set rather than replacing it. When the cell is blank only
+          the standard set applies.
+
+      # --- Documentation and provenance -----------------------------------
+
+      Examples:
+        range: string
+        # A pipe-delimited list of one or more non-empty items.
+        pattern: '^[^|]+(\|[^|]+)*$'
+        description: >-
+          A single string cell holding one or more example values for the field,
+          separated by a pipe character (`|`) without surrounding white space;
+          for example `N001|N002|P517`. Each example SHOULD be a valid value for
+          the field. Unlike Notes, examples are intended to be machine readable.
+
+      Notes:
+        range: string
+        description: >-
+          Free-text annotations, notes and comments on the row. The values of
+          this field are for human use and are not parsed computationally.
+
+      Provenance:
+        range: string
+        description: >-
+          Identifies a Common Data Element (CDE) that the field is based on, or
+          any other provenance for the field. Ideally a URL pointing to a
+          structured CDE description, but may also be an unambiguous name of a
+          well-known CDE.
+
+      SeeAlso:
+        range: uri
+        description: >-
+          A URL that, when resolved, provides further information about the
+          field. Only syntactically well-formed and resolvable URLs should be
+          entered.
+
+
+enums:
+
+  CardinalityEnum:
+    description: >-
+      Whether a datafile field holds a single value or may hold multiple values.
+      When the Cardinality cell is blank the default is single.
+    permissible_values:
+      single:
+        description: >-
+          The associated datafile field holds at most a single value. This is
+          the default when the cell is blank.
+      multiple:
+        description: >-
+          The associated datafile field may hold multiple values, separated
+          within the cell by a pipe character without surrounding white space.
+
+  DatatypeEnum:
+    description: >-
+      The set of allowable datatype names. This is the set of XML Schema Part 2
+      built-in datatype names (the 19 primitive datatypes and the 25 datatypes
+      derived from them), extended with the RADx-specific datatype names
+      date_mdy, date_dmy and timestamp.
+    permissible_values:
+
+      # XML Schema primitive datatypes
+      string:
+      boolean:
+      decimal:
+      float:
+      double:
+      duration:
+      dateTime:
+      time:
+      date:
+      gYearMonth:
+      gYear:
+      gMonthDay:
+      gDay:
+      gMonth:
+      hexBinary:
+      base64Binary:
+      anyURI:
+      QName:
+      NOTATION:
+
+      # XML Schema datatypes derived from the primitives
+      normalizedString:
+      token:
+      language:
+      NMTOKEN:
+      NMTOKENS:
+      Name:
+      NCName:
+      ID:
+      IDREF:
+      IDREFS:
+      ENTITY:
+      ENTITIES:
+      integer:
+      nonPositiveInteger:
+      negativeInteger:
+      long:
+      int:
+      short:
+      byte:
+      nonNegativeInteger:
+      unsignedLong:
+      unsignedInt:
+      unsignedShort:
+      unsignedByte:
+      positiveInteger:
+
+      # RADx-specific datatype names
+      date_mdy:
+      date_dmy:
+      timestamp:
