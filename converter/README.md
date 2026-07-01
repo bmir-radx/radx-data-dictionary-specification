@@ -8,6 +8,11 @@ for the design.
 
 Work in progress. Implemented so far:
 
+- **Reader** (`radx_dd_converter/reader.py`) — `read_data_dictionary` parses a
+  data dictionary CSV per RFC 4180, validates the header (required columns
+  `Id`/`Label`/`Datatype`, duplicate detection), and returns ordered `Row`
+  objects (row order is significant). Errors on blank required cells and
+  duplicate `Id`s; preserves extra (non-canonical) columns.
 - **Parser layer** (`radx_dd_converter/grammar/`) — parses the in-cell
   mini-grammars used by RADx data dictionaries:
   - `parse_enumeration` / `parse_missing_value_codes` — the
@@ -15,8 +20,8 @@ Work in progress. Implemented so far:
     (`grammar/enumeration.lark`) that mirrors the EBNF in the specification.
   - `parse_terms` — splits a `Terms` cell into IRI/CURIE tokens.
 
-Not yet implemented: the CSV reader, datatype mapping, unit/missing-value
-tables, the schema emitter, and the CLI.
+Not yet implemented: datatype mapping, unit/missing-value tables, the schema
+emitter, and the CLI.
 
 ## Development
 

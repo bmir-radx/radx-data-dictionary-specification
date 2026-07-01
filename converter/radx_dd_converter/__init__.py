@@ -7,4 +7,18 @@ Python objects. It is the one piece that standard LinkML tooling cannot provide,
 because the structure is hidden inside string cells in a bespoke notation.
 """
 
-__all__ = []
+from .reader import (
+    KNOWN_COLUMNS,
+    REQUIRED_COLUMNS,
+    ReadError,
+    Row,
+    read_data_dictionary,
+)
+
+__all__ = [
+    "KNOWN_COLUMNS",
+    "REQUIRED_COLUMNS",
+    "ReadError",
+    "Row",
+    "read_data_dictionary",
+]
