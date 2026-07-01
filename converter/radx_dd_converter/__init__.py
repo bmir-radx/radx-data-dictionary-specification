@@ -14,6 +14,7 @@ from .datatypes import (
     UnknownDatatypeError,
     resolve_datatype,
 )
+from .emit import EmitOptions, Emitter, emit_schema
 from .missing_values import (
     STANDARD_ENUM_NAME,
     STANDARD_MISSING_VALUE_CODES,
@@ -34,6 +35,9 @@ __all__ = [
     "CustomType",
     "UnknownDatatypeError",
     "resolve_datatype",
+    "EmitOptions",
+    "Emitter",
+    "emit_schema",
     "STANDARD_ENUM_NAME",
     "STANDARD_MISSING_VALUE_CODES",
     "STANDARD_MISSING_VALUE_CODES_TEXT",

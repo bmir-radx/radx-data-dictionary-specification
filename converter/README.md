@@ -28,8 +28,25 @@ Work in progress. Implemented so far:
   missing-value codes (stored as the spec's verbatim default string and parsed
   by the converter's own parser); `units.py` provides `lookup_unit`, mapping a
   raw `Unit` cell (by name or symbol) to a structured `UnitOfMeasure`.
+- **Emitter** (`radx_dd_converter/emit.py`) — `emit_schema(rows, options)`
+  assembles rows + parsed cells into a `linkml_runtime` `SchemaDefinition` and
+  dumps YAML. Implements the full mapping: `Datatype` → range / custom type,
+  `Enumeration` → generated enum wired via slot `any_of` with the shared
+  `StandardMissingValueCodes` (and per-field codes), `Provenance` →
+  `source:`/annotation, `Section` → `in_subset`, `Unit` → native `unit:`
+  (lookup-assisted, raw preserved), CURIEs kept with OBO prefixes auto-
+  registered. A test lints the generated schema and asserts zero errors.
 
-Not yet implemented: the schema emitter and the CLI.
+Not yet implemented: the CLI (`cli.py`) and its `radx-dd-to-linkml` entry point.
+
+## Usage (library)
+
+```python
+from radx_dd_converter import read_data_dictionary, emit_schema, EmitOptions
+
+rows = read_data_dictionary("my_dictionary.csv")
+print(emit_schema(rows, EmitOptions(schema_name="my_data", class_name="Record")))
+```
 
 ## Development
 
