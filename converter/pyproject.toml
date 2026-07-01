@@ -17,8 +17,8 @@ dependencies = [
 [project.optional-dependencies]
 test = ["pytest>=7"]
 
-# NOTE: the `radx-dd-to-linkml` console script will be added when the CLI layer
-# (radx_dd_converter/cli.py) is implemented. Only the parser layer exists today.
+[project.scripts]
+radx-dd-to-linkml = "radx_dd_converter.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

@@ -37,7 +37,23 @@ Work in progress. Implemented so far:
   (lookup-assisted, raw preserved), CURIEs kept with OBO prefixes auto-
   registered. A test lints the generated schema and asserts zero errors.
 
-Not yet implemented: the CLI (`cli.py`) and its `radx-dd-to-linkml` entry point.
+- **CLI** (`radx_dd_converter/cli.py`) — the `radx-dd-to-linkml` console script
+  ties the pipeline together: read CSV → emit schema → write YAML. Schema
+  name/id/class default from the input filename and can be overridden with
+  flags. Reports read/parse/datatype errors cleanly (no traceback).
+
+The converter is feature-complete for v1.
+
+## Usage (CLI)
+
+```sh
+radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml
+# override the derived identifiers:
+radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml \
+    --name my_data --id https://example.org/my_data --class-name Record
+# default output is stdout:
+radx-dd-to-linkml my_dictionary.csv | head
+```
 
 ## Usage (library)
 
