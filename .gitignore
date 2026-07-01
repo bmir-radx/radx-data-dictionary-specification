@@ -6,3 +6,6 @@ __pycache__/
 build/
 dist/
 .idea/
+
+# Local, uncommitted converter examples (may contain unpublished study metadata)
+converter/examples/
