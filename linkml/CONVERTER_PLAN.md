@@ -252,17 +252,28 @@ tests/
   schema in-test and assert 0 errors — the converter must always emit a valid
   schema.
 
-## Open questions / decisions still to make
+## Resolved decisions
 
-1. **Prefixes for `Terms`/`meaning` CURIEs.** OBO ids expand deterministically
-   (`MONDO:0004979` → `http://purl.obolibrary.org/obo/MONDO_0004979`). Do we
-   (a) always expand to full IRIs, or (b) register prefixes in the output
-   schema's `prefixes:` and keep CURIEs? (Leaning (b), with OBO expansion as a
-   known prefix map.)
-2. **Class name / schema id.** Derived from CLI flags, filename, or a dictionary
-   metadata row? (Start: CLI flags with filename fallback.)
-3. **Packaging.** Standalone script vs. installable package with an entry point.
-   Where does it live — this repo, or a sibling repo?
+1. **Prefixes for `Terms`/`meaning` CURIEs (decided).** Emit compact ids
+   (`UBERON:0001836`) **as-is** and register their prefixes in the output
+   schema's `prefixes:` block, rather than expanding to full IRIs. OBO Foundry
+   prefixes are auto-registered using the deterministic OBO rule
+   (`IDSPACE:LOCALID` → `http://purl.obolibrary.org/obo/IDSPACE_LOCALID`), so any
+   `IDSPACE:` prefix seen in the input maps to
+   `http://purl.obolibrary.org/obo/IDSPACE_`. Full IRIs are emitted unchanged. A
+   non-OBO CURIE whose prefix cannot be resolved is kept as-is and a warning is
+   logged (its prefix is left for the user to declare).
+
+2. **Schema `id` / `name` / root class name (decided).** Taken from CLI flags
+   (`--id`, `--name`, `--class-name`); when a flag is omitted, derived from the
+   input CSV filename (e.g. `patient_data.csv` → name `patient_data`, id under a
+   default base, class `PatientData`). The default root class name, when nothing
+   else is given, is **`Record`**. No dictionary metadata row is assumed (RADx
+   dictionaries have no standard metadata row).
+
+3. **Packaging (decided).** An installable Python package living in this
+   repository under [`converter/`](../converter/), with a `radx-dd-to-linkml`
+   console script (added once the CLI layer exists).
 
 ## Future work (not v1)
 
