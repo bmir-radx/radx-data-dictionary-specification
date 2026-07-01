@@ -7,6 +7,13 @@ Python objects. It is the one piece that standard LinkML tooling cannot provide,
 because the structure is hidden inside string cells in a bespoke notation.
 """
 
+from .datatypes import (
+    BUILTIN_RANGES,
+    CUSTOM_TYPES,
+    CustomType,
+    UnknownDatatypeError,
+    resolve_datatype,
+)
 from .reader import (
     KNOWN_COLUMNS,
     REQUIRED_COLUMNS,
@@ -16,6 +23,11 @@ from .reader import (
 )
 
 __all__ = [
+    "BUILTIN_RANGES",
+    "CUSTOM_TYPES",
+    "CustomType",
+    "UnknownDatatypeError",
+    "resolve_datatype",
     "KNOWN_COLUMNS",
     "REQUIRED_COLUMNS",
     "ReadError",

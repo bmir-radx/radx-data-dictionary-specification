@@ -19,9 +19,14 @@ Work in progress. Implemented so far:
     `"value"=[label](iri) | ...` syntax, driven by a Lark grammar
     (`grammar/enumeration.lark`) that mirrors the EBNF in the specification.
   - `parse_terms` — splits a `Terms` cell into IRI/CURIE tokens.
+- **Datatype mapping** (`radx_dd_converter/datatypes.py`) — `resolve_datatype`
+  maps a RADx/XSD datatype name to either a LinkML built-in range or a
+  `CustomType` the emitter must add to the schema's `types:` block. Covers all
+  47 allowable names (a test checks this against the schema's `DatatypeEnum`);
+  case-sensitive, unknown names raise.
 
-Not yet implemented: datatype mapping, unit/missing-value tables, the schema
-emitter, and the CLI.
+Not yet implemented: unit/missing-value tables, the schema emitter, and the
+CLI.
 
 ## Development
 
