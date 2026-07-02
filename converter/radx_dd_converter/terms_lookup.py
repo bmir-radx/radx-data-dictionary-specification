@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 OLS4_TERMS_URL = "https://www.ebi.ac.uk/ols4/api/terms"
 BIOPORTAL_CLASS_URL = "https://data.bioontology.org/ontologies/{ont}/classes/{iri}"
+# Also defined in emit.py; kept independent to avoid coupling the modules.
 _OBO_PURL = "http://purl.obolibrary.org/obo/"
 
 _DEFAULT_TIMEOUT = 15.0
@@ -34,7 +35,10 @@ RESOLVERS = ("ols4", "bioportal")
 
 
 class LookupError_(Exception):
-    """Raised for a configuration problem (e.g. BioPortal selected without a key)."""
+    """Raised for a configuration problem (e.g. BioPortal selected without a key).
+
+    The trailing underscore avoids shadowing the built-in ``LookupError``.
+    """
 
 
 def _to_iri(term: str) -> Optional[str]:

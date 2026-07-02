@@ -44,7 +44,14 @@ logger = logging.getLogger(__name__)
 
 _URL_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
 _CURIE_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_.-]*):(.+)$")
+# Also defined in terms_lookup.py; kept independent to avoid coupling the modules.
 _OBO_PURL = "http://purl.obolibrary.org/obo/"
+
+# Indentation (in spaces) of entries within the rendered YAML: top-level section
+# entries (enums, subsets, one class) sit at 2; a class's slots sit at 6
+# (class -> attributes -> slot). Used when placing comment blocks/blank lines.
+_SECTION_ENTRY_INDENT = 2
+_SLOT_INDENT = 6
 
 
 def _clean_text(text: str) -> str:
@@ -92,7 +99,8 @@ def _class_case(name: str) -> str:
     """CamelCase a name for use as an enum/class name.
 
     Splits on any non-alphanumeric character, including underscores, so
-    ``nih_race`` -> ``NihRace`` (not ``Nih_race``).
+    ``nih_race`` -> ``NihRace`` (not ``Nih_race``). (cf. ``_class_from_name`` in
+    cli.py, which is the same casing with a different empty-input fallback.)
     """
     parts = re.split(r"[^A-Za-z0-9]+", name.strip())
     return "".join(p[:1].upper() + p[1:] for p in parts if p) or "X"
@@ -508,12 +516,16 @@ class Emitter:
         # count / referencing ids); data elements get a 1-line block. This
         # replaces the trailing counters _render added for them.
         if self._enum_users:
-            text = _annotate_blocks(text, 2, "Enum", "enums", self._enum_users)
+            text = _annotate_blocks(
+                text, _SECTION_ENTRY_INDENT, "Enum", "enums", self._enum_users
+            )
         if self._section_users:
             text = _annotate_blocks(
-                text, 2, "Section", "sections", self._section_users
+                text, _SECTION_ENTRY_INDENT, "Section", "sections", self._section_users
             )
-        text = _annotate_blocks(text, 6, "Data element", "data elements")
+        text = _annotate_blocks(
+            text, _SLOT_INDENT, "Data element", "data elements"
+        )
         return text
 
 
@@ -645,22 +657,26 @@ def _render(as_dict: dict) -> str:
         body = _dump_yaml({key: value}).rstrip("\n")
         if key == "classes":
             # Slots live two levels down under `attributes:`; space them there.
-            body = _space_entries_at(body, indent=6)
-            # Number the class(es) at indent 2 and the slots at indent 6.
-            body = _number_entries_at(body, indent=2, total=len(value or {}), label="classes")
+            body = _space_entries_at(body, indent=_SLOT_INDENT)
+            # Number the class(es) at the section indent and the slots deeper.
+            body = _number_entries_at(
+                body, indent=_SECTION_ENTRY_INDENT, total=len(value or {}), label="classes"
+            )
             slot_total = sum(
                 len((cls or {}).get("attributes") or {}) for cls in value.values()
             )
             body = _number_entries_at(
-                body, indent=6, total=slot_total, label="data elements"
+                body, indent=_SLOT_INDENT, total=slot_total, label="data elements"
             )
         elif key in _SPACED_SECTIONS:
-            body = _space_entries_at(body, indent=2)
+            body = _space_entries_at(body, indent=_SECTION_ENTRY_INDENT)
 
         # Number the entries of enums / subsets as "n of m" (classes handled above).
         if key in _NUMBERED_SECTIONS and key != "classes":
             label = "sections" if key == "subsets" else key
-            body = _number_entries_at(body, indent=2, total=len(value or {}), label=label)
+            body = _number_entries_at(
+                body, indent=_SECTION_ENTRY_INDENT, total=len(value or {}), label=label
+            )
         blocks.append(f"# --- {comment} ---\n{body}")
 
     header = "\n".join(scalar_header)

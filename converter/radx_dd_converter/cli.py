@@ -48,7 +48,8 @@ def _name_from_filename(path: Path) -> str:
 
 def _class_from_name(name: str) -> str:
     # Split on any non-alphanumeric, including underscores, so
-    # "patient_data" -> "PatientData".
+    # "patient_data" -> "PatientData". (cf. _class_case in emit.py, the same
+    # casing; here the empty-input fallback is "Record" rather than "X".)
     parts = re.split(r"[^A-Za-z0-9]+", name)
     return "".join(p[:1].upper() + p[1:] for p in parts if p) or "Record"
 

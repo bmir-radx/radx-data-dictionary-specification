@@ -55,9 +55,9 @@ _UNIT_TABLE = (
 # Lookup by both name and symbol, case-insensitively. A name and a symbol never
 # collide in the spec table, so a single map is unambiguous.
 _LOOKUP: Dict[str, UnitOfMeasure] = {}
-for _u in _UNIT_TABLE:
-    _LOOKUP[_u.descriptive_name.lower()] = _u
-    _LOOKUP[_u.symbol.lower()] = _u
+for _unit in _UNIT_TABLE:
+    _LOOKUP[_unit.descriptive_name.lower()] = _unit
+    _LOOKUP[_unit.symbol.lower()] = _unit
 
 
 def lookup_unit(raw: str) -> Optional[UnitOfMeasure]:
