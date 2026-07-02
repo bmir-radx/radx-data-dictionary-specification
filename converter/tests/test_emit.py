@@ -197,8 +197,8 @@ def test_output_has_section_comments_and_blank_lines(schema_yaml):
     assert "# --- Slots ---" not in schema_yaml  # slots live under Classes
     assert "# --- Classes ---" in schema_yaml
     assert "# --- Enumerations ---" in schema_yaml
-    # A blank line separates slots (two attribute keys with a blank between).
-    assert "\n\n      PartId:" in schema_yaml or "\n\n      SampleType:" in schema_yaml
+    # A blank line separates slots; each slot carries a 1-line block above it.
+    assert "\n\n      # Data element 2 of 3\n      SampleType:" in schema_yaml
 
 
 def test_pretty_rendering_preserves_content(schema_yaml):
@@ -269,9 +269,9 @@ def test_entries_are_numbered_n_of_m(schema_yaml):
     assert "StandardMissingValueCodes:  # 2 of 2 enums" in schema_yaml
     # The single tree_root class is 1 of 1 (singularised).
     assert "Record:  # 1 of 1 class" in schema_yaml
-    # Slots are numbered within all slots, labelled "data elements".
-    assert "PartId:  # 1 of 3 data elements" in schema_yaml
-    assert "Symptoms:  # 3 of 3 data elements" in schema_yaml
+    # Data elements carry their number in a 1-line block above the slot.
+    assert "# Data element 1 of 3\n      PartId:" in schema_yaml
+    assert "# Data element 3 of 3\n      Symptoms:" in schema_yaml
     # A slot's sub-keys (title/range) are not numbered.
     assert "title: Participant Id\n" in schema_yaml
 
@@ -299,11 +299,11 @@ def test_number_entries_helper_resets_per_section():
 
 
 def test_enum_block_usage_line_and_cap():
-    from radx_dd_converter.emit import _annotate_enum_blocks
+    from radx_dd_converter.emit import _annotate_blocks
 
     users = {"E": [f"f{i}" for i in range(10)]}
     # Feed the line as _render would produce it (with the trailing counter).
-    out = _annotate_enum_blocks("  E:  # 3 of 5 enums\n", users)
+    out = _annotate_blocks("  E:  # 3 of 5 enums\n", 2, "Enum", "enums", users)
     assert "# Enum 3 of 5\n" in out
     assert "# Used by 10 data elements\n" in out
     assert "# f0 | f1 | f2 | f3 | f4 | f5 (+4 more)\n" in out
@@ -311,10 +311,34 @@ def test_enum_block_usage_line_and_cap():
 
 
 def test_enum_block_singular_data_element():
-    from radx_dd_converter.emit import _annotate_enum_blocks
+    from radx_dd_converter.emit import _annotate_blocks
 
-    out = _annotate_enum_blocks("  E:  # 1 of 1 enum\n", {"E": ["only"]})
+    out = _annotate_blocks("  E:  # 1 of 1 enum\n", 2, "Enum", "enums", {"E": ["only"]})
     assert "# Used by 1 data element\n" in out  # singular
+
+
+def test_data_element_one_line_block():
+    from radx_dd_converter.emit import _annotate_blocks
+
+    # No users map -> a one-line "# Data element n of m" block, bare key line.
+    out = _annotate_blocks(
+        "      age:  # 2 of 5 data elements\n", 6, "Data element", "data elements"
+    )
+    assert "      # Data element 2 of 5\n" in out
+    assert "      age:\n" in out
+    assert "Used by" not in out  # data elements have no used-by line
+
+
+def test_section_block_three_lines():
+    from radx_dd_converter.emit import _annotate_blocks
+
+    out = _annotate_blocks(
+        "  Demographics:  # 3 of 4 sections\n",
+        2, "Section", "sections", {"Demographics": ["a", "b"]},
+    )
+    assert "# Section 3 of 4\n" in out
+    assert "# Used by 2 data elements\n" in out
+    assert "# a | b\n" in out
 
 
 def test_annotate_enum_values_off_by_default(schema_yaml):

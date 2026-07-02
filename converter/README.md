@@ -86,9 +86,13 @@ values are visible at the point of use without scrolling to the `enums:` section
 - range: SampleTypeEnum  # 0=Saliva | 1=Blood
 ```
 
-Each field enum also gets a 3-line comment block above its definition (always
-on) giving its number, how many data elements use it, and the referencing ids
-(capped) — useful for spotting a shared enum reused across many fields:
+Comment blocks are placed above entries (always on) to make the schema easier
+to scan:
+
+- **Field enums** and **sections** get a 3-line block: its number, how many data
+  elements use it, and the referencing ids (capped) — useful for spotting a
+  shared enum or a large section.
+- **Data elements** get a 1-line block: `# Data element n of m`.
 
 ```yaml
 # Enum 8 of 16
@@ -96,6 +100,9 @@ on) giving its number, how many data elements use it, and the referencing ids
 # nih_disability | nih_deaf | nih_blind | ... (+105 more)
 NoYesOtherEtcEnum:
 ```
+
+The shared `StandardMissingValueCodes` enum is always emitted last in the
+`enums:` section.
 
 ## Usage (library)
 

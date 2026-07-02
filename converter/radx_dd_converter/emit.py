@@ -164,6 +164,9 @@ class Emitter:
         # Field enum name -> list of slot names that use it (for the optional
         # "used by" reverse-reference comment on the enum definition).
         self._enum_users: Dict[str, list] = {}
+        # Subset (Section) name -> list of slot names in it (for the section
+        # comment block above each subset definition).
+        self._section_users: Dict[str, list] = {}
 
     # -- prefixes / term identifiers ---------------------------------------
 
@@ -302,6 +305,7 @@ class Emitter:
                     name=subset_name, title=section
                 )
             slot.in_subset.append(subset_name)
+            self._section_users.setdefault(subset_name, []).append(slot.name)
 
         # Unit -> native unit: (lookup-assisted), raw always preserved.
         unit_raw = row.get("Unit").strip()
@@ -417,6 +421,17 @@ class Emitter:
         if renames:
             self._apply_enum_renames(schema, renames)
 
+        # Always place the shared StandardMissingValueCodes enum last by
+        # rebuilding the enums mapping in the desired order. schema.enums may be
+        # a plain dict or a linkml JsonObj, so iterate via jsonasobj2.
+        import jsonasobj2
+
+        pairs = list(jsonasobj2.items(schema.enums))
+        if any(name == STANDARD_ENUM_NAME for name, _ in pairs):
+            reordered = {n: e for n, e in pairs if n != STANDARD_ENUM_NAME}
+            reordered[STANDARD_ENUM_NAME] = dict(pairs)[STANDARD_ENUM_NAME]
+            schema.enums = reordered
+
         return schema
 
     def _apply_enum_renames(
@@ -431,8 +446,10 @@ class Emitter:
         # Rebuild the enums mapping preserving order, with renamed keys. Keep the
         # enum's own `name` in sync with its key, else validation rejects the
         # mismatch (and _drop_redundant_keys only strips `name` when it matches).
+        import jsonasobj2
+
         new_enums = {}
-        for name, enum in schema.enums.items():
+        for name, enum in jsonasobj2.items(schema.enums):
             new_name = renames.get(name, name)
             enum.name = new_name
             new_enums[new_name] = enum
@@ -484,11 +501,17 @@ class Emitter:
                 text = _annotate_term_lines(text, labels)
         if self.opts.annotate_enum_values and self._field_enum_values:
             text = _annotate_enum_ranges(text, self._field_enum_values)
-        # Field enums get a 3-line comment block above their definition (Enum
-        # n of m / Used by N data elements / the referencing ids). This replaces
-        # the trailing "# n of m enums" counter that _render added for them.
+        # Move the trailing "n of m" counters into comment blocks above each
+        # entry: field enums and sections get a 3-line block (number / used-by
+        # count / referencing ids); data elements get a 1-line block. This
+        # replaces the trailing counters _render added for them.
         if self._enum_users:
-            text = _annotate_enum_blocks(text, self._enum_users)
+            text = _annotate_blocks(text, 2, "Enum", "enums", self._enum_users)
+        if self._section_users:
+            text = _annotate_blocks(
+                text, 2, "Section", "sections", self._section_users
+            )
+        text = _annotate_blocks(text, 6, "Data element", "data elements")
         return text
 
 
@@ -766,40 +789,54 @@ def _annotate_enum_ranges(text: str, field_enum_values: Dict[str, list]) -> str:
 _ENUM_USERS_CAP = 6  # max data-element ids listed in the "used by" comment line
 
 
-def _annotate_enum_blocks(text: str, enum_users: Dict[str, list]) -> str:
-    """Put a 3-line comment block above each field enum definition.
+def _annotate_blocks(
+    text: str,
+    indent: int,
+    kind: str,
+    counter_noun: str,
+    users: Optional[Dict[str, list]] = None,
+) -> str:
+    """Move an entry's trailing "n of m <noun>" counter into a block above it.
 
-    For each field-enum definition line (indent 2, ``  EnumName:``) whose name
-    is in ``enum_users``, the trailing ``# n of m enums`` counter that _render
-    added is moved into a block above the enum::
+    Matches entry lines at ``indent`` that carry a trailing ``# n of m
+    <counter_noun>`` comment (as emitted by ``_render``). The counter becomes a
+    ``# <kind> n of m`` line above the now-bare key line. When ``users`` is
+    given and contains the entry, two further lines are added — a "Used by N
+    data elements" count and a capped id list — mirroring the enum/section block.
 
-        # Enum n of m
-        # Used by N data elements
-        # id1 | id2 | ... (+K more)
-        EnumName:
-
-    StandardMissingValueCodes and field-code enums are not in ``enum_users`` and
-    keep their plain trailing counter untouched.
+    ``users`` also acts as a filter when provided: only entries present in it are
+    rewritten (others keep their trailing counter). When ``users`` is ``None``
+    every matching entry is rewritten (used for data elements, which have no
+    "used by").
     """
-    line_re = re.compile(r"^ {2}(\S+):\s*(#\s*(\d+) of (\d+) enums?)?\s*$")
+    pad = " " * indent
+    # Match the counter noun in either plural or singular form (_render
+    # singularises when the total is 1), e.g. "enums"/"enum",
+    # "data elements"/"data element".
+    plural = re.escape(counter_noun)
+    singular = re.escape(counter_noun[:-1] if counter_noun.endswith("s") else counter_noun)
+    line_re = re.compile(
+        rf"^{pad}(\S+):\s*(#\s*(\d+) of (\d+) (?:{plural}|{singular}))?\s*$"
+    )
     out: List[str] = []
     for line in text.split("\n"):
         m = line_re.match(line)
         name = m.group(1) if m else None
-        if name in enum_users:
-            users = enum_users[name]
-            shown = users[:_ENUM_USERS_CAP]
-            id_list = " | ".join(shown)
-            extra = len(users) - len(shown)
-            if extra > 0:
-                id_list += f" (+{extra} more)"
+        rewrite = m and (users is None or name in users) and m.group(2)
+        if rewrite:
             n, total = m.group(3), m.group(4)
-            de = "data element" if len(users) == 1 else "data elements"
-            if n and total:
-                out.append(f"  # Enum {n} of {total}")
-            out.append(f"  # Used by {len(users)} {de}")
-            out.append(f"  # {id_list}")
-            out.append(f"  {name}:")  # bare key line (trailing comment removed)
+            out.append(f"{pad}# {kind} {n} of {total}")
+            if users is not None and name in users:
+                who = users[name]
+                shown = who[:_ENUM_USERS_CAP]
+                id_list = " | ".join(shown)
+                extra = len(who) - len(shown)
+                if extra > 0:
+                    id_list += f" (+{extra} more)"
+                de = "data element" if len(who) == 1 else "data elements"
+                out.append(f"{pad}# Used by {len(who)} {de}")
+                out.append(f"{pad}# {id_list}")
+            out.append(f"{pad}{name}:")  # bare key line
         else:
             out.append(line)
     return "\n".join(out)
