@@ -9,12 +9,14 @@ always well-formed. See ``linkml/CONVERTER_PLAN.md`` for the mapping decisions.
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
-from linkml_runtime.dumpers import yaml_dumper
+import yaml
+from linkml_runtime.dumpers import json_dumper
 from linkml_runtime.linkml_model.meta import (
     AnonymousSlotExpression,
     ClassDefinition,
@@ -42,6 +44,30 @@ logger = logging.getLogger(__name__)
 _URL_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
 _CURIE_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_.-]*):(.+)$")
 _OBO_PURL = "http://purl.obolibrary.org/obo/"
+
+
+def _clean_text(text: str) -> str:
+    """Tidy a free-text field for readable YAML output.
+
+    Strips trailing whitespace from each line. Trailing spaces carry no meaning
+    but prevent YAML from using the readable literal-block (`|`) style, forcing
+    the escaped double-quoted form instead. Newlines and internal spacing are
+    preserved, so this is a lossless-in-intent normalisation.
+    """
+    return "\n".join(line.rstrip() for line in text.split("\n"))
+
+
+class _BlockStyleDumper(yaml.SafeDumper):
+    """A YAML dumper that renders multi-line strings as literal `|` blocks."""
+
+
+def _represent_str(dumper: yaml.SafeDumper, data: str):
+    if "\n" in data:
+        return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+
+
+_BlockStyleDumper.add_representer(str, _represent_str)
 
 
 def _sanitize(name: str) -> str:
@@ -163,9 +189,9 @@ class Emitter:
 
         slot.title = row.get("Label") or None
         if row.get("Description"):
-            slot.description = row.get("Description")
+            slot.description = _clean_text(row.get("Description"))
         if row.get("Notes"):
-            slot.comments.append(row.get("Notes"))
+            slot.comments.append(_clean_text(row.get("Notes")))
         if row.get("SeeAlso"):
             slot.see_also.append(row.get("SeeAlso"))
 
@@ -294,7 +320,36 @@ class Emitter:
         return schema
 
     def dumps(self, rows: List[Row]) -> str:
-        return yaml_dumper.dumps(self.build(rows))
+        """Build the schema and dump it as YAML with readable block strings.
+
+        The schema object is converted to a plain dict via ``json_dumper``
+        (which drops empty/None fields), then dumped with a PyYAML dumper that
+        renders multi-line strings as literal `|` blocks rather than the escaped
+        double-quoted form LinkML's default dumper produces.
+        """
+        schema = self.build(rows)
+        as_dict = _strip_type_keys(json.loads(json_dumper.dumps(schema)))
+        return yaml.dump(
+            as_dict,
+            Dumper=_BlockStyleDumper,
+            sort_keys=False,
+            allow_unicode=True,
+            default_flow_style=False,
+            width=88,
+        )
+
+
+def _strip_type_keys(obj):
+    """Remove JSON-LD ``@type`` keys that json_dumper adds.
+
+    The LinkML schema meta-model rejects an ``@type`` property on the schema
+    object, so it must not appear in the YAML we emit.
+    """
+    if isinstance(obj, dict):
+        return {k: _strip_type_keys(v) for k, v in obj.items() if k != "@type"}
+    if isinstance(obj, list):
+        return [_strip_type_keys(v) for v in obj]
+    return obj
 
 
 def _split_pipe(cell: str) -> List[str]:
