@@ -1,0 +1,3278 @@
+# LinkML schema generated from a RADx data dictionary by radx-dd-to-linkml.
+#
+# The single class below (the tree_root) describes a target datafile: each of
+# its slots corresponds to one field (column) of that datafile, in order. The
+# non-obvious conventions used here are:
+#
+#   * A field with an enumeration becomes a slot whose value must be one of the
+#     generated <Field>Enum values OR a StandardMissingValueCodes code (and any
+#     field-specific codes) -- expressed with `any_of`. The field's underlying
+#     datatype is kept in the `value_datatype` annotation.
+#   * A field's Section becomes a declared `subset`, referenced from the slot
+#     via `in_subset`.
+#   * Ontology terms are kept as CURIEs; their prefixes are declared in
+#     `prefixes` (OBO id spaces expand under purl.obolibrary.org).
+#   * Machine-oriented annotations (`unit_raw`, `value_datatype`, `provenance`,
+#     `original_id`) appear at the end of each slot.
+#
+# See the RADx Data Dictionary Specification for the source field definitions:
+# https://github.com/bmir-radx/radx-data-dictionary-specification
+
+name: gcb
+id: https://w3id.org/radx/gcb
+imports:
+- linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  GSSO: http://purl.obolibrary.org/obo/GSSO_
+  NCIT: http://purl.obolibrary.org/obo/NCIT_
+  PATO: http://purl.obolibrary.org/obo/PATO_
+  SYMP: http://purl.obolibrary.org/obo/SYMP_
+  HP: http://purl.obolibrary.org/obo/HP_
+  MONDO: http://purl.obolibrary.org/obo/MONDO_
+  NBO: http://purl.obolibrary.org/obo/NBO_
+default_prefix: gcb
+default_range: string
+
+# --- Subsets (from the data dictionary's Section column) ---
+subsets:
+  # Section 1 of 14
+  # Used by 1 data element
+  # nih_record_id
+  Identity:
+    title: Identity
+
+  # Section 2 of 14
+  # Used by 1 data element
+  # nih_race
+  Race:
+    title: Race
+
+  # Section 3 of 14
+  # Used by 1 data element
+  # nih_ethnicity
+  Ethnicity:
+    title: Ethnicity
+
+  # Section 4 of 14
+  # Used by 1 data element
+  # nih_age
+  Age:
+    title: Age
+
+  # Section 5 of 14
+  # Used by 1 data element
+  # nih_sex
+  Sex:
+    title: Sex
+
+  # Section 6 of 14
+  # Used by 1 data element
+  # nih_education
+  Education_Level:
+    title: Education Level
+
+  # Section 7 of 14
+  # Used by 1 data element
+  # nih_education_yrs
+  Education_Years:
+    title: Education Years
+
+  # Section 8 of 14
+  # Used by 1 data element
+  # nih_zip
+  Domicile:
+    title: Domicile
+
+  # Section 9 of 14
+  # Used by 1 data element
+  # nih_employment
+  Employment:
+    title: Employment
+
+  # Section 10 of 14
+  # Used by 1 data element
+  # nih_insurance
+  Insurance_Status:
+    title: Insurance Status
+
+  # Section 11 of 14
+  # Used by 7 data elements
+  # nih_disability | nih_deaf | nih_blind | nih_memory | nih_walk_climb | nih_dress_bathe (+1 more)
+  Disability_Status:
+    title: Disability Status
+
+  # Section 12 of 14
+  # Used by 84 data elements
+  # nih_vaping_yn | nih_nicotine_yn | nih_vape_freq | nih_cig_smoke_freq | nih_smoking_yn | nih_history_smoking (+78 more)
+  Medical_History:
+    title: Medical History
+
+  # Section 13 of 14
+  # Used by 27 data elements
+  # nih_cough | nih_fever_chills | nih_diff_breath | nih_headache | nih_muscle_ache | nih_olfactory (+21 more)
+  Symptoms:
+    title: Symptoms
+
+  # Section 14 of 14
+  # Used by 5 data elements
+  # nih_health_status | nih_height | nih_weight | nih_height_category | nih_weight_category
+  Health_Status:
+    title: Health Status
+
+# --- Enumerations ---
+enums:
+  # Enum 1 of 16
+  # Used by 1 data element
+  # nih_race
+  NihRaceEnum:
+    description: Permissible values for the `nih_race` data element.
+    permissible_values:
+      '0':
+        title: American Indian or Alaska Native
+      '1':
+        title: Black or African American
+      '2':
+        title: Asian
+      '3':
+        title: Native Hawaiian or Other Pacific Islander
+      '4':
+        title: White
+      '5':
+        title: Middle Eastern or North African
+      '6':
+        title: Two or more races
+      '97':
+        title: Some other race
+      '98':
+        title: Do not know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 2 of 16
+  # Used by 1 data element
+  # nih_ethnicity
+  NihEthnicityEnum:
+    description: Permissible values for the `nih_ethnicity` data element.
+    permissible_values:
+      '0':
+        title: No, not of Hispanic or Latino origin
+      '1':
+        title: Yes, of Hispanic or Latino origin
+      '97':
+        title: Other
+      '98':
+        title: Don't Know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 3 of 16
+  # Used by 1 data element
+  # nih_sex
+  NihSexEnum:
+    description: Permissible values for the `nih_sex` data element.
+    permissible_values:
+      '0':
+        title: Female
+      '1':
+        title: Male
+      '2':
+        title: Intersex
+      '3':
+        title: Non-binary
+      '96':
+        title: None of these describe me
+      '99':
+        title: Prefer not to answer
+
+  # Enum 4 of 16
+  # Used by 1 data element
+  # nih_education
+  NihEducationEnum:
+    description: Permissible values for the `nih_education` data element.
+    permissible_values:
+      '0':
+        title: Have never gone to school
+      '1':
+        title: Some school (Includes any education received below highschool graduate level)
+      '2':
+        title: High school graduate or GED completed
+      '3':
+        title: Some college (graduated or not) associates degree,technical degree,or vocational
+          degree
+      '4':
+        title: Bachelor's degree
+      '5':
+        title: Other advanced degree (Master's,Doctorate or Professional Doctorate)
+      '97':
+        title: Other
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 5 of 16
+  # Used by 1 data element
+  # nih_employment
+  NihEmploymentEnum:
+    description: Permissible values for the `nih_employment` data element.
+    permissible_values:
+      '0':
+        title: Yes - Employed
+      '1':
+        title: No - Not Employed
+      '2':
+        title: Student
+      '3':
+        title: Keeping household
+      '4':
+        title: Retired
+      '5':
+        title: Disabled or government support
+      '97':
+        title: Other
+      '98':
+        title: Don’t know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 6 of 16
+  # Used by 1 data element
+  # nih_insurance
+  NihInsuranceEnum:
+    description: Permissible values for the `nih_insurance` data element.
+    permissible_values:
+      '0':
+        title: None
+      '1':
+        title: Private
+      '2':
+        title: Public
+      '97':
+        title: Other
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 7 of 16
+  # Used by 111 data elements
+  # nih_disability | nih_deaf | nih_blind | nih_memory | nih_walk_climb | nih_dress_bathe (+105 more)
+  NoYesOtherEtcEnum:
+    description: Permissible values shared by 111 data elements (see the `used by` annotation).
+    permissible_values:
+      '0':
+        title: 'No'
+      '1':
+        title: 'Yes'
+      '97':
+        title: Other
+      '98':
+        title: Don’t know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 8 of 16
+  # Used by 2 data elements
+  # nih_vape_freq | nih_cig_smoke_freq
+  NotAtAllRarelySomeDaysEtcEnum:
+    description: Permissible values shared by 2 data elements (see the `used by` annotation).
+    permissible_values:
+      '0':
+        title: Not at all
+      '1':
+        title: Rarely
+      '2':
+        title: Some Days
+      '3':
+        title: Every Day
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 9 of 16
+  # Used by 2 data elements
+  # nih_alcohol_yrs | nih_alcohol_frequency
+  NeverMonthlyOrLessTwoToFourTimesPerMonthEtcEnum:
+    description: Permissible values shared by 2 data elements (see the `used by` annotation).
+    permissible_values:
+      '0':
+        title: Never
+      '1':
+        title: Monthly Or Less
+      '2':
+        title: Two To Four Times Per Month
+      '3':
+        title: Two To Three Times Per Week
+      '4':
+        title: Four Or More Times Per Week
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 10 of 16
+  # Used by 1 data element
+  # nih_chronic_kidney_disease_treatment
+  NihChronicKidneyDiseaseTreatmentEnum:
+    description: Permissible values for the `nih_chronic_kidney_disease_treatment` data element.
+    permissible_values:
+      '0':
+        title: 'No'
+      '1':
+        title: Yes, But Not On Dialysis
+      '2':
+        title: Yes And On Dialysis
+      '3':
+        title: Yes, I've Had A Kidney Transplant And My Kidney Function Is Now Normal
+      '77':
+        title: Don't Know
+
+  # Enum 11 of 16
+  # Used by 1 data element
+  # nih_pregnancy
+  NihPregnancyEnum:
+    description: Permissible values for the `nih_pregnancy` data element.
+    permissible_values:
+      '0':
+        title: Not Pregnant
+      '1':
+        title: Pregnant
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 12 of 16
+  # Used by 1 data element
+  # nih_premature_birth
+  NihPrematureBirthEnum:
+    description: Permissible values for the `nih_premature_birth` data element.
+    permissible_values:
+      '0':
+        title: 'No'
+      '1':
+        title: Yes, Between 32 - 37 Weeks
+      '2':
+        title: Yes, Between 28-32 Weeks
+      '3':
+        title: Yes, Less Than 28 Weeks
+      '4':
+        title: Yes, But Not Sure How Many Weeks
+      '77':
+        title: Dont Know
+
+  # Enum 13 of 16
+  # Used by 1 data element
+  # nih_health_status
+  NihHealthStatusEnum:
+    description: Permissible values for the `nih_health_status` data element.
+    permissible_values:
+      '0':
+        title: Excellent
+      '1':
+        title: Very Good
+      '2':
+        title: Good
+      '3':
+        title: Fair
+      '4':
+        title: Poor
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to state
+
+  # Enum 14 of 16
+  # Used by 1 data element
+  # nih_height_category
+  NihHeightCategoryEnum:
+    description: Permissible values for the `nih_height_category` data element.
+    permissible_values:
+      '1':
+        title: 5'1" - 5'6"
+      '2':
+        title: 5'7"-5'11"
+      '3':
+        title: 6' and over
+
+  # Enum 15 of 16
+  # Used by 1 data element
+  # nih_weight_category
+  NihWeightCategoryEnum:
+    description: Permissible values for the `nih_weight_category` data element.
+    permissible_values:
+      '1':
+        title: 100-150
+      '2':
+        title: 151-200
+      '3':
+        title: over 200
+
+  StandardMissingValueCodes:  # 16 of 16 enums
+    description: The standard set of RADx missing-value codes, which always applies to a missing-value-coded
+      field.
+    permissible_values:
+      '-9999':
+        title: Reason Unknown
+      '-9980':
+        title: Not Sent to Data Hub
+      '-9981':
+        title: Data Transfer Agreement
+      '-9982':
+        title: No Participant Consent To Share
+      '-9983':
+        title: Not Available Or Mappable
+      '-9984':
+        title: Data Lost Or Inaccessible
+      '-9985':
+        title: Data Invalid
+      '-9986':
+        title: Anonymization Or Privacy Concerns
+      '-9987':
+        title: Other Unsent Reason Not Specified
+      '-9960':
+        title: Not Entered By Originator
+      '-9961':
+        title: Omitted This Value
+      '-9962':
+        title: Originator Chose to Omit
+      '-9963':
+        title: Question Not Applicable
+      '-9964':
+        title: Answer Not Known
+      '-9965':
+        title: Record Not Provided
+      '-9966':
+        title: All Originators Omitted Element
+      '-9967':
+        title: CDE Omitted With Exception
+      '-9968':
+        title: Other Unentered Reason Not Specified
+      '-9940':
+        title: Not Presented To Participant
+      '-9941':
+        title: Skip Logic
+      '-9942':
+        title: No Participant Consent to Ask
+      '-9943':
+        title: CDE Not Presented Due to Exception
+      '-9944':
+        title: Element Never Presented for Collection
+      '-9945':
+        title: Process Error
+      '-9946':
+        title: Other Unpresented Reason Not Specified
+
+# --- Classes ---
+classes:
+  Gcb:  # 1 of 1 class
+    attributes:
+      # Data element 1 of 133
+      nih_record_id:
+        title: User ID
+        description: |-
+          The `nih_record_id` variable records responses to the prompt, or a congruently meaning prompt, "User ID".  Equivalent prompts are:
+
+          - "Record ID" (RADx-UP)
+          - "User ID" (RADx-Tech)
+          - "What is global identifier of participant?" (RADx-DHT)
+
+          The values for this variable are strings.
+
+          The `nih_record_id` data element is the result of the harmonization of other RADx program data elements: `record_id` (RADx-UP); `record_id` (RADx-rad); `user_id` (RADx-Tech); `dht_identity` (RADx-DHT)
+        range: string
+        in_subset:
+        - Identity
+
+      # Data element 2 of 133
+      nih_race:
+        title: What is your race?
+        description: |-
+          The `nih_race` variable records responses to the prompt, or a congruently meaning prompt, "What is your race?".  Equivalent prompts are:
+
+          - "What is your race? Mark one or more boxes. (Check all that apply)" (RADx-UP)
+          - "What is your race? Mark one or more boxes." (RADx-rad)
+          - "Black" (RADx-Tech), - "White" (RADx-Tech), - "Asian" (RADx-Tech), - "Pacific Islander" (RADx-Tech), - "American Indian" (RADx-Tech), - "Other" (RADx-Tech), - "Don't know" (RADx-Tech)
+          - "What is your race? Mark one or more boxes" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 10 permissible integer values.
+
+          The `nih_race` data element is the result of the harmonization of other RADx program data elements: `race_ethn_race` (RADx-UP); `race` (RADx-rad); `race_black`, `race_white`, `race_asian`, `race_pacisl`, `race_amind`, `race_other`, `race_dk` (RADx-Tech); `dht_race` (RADx-DHT)
+        in_subset:
+        - Race
+        related_mappings:
+        - GSSO:002199  # race
+        multivalued: true
+        any_of:
+        - range: NihRaceEnum  # 0=American Indian or Alaska Native | 1=Black or African American | 2=Asian | 3=Native Hawaiian or Other Pacific Islander | 4=White | 5=Middle Eastern or North African (+4 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 3 of 133
+      nih_ethnicity:
+        title: Are you of Hispanic or Latino origin? May include Spanish origin.
+        description: |-
+          The `nih_ethnicity` variable records responses to the prompt, or a congruently meaning prompt, "Are you of Hispanic or Latino origin? May include Spanish origin.".  Equivalent prompts are:
+
+          - "Are you of Hispanic, Latino, or Spanish origin?" (RADx-UP)
+          - "Are you of Hispanic or Latino origin?" (RADx-rad)
+          - "Are you of Hispanic or Latino origin?" (RADx-Tech)
+          - "Are you of Hispanic or Latino origin? " (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_ethnicity` data element is the result of the harmonization of other RADx program data elements: `race_ethn_hispanic` (RADx-UP); `ethnicity` (RADx-rad); `ethnicity` (RADx-Tech); `dht_ethnicity_origin` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Ethnicity
+        related_mappings:
+        - NCIT:C16564  # Ethnic Group
+        any_of:
+        - range: NihEthnicityEnum  # 0=No, not of Hispanic or Latino origin | 1=Yes, of Hispanic or Latino origin | 97=Other | 98=Don't Know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 4 of 133
+      nih_age:
+        title: What is your age?
+        description: |-
+          The `nih_age` variable records responses to the prompt, or a congruently meaning prompt, "What is your age?".  Equivalent prompts are:
+
+          - "Age For babies less than 1 year old, do not write the age in months. Write 0 as the age. (Years)" (RADx-UP)
+          - "What is your age? (Age in years. For babies less than 1 year old, write 0 as the age)" (RADx-rad)
+          - "Age" (RADx-Tech)
+          - "What is your age?" (RADx-DHT)
+
+          The values for this variable are integers.
+
+          The `nih_age` data element is the result of the harmonization of other RADx program data elements: `age_yrs` (RADx-UP); `age` (RADx-rad); `age_at_registration` (RADx-Tech); `dht_age` (RADx-DHT)
+        range: integer
+        in_subset:
+        - Age
+        related_mappings:
+        - PATO:0000011  # age
+        unit:
+          symbol: year
+        annotations:
+          unit_raw: year
+
+      # Data element 5 of 133
+      nih_sex:
+        title: What is your biological sex assigned at birth?
+        description: |-
+          The `nih_sex` variable records responses to the prompt, or a congruently meaning prompt, "What is your biological sex assigned at birth?".  Equivalent prompts are:
+
+          - "What was your sex assigned at birth on your birth certificate?" (RADx-UP)
+          - "What is your biological sex assigned at birth?" (RADx-rad)
+          - "Gender" (RADx-Tech)
+          - "What is your biological sex assigned at birth?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 6 permissible integer values.
+
+          The `nih_sex` data element is the result of the harmonization of other RADx program data elements: `bio_sex_birth` (RADx-UP); `sex` (RADx-rad); `sex` (RADx-Tech); `dht_sex` (RADx-DHT)
+
+          Note that the meaning of the value `96` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `96` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Sex
+        related_mappings:
+        - PATO:0000047  # biological sex
+        any_of:
+        - range: NihSexEnum  # 0=Female | 1=Male | 2=Intersex | 3=Non-binary | 96=None of these describe me | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 6 of 133
+      nih_education:
+        title: What is the highest level of education you have achieved outside or in the
+          United States?
+        description: |-
+          The `nih_education` variable records responses to the prompt, or a congruently meaning prompt, "What is the highest level of education you have achieved outside or in the United States?".  Equivalent prompts are:
+
+          - "What is the highest level of education you have achieved outside or in the United States? Grades roughly equivalent to years of school." (RADx-UP)
+          - "What is the highest grade or level of school you have completed or the highest degree you have received?" (RADx-Tech)
+          - "How many years of education have you completed?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 9 permissible integer values.
+
+          The `nih_education` data element is the result of the harmonization of other RADx program data elements: `edu_years_of_school` (RADx-UP); `education` (RADx-Tech); `dht_education` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Education_Level
+        related_mappings:
+        - NCIT:C17953  # Education Level
+        any_of:
+        - range: NihEducationEnum  # 0=Have never gone to school | 1=Some school (Includes any education received below highschool graduate level) | 2=High school graduate or GED completed | 3=Some college (graduated or not) associates degree,technical degree,or vocational degree | 4=Bachelor's degree | 5=Other advanced degree (Master's,Doctorate or Professional Doctorate) (+3 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 7 of 133
+      nih_education_yrs:
+        title: How many years of education have you completed?
+        description: |-
+          The `nih_education_yrs` variable records responses to the prompt "How many years of education have you completed?".The values for this variable are decimals.
+
+          The `nih_education_yrs` data element is the result of the harmonization of other RADx program data elements: `education` (RADx-rad)
+        range: decimal
+        in_subset:
+        - Education_Years
+        related_mappings:
+        - NCIT:C122393  # Number of Years of Education
+        unit:
+          symbol: year
+        annotations:
+          unit_raw: year
+
+      # Data element 8 of 133
+      nih_zip:
+        title: What is your zip code?
+        description: |-
+          The `nih_zip` variable records responses to the prompt, or a congruently meaning prompt, "What is your zip code?".  Equivalent prompts are:
+
+          - "Zip Code" (RADx-UP)
+          - "Zip or Postal Code: (De-Identified zip code)" (RADx-rad)
+          - "Zipcode" (RADx-Tech)
+          - "What is your zip code?" (RADx-DHT)
+
+          The values for this variable are strings.
+
+          The `nih_zip` data element is the result of the harmonization of other RADx program data elements: `zip_code` (RADx-UP); `zip` (RADx-rad); `zip` (RADx-Tech); `dht_domicile` (RADx-DHT)
+        range: string
+        in_subset:
+        - Domicile
+        related_mappings:
+        - NCIT:C25720  # Zip Code
+        - NCIT:C25621  # Postal Code
+
+      # Data element 9 of 133
+      nih_employment:
+        title: Please specify your employment status.
+        description: |-
+          The `nih_employment` variable records responses to the prompt, or a congruently meaning prompt, "Please specify your employment status.".  Equivalent prompts are:
+
+          - "We would like to know about what you do -- are you working now, looking for work, retired, keeping house, a student, or something else?" (RADx-UP)
+          - "Are you employed?" (RADx-rad)
+          - "We would like to know about what you do-are you working now, looking for work, retired, keeping house, a student, or what?" (RADx-Tech)
+          - "Are you employed?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 9 permissible integer values.
+
+          The `nih_employment` data element is the result of the harmonization of other RADx program data elements: `current_employment_status` (RADx-UP); `employment` (RADx-rad); `working` (RADx-Tech); `dht_employment` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Employment
+        related_mappings:
+        - NCIT:C179143  # Employment Status
+        - NCIT:C25172  # employment
+        any_of:
+        - range: NihEmploymentEnum  # 0=Yes - Employed | 1=No - Not Employed | 2=Student | 3=Keeping household | 4=Retired | 5=Disabled or government support (+3 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 10 of 133
+      nih_insurance:
+        title: What kind of health insurance do you have?
+        description: |-
+          The `nih_insurance` variable records responses to the prompt, or a congruently meaning prompt, "What kind of health insurance do you have?".  Equivalent prompts are:
+
+          - "What is the primary kind of health insurance or health care plan that you have now? (Exclude plans that pay for only one type of Service (such as, nursing home care, accidents, family planning, or dental care) and plans that only provide extra cash when hospitalized.
+          )" (RADx-UP)
+          - "What kind of health insurance do you have?" (RADx-rad)
+          - "What insurance do you have?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 6 permissible integer values.
+
+          The `nih_insurance` data element is the result of the harmonization of other RADx program data elements: `hi_coverage_type` (RADx-UP); `insurance` (RADx-rad); `dht_medical_insurance_short` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Insurance_Status
+        related_mappings:
+        - NCIT:C157356  # Health Insurance
+        any_of:
+        - range: NihInsuranceEnum  # 0=None | 1=Private | 2=Public | 97=Other | 98=Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 11 of 133
+      nih_disability:
+        title: Do you have a disability, including serious physical or mental conditions,
+          that interfere with your ability to carry out daily activities?
+        description: |-
+          The `nih_disability` variable records responses to the prompt, or a congruently meaning prompt, "Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?".  Equivalent prompts are:
+
+          - "Do you have a disability that interferes with your ability to carry out daily activities? Examples of daily activities include walking, climbing stairs, shopping, balancing a checkbook, bathing or dressing." (RADx-UP)
+          - "Do you have any serious physical or mental condition(s) that limit your ability to perform daily activities?" (RADx-Tech)
+          - "Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_disability` data element is the result of the harmonization of other RADx program data elements: `self_reported_disability` (RADx-UP); `cond_prev_activity` (RADx-Tech); `dht_disability` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Disability_Status
+        related_mappings:
+        - GSSO:001811  # physical disability
+        - GSSO:001810  # mental disability
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 12 of 133
+      nih_deaf:
+        title: Are you deaf or do you have serious difficulty hearing?
+        description: |-
+          The `nih_deaf` variable records responses to the prompt, or a congruently meaning prompt, "Are you deaf or do you have serious difficulty hearing?".  Equivalent prompts are:
+
+          - "Are you deaf, or do you have serious difficulty hearing?" (RADx-UP)
+          - "Are you deaf or do you have serious difficulty hearing?" (RADx-rad)
+          - "Are you deaf or do you have serious difficulty hearing?" (RADx-Tech)
+          - "Are you deaf or do you have serious difficulty hearing?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_deaf` data element is the result of the harmonization of other RADx program data elements: `disability_deaf` (RADx-UP); `deaf` (RADx-rad); `hearing` (RADx-Tech); `dht_deaf` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Disability_Status
+        related_mappings:
+        - SYMP:0000019  # deafness
+        - HP:0000364  # Hearing abnormality
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 13 of 133
+      nih_blind:
+        title: Are you blind or do you have serious difficulty seeing, even when wearing glasses?
+        description: |-
+          The `nih_blind` variable records responses to the prompt, or a congruently meaning prompt, "Are you blind or do you have serious difficulty seeing, even when wearing glasses?".  Equivalent prompts are:
+
+          - "Are you blind, or do you have serious difficulty seeing, even when wearing glasses?" (RADx-UP)
+          - "Are you blind or do you have serious difficulty seeing, even when wearing glasses?" (RADx-rad)
+          - "Are you blind or do you have serious difficulty seeing, even when wearing glasses?" (RADx-Tech)
+          - "Are you blind or do you have serious difficulty seeing, even when wearing glasses?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_blind` data element is the result of the harmonization of other RADx program data elements: `disability_blind` (RADx-UP); `blind` (RADx-rad); `vision` (RADx-Tech); `dht_blind` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Disability_Status
+        related_mappings:
+        - MONDO:0001941  # blindness (disorder)
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 14 of 133
+      nih_memory:
+        title: Because of a physical, mental, or emotional condition, do you have serious
+          difficulty concentrating, remembering, or making decisions?
+        description: |-
+          The `nih_memory` variable records responses to the prompt, or a congruently meaning prompt, "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?".  Equivalent prompts are:
+
+          - "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years of age or older)" (RADx-UP)
+          - "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?" (RADx-rad)
+          - "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years or older)" (RADx-Tech)
+          - "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_memory` data element is the result of the harmonization of other RADx program data elements: `disability_decisions` (RADx-UP); `memory_dis` (RADx-rad); `memory` (RADx-Tech); `dht_memory` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Disability_Status
+        related_mappings:
+        - SYMP:0000719  # memory impairment
+        - SYMP:0000543  # memory loss
+        - SYMP:0020029  # concentration difficulty
+        - SYMP:0000817  # inability to concentrate
+        - SYMP:0000233  # inability to think clearly
+        - MONDO:0002039  # cognitive disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 15 of 133
+      nih_walk_climb:
+        title: Do you have serious difficulty walking or climbing stairs?
+        description: |-
+          The `nih_walk_climb` variable records responses to the prompt, or a congruently meaning prompt, "Do you have serious difficulty walking or climbing stairs?".  Equivalent prompts are:
+
+          - "Do you have serious difficulty walking or climbing stairs? (5 years of age or older)" (RADx-UP)
+          - "Do you have serious difficulty walking or climbing stairs?" (RADx-rad)
+          - "Do you have serious difficulty walking or climbing stairs? (5 years or older)" (RADx-Tech)
+          - "Do you have serious difficulty walking or climbing stairs?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_walk_climb` data element is the result of the harmonization of other RADx program data elements: `disability_walking` (RADx-UP); `walking_climbing_dis` (RADx-rad); `walk_stairs` (RADx-Tech); `dht_walk_climb` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Disability_Status
+        related_mappings:
+        - NCIT:C111629  # Have Trouble Walking Question
+        - NCIT:C175910  # Have Trouble Using Stairs Question
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 16 of 133
+      nih_dress_bathe:
+        title: Do you have difficulty dressing or bathing?
+        description: |-
+          The `nih_dress_bathe` variable records responses to the prompt, or a congruently meaning prompt, "Do you have difficulty dressing or bathing?".  Equivalent prompts are:
+
+          - "Do you have difficulty dressing or bathing? (5 years of age or older)" (RADx-UP)
+          - "Do you have difficulty dressing or bathing?" (RADx-rad)
+          - "Do you have difficulty dressing or bathing? (5 years or older)" (RADx-Tech)
+          - "Do you have difficulty dressing or bathing?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_dress_bathe` data element is the result of the harmonization of other RADx program data elements: `disability_dress` (RADx-UP); `dress_bathe_dis` (RADx-rad); `dressing_bathing` (RADx-Tech); `dht_dress_bathe` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Disability_Status
+        related_mappings:
+        - NCIT:C95544  # dressing
+        - NCIT:C131923  # Dressing Ability Question
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 17 of 133
+      nih_errand:
+        title: Because of a physical, mental, or emotional condition, do you have difficulty
+          doing errands alone such as visiting a doctor's office or shopping?
+        description: |-
+          The `nih_errand` variable records responses to the prompt, or a congruently meaning prompt, "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?".  Equivalent prompts are:
+
+          - "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping? (15 years of age or older)" (RADx-UP)
+          - "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?" (RADx-rad)
+          - "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping? (15 years old or older)" (RADx-Tech)
+          - "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_errand` data element is the result of the harmonization of other RADx program data elements: `disability_errands` (RADx-UP); `errand_dis` (RADx-rad); `doctor_shopping` (RADx-Tech); `dht_errand` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Disability_Status
+        related_mappings:
+        - NCIT:C121690  # Ability to Run Errands and Shop Question
+        - NCIT:C95549  # Run Errand
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 18 of 133
+      nih_vaping_yn:
+        title: Vaping use (Yes or No)
+        description: |-
+          The `nih_vaping_yn` variable records responses to the prompt, or a congruently meaning prompt, "Vaping use (Yes or No)".  Equivalent prompts are:
+
+          - "Vaping Use" (RADx-rad)
+          - "Vaping use (Yes or No)" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_vaping_yn` data element is the result of the harmonization of other RADx program data elements: `vaping` (RADx-rad); `dht_vaping` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C173621  # Vaping
+        - NCIT:C68751  # Smoker
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 19 of 133
+      nih_nicotine_yn:
+        title: Nicotine use (Yes or No)
+        description: |-
+          The `nih_nicotine_yn` variable records responses to the prompt, or a congruently meaning prompt, "Nicotine use (Yes or No)".  Equivalent prompts are:
+
+          - "Nicotine Use" (RADx-rad)
+          - "Nicotine use (Yes or No)" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_nicotine_yn` data element is the result of the harmonization of other RADx program data elements: `nicotine` (RADx-rad); `dht_nicotine` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C691  # Nicotine
+        - NCIT:C68751  # Smoker
+        - NCIT:C173060  # Smoking Question
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 20 of 133
+      nih_vape_freq:
+        title: 'Vaping Frequency: Do you now use electronic cigarettes every day, some days,
+          rarely, or not at all?'
+        description: |-
+          The `nih_vape_freq` variable records responses to the prompt, or a congruently meaning prompt, "Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?".  Equivalent prompts are:
+
+          - "Do you now use electronic cigarettes every day, some days, rarely, or not at all? " (RADx-UP)
+          - "Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 6 permissible integer values.
+
+          The `nih_vape_freq` data element is the result of the harmonization of other RADx program data elements: `vaper_cur_stat` (RADx-UP); `dht_vaping_frequency` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C173621  # Vaping
+        - NCIT:C120482  # Electronic Cigarette
+        - NCIT:C68751  # Smoker
+        - NCIT:C173060  # Smoking Question
+        any_of:
+        - range: NotAtAllRarelySomeDaysEtcEnum  # 0=Not at all | 1=Rarely | 2=Some Days | 3=Every Day | 98=Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 21 of 133
+      nih_cig_smoke_freq:
+        title: 'Nicotine Frequency: Do you now smoke cigarettes?'
+        description: |-
+          The `nih_cig_smoke_freq` variable records responses to the prompt, or a congruently meaning prompt, "Nicotine Frequency: Do you now smoke cigarettes?".  Equivalent prompts are:
+
+          - "Do you now smoke cigarettes?" (RADx-UP)
+          - "Nicotine Frequency: Do you now smoke cigarettes?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 6 permissible integer values.
+
+          The `nih_cig_smoke_freq` data element is the result of the harmonization of other RADx program data elements: `smoker_cur_stat` (RADx-UP); `dht_cig_smoking_frequency` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C19796  # Smoking Status
+        - NCIT:C68751  # Smoker
+        - NCIT:C173060  # Smoking Question
+        any_of:
+        - range: NotAtAllRarelySomeDaysEtcEnum  # 0=Not at all | 1=Rarely | 2=Some Days | 3=Every Day | 98=Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 22 of 133
+      nih_smoking_yn:
+        title: Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes,
+          etc)?
+        description: |-
+          The `nih_smoking_yn` variable records responses to the prompt "Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_smoking_yn` data element is the result of the harmonization of other RADx program data elements: `smoking` (RADx-Tech)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NBO:0045002  # tobacco smoking behavior
+        - NCIT:C17934  # Tobacco Smoking
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 23 of 133
+      nih_history_smoking:
+        title: History of Smoking
+        description: |-
+          The `nih_history_smoking` variable records responses to the prompt "History of Smoking".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_history_smoking` data element is the result of the harmonization of other RADx program data elements: `dht_history_smoking` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NBO:0015005  # smoking behavior
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 24 of 133
+      nih_tobacco:
+        title: Tobacco Use
+        description: |-
+          The `nih_tobacco` variable records responses to the prompt "Tobacco Use".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_tobacco` data element is the result of the harmonization of other RADx program data elements: `dht_tobacco` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NBO:0045002  # tobacco smoking behavior
+        - NCIT:C154329  # Smoking
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 25 of 133
+      nih_alcohol_yn:
+        title: Alcohol use (Yes or No)
+        description: |-
+          The `nih_alcohol_yn` variable records responses to the prompt, or a congruently meaning prompt, "Alcohol use (Yes or No)".  Equivalent prompts are:
+
+          - "Alcohol Use" (RADx-rad)
+          - "Alcohol use (Yes or No)" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_alcohol_yn` data element is the result of the harmonization of other RADx program data elements: `alcohol_use` (RADx-rad); `dht_alcohol` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - GSSO:006602  # alcohol use
+        - NCIT:C81229  # Alcohol Use History
+        - NCIT:C16273  # Alcohol Consumption
+        - NBO:0000131  # alcohol consumption
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 26 of 133
+      nih_lifetime_use_alcohol:
+        title: In your entire life, have you had at least 1 drink of any kind of alcohol,
+          not counting small tastes or sips? (Yes or No)
+        description: |-
+          The `nih_lifetime_use_alcohol` variable records responses to the prompt "In your entire life, have you had at least 1 drink of any kind of alcohol, not counting small tastes or sips? (Yes or No)".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_lifetime_use_alcohol` data element is the result of the harmonization of other RADx program data elements: `lifetime_use_alcohol` (RADx-UP)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - GSSO:006602  # alcohol use
+        - NCIT:C81229  # Alcohol Use History
+        - NCIT:C16273  # Alcohol Consumption
+        - NBO:0000131  # alcohol consumption
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 27 of 133
+      nih_alcohol_yrs:
+        title: How often did you have a drink containing alcohol in the past year?
+        description: |-
+          The `nih_alcohol_yrs` variable records responses to the prompt "How often did you have a drink containing alcohol in the past year?".The values for this variable are integers that come from a list of 7 permissible integer values.
+
+          The `nih_alcohol_yrs` data element is the result of the harmonization of other RADx program data elements: `alcohol` (RADx-Tech)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - GSSO:006602  # alcohol use
+        - NCIT:C81229  # Alcohol Use History
+        - NCIT:C16273  # Alcohol Consumption
+        - NBO:0000131  # alcohol consumption
+        any_of:
+        - range: NeverMonthlyOrLessTwoToFourTimesPerMonthEtcEnum  # 0=Never | 1=Monthly Or Less | 2=Two To Four Times Per Month | 3=Two To Three Times Per Week | 4=Four Or More Times Per Week | 98=Don't know (+1 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 28 of 133
+      nih_alcohol_frequency:
+        title: How often did you have a drink containing alcohol ?
+        description: |-
+          The `nih_alcohol_frequency` variable records responses to the prompt "How often did you have a drink containing alcohol ?".The values for this variable are integers that come from a list of 7 permissible integer values.
+
+          The `nih_alcohol_frequency` data element is the result of the harmonization of other RADx program data elements: `dht_alcohol_frequency` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - GSSO:006602  # alcohol use
+        - NCIT:C81229  # Alcohol Use History
+        - NCIT:C16273  # Alcohol Consumption
+        - NBO:0000131  # alcohol consumption
+        any_of:
+        - range: NeverMonthlyOrLessTwoToFourTimesPerMonthEtcEnum  # 0=Never | 1=Monthly Or Less | 2=Two To Four Times Per Month | 3=Two To Three Times Per Week | 4=Four Or More Times Per Week | 98=Don't know (+1 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 29 of 133
+      nih_asthma:
+        title: Asthma
+        description: |-
+          The `nih_asthma` variable records responses to the prompt, or a congruently meaning prompt, "Asthma".  Equivalent prompts are:
+
+          - "Asthma " (RADx-UP)
+          - "Asthma" (RADx-rad)
+          - "Asthma, to the point that you use inhalers daily or have been to the hospital for your asthma?" (RADx-Tech)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_asthma` data element is the result of the harmonization of other RADx program data elements: `cc_asthma` (RADx-UP); `asthma` (RADx-rad); `asthma` (RADx-Tech); `dht_asthma` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0004979  # asthma
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 30 of 133
+      nih_cancer:
+        title: Cancer
+        description: |-
+          The `nih_cancer` variable records responses to the prompt, or a congruently meaning prompt, "Cancer".  Equivalent prompts are:
+
+          - "Cancer" (RADx-rad)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_cancer` data element is the result of the harmonization of other RADx program data elements: `cancer` (RADx-rad); `dht_cancer` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0004992  # cancer
+        - NCIT:C9305  # malignant neoplasm
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 31 of 133
+      nih_cancer_active_treatment:
+        title: Cancer (including leukemia or lymphoma) undergoing active treatment?
+        description: |-
+          The `nih_cancer_active_treatment` variable records responses to the prompt "Cancer (including leukemia or lymphoma) undergoing active treatment?".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_cancer_active_treatment` data element is the result of the harmonization of other RADx program data elements: `cancer` (RADx-Tech)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0004992  # cancer
+        - NCIT:C9305  # malignant neoplasm
+        - NCIT:C19700  # Cancer Patient
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 32 of 133
+      nih_cancer_past_yr:
+        title: Cancer diagnosis and/or treatment within the past 12 months
+        description: |-
+          The `nih_cancer_past_yr` variable records responses to the prompt "Cancer diagnosis and/or treatment within the past 12 months".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_cancer_past_yr` data element is the result of the harmonization of other RADx program data elements: `cc_cancer` (RADx-UP)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0004992  # cancer
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 33 of 133
+      nih_cardiovascular_disease:
+        title: Cardiovascular disease
+        description: |-
+          The `nih_cardiovascular_disease` variable records responses to the prompt, or a congruently meaning prompt, "Cardiovascular disease".  Equivalent prompts are:
+
+          - "Cardiovascular disease (CVD or heart disease)" (RADx-UP)
+          - "Cardiovascular disease" (RADx-rad)
+          - "Cardiovascular disease" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_cardiovascular_disease` data element is the result of the harmonization of other RADx program data elements: `cc_cvd` (RADx-UP); `cardiovascular_disease` (RADx-rad); `dht_cardiovascular_disease` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0004995  # cardiovascular disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 34 of 133
+      nih_chronic_kidney_disease:
+        title: Chronic kidney disease
+        description: |-
+          The `nih_chronic_kidney_disease` variable records responses to the prompt, or a congruently meaning prompt, "Chronic kidney disease".  Equivalent prompts are:
+
+          - "Chronic kidney disease (CKD)" (RADx-UP)
+          - "Chronic kidney disease" (RADx-rad)
+          - "Chronic kidney disease" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_chronic_kidney_disease` data element is the result of the harmonization of other RADx program data elements: `cc_chronickd` (RADx-UP); `chronic_kidney_disease` (RADx-rad); `dht_chronic_kidney_disease` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005300  # chronic kidney disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 35 of 133
+      nih_chronic_kidney_disease_treatment:
+        title: Chronic kidney disease treatment
+        description: |-
+          The `nih_chronic_kidney_disease_treatment` variable records responses to the prompt "Chronic kidney disease treatment".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_chronic_kidney_disease_treatment` data element is the result of the harmonization of other RADx program data elements: `ckd` (RADx-Tech)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005300  # chronic kidney disease
+        any_of:
+        - range: NihChronicKidneyDiseaseTreatmentEnum  # 0=No | 1=Yes, But Not On Dialysis | 2=Yes And On Dialysis | 3=Yes, I've Had A Kidney Transplant And My Kidney Function Is Now Normal | 77=Don't Know
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 36 of 133
+      nih_chronic_lung_disease:
+        title: Chronic lung disease
+        description: |-
+          The `nih_chronic_lung_disease` variable records responses to the prompt, or a congruently meaning prompt, "Chronic lung disease".  Equivalent prompts are:
+
+          - "Chronic lung disease" (RADx-rad)
+          - "Chronic lung disease" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_chronic_lung_disease` data element is the result of the harmonization of other RADx program data elements: `chronic_lung_disease` (RADx-rad); `dht_chronic_lung_disease` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005275  # lung disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 37 of 133
+      nih_diabetes:
+        title: Diabetes
+        description: |-
+          The `nih_diabetes` variable records responses to the prompt, or a congruently meaning prompt, "Diabetes".  Equivalent prompts are:
+
+          - "Diabetes" (RADx-UP)
+          - "Diabetes" (RADx-rad)
+          - "Diabetes? Do not include pre-diabetes." (RADx-Tech)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_diabetes` data element is the result of the harmonization of other RADx program data elements: `cc_diabetes` (RADx-UP); `diabetes` (RADx-rad); `diabetes` (RADx-Tech); `dht_diabetes` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005015  # diabetes mellitus (disease)
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 38 of 133
+      nih_hypertension:
+        title: Hypertension
+        description: |-
+          The `nih_hypertension` variable records responses to the prompt, or a congruently meaning prompt, "Hypertension".  Equivalent prompts are:
+
+          - "Hypertension (HTN, high blood pressure)" (RADx-UP)
+          - "Hypertension" (RADx-rad)
+          - "High blood pressure or hypertension (except that occurred during pregnancy and did not last after pregnancy)?" (RADx-Tech)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_hypertension` data element is the result of the harmonization of other RADx program data elements: `cc_hypertension` (RADx-UP); `hypertension` (RADx-rad); `hbp` (RADx-Tech); `dht_hypertension` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005044  # hypertensive disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 39 of 133
+      nih_immunosuppressive_condition:
+        title: Immunosuppressive condition
+        description: |-
+          The `nih_immunosuppressive_condition` variable records responses to the prompt, or a congruently meaning prompt, "Immunosuppressive condition".  Equivalent prompts are:
+
+          - "Immunosuppressive condition" (RADx-rad)
+          - "Immunosuppressive condition" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_immunosuppressive_condition` data element is the result of the harmonization of other RADx program data elements: `immunosuppressive_conditio` (RADx-rad); `dht_immunosuppressive_condition` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C178942  # Immunosuppressive Disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 40 of 133
+      nih_serious_mental_illness:
+        title: Serious mental illness
+        description: |-
+          The `nih_serious_mental_illness` variable records responses to the prompt "Serious mental illness".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_serious_mental_illness` data element is the result of the harmonization of other RADx program data elements: `serious_mental_illness` (RADx-rad)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005084  # mental disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 41 of 133
+      nih_mental_health_disorder:
+        title: Mental health disorder
+        description: |-
+          The `nih_mental_health_disorder` variable records responses to the prompt, or a congruently meaning prompt, "Mental health disorder".  Equivalent prompts are:
+
+          - "Have you ever been told by a physician, psychologist, or healthcare provider that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia, or other)?" (RADx-Tech)
+          - "mental health disorder " (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_mental_health_disorder` data element is the result of the harmonization of other RADx program data elements: `mental_illness` (RADx-Tech); `dht_mental_illness` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005084  # mental disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 42 of 133
+      nih_sickle_cell_disease:
+        title: Sickle cell disease
+        description: |-
+          The `nih_sickle_cell_disease` variable records responses to the prompt, or a congruently meaning prompt, "Sickle cell disease".  Equivalent prompts are:
+
+          - "Sickle Cell Anemia" (RADx-UP)
+          - "Sickle cell disease" (RADx-rad)
+          - "Have you ever been told by a physician or healthcare provider that you have sickle cell anemia?" (RADx-Tech)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_sickle_cell_disease` data element is the result of the harmonization of other RADx program data elements: `cc_sickle` (RADx-UP); `sickle_cell_disease` (RADx-rad); `sc_anemia` (RADx-Tech); `dht_sickle_cell_disease` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0011382  # sickle cell disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 43 of 133
+      nih_pregnancy:
+        title: Pregnancy status
+        description: |-
+          The `nih_pregnancy` variable records responses to the prompt, or a congruently meaning prompt, "Pregnancy status".  Equivalent prompts are:
+
+          - "Are you currently pregnant?" (RADx-UP)
+          - "Pregnancy status" (RADx-rad)
+          - "Pregnancy status" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 4 permissible integer values.
+
+          The `nih_pregnancy` data element is the result of the harmonization of other RADx program data elements: `pregnancy_status` (RADx-UP); `pregnancy_status` (RADx-rad); `dht_pregnant` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C69218  # Pregnancy Status
+        any_of:
+        - range: NihPregnancyEnum  # 0=Not Pregnant | 1=Pregnant | 98=Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 44 of 133
+      nih_immunocompromised:
+        title: Immunocompromised condition
+        description: |-
+          The `nih_immunocompromised` variable records responses to the prompt, or a congruently meaning prompt, "Immunocompromised condition".  Equivalent prompts are:
+
+          - "Immunocompromised condition" (RADx-UP)
+          - "Immunocompromised" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_immunocompromised` data element is the result of the harmonization of other RADx program data elements: `cc_imm` (RADx-UP); `dht_immuno_compromised` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C14139  # Immunocompromised
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 45 of 133
+      nih_autoimm:
+        title: Autoimmune disease
+        description: |-
+          The `nih_autoimm` variable records responses to the prompt, or a congruently meaning prompt, "Autoimmune disease".  Equivalent prompts are:
+
+          - "Autoimmune disease" (RADx-UP)
+          - "Autoimmune disease" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_autoimm` data element is the result of the harmonization of other RADx program data elements: `cc_autoimm` (RADx-UP); `dht_autoimmune` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0007179  # autoimmune disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 46 of 133
+      nih_copd:
+        title: Chronic obstructive pulmonary disease (COPD)
+        description: |-
+          The `nih_copd` variable records responses to the prompt, or a congruently meaning prompt, "Chronic obstructive pulmonary disease (COPD)".  Equivalent prompts are:
+
+          - "Chronic obstructive pulmonary disease (COPD)" (RADx-UP)
+          - "Chronic obstructive pulmonary disease (COPD)" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_copd` data element is the result of the harmonization of other RADx program data elements: `cc_copd` (RADx-UP); `dht_copd` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005002  # chronic obstructive pulmonary disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 47 of 133
+      nih_chronic_lung:
+        title: Other chronic lung disease
+        description: |-
+          The `nih_chronic_lung` variable records responses to the prompt "Other chronic lung disease".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_chronic_lung` data element is the result of the harmonization of other RADx program data elements: `cc_clung` (RADx-UP)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005275  # lung disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 48 of 133
+      nih_depression:
+        title: Depression
+        description: |-
+          The `nih_depression` variable records responses to the prompt, or a congruently meaning prompt, "Depression".  Equivalent prompts are:
+
+          - "Depression" (RADx-UP)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_depression` data element is the result of the harmonization of other RADx program data elements: `cc_depression` (RADx-UP); `dht_depression` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0002050  # depressive disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 49 of 133
+      nih_alc_sub_abuse:
+        title: Alcohol or substance use disorder
+        description: |-
+          The `nih_alc_sub_abuse` variable records responses to the prompt, or a congruently meaning prompt, "Alcohol or substance use disorder".  Equivalent prompts are:
+
+          - "Alcohol or substance use disorder" (RADx-UP)
+          - "Alcohol or substance use disorder" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_alc_sub_abuse` data element is the result of the harmonization of other RADx program data elements: `cc_asud` (RADx-UP); `dht_alc_sub_abuse` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0002494  # substance-related disorder
+        - MONDO:0021698  # alcohol-related disorders
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 50 of 133
+      nih_iv_drug_use:
+        title: Intravenous drug use
+        description: |-
+          The `nih_iv_drug_use` variable records responses to the prompt, or a congruently meaning prompt, "Intravenous drug use".  Equivalent prompts are:
+
+          - "Intravenous drug use" (RADx-UP)
+          - "Intravenous drug use" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_iv_drug_use` data element is the result of the harmonization of other RADx program data elements: `cc_intrav` (RADx-UP); `dht_iv_drug_use` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C84367  # Intravenous Drug User
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 51 of 133
+      nih_othermh:
+        title: Other mental health disorder
+        description: |-
+          The `nih_othermh` variable records responses to the prompt, or a congruently meaning prompt, "Other mental health disorder".  Equivalent prompts are:
+
+          - "Other mental health disorder" (RADx-UP)
+          - "Other mental health disorder" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_othermh` data element is the result of the harmonization of other RADx program data elements: `cc_othermh` (RADx-UP); `dht_other_mental_health_disorder` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0002025  # psychiatric disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 52 of 133
+      nih_other_chronic_cond:
+        title: Other chronic condition
+        description: |-
+          The `nih_other_chronic_cond` variable records responses to the prompt, or a congruently meaning prompt, "Other chronic condition".  Equivalent prompts are:
+
+          - "Other chronic condition" (RADx-UP)
+          - "Other chronic condition" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_other_chronic_cond` data element is the result of the harmonization of other RADx program data elements: `cc_otherchroniccond` (RADx-UP); `dht_other_chronic_cond` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C165593  # Chronic Disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 53 of 133
+      nih_coronary_artery_disease:
+        title: Coronary artery disease
+        description: |-
+          The `nih_coronary_artery_disease` variable records responses to the prompt "Coronary artery disease".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_coronary_artery_disease` data element is the result of the harmonization of other RADx program data elements: `dht_coronary_artery_disease` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005010  # coronary artery disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 54 of 133
+      nih_coronary_artery_disease_angina:
+        title: Coronary artery disease (blockages in your heart vessels) or angina (chest
+          pain)?
+        description: |-
+          The `nih_coronary_artery_disease_angina` variable records responses to the prompt "Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_coronary_artery_disease_angina` data element is the result of the harmonization of other RADx program data elements: `coronary_artery_disease` (RADx-Tech)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005010  # coronary artery disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 55 of 133
+      nih_heart_attack:
+        title: A heart attack (myocardial infarction)?
+        description: |-
+          The `nih_heart_attack` variable records responses to the prompt, or a congruently meaning prompt, "A heart attack (myocardial infarction)?".  Equivalent prompts are:
+
+          - "A heart attack (myocardial infarction)?" (RADx-Tech)
+          - "heart attack (myocardial infarction)?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_heart_attack` data element is the result of the harmonization of other RADx program data elements: `heart_attack` (RADx-Tech); `dht_heart_attack` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005068  # myocardial infarction
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 56 of 133
+      nih_chf:
+        title: Congestive Heart failure (CHF, Heart Failure)?
+        description: |-
+          The `nih_chf` variable records responses to the prompt, or a congruently meaning prompt, "Congestive Heart failure (CHF, Heart Failure)?".  Equivalent prompts are:
+
+          - "Congestive Heart failure (CHF, Heart Failure)?" (RADx-Tech)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_chf` data element is the result of the harmonization of other RADx program data elements: `chf` (RADx-Tech); `dht_chf` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005009  # congestive heart failure
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 57 of 133
+      nih_stroke:
+        title: Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?
+        description: |-
+          The `nih_stroke` variable records responses to the prompt, or a congruently meaning prompt, "Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?".  Equivalent prompts are:
+
+          - "Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?" (RADx-Tech)
+          - "Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_stroke` data element is the result of the harmonization of other RADx program data elements: `stroke` (RADx-Tech); `dht_stroke` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005264  # transient ischemic attack
+        - MONDO:0005098  # stroke disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 58 of 133
+      nih_immunodeficiency:
+        title: Immunodeficiency (NOT including HIV)?
+        description: |-
+          The `nih_immunodeficiency` variable records responses to the prompt, or a congruently meaning prompt, "Immunodeficiency (NOT including HIV)?".  Equivalent prompts are:
+
+          - "Immunodeficiency (NOT including HIV)?" (RADx-Tech)
+          - "Immunodeficiency (NOT including HIV)?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_immunodeficiency` data element is the result of the harmonization of other RADx program data elements: `immunodeficiency` (RADx-Tech); `dht_immunodeficiency` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0021094  # immunodeficiency disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 59 of 133
+      nih_hiv:
+        title: Chronic HIV infection?
+        description: |-
+          The `nih_hiv` variable records responses to the prompt, or a congruently meaning prompt, "Chronic HIV infection?".  Equivalent prompts are:
+
+          - "Chronic HIV infection?" (RADx-Tech)
+          - "Chronic HIV infection?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_hiv` data element is the result of the harmonization of other RADx program data elements: `hiv` (RADx-Tech); `dht_hiv` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005109  # HIV infectious disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 60 of 133
+      nih_anemia:
+        title: Anemia or other blood disorder (do not include leukemia or lymphoma)?
+        description: |-
+          The `nih_anemia` variable records responses to the prompt, or a congruently meaning prompt, "Anemia or other blood disorder (do not include leukemia or lymphoma)?".  Equivalent prompts are:
+
+          - "Anemia or other blood disorder (do not include leukemia or lymphoma)?" (RADx-Tech)
+          - "Anemia or other blood disorder (do not include leukemia or lymphoma)?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_anemia` data element is the result of the harmonization of other RADx program data elements: `anemia` (RADx-Tech); `dht_anemia` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0002280  # anemia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 61 of 133
+      nih_premature_birth:
+        title: History of premature birth (being born before 37 weeks of pregnancy)
+        description: |-
+          The `nih_premature_birth` variable records responses to the prompt "History of premature birth (being born before 37 weeks of pregnancy)".The values for this variable are integers that come from a list of 6 permissible integer values.
+
+          The `nih_premature_birth` data element is the result of the harmonization of other RADx program data elements: `premature` (RADx-Tech)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - GSSO:009644  # premature birth
+        any_of:
+        - range: NihPrematureBirthEnum  # 0=No | 1=Yes, Between 32 - 37 Weeks | 2=Yes, Between 28-32 Weeks | 3=Yes, Less Than 28 Weeks | 4=Yes, But Not Sure How Many Weeks | 77=Dont Know
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 62 of 133
+      nih_chd:
+        title: Chronic Heart Disease
+        description: |-
+          The `nih_chd` variable records responses to the prompt, or a congruently meaning prompt, "Chronic Heart Disease".  Equivalent prompts are:
+
+          - "CHD" (RADx-Tech)
+          - "Chronic Heart Disease" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_chd` data element is the result of the harmonization of other RADx program data elements: `chd` (RADx-Tech); `dht_chd` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0001493  # chronic pulmonary heart disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 63 of 133
+      nih_cf:
+        title: Cystic Fibrosis
+        description: |-
+          The `nih_cf` variable records responses to the prompt "Cystic Fibrosis".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_cf` data element is the result of the harmonization of other RADx program data elements: `cf` (RADx-Tech)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0009061  # cystic fibrosis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 64 of 133
+      nih_cld_bpd:
+        title: CLD BPD (Chronic Lung Disease Bronchopulmonary Dysplasia)
+        description: |-
+          The `nih_cld_bpd` variable records responses to the prompt "CLD BPD (Chronic Lung Disease Bronchopulmonary Dysplasia)".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_cld_bpd` data element is the result of the harmonization of other RADx program data elements: `cld_bpd` (RADx-Tech)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0019091  # bronchopulmonary dysplasia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 65 of 133
+      nih_copd_plus:
+        title: Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis,
+          obstructive pulmonary disease?
+        description: |-
+          The `nih_copd_plus` variable records responses to the prompt, or a congruently meaning prompt, "Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?".  Equivalent prompts are:
+
+          - "COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?" (RADx-Tech)
+          - "Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_copd_plus` data element is the result of the harmonization of other RADx program data elements: `copd` (RADx-Tech); `dht_copd_opd` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005002  # chronic obstructive pulmonary disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 66 of 133
+      nih_alz:
+        title: Alzheimers
+        description: |-
+          The `nih_alz` variable records responses to the prompt "Alzheimers".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_alz` data element is the result of the harmonization of other RADx program data elements: `dht_alz` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0004975  # Alzheimer disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 67 of 133
+      nih_anxiety:
+        title: Anxiety
+        description: |-
+          The `nih_anxiety` variable records responses to the prompt "Anxiety".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_anxiety` data element is the result of the harmonization of other RADx program data elements: `dht_anxiety` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0011918  # anxiety
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 68 of 133
+      nih_arrhythmia:
+        title: Arrhythmia
+        description: |-
+          The `nih_arrhythmia` variable records responses to the prompt "Arrhythmia".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_arrhythmia` data element is the result of the harmonization of other RADx program data elements: `dht_arrhythmia` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - SYMP:0000287  # arrhythmia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 69 of 133
+      nih_arthritis:
+        title: Arthritis
+        description: |-
+          The `nih_arthritis` variable records responses to the prompt "Arthritis".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_arthritis` data element is the result of the harmonization of other RADx program data elements: `dht_arthritis` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0008383  # rheumatoid arthritis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 70 of 133
+      nih_af:
+        title: Atrial Fibrillation
+        description: |-
+          The `nih_af` variable records responses to the prompt "Atrial Fibrillation".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_af` data element is the result of the harmonization of other RADx program data elements: `dht_af` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0004981  # atrial fibrillation
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 71 of 133
+      nih_chronic_pain:
+        title: Chronic Pain
+        description: |-
+          The `nih_chronic_pain` variable records responses to the prompt "Chronic Pain".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_chronic_pain` data element is the result of the harmonization of other RADx program data elements: `dht_chronic_pain` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C26940  # Chronic Pain
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 72 of 133
+      nih_fibromyalgia:
+        title: Fibromyalgia
+        description: |-
+          The `nih_fibromyalgia` variable records responses to the prompt "Fibromyalgia".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_fibromyalgia` data element is the result of the harmonization of other RADx program data elements: `dht_fibromyalgia` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005546  # fibromyalgia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 73 of 133
+      nih_gerd:
+        title: Gastroesophageal reflux disease
+        description: |-
+          The `nih_gerd` variable records responses to the prompt "Gastroesophageal reflux disease".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_gerd` data element is the result of the harmonization of other RADx program data elements: `dht_gerd` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0007186  # gastroesophageal reflux disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 74 of 133
+      nih_gestational_diabetes:
+        title: Gestational Diabetes
+        description: |-
+          The `nih_gestational_diabetes` variable records responses to the prompt "Gestational Diabetes".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_gestational_diabetes` data element is the result of the harmonization of other RADx program data elements: `dht_gestational_diabetes` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005406  # gestational diabetes
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 75 of 133
+      nih_cholesterol:
+        title: High Cholesterol
+        description: |-
+          The `nih_cholesterol` variable records responses to the prompt "High Cholesterol".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_cholesterol` data element is the result of the harmonization of other RADx program data elements: `dht_cholesterol` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C37967  # Hypercholesterolemia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 76 of 133
+      nih_thyroid:
+        title: Hypo/Hyper Thyroidism
+        description: |-
+          The `nih_thyroid` variable records responses to the prompt "Hypo/Hyper Thyroidism".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_thyroid` data element is the result of the harmonization of other RADx program data elements: `dht_thyroid` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005420  # hypothyroidism
+        - MONDO:0004425  # hyperthyroidism
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 77 of 133
+      nih_immuno_compromised_solid_organ:
+        title: immunocompromised from solid organ transplant
+        description: |-
+          The `nih_immuno_compromised_solid_organ` variable records responses to the prompt "immunocompromised from solid organ transplant".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_immuno_compromised_solid_organ` data element is the result of the harmonization of other RADx program data elements: `dht_immuno_compromised_solid_organ` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C14139  # Immunocompromised
+        - NCIT:C130200  # Solid Organ Transplant Recipient
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 78 of 133
+      nih_ibd:
+        title: Inflammatory Bowel Disease
+        description: |-
+          The `nih_ibd` variable records responses to the prompt "Inflammatory Bowel Disease".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_ibd` data element is the result of the harmonization of other RADx program data elements: `dht_ibd` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005265  # inflammatory bowel disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 79 of 133
+      nih_insomnia:
+        title: Insomnia
+        description: |-
+          The `nih_insomnia` variable records responses to the prompt "Insomnia".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_insomnia` data element is the result of the harmonization of other RADx program data elements: `dht_insomnia` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0013600  # insomnia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 80 of 133
+      nih_ibs:
+        title: Irritable bowel syndrome
+        description: |-
+          The `nih_ibs` variable records responses to the prompt "Irritable bowel syndrome".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_ibs` data element is the result of the harmonization of other RADx program data elements: `dht_ibs` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005052  # irritable bowel syndrome
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 81 of 133
+      nih_liver_disease:
+        title: Liver disease (cirrhosis, hepB, hepC)
+        description: |-
+          The `nih_liver_disease` variable records responses to the prompt "Liver disease (cirrhosis, hepB, hepC)".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_liver_disease` data element is the result of the harmonization of other RADx program data elements: `dht_liver_disease` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005154  # liver disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 82 of 133
+      nih_lupus:
+        title: Lupus
+        description: |-
+          The `nih_lupus` variable records responses to the prompt "Lupus".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_lupus` data element is the result of the harmonization of other RADx program data elements: `dht_lupus` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0004670  # lupus erythematosus
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 83 of 133
+      nih_migraines:
+        title: Migraines
+        description: |-
+          The `nih_migraines` variable records responses to the prompt "Migraines".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_migraines` data element is the result of the harmonization of other RADx program data elements: `dht_migraines` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005277  # migraine disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 84 of 133
+      nih_ms:
+        title: Multiple Sclerosis
+        description: |-
+          The `nih_ms` variable records responses to the prompt "Multiple Sclerosis".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_ms` data element is the result of the harmonization of other RADx program data elements: `dht_ms` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005301  # multiple sclerosis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 85 of 133
+      nih_neurodegenerative:
+        title: Neurodegenerative disease
+        description: |-
+          The `nih_neurodegenerative` variable records responses to the prompt "Neurodegenerative disease".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_neurodegenerative` data element is the result of the harmonization of other RADx program data elements: `dht_neurodegenerative` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005559  # neurodegenerative disease
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 86 of 133
+      nih_neurological_condition:
+        title: Neurological Condition
+        description: |-
+          The `nih_neurological_condition` variable records responses to the prompt "Neurological Condition".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_neurological_condition` data element is the result of the harmonization of other RADx program data elements: `dht_neurological_condition` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005071  # nervous system disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 87 of 133
+      nih_no_chronic_condition:
+        title: No chronic condition
+        description: |-
+          The `nih_no_chronic_condition` variable records responses to the prompt "No chronic condition".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_no_chronic_condition` data element is the result of the harmonization of other RADx program data elements: `dht_no_chronic_condition` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 88 of 133
+      nih_obesity:
+        title: Obesity (BMI >= 30)
+        description: |-
+          The `nih_obesity` variable records responses to the prompt "Obesity (BMI >= 30)".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_obesity` data element is the result of the harmonization of other RADx program data elements: `dht_obesity` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0011122  # obesity disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 89 of 133
+      nih_osteoporosis:
+        title: Osteoporosis
+        description: |-
+          The `nih_osteoporosis` variable records responses to the prompt "Osteoporosis".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_osteoporosis` data element is the result of the harmonization of other RADx program data elements: `dht_osteoporosis` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005298  # osteoporosis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 90 of 133
+      nih_pcos:
+        title: Polycystic ovary syndrome
+        description: |-
+          The `nih_pcos` variable records responses to the prompt "Polycystic ovary syndrome".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_pcos` data element is the result of the harmonization of other RADx program data elements: `dht_pcos` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0008487  # polycystic ovary syndrome
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 91 of 133
+      nih_psoriasis:
+        title: Psoriasis
+        description: |-
+          The `nih_psoriasis` variable records responses to the prompt "Psoriasis".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_psoriasis` data element is the result of the harmonization of other RADx program data elements: `dht_psoriasis` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005083  # psoriasis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 92 of 133
+      nih_renal:
+        title: Renal disease
+        description: |-
+          The `nih_renal` variable records responses to the prompt "Renal disease".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_renal` data element is the result of the harmonization of other RADx program data elements: `dht_renal` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005240  # kidney disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 93 of 133
+      nih_rls:
+        title: Restless leg
+        description: |-
+          The `nih_rls` variable records responses to the prompt "Restless leg".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_rls` data element is the result of the harmonization of other RADx program data elements: `dht_rls` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005391  # restless legs syndrome
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 94 of 133
+      nih_ra:
+        title: Rheumatoid Arthritis
+        description: |-
+          The `nih_ra` variable records responses to the prompt "Rheumatoid Arthritis".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_ra` data element is the result of the harmonization of other RADx program data elements: `dht_ra` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0008383  # rheumatoid arthritis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 95 of 133
+      nih_seasonal_allergies:
+        title: Seasonal Allergies
+        description: |-
+          The `nih_seasonal_allergies` variable records responses to the prompt "Seasonal Allergies".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_seasonal_allergies` data element is the result of the harmonization of other RADx program data elements: `dht_seasonal_allergies` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005324  # seasonal allergic rhinitis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 96 of 133
+      nih_heart_condition:
+        title: Serious heart condition (heart failure, CAD, cardiomyopathies)
+        description: |-
+          The `nih_heart_condition` variable records responses to the prompt "Serious heart condition (heart failure, CAD, cardiomyopathies)".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_heart_condition` data element is the result of the harmonization of other RADx program data elements: `dht_heart_condition` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005267  # heart disorder
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 97 of 133
+      nih_sleep_apnea:
+        title: Sleep Apnea
+        description: |-
+          The `nih_sleep_apnea` variable records responses to the prompt "Sleep Apnea".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_sleep_apnea` data element is the result of the harmonization of other RADx program data elements: `dht_sleep_apnea` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005296  # sleep apnea syndrome
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 98 of 133
+      nih_substance_use:
+        title: Substance use
+        description: |-
+          The `nih_substance_use` variable records responses to the prompt "Substance use".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_substance_use` data element is the result of the harmonization of other RADx program data elements: `dht_substance_use` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - NCIT:C18272  # Substance Abuse
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 99 of 133
+      nih_thalassemia:
+        title: Thalassemia
+        description: |-
+          The `nih_thalassemia` variable records responses to the prompt "Thalassemia".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_thalassemia` data element is the result of the harmonization of other RADx program data elements: `dht_thalassemia` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0000984  # thalassemia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 100 of 133
+      nih_t1d:
+        title: Type 1 Diabetes
+        description: |-
+          The `nih_t1d` variable records responses to the prompt "Type 1 Diabetes".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_t1d` data element is the result of the harmonization of other RADx program data elements: `dht_t1d` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005147  # type 1 diabetes mellitus
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 101 of 133
+      nih_t2dm:
+        title: Type 2 Diabetes
+        description: |-
+          The `nih_t2dm` variable records responses to the prompt "Type 2 Diabetes".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_t2dm` data element is the result of the harmonization of other RADx program data elements: `dht_t2dm` (RADx-DHT)
+        in_subset:
+        - Medical_History
+        related_mappings:
+        - MONDO:0005148  # type 2 diabetes mellitus
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 102 of 133
+      nih_cough:
+        title: Cough
+        description: |-
+          The `nih_cough` variable records responses to the prompt, or a congruently meaning prompt, "Cough".  Equivalent prompts are:
+
+          - "Cough" (RADx-UP)
+          - "Cough" (RADx-rad)
+          - "A cough (worse than usual)" (RADx-Tech)
+          - "Cough" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_cough` data element is the result of the harmonization of other RADx program data elements: `covid_cough` (RADx-UP); `cough` (RADx-rad); `cough` (RADx-Tech); `dht_cough` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000614  # cough
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 103 of 133
+      nih_fever_chills:
+        title: Fever or Chills
+        description: |-
+          The `nih_fever_chills` variable records responses to the prompt, or a congruently meaning prompt, "Fever or Chills".  Equivalent prompts are:
+
+          - "Fever or chills" (RADx-UP)
+          - "Fever" (RADx-rad), - "Chills" (RADx-rad)
+          - "Symptoms of fever or chills" (RADx-Tech)
+          - "Fever, feeling hot/feverish, or having chills" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_fever_chills` data element is the result of the harmonization of other RADx program data elements: `covid_fever` (RADx-UP); `fever`, `chills` (RADx-rad); `fever_chills` (RADx-Tech); `dht_fever_chills`, `dht_chills`, `dht_fever` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000613  # fever
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 104 of 133
+      nih_diff_breath:
+        title: Shortness of breath or difficulty breathing
+        description: |-
+          The `nih_diff_breath` variable records responses to the prompt, or a congruently meaning prompt, "Shortness of breath or difficulty breathing".  Equivalent prompts are:
+
+          - "Shortness of breath or difficulty breathing" (RADx-UP)
+          - "Shortness of breath or difficulty breathing" (RADx-rad)
+          - "Shortness of breath" (RADx-Tech)
+          - "Shortness of breath or difficulty breathing" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_diff_breath` data element is the result of the harmonization of other RADx program data elements: `covid_diffbreath` (RADx-UP); `shortness_of_breath_or_dif` (RADx-rad); `shortness_of_breath` (RADx-Tech); `dht_diff_breath`, `dht_shortness_of_breath` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0019153  # dyspnea
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 105 of 133
+      nih_headache:
+        title: Headache
+        description: |-
+          The `nih_headache` variable records responses to the prompt, or a congruently meaning prompt, "Headache".  Equivalent prompts are:
+
+          - "Headache" (RADx-UP)
+          - "Headache" (RADx-rad)
+          - "Headache" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_headache` data element is the result of the harmonization of other RADx program data elements: `covid_headache` (RADx-UP); `headache` (RADx-rad); `dht_headache` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000504  # headache
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 106 of 133
+      nih_muscle_ache:
+        title: Muscle ache
+        description: |-
+          The `nih_muscle_ache` variable records responses to the prompt, or a congruently meaning prompt, "Muscle ache".  Equivalent prompts are:
+
+          - "Muscle or body aches" (RADx-UP)
+          - "Muscle ache" (RADx-rad)
+          - "Muscle aches (worse than usual)" (RADx-Tech)
+          - "Muscle, body, or joint aches (not due to exercise)" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_muscle_ache` data element is the result of the harmonization of other RADx program data elements: `covid_myalgia` (RADx-UP); `muscle_ache` (RADx-rad); `muscle_aches` (RADx-Tech); `dht_body_pain`, `dht_chest_pain`, `dht_joint_pain` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000626  # obsolete myalgia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 107 of 133
+      nih_olfactory:
+        title: New loss of taste or smell
+        description: |-
+          The `nih_olfactory` variable records responses to the prompt, or a congruently meaning prompt, "New loss of taste or smell".  Equivalent prompts are:
+
+          - "New loss of taste or smell" (RADx-UP)
+          - "New loss of taste or smell" (RADx-rad)
+          - "Unable to taste or smell" (RADx-Tech)
+          - "New loss of taste or smell" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_olfactory` data element is the result of the harmonization of other RADx program data elements: `covid_olfactory` (RADx-UP); `new_loss_of_taste_or_smell` (RADx-rad); `unable_to_taste_or_smell` (RADx-Tech); `dht_olfactory`, `dht_loss_smell`, `dht_loss_taste` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0020004  # ageusia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 108 of 133
+      nih_fatigue:
+        title: Excessive fatigue
+        description: |-
+          The `nih_fatigue` variable records responses to the prompt, or a congruently meaning prompt, "Excessive fatigue".  Equivalent prompts are:
+
+          - "Lack of energy or general tired feeling" (RADx-UP)
+          - "Excessive fatigue" (RADx-rad)
+          - "Fatigue (more than normal)" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_fatigue` data element is the result of the harmonization of other RADx program data elements: `covid_fatique`, `covid_fatigue` (RADx-UP); `excessive_fatigue` (RADx-rad); `dht_fatigue` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000280  # extreme fatigue
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 109 of 133
+      nih_nausea_vomiting_diarrhea:
+        title: Nausea, vomiting, or diarrhea
+        description: |-
+          The `nih_nausea_vomiting_diarrhea` variable records responses to the prompt, or a congruently meaning prompt, "Nausea, vomiting, or diarrhea".  Equivalent prompts are:
+
+          - "Feeling sick to your stomach or vomiting, diarrhea" (RADx-UP)
+          - "Nausea/vomiting" (RADx-rad), - "Diarrhea" (RADx-rad)
+          - "Nausea, vomiting or diarrhea" (RADx-Tech)
+          - "Nausea, vomiting, or diarrhea" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_nausea_vomiting_diarrhea` data element is the result of the harmonization of other RADx program data elements: `covid_nausea` (RADx-UP); `nausea_vomiting`, `diarrhea` (RADx-rad); `nausea_vomiting_diarrhea` (RADx-Tech); `dht_nausea_vomiting_diarrhea`, `dht_diarrhea`, `dht_nausea_vomiting` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000458  # nausea
+        - SYMP:0019145  # vomiting
+        - SYMP:0000570  # diarrhea
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 110 of 133
+      nih_abdom_pain:
+        title: Abdominal pain
+        description: |-
+          The `nih_abdom_pain` variable records responses to the prompt, or a congruently meaning prompt, "Abdominal pain".  Equivalent prompts are:
+
+          - "Abdominal Pain" (RADx-UP)
+          - "Abdominal pain" (RADx-rad)
+          - "Stomach or abdominal pain" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_abdom_pain` data element is the result of the harmonization of other RADx program data elements: `covid_abpain` (RADx-UP); `abdominal_pain` (RADx-rad); `dht_abdom_pain` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000457  # abdominal pain
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 111 of 133
+      nih_skin_rash:
+        title: Skin rash
+        description: |-
+          The `nih_skin_rash` variable records responses to the prompt, or a congruently meaning prompt, "Skin rash".  Equivalent prompts are:
+
+          - "Skin Rash" (RADx-UP)
+          - "Skin rash" (RADx-rad)
+          - "Skin rash" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_skin_rash` data element is the result of the harmonization of other RADx program data elements: `covid_skinrash` (RADx-UP); `skin_rash` (RADx-rad); `dht_skin_rash` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000487  # rash
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 112 of 133
+      nih_conjunctivitis:
+        title: Conjunctivitis
+        description: |-
+          The `nih_conjunctivitis` variable records responses to the prompt, or a congruently meaning prompt, "Conjunctivitis".  Equivalent prompts are:
+
+          - "Conjunctivitis" (RADx-rad)
+          - "Pink eye or conjunctivitis" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_conjunctivitis` data element is the result of the harmonization of other RADx program data elements: `conjunctivitis` (RADx-rad); `dht_conjunctivitis` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - MONDO:0003799  # conjunctivitis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 113 of 133
+      nih_throat_congestion_nose:
+        title: Sore throat, congestion or runny nose
+        description: |-
+          The `nih_throat_congestion_nose` variable records responses to the prompt, or a congruently meaning prompt, "Sore throat, congestion or runny nose".  Equivalent prompts are:
+
+          - "Sore throat, congestion or runny nose " (RADx-UP)
+          - "Congestion, runny nose, sore throat" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_throat_congestion_nose` data element is the result of the harmonization of other RADx program data elements: `covid_runnynose` (RADx-UP); `dht_congestion_sorethroat_runnynose`, `dht_runny_nose`, `dht_scratchy_throat`, `dht_nasal_congestion`, `dht_sneezing`, `dht_sore_throat` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000505  # throat pain
+        - SYMP:0000237  # congestion
+        - SYMP:0000372  # rhinorrhea
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 114 of 133
+      nih_red_eyes:
+        title: Red or painful eyes
+        description: |-
+          The `nih_red_eyes` variable records responses to the prompt, or a congruently meaning prompt, "Red or painful eyes".  Equivalent prompts are:
+
+          - "Red or painful eyes" (RADx-Tech)
+          - "Red or painful eyes" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_red_eyes` data element is the result of the harmonization of other RADx program data elements: `red_eyes` (RADx-Tech); `dht_red_eyes` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000446  # bloodshot eye
+        - SYMP:0000828  # sore eyes
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 115 of 133
+      nih_high_temp:
+        title: A temperature greater than 100.4 °F
+        description: |-
+          The `nih_high_temp` variable records responses to the prompt, or a congruently meaning prompt, "A temperature greater than 100.4 ¬∞F".  Equivalent prompts are:
+
+          - "A temperature greater than 100.4 ¬∞F" (RADx-Tech)
+          - "A temperature greater than 100.4¬∞F" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_high_temp` data element is the result of the harmonization of other RADx program data elements: `high_temp` (RADx-Tech); `dht_high_temp` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000613  # fever
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 116 of 133
+      nih_other_symp:
+        title: Other
+        description: |-
+          The `nih_other_symp` variable records responses to the prompt, or a congruently meaning prompt, "Other".  Equivalent prompts are:
+
+          - "Other" (RADx-UP)
+          - "Other " (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_other_symp` data element is the result of the harmonization of other RADx program data elements: `covid_other` (RADx-UP); `dht_other_symp` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000462  # symptom
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 117 of 133
+      nih_no_sympt:
+        title: None of the above
+        description: |-
+          The `nih_no_sympt` variable records responses to the prompt, or a congruently meaning prompt, "None of the above".  Equivalent prompts are:
+
+          - "None of the above" (RADx-Tech)
+          - "None of the above" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_no_sympt` data element is the result of the harmonization of other RADx program data elements: `no_symptoms` (RADx-Tech); `dht_no_symp` (RADx-DHT)
+
+          Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 118 of 133
+      nih_wheezing:
+        title: Wheezing
+        description: |-
+          The `nih_wheezing` variable records responses to the prompt "Wheezing".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_wheezing` data element is the result of the harmonization of other RADx program data elements: `dht_wheezing` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000604  # wheezing
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 119 of 133
+      nih_blue_lips:
+        title: Bluish lips or face
+        description: |-
+          The `nih_blue_lips` variable records responses to the prompt "Bluish lips or face".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_blue_lips` data element is the result of the harmonization of other RADx program data elements: `dht_blue_lips` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000537  # cyanosis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 120 of 133
+      nih_balance:
+        title: Loss of balance
+        description: |-
+          The `nih_balance` variable records responses to the prompt "Loss of balance".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_balance` data element is the result of the harmonization of other RADx program data elements: `dht_balance` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000318  # loss of balance
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 121 of 133
+      nih_slurred_peech:
+        title: Slurred speech
+        description: |-
+          The `nih_slurred_peech` variable records responses to the prompt "Slurred speech".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_slurred_peech` data element is the result of the harmonization of other RADx program data elements: `dht_slurred_peech` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000342  # slurred speech
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 122 of 133
+      nih_confusion:
+        title: New confusion
+        description: |-
+          The `nih_confusion` variable records responses to the prompt "New confusion".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_confusion` data element is the result of the harmonization of other RADx program data elements: `dht_confusion` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000016  # confusion
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 123 of 133
+      nih_neuro_shakes:
+        title: Unusual shivering or shaking
+        description: |-
+          The `nih_neuro_shakes` variable records responses to the prompt "Unusual shivering or shaking".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_neuro_shakes` data element is the result of the harmonization of other RADx program data elements: `dht_neuro_shakes` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000662  # shakes
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 124 of 133
+      nih_numb_extremities:
+        title: Tingling or numbness or swelling of hands and feet
+        description: |-
+          The `nih_numb_extremities` variable records responses to the prompt "Tingling or numbness or swelling of hands and feet".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_numb_extremities` data element is the result of the harmonization of other RADx program data elements: `dht_numb_extremities` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000834  # hypoesthesia
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 125 of 133
+      nih_sweating:
+        title: Excessive sweating
+        description: |-
+          The `nih_sweating` variable records responses to the prompt "Excessive sweating".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_sweating` data element is the result of the harmonization of other RADx program data elements: `dht_sweating` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0019152  # diaphoresis
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 126 of 133
+      nih_seizures:
+        title: Seizures
+        description: |-
+          The `nih_seizures` variable records responses to the prompt "Seizures".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_seizures` data element is the result of the harmonization of other RADx program data elements: `dht_seizures` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000124  # seizure
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 127 of 133
+      nih_rash_toes:
+        title: Red or purple rash or lesions on toes
+        description: |-
+          The `nih_rash_toes` variable records responses to the prompt "Red or purple rash or lesions on toes".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_rash_toes` data element is the result of the harmonization of other RADx program data elements: `dht_rash_toes` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000487  # rash
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 128 of 133
+      nih_appetite:
+        title: Change in or loss of appetite
+        description: |-
+          The `nih_appetite` variable records responses to the prompt "Change in or loss of appetite".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+          The `nih_appetite` data element is the result of the harmonization of other RADx program data elements: `dht_appetite` (RADx-DHT)
+        in_subset:
+        - Symptoms
+        related_mappings:
+        - SYMP:0000309  # loss of appetite
+        - SYMP:0000245  # decreased appetite
+        any_of:
+        - range: NoYesOtherEtcEnum  # 0=No | 1=Yes | 97=Other | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 129 of 133
+      nih_health_status:
+        title: Would you say that (your) health in general is excellent, very good, good,
+          fair, or poor?
+        description: |-
+          The `nih_health_status` variable records responses to the prompt, or a congruently meaning prompt, "Would you say that (your) health in general is excellent, very good, good, fair, or poor?".  Equivalent prompts are:
+
+          - "Would you say that (your) health in general is excellent, very good, good, fair or poor?" (RADx-rad)
+          - "Self-report health status" (RADx-DHT)
+
+          The values for this variable are integers that come from a list of 7 permissible integer values.
+
+          The `nih_health_status` data element is the result of the harmonization of other RADx program data elements: `self_reported_health_status_assessment` (RADx-UP); `health_status` (RADx-rad); `dht_health_status` (RADx-DHT)
+        in_subset:
+        - Health_Status
+        any_of:
+        - range: NihHealthStatusEnum  # 0=Excellent | 1=Very Good | 2=Good | 3=Fair | 4=Poor | 98=Don't know (+1 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 130 of 133
+      nih_height:
+        title: What is your height in inches?
+        description: |-
+          The `nih_height` variable records responses to the prompt, or a congruently meaning prompt, "What is your height in inches?".  Equivalent prompts are:
+
+          - "Feet" (RADx-UP), - "Inches" (RADx-UP), - "Meters" (RADx-UP), - "Centimeters" (RADx-UP)
+          - "Height Feet" (RADx-rad), - "Height Inches" (RADx-rad)
+          - "What is your height in inches?" (RADx-DHT)
+
+          The values for this variable are integers.
+
+          The `nih_height` data element is the result of the harmonization of other RADx program data elements: `self_reported_height_feet`, `self_reported_height_inches`, `self_reported_height_meters`, `self_reported_height_centimeters` (RADx-UP); `height_feet`, `height_inches` (RADx-rad); `dht_height` (RADx-DHT)
+        range: integer
+        in_subset:
+        - Health_Status
+        related_mappings:
+        - PATO:0000119  # height (quality)
+        unit:
+          symbol: in
+          descriptive_name: inch
+          ucum_code: '[in_i]'
+        annotations:
+          unit_raw: inch
+
+      # Data element 131 of 133
+      nih_weight:
+        title: What is your weight in pounds?
+        description: |-
+          The `nih_weight` variable records responses to the prompt, or a congruently meaning prompt, "What is your weight in pounds?".  Equivalent prompts are:
+
+          - "How much do you weigh without clothes or shoes? If you are currently pregnant, how much did you weigh before your pregnancy?" (RADx-UP), - "How much do you weigh without clothes or shoes? If you are currently pregnant, how much did you weigh before your pregnancy?" (RADx-UP)
+          - "What is your weight? (Weight in pounds)" (RADx-rad)
+          - "What is your weight in pounds?" (RADx-DHT)
+
+          The values for this variable are integers.
+
+          The `nih_weight` data element is the result of the harmonization of other RADx program data elements: `self_reported_weight_kgs`, `self_reported_weight_lbs` (RADx-UP); `weight_lbs` (RADx-rad); `dht_weight` (RADx-DHT)
+        range: integer
+        in_subset:
+        - Health_Status
+        related_mappings:
+        - PATO:0000125  # mass (quality)
+        unit:
+          symbol: lb
+          descriptive_name: pound
+          ucum_code: '[lb_av]'
+        annotations:
+          unit_raw: pound
+
+      # Data element 132 of 133
+      nih_height_category:
+        title: Approximately what is your height?
+        description: |-
+          The `nih_height_category` variable records responses to the prompt "Approximately what is your height?".The values for this variable are integers that come from a list of 3 permissible integer values.
+
+          The `nih_height_category` data element is the result of the harmonization of other RADx program data elements: `dht_height_category` (RADx-DHT)
+        in_subset:
+        - Health_Status
+        related_mappings:
+        - PATO:0000119  # height (quality)
+        any_of:
+        - range: NihHeightCategoryEnum  # 1=5'1" - 5'6" | 2=5'7"-5'11" | 3=6' and over
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 133 of 133
+      nih_weight_category:
+        title: Approximately what is your weight?
+        description: |-
+          The `nih_weight_category` variable records responses to the prompt "Approximately what is your weight?".The values for this variable are integers that come from a list of 3 permissible integer values.
+
+          The `nih_weight_category` data element is the result of the harmonization of other RADx program data elements: `dht_weight_category` (RADx-DHT)
+        in_subset:
+        - Health_Status
+        related_mappings:
+        - PATO:0000125  # mass (quality)
+        any_of:
+        - range: NihWeightCategoryEnum  # 1=100-150 | 2=151-200 | 3=over 200
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+    tree_root: true
