@@ -445,13 +445,22 @@ def _space_entries_at(text: str, indent: int) -> str:
 _NUMBERED_SECTIONS = {"enums", "subsets", "classes"}
 
 
-def _number_entries_at(section_yaml: str, indent: int, total: int) -> str:
-    """Append `# n of m` to each mapping entry at ``indent`` within a section.
+def _number_entries_at(
+    section_yaml: str, indent: int, total: int, label: str
+) -> str:
+    """Append `# n of m <label>` to each mapping entry at ``indent``.
+
+    ``label`` is the plural type name (e.g. ``"enums"``), suffixed so the
+    counter is self-describing, e.g. ``# 4 of 17 enums`` (singularised when
+    ``total`` is 1, e.g. ``# 1 of 1 class``).
 
     An entry line has exactly ``indent`` leading spaces then a ``key:`` (not a
     list item, not deeper). Block-scalar text and nested keys are left untouched.
     A line already carrying a comment is not doubled.
     """
+    _SINGULAR = {"data elements": "data element", "enums": "enum",
+                 "sections": "section", "classes": "class"}
+    noun = _SINGULAR.get(label, label) if total == 1 else label
     prefix = " " * indent
     out: List[str] = []
     n = 0
@@ -465,7 +474,7 @@ def _number_entries_at(section_yaml: str, indent: int, total: int) -> str:
         )
         if is_entry and "#" not in line:
             n += 1
-            out.append(f"{line}  # {n} of {total}")
+            out.append(f"{line}  # {n} of {total} {noun}")
         else:
             out.append(line)
     return "\n".join(out)
@@ -489,17 +498,20 @@ def _render(as_dict: dict) -> str:
             # Slots live two levels down under `attributes:`; space them there.
             body = _space_entries_at(body, indent=6)
             # Number the class(es) at indent 2 and the slots at indent 6.
-            body = _number_entries_at(body, indent=2, total=len(value or {}))
+            body = _number_entries_at(body, indent=2, total=len(value or {}), label="classes")
             slot_total = sum(
                 len((cls or {}).get("attributes") or {}) for cls in value.values()
             )
-            body = _number_entries_at(body, indent=6, total=slot_total)
+            body = _number_entries_at(
+                body, indent=6, total=slot_total, label="data elements"
+            )
         elif key in _SPACED_SECTIONS:
             body = _space_entries_at(body, indent=2)
 
         # Number the entries of enums / subsets as "n of m" (classes handled above).
         if key in _NUMBERED_SECTIONS and key != "classes":
-            body = _number_entries_at(body, indent=2, total=len(value or {}))
+            label = "sections" if key == "subsets" else key
+            body = _number_entries_at(body, indent=2, total=len(value or {}), label=label)
         blocks.append(f"# --- {comment} ---\n{body}")
 
     header = "\n".join(scalar_header)

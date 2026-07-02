@@ -213,13 +213,13 @@ def test_description_has_no_trailing_blank_lines_in_output():
 
 def test_entries_are_numbered_n_of_m(schema_yaml):
     # Enums numbered within all enums; the sample fixture yields 2 (field + std).
-    assert "SampleTypeEnum:  # 1 of 2" in schema_yaml
-    assert "StandardMissingValueCodes:  # 2 of 2" in schema_yaml
-    # The single tree_root class is 1 of 1.
-    assert "Record:  # 1 of 1" in schema_yaml
-    # Slots are numbered within all slots (fixture has 3).
-    assert "PartId:  # 1 of 3" in schema_yaml
-    assert "Symptoms:  # 3 of 3" in schema_yaml
+    assert "SampleTypeEnum:  # 1 of 2 enums" in schema_yaml
+    assert "StandardMissingValueCodes:  # 2 of 2 enums" in schema_yaml
+    # The single tree_root class is 1 of 1 (singularised).
+    assert "Record:  # 1 of 1 class" in schema_yaml
+    # Slots are numbered within all slots, labelled "data elements".
+    assert "PartId:  # 1 of 3 data elements" in schema_yaml
+    assert "Symptoms:  # 3 of 3 data elements" in schema_yaml
     # A slot's sub-keys (title/range) are not numbered.
     assert "title: Participant Id\n" in schema_yaml
 
@@ -228,10 +228,10 @@ def test_number_entries_helper_resets_per_section():
     from radx_dd_converter.emit import _number_entries_at
 
     body = "  A:\n    x: 1\n  B:\n    y: 2\n  C:\n    z: 3"
-    out = _number_entries_at(body, indent=2, total=3)
-    assert "  A:  # 1 of 3" in out
-    assert "  B:  # 2 of 3" in out
-    assert "  C:  # 3 of 3" in out
+    out = _number_entries_at(body, indent=2, total=3, label="enums")
+    assert "  A:  # 1 of 3 enums" in out
+    assert "  B:  # 2 of 3 enums" in out
+    assert "  C:  # 3 of 3 enums" in out
     # nested keys (x/y/z) are untouched
     assert "    x: 1\n" in out
 
