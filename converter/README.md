@@ -55,7 +55,15 @@ radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml \
     --name my_data --id https://example.org/my_data --class-name Record
 # default output is stdout:
 radx-dd-to-linkml my_dictionary.csv | head
+# look up ontology term names (via OLS4) and add them as YAML comments
+# (requires network; unresolved terms are skipped):
+radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml --annotate-terms
 ```
+
+With `--annotate-terms`, ontology CURIEs are annotated with their labels, e.g.
+`- MONDO:0004979  # asthma`. Lookups use the EBI Ontology Lookup Service (OLS4),
+are de-duplicated and run concurrently, and any term that cannot be resolved is
+left as a bare CURIE.
 
 ## Usage (library)
 

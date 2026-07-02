@@ -103,6 +103,7 @@ class EmitOptions:
     schema_name: str = "radx_generated"
     class_name: str = "Record"
     default_prefix: Optional[str] = None  # defaults to schema_name
+    annotate_terms: bool = False  # look up ontology term names and add as comments
 
 
 class Emitter:
@@ -112,6 +113,7 @@ class Emitter:
         self.opts = options or EmitOptions()
         self._prefixes: Dict[str, str] = {}
         self._enum_by_signature: Dict[str, str] = {}  # dedup identical enumerations
+        self._terms: set = set()  # every term identifier emitted (for annotation)
 
     # -- prefixes / term identifiers ---------------------------------------
 
@@ -123,6 +125,7 @@ class Emitter:
         non-OBO CURIE whose prefix is unknown is kept and a warning is logged.
         """
         term = term.strip()
+        self._terms.add(term)
         if _URL_RE.match(term):
             return term  # full IRI; nothing to register
         m = _CURIE_RE.match(term)
@@ -336,7 +339,14 @@ class Emitter:
         _drop_redundant_keys(as_dict)
         _order_slot_keys(as_dict)
         _annotations_last(as_dict)
-        return _render(as_dict)
+        text = _render(as_dict)
+        if self.opts.annotate_terms and self._terms:
+            from .terms_lookup import lookup_labels
+
+            labels = lookup_labels(self._terms)
+            if labels:
+                text = _annotate_term_lines(text, labels)
+        return text
 
 
 # Human-readable header comments for the mapping-valued sections, and the
@@ -503,6 +513,26 @@ def _annotations_last(as_dict: dict) -> None:
             if isinstance(slot, dict) and "annotations" in slot:
                 ann = slot.pop("annotations")
                 slot["annotations"] = ann  # re-insert at the end
+
+
+def _annotate_term_lines(text: str, labels: Dict[str, str]) -> str:
+    """Append ``  # <label>`` to YAML lines whose value is a known term.
+
+    Matches only the two shapes in which term identifiers appear: a mapping
+    value (``  meaning: CURIE``) and a list item (``  - CURIE``). The value is
+    compared exactly against the resolved ``labels`` keys, so block-scalar text
+    and unrelated lines are never touched. A line already carrying a comment is
+    left alone.
+    """
+    line_re = re.compile(r"^(\s*(?:-\s+|[\w.]+:\s+))(\S+)\s*$")
+    out: List[str] = []
+    for line in text.split("\n"):
+        m = line_re.match(line)
+        if m and m.group(2) in labels and "#" not in line:
+            out.append(f"{line}  # {labels[m.group(2)]}")
+        else:
+            out.append(line)
+    return "\n".join(out)
 
 
 def _strip_type_keys(obj):
