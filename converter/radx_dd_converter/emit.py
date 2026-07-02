@@ -147,7 +147,6 @@ class EmitOptions:
     resolver: str = "ols4"  # term-name resolver: "ols4" or "bioportal"
     bioportal_apikey: Optional[str] = None  # required when resolver == "bioportal"
     annotate_enum_values: bool = False  # comment field-enum values after range:
-    annotate_enum_usage: bool = False  # comment which data elements use each enum
 
 
 class Emitter:
@@ -485,8 +484,11 @@ class Emitter:
                 text = _annotate_term_lines(text, labels)
         if self.opts.annotate_enum_values and self._field_enum_values:
             text = _annotate_enum_ranges(text, self._field_enum_values)
-        if self.opts.annotate_enum_usage and self._enum_users:
-            text = _annotate_enum_usage(text, self._enum_users)
+        # Field enums get a 3-line comment block above their definition (Enum
+        # n of m / Used by N data elements / the referencing ids). This replaces
+        # the trailing "# n of m enums" counter that _render added for them.
+        if self._enum_users:
+            text = _annotate_enum_blocks(text, self._enum_users)
         return text
 
 
@@ -761,19 +763,25 @@ def _annotate_enum_ranges(text: str, field_enum_values: Dict[str, list]) -> str:
     return "\n".join(out)
 
 
-_ENUM_USERS_CAP = 6  # max data-element ids listed in a "used by" comment
+_ENUM_USERS_CAP = 6  # max data-element ids listed in the "used by" comment line
 
 
-def _annotate_enum_usage(text: str, enum_users: Dict[str, list]) -> str:
-    """Append a capped "used by: <ids>" note to each field enum definition line.
+def _annotate_enum_blocks(text: str, enum_users: Dict[str, list]) -> str:
+    """Put a 3-line comment block above each field enum definition.
 
-    Targets enum *definition* lines (indent 2, ``  EnumName:``) whose name is in
-    ``enum_users`` (so StandardMissingValueCodes and field-code enums are
-    excluded). The enum line may already carry a "# n of m enums" comment from
-    the numbering pass, so the note is appended to any existing comment with a
-    separator rather than skipped.
+    For each field-enum definition line (indent 2, ``  EnumName:``) whose name
+    is in ``enum_users``, the trailing ``# n of m enums`` counter that _render
+    added is moved into a block above the enum::
+
+        # Enum n of m
+        # Used by N data elements
+        # id1 | id2 | ... (+K more)
+        EnumName:
+
+    StandardMissingValueCodes and field-code enums are not in ``enum_users`` and
+    keep their plain trailing counter untouched.
     """
-    line_re = re.compile(r"^ {2}(\S+):(\s*#.*)?$")
+    line_re = re.compile(r"^ {2}(\S+):\s*(#\s*(\d+) of (\d+) enums?)?\s*$")
     out: List[str] = []
     for line in text.split("\n"):
         m = line_re.match(line)
@@ -781,16 +789,17 @@ def _annotate_enum_usage(text: str, enum_users: Dict[str, list]) -> str:
         if name in enum_users:
             users = enum_users[name]
             shown = users[:_ENUM_USERS_CAP]
-            body = " | ".join(shown)
+            id_list = " | ".join(shown)
             extra = len(users) - len(shown)
             if extra > 0:
-                body += f" (+{extra} more)"
-            note = f"used by: {body}"
-            existing = (m.group(2) or "").strip()
-            if existing:  # already has "# n of m enums"
-                out.append(f"  {name}:{m.group(2).rstrip()}; {note}")
-            else:
-                out.append(f"  {name}:  # {note}")
+                id_list += f" (+{extra} more)"
+            n, total = m.group(3), m.group(4)
+            de = "data element" if len(users) == 1 else "data elements"
+            if n and total:
+                out.append(f"  # Enum {n} of {total}")
+            out.append(f"  # Used by {len(users)} {de}")
+            out.append(f"  # {id_list}")
+            out.append(f"  {name}:")  # bare key line (trailing comment removed)
         else:
             out.append(line)
     return "\n".join(out)

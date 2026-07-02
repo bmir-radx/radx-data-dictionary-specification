@@ -263,8 +263,9 @@ def test_description_has_no_trailing_blank_lines_in_output():
 
 
 def test_entries_are_numbered_n_of_m(schema_yaml):
-    # Enums numbered within all enums; the sample fixture yields 2 (field + std).
-    assert "SampleTypeEnum:  # 1 of 2 enums" in schema_yaml
+    # Field enums carry their number in the 3-line block above (not trailing).
+    assert "# Enum 1 of 2\n" in schema_yaml
+    # StandardMissingValueCodes (not a field enum) keeps a trailing counter.
     assert "StandardMissingValueCodes:  # 2 of 2 enums" in schema_yaml
     # The single tree_root class is 1 of 1 (singularised).
     assert "Record:  # 1 of 1 class" in schema_yaml
@@ -273,6 +274,16 @@ def test_entries_are_numbered_n_of_m(schema_yaml):
     assert "Symptoms:  # 3 of 3 data elements" in schema_yaml
     # A slot's sub-keys (title/range) are not numbered.
     assert "title: Participant Id\n" in schema_yaml
+
+
+def test_field_enum_block_above_definition(schema_yaml):
+    # The 3-line block appears immediately above the enum's (bare) key line.
+    assert (
+        "# Enum 1 of 2\n"
+        "  # Used by 1 data element\n"
+        "  # SampleType\n"
+        "  SampleTypeEnum:\n"
+    ) in schema_yaml
 
 
 def test_number_entries_helper_resets_per_section():
@@ -287,24 +298,23 @@ def test_number_entries_helper_resets_per_section():
     assert "    x: 1\n" in out
 
 
-def test_annotate_enum_usage_lists_using_data_elements():
-    rows = read_data_dictionary(FIXTURES / "sample.csv")
-    out = emit_schema(
-        rows,
-        EmitOptions(schema_name="s", class_name="Record", annotate_enum_usage=True),
-    )
-    # Appended to the enum's existing "n of m enums" numbering comment.
-    assert "SampleTypeEnum:  # 1 of 2 enums; used by: SampleType" in out
-    # StandardMissingValueCodes is not a field enum -> no "used by".
-    assert "StandardMissingValueCodes:  # 2 of 2 enums\n" in out
-
-
-def test_annotate_enum_usage_dedup_and_cap():
-    from radx_dd_converter.emit import _annotate_enum_usage
+def test_enum_block_usage_line_and_cap():
+    from radx_dd_converter.emit import _annotate_enum_blocks
 
     users = {"E": [f"f{i}" for i in range(10)]}
-    out = _annotate_enum_usage("  E:  # 1 of 1 enum\n", users)
-    assert "used by: f0 | f1 | f2 | f3 | f4 | f5 (+4 more)" in out
+    # Feed the line as _render would produce it (with the trailing counter).
+    out = _annotate_enum_blocks("  E:  # 3 of 5 enums\n", users)
+    assert "# Enum 3 of 5\n" in out
+    assert "# Used by 10 data elements\n" in out
+    assert "# f0 | f1 | f2 | f3 | f4 | f5 (+4 more)\n" in out
+    assert "  E:\n" in out  # bare key line
+
+
+def test_enum_block_singular_data_element():
+    from radx_dd_converter.emit import _annotate_enum_blocks
+
+    out = _annotate_enum_blocks("  E:  # 1 of 1 enum\n", {"E": ["only"]})
+    assert "# Used by 1 data element\n" in out  # singular
 
 
 def test_annotate_enum_values_off_by_default(schema_yaml):

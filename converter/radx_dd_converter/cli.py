@@ -98,12 +98,6 @@ def _build_parser() -> argparse.ArgumentParser:
         "pairs (capped, with a '(+N more)' overflow).",
     )
     parser.add_argument(
-        "--annotate-enum-usage",
-        action="store_true",
-        help="On each field enum definition, add a comment listing the data "
-        "elements that use it (capped, with a '(+N more)' overflow).",
-    )
-    parser.add_argument(
         "--allow-duplicates",
         action="store_true",
         help="Do not fail on a duplicate Id; keep the first occurrence, skip "
@@ -131,7 +125,6 @@ def _resolve_options(args: argparse.Namespace) -> EmitOptions:
         resolver=args.resolver,
         bioportal_apikey=apikey,
         annotate_enum_values=args.annotate_enum_values,
-        annotate_enum_usage=args.annotate_enum_usage,
     )
 
 

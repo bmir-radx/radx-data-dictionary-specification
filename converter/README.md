@@ -86,12 +86,15 @@ values are visible at the point of use without scrolling to the `enums:` section
 - range: SampleTypeEnum  # 0=Saliva | 1=Blood
 ```
 
-`--annotate-enum-usage` does the reverse: on each field enum's definition it lists
-the data elements that use it (capped). Useful for spotting a shared enum reused
-across many fields:
+Each field enum also gets a 3-line comment block above its definition (always
+on) giving its number, how many data elements use it, and the referencing ids
+(capped) — useful for spotting a shared enum reused across many fields:
 
 ```yaml
-NihDisabilityEnum:  # used by: nih_disability | nih_deaf | ... (+105 more)
+# Enum 8 of 16
+# Used by 111 data elements
+# nih_disability | nih_deaf | nih_blind | ... (+105 more)
+NoYesOtherEtcEnum:
 ```
 
 ## Usage (library)
