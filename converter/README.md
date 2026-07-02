@@ -10,7 +10,7 @@ or transform with the wider LinkML tool ecosystem.
 
 From the repository root:
 
-```sh
+```
 pip install ./converter
 ```
 
@@ -21,13 +21,13 @@ This installs the `radx-dd-to-linkml` command and its dependencies
 
 Convert a data dictionary to a schema file:
 
-```sh
+```
 radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml
 ```
 
 With no `-o`, the schema is written to standard output, so you can pipe it:
 
-```sh
+```
 radx-dd-to-linkml my_dictionary.csv | less
 ```
 
@@ -37,7 +37,7 @@ By default the schema's name, id, and root class are derived from the input
 filename (`patient_data.csv` → name `patient_data`, class `PatientData`).
 Override any of them:
 
-```sh
+```
 radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml \
     --name my_data --id https://example.org/my_data --class-name Record
 ```
@@ -61,7 +61,7 @@ resolved is left as a bare identifier. Choose the lookup service with
 - `bioportal` — requires an API key via the `BIOPORTAL_API_KEY` environment
   variable (or `--bioportal-apikey`).
 
-```sh
+```
 radx-dd-to-linkml my_dictionary.csv -o out.yaml --annotate-terms
 BIOPORTAL_API_KEY=… radx-dd-to-linkml my_dictionary.csv -o out.yaml \
     --annotate-terms --resolver bioportal
@@ -168,7 +168,7 @@ print(emit_schema(rows, EmitOptions(schema_name="my_data", class_name="Record"))
 The design decisions behind the mapping are recorded in
 [`../linkml/CONVERTER_PLAN.md`](../linkml/CONVERTER_PLAN.md). To run the tests:
 
-```sh
+```
 pip install -e "./converter[test]"
 pytest converter
 ```
