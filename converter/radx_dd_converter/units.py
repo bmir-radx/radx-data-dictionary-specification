@@ -12,7 +12,6 @@ always preserved as ``annotations.unit_raw`` (see ``linkml/CONVERTER_PLAN.md``).
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Optional
 
 
 @dataclass(frozen=True)
@@ -21,7 +20,7 @@ class UnitOfMeasure:
 
     descriptive_name: str
     symbol: str
-    ucum_code: Optional[str] = None
+    ucum_code: str | None = None
 
 
 # The "common units" table from radx-data-dictionary-specification.md.
@@ -54,13 +53,13 @@ _UNIT_TABLE = (
 
 # Lookup by both name and symbol, case-insensitively. A name and a symbol never
 # collide in the spec table, so a single map is unambiguous.
-_LOOKUP: Dict[str, UnitOfMeasure] = {}
+_LOOKUP: dict[str, UnitOfMeasure] = {}
 for _unit in _UNIT_TABLE:
     _LOOKUP[_unit.descriptive_name.lower()] = _unit
     _LOOKUP[_unit.symbol.lower()] = _unit
 
 
-def lookup_unit(raw: str) -> Optional[UnitOfMeasure]:
+def lookup_unit(raw: str) -> UnitOfMeasure | None:
     """Return the :class:`UnitOfMeasure` for a raw ``Unit`` cell, or ``None``.
 
     Matches by unit name or symbol, ignoring surrounding white space and case.

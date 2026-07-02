@@ -12,7 +12,6 @@ exact keys. An unknown / mis-cased name is a :class:`UnknownDatatypeError`.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Optional, Union
 
 # --- Direct mappings: RADx/XSD name -> LinkML built-in range ---------------
 #
@@ -47,9 +46,9 @@ _INTEGER_LIKE = (
     "unsignedByte",
 )
 
-BUILTIN_RANGES: Dict[str, str] = {
-    **{name: "string" for name in _STRING_LIKE},
-    **{name: "integer" for name in _INTEGER_LIKE},
+BUILTIN_RANGES: dict[str, str] = {
+    **dict.fromkeys(_STRING_LIKE, "string"),
+    **dict.fromkeys(_INTEGER_LIKE, "integer"),
     "decimal": "decimal",
     "float": "float",
     "double": "double",
@@ -73,9 +72,9 @@ class CustomType:
 
     name: str
     typeof: str
-    pattern: Optional[str] = None
-    uri: Optional[str] = None
-    description: Optional[str] = None
+    pattern: str | None = None
+    uri: str | None = None
+    description: str | None = None
 
 
 # --- Custom types: RADx/XSD name -> CustomType spec ------------------------
@@ -83,7 +82,7 @@ class CustomType:
 # XSD types with no LinkML built-in, plus the three RADx-specific names. The
 # emitter adds each USED custom type to the output schema's `types:` block.
 
-CUSTOM_TYPES: Dict[str, CustomType] = {
+CUSTOM_TYPES: dict[str, CustomType] = {
     # RADx-specific datatypes.
     "date_mdy": CustomType(
         "date_mdy",
@@ -104,14 +103,32 @@ CUSTOM_TYPES: Dict[str, CustomType] = {
         description="A long integer representing a Unix timestamp.",
     ),
     # XSD gregorian date/time fragments (no LinkML built-in).
-    "gYearMonth": CustomType("gYearMonth", typeof="string", pattern=r"^-?\d{4}-\d{2}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gYearMonth"),
-    "gYear": CustomType("gYear", typeof="string", pattern=r"^-?\d{4}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gYear"),
-    "gMonthDay": CustomType("gMonthDay", typeof="string", pattern=r"^--\d{2}-\d{2}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gMonthDay"),
-    "gDay": CustomType("gDay", typeof="string", pattern=r"^---\d{2}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gDay"),
-    "gMonth": CustomType("gMonth", typeof="string", pattern=r"^--\d{2}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gMonth"),
+    "gYearMonth": CustomType(
+        "gYearMonth", typeof="string",
+        pattern=r"^-?\d{4}-\d{2}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gYearMonth",
+    ),
+    "gYear": CustomType(
+        "gYear", typeof="string",
+        pattern=r"^-?\d{4}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gYear",
+    ),
+    "gMonthDay": CustomType(
+        "gMonthDay", typeof="string",
+        pattern=r"^--\d{2}-\d{2}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gMonthDay",
+    ),
+    "gDay": CustomType(
+        "gDay", typeof="string",
+        pattern=r"^---\d{2}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gDay",
+    ),
+    "gMonth": CustomType(
+        "gMonth", typeof="string",
+        pattern=r"^--\d{2}(Z|[+-]\d{2}:\d{2})?$", uri="xsd:gMonth",
+    ),
     # XSD types with no LinkML built-in; kept as string but with xsd provenance.
     "duration": CustomType("duration", typeof="string", uri="xsd:duration"),
-    "hexBinary": CustomType("hexBinary", typeof="string", pattern=r"^([0-9a-fA-F]{2})*$", uri="xsd:hexBinary"),
+    "hexBinary": CustomType(
+        "hexBinary", typeof="string",
+        pattern=r"^([0-9a-fA-F]{2})*$", uri="xsd:hexBinary",
+    ),
     "base64Binary": CustomType("base64Binary", typeof="string", uri="xsd:base64Binary"),
     "NOTATION": CustomType("NOTATION", typeof="string", uri="xsd:NOTATION"),
     "ID": CustomType("ID", typeof="string", uri="xsd:ID"),
@@ -126,7 +143,7 @@ class UnknownDatatypeError(ValueError):
     """Raised when a Datatype value is not a recognised RADx/XSD datatype name."""
 
 
-def resolve_datatype(name: str) -> Union[str, CustomType]:
+def resolve_datatype(name: str) -> str | CustomType:
     """Resolve a RADx ``Datatype`` name.
 
     Returns either a LinkML built-in range name (``str``) that can be used

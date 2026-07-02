@@ -13,7 +13,8 @@ import csv
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Sequence, TextIO, Union
+from typing import TextIO
+from collections.abc import Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +58,7 @@ class Row:
     listed in ``extra_columns``.
     """
 
-    cells: Dict[str, str]
+    cells: dict[str, str]
     line: int
     extra_columns: Sequence[str] = field(default_factory=tuple)
 
@@ -70,7 +71,7 @@ class Row:
         return self.get("Id")
 
 
-def _validate_header(header: Sequence[str]) -> List[str]:
+def _validate_header(header: Sequence[str]) -> list[str]:
     """Validate the header record; return the list of extra (non-canonical) columns."""
     columns = [h.strip() for h in header]
     # Duplicate headers make column-by-name access ambiguous.
@@ -86,10 +87,10 @@ def _validate_header(header: Sequence[str]) -> List[str]:
 
 
 def read_data_dictionary(
-    source: Union[str, Path, TextIO],
+    source: str | Path | TextIO,
     *,
     allow_duplicates: bool = False,
-) -> List[Row]:
+) -> list[Row]:
     """Read a data dictionary CSV and return its rows in order.
 
     ``source`` may be a path (``str``/``Path``) or an open text file object.
@@ -100,17 +101,17 @@ def read_data_dictionary(
     a warning is logged for each.
     """
     if isinstance(source, (str, Path)):
-        with open(source, "r", encoding="utf-8-sig", newline="") as handle:
+        with open(source, encoding="utf-8-sig", newline="") as handle:
             return _read(handle, allow_duplicates)
     return _read(source, allow_duplicates)
 
 
-def _read(handle: TextIO, allow_duplicates: bool = False) -> List[Row]:
+def _read(handle: TextIO, allow_duplicates: bool = False) -> list[Row]:
     reader = csv.reader(handle)  # RFC 4180 defaults: comma, double-quote
     try:
         header = next(reader)
     except StopIteration:
-        raise ReadError("Data dictionary is empty (no header record).")
+        raise ReadError("Data dictionary is empty (no header record).") from None
 
     # Strip a UTF-8 BOM from the first header cell. Opening a path uses
     # encoding="utf-8-sig" which removes it, but a caller-supplied stream may
@@ -121,8 +122,8 @@ def _read(handle: TextIO, allow_duplicates: bool = False) -> List[Row]:
     header = [h.strip() for h in header]
     extra_columns = tuple(_validate_header(header))
 
-    rows: List[Row] = []
-    seen_ids: Dict[str, int] = {}
+    rows: list[Row] = []
+    seen_ids: dict[str, int] = {}
     for offset, raw_cells in enumerate(reader):
         line = offset + 2  # +1 for header, +1 for 1-based
         if not any(cell.strip() for cell in raw_cells):

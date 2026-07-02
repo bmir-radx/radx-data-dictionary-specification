@@ -14,7 +14,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
 
 from lark import Lark, Tree
 from lark.exceptions import LarkError
@@ -45,7 +44,7 @@ class EnumItem:
 
     value: str
     label: str
-    iri: Optional[str] = None
+    iri: str | None = None
 
 
 def _strip_delims(token: str, open_ch: str, close_ch: str) -> str:
@@ -54,12 +53,12 @@ def _strip_delims(token: str, open_ch: str, close_ch: str) -> str:
     return token[len(open_ch) : len(token) - len(close_ch)]
 
 
-def _tree_to_items(tree: Tree) -> List[EnumItem]:
-    items: List[EnumItem] = []
+def _tree_to_items(tree: Tree) -> list[EnumItem]:
+    items: list[EnumItem] = []
     for pair in tree.children:
         # Each `pair` is a Tree whose children are: value, label, [bracketed_iri]
         value_text = label_text = None
-        iri_text: Optional[str] = None
+        iri_text: str | None = None
         for child in pair.children:
             if not isinstance(child, Tree):
                 continue
@@ -75,7 +74,7 @@ def _tree_to_items(tree: Tree) -> List[EnumItem]:
     return items
 
 
-def parse_enumeration(cell: str) -> List[EnumItem]:
+def parse_enumeration(cell: str) -> list[EnumItem]:
     """Parse an ``Enumeration`` cell into a list of :class:`EnumItem`.
 
     A blank or whitespace-only cell yields an empty list. Raises
@@ -90,7 +89,7 @@ def parse_enumeration(cell: str) -> List[EnumItem]:
     return _tree_to_items(tree)
 
 
-def parse_missing_value_codes(cell: str) -> List[EnumItem]:
+def parse_missing_value_codes(cell: str) -> list[EnumItem]:
     """Parse a ``MissingValueCodes`` cell.
 
     Identical grammar to :func:`parse_enumeration`; provided as a separate name

@@ -12,7 +12,6 @@ drift from the enumeration grammar or transcribe a code incorrectly.
 
 from __future__ import annotations
 
-from typing import List
 
 from .grammar import EnumItem, parse_missing_value_codes
 
@@ -41,7 +40,7 @@ STANDARD_MISSING_VALUE_CODES_TEXT = (
 )
 
 # Parsed once at import; the canonical list of standard codes.
-STANDARD_MISSING_VALUE_CODES: List[EnumItem] = parse_missing_value_codes(
+STANDARD_MISSING_VALUE_CODES: list[EnumItem] = parse_missing_value_codes(
     STANDARD_MISSING_VALUE_CODES_TEXT
 )
 
