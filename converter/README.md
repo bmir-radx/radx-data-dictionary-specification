@@ -8,14 +8,22 @@ or transform with the wider LinkML tool ecosystem.
 
 ## Install
 
-From the repository root:
+Install directly from the repository — no clone required:
 
 ```
-pip install ./converter
+pip install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter"
 ```
 
-This installs the `radx-dd-to-linkml` command and its dependencies
-(`linkml`, `lark`).
+For a CLI tool, [`pipx`](https://pipx.pypa.io) installs it into its own isolated
+environment and puts the commands on your `PATH`:
+
+```
+pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter"
+```
+
+Either way this installs the `radx-dd-to-linkml` and `linkml-to-radx-dd`
+commands and their dependencies (`linkml`, `lark`). If you have cloned the
+repository, `pip install ./converter` from the repo root works too.
 
 ## Use it
 
