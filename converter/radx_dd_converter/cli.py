@@ -92,6 +92,12 @@ def _build_parser() -> argparse.ArgumentParser:
         help="BioPortal API key (overrides the BIOPORTAL_API_KEY env var).",
     )
     parser.add_argument(
+        "--allow-duplicates",
+        action="store_true",
+        help="Do not fail on a duplicate Id; keep the first occurrence, skip "
+        "later ones, and warn (shown with --verbose).",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -127,7 +133,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 2
 
     try:
-        rows = read_data_dictionary(args.input)
+        rows = read_data_dictionary(
+            args.input, allow_duplicates=args.allow_duplicates
+        )
         schema_yaml = emit_schema(rows, _resolve_options(args))
     except (ReadError, ParseError, UnknownDatatypeError, LookupError_) as exc:
         # Expected, user-facing errors: report cleanly without a traceback.

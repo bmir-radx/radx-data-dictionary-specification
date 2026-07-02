@@ -10,9 +10,12 @@ the fields in the target datafile.
 from __future__ import annotations
 
 import csv
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Sequence, TextIO, Union
+
+logger = logging.getLogger(__name__)
 
 # The canonical header sequence from the specification. Order here is the
 # recommended order; the reader does not require this order (columns are keyed
@@ -84,21 +87,25 @@ def _validate_header(header: Sequence[str]) -> List[str]:
 
 def read_data_dictionary(
     source: Union[str, Path, TextIO],
+    *,
+    allow_duplicates: bool = False,
 ) -> List[Row]:
     """Read a data dictionary CSV and return its rows in order.
 
     ``source`` may be a path (``str``/``Path``) or an open text file object.
 
     Raises :class:`ReadError` on a malformed header, a blank required cell, or a
-    duplicate ``Id``.
+    duplicate ``Id``. When ``allow_duplicates`` is true, a duplicate ``Id`` is
+    not fatal: the first occurrence is kept, later occurrences are skipped, and
+    a warning is logged for each.
     """
     if isinstance(source, (str, Path)):
         with open(source, "r", encoding="utf-8-sig", newline="") as handle:
-            return _read(handle)
-    return _read(source)
+            return _read(handle, allow_duplicates)
+    return _read(source, allow_duplicates)
 
 
-def _read(handle: TextIO) -> List[Row]:
+def _read(handle: TextIO, allow_duplicates: bool = False) -> List[Row]:
     reader = csv.reader(handle)  # RFC 4180 defaults: comma, double-quote
     try:
         header = next(reader)
@@ -131,6 +138,15 @@ def _read(handle: TextIO) -> List[Row]:
 
         row_id = cells["Id"].strip()
         if row_id in seen_ids:
+            if allow_duplicates:
+                logger.warning(
+                    "Line %d: duplicate Id %r (first seen on line %d); skipping "
+                    "this occurrence.",
+                    line,
+                    row_id,
+                    seen_ids[row_id],
+                )
+                continue
             raise ReadError(
                 f"Line {line}: duplicate Id {row_id!r} "
                 f"(first seen on line {seen_ids[row_id]})."

@@ -84,6 +84,21 @@ def test_duplicate_id_raises():
         )
 
 
+def test_allow_duplicates_keeps_first_skips_rest():
+    rows = read_data_dictionary(
+        io.StringIO(
+            "Id,Label,Datatype\n"
+            "A,First A,string\n"
+            "B,Label B,integer\n"
+            "A,Second A,integer\n"
+        ),
+        allow_duplicates=True,
+    )
+    # First occurrence kept, later duplicate skipped; order preserved.
+    assert [r.id for r in rows] == ["A", "B"]
+    assert rows[0].get("Label") == "First A"
+
+
 def test_duplicate_header_raises():
     with pytest.raises(ReadError, match="Duplicate column header"):
         _read_str("Id,Label,Datatype,Label\nA,x,string,y\n")

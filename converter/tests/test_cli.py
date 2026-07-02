@@ -90,3 +90,19 @@ def test_malformed_dictionary_reports_cleanly(tmp_path, capsys):
     rc = main([str(bad)])
     assert rc == 1
     assert "error:" in capsys.readouterr().err
+
+
+def test_duplicate_id_fails_but_allow_duplicates_succeeds(tmp_path, capsys):
+    dup = tmp_path / "dup.csv"
+    dup.write_text(
+        "Id,Label,Datatype\nA,First,string\nA,Second,integer\n"
+    )
+    # Without the flag: clean error, exit 1.
+    assert main([str(dup)]) == 1
+    assert "duplicate Id" in capsys.readouterr().err
+    # With the flag: succeeds.
+    out = tmp_path / "out.yaml"
+    assert main([str(dup), "-o", str(out), "--allow-duplicates"]) == 0
+    schema = yaml.safe_load(out.read_text())
+    attrs = list(schema["classes"].values())[0]["attributes"]
+    assert list(attrs) == ["A"]  # duplicate collapsed to the first occurrence

@@ -42,7 +42,9 @@ Feature-complete for v1. Components:
 - **CLI** (`radx_dd_converter/cli.py`) — the `radx-dd-to-linkml` console script
   ties the pipeline together: read CSV → emit schema → write YAML. Schema
   name/id/class default from the input filename and can be overridden with
-  flags. Reports read/parse/datatype errors cleanly (no traceback).
+  flags. Reports read/parse/datatype errors cleanly (no traceback). A duplicate
+  `Id` is fatal by default; `--allow-duplicates` keeps the first occurrence,
+  skips later ones, and warns.
 
 The converter is feature-complete for v1.
 
