@@ -15,6 +15,7 @@ from .datatypes import (
     resolve_datatype,
 )
 from .emit import EmitOptions, Emitter, emit_schema
+from .reverse import schema_to_csv, schema_to_rows
 from .missing_values import (
     STANDARD_ENUM_NAME,
     STANDARD_MISSING_VALUE_CODES,
@@ -38,6 +39,8 @@ __all__ = [
     "EmitOptions",
     "Emitter",
     "emit_schema",
+    "schema_to_csv",
+    "schema_to_rows",
     "STANDARD_ENUM_NAME",
     "STANDARD_MISSING_VALUE_CODES",
     "STANDARD_MISSING_VALUE_CODES_TEXT",
