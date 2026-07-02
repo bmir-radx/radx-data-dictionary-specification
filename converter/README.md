@@ -86,6 +86,14 @@ values are visible at the point of use without scrolling to the `enums:` section
 - range: SampleTypeEnum  # 0=Saliva | 1=Blood
 ```
 
+`--annotate-enum-usage` does the reverse: on each field enum's definition it lists
+the data elements that use it (capped). Useful for spotting a shared enum reused
+across many fields:
+
+```yaml
+NihDisabilityEnum:  # used by: nih_disability | nih_deaf | ... (+105 more)
+```
+
 ## Usage (library)
 
 ```python

@@ -236,6 +236,26 @@ def test_number_entries_helper_resets_per_section():
     assert "    x: 1\n" in out
 
 
+def test_annotate_enum_usage_lists_using_data_elements():
+    rows = read_data_dictionary(FIXTURES / "sample.csv")
+    out = emit_schema(
+        rows,
+        EmitOptions(schema_name="s", class_name="Record", annotate_enum_usage=True),
+    )
+    # Appended to the enum's existing "n of m enums" numbering comment.
+    assert "SampleTypeEnum:  # 1 of 2 enums; used by: SampleType" in out
+    # StandardMissingValueCodes is not a field enum -> no "used by".
+    assert "StandardMissingValueCodes:  # 2 of 2 enums\n" in out
+
+
+def test_annotate_enum_usage_dedup_and_cap():
+    from radx_dd_converter.emit import _annotate_enum_usage
+
+    users = {"E": [f"f{i}" for i in range(10)]}
+    out = _annotate_enum_usage("  E:  # 1 of 1 enum\n", users)
+    assert "used by: f0 | f1 | f2 | f3 | f4 | f5 (+4 more)" in out
+
+
 def test_annotate_enum_values_off_by_default(schema_yaml):
     # Default output: no value comment after the enum range.
     assert "range: SampleTypeEnum\n" in schema_yaml
