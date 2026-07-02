@@ -388,14 +388,24 @@ class Emitter:
         for prefix, expansion in self._prefixes.items():
             schema.prefixes.setdefault(prefix, expansion)
 
-        # Finalise field-enum descriptions now that the full usage map is known:
-        # name the single data element when an enum is used by exactly one,
-        # otherwise keep the generic wording.
-        for enum_name, users in self._enum_users.items():
+        # Finalise field enums now that the full usage map is known. An enum used
+        # by exactly one data element is renamed after that element (which is
+        # meaningful and unambiguous with a single owner); shared enums keep
+        # their value-derived name. Descriptions are set to match.
+        renames: Dict[str, str] = {}
+        for enum_name, users in list(self._enum_users.items()):
             enum = schema.enums.get(enum_name)
             if enum is None:
                 continue
             if len(users) == 1:
+                new_name = f"{_class_case(users[0])}Enum"
+                # Collision-check against other enums (skip self).
+                n, suffix = new_name, 2
+                while n in schema.enums and n != enum_name:
+                    n, suffix = f"{new_name}{suffix}", suffix + 1
+                new_name = n
+                if new_name != enum_name:
+                    renames[enum_name] = new_name
                 enum.description = (
                     f"Permissible values for the `{users[0]}` data element."
                 )
@@ -405,7 +415,47 @@ class Emitter:
                     f"(see the `used by` annotation)."
                 )
 
+        if renames:
+            self._apply_enum_renames(schema, renames)
+
         return schema
+
+    def _apply_enum_renames(
+        self, schema: SchemaDefinition, renames: Dict[str, str]
+    ) -> None:
+        """Rename enums and re-point every reference to them.
+
+        Updates the ``enums`` mapping keys, the ``range`` of every slot ``any_of``
+        branch (and any direct ``range``) that referenced the old name, and the
+        internal tracking dicts used by the annotation passes.
+        """
+        # Rebuild the enums mapping preserving order, with renamed keys. Keep the
+        # enum's own `name` in sync with its key, else validation rejects the
+        # mismatch (and _drop_redundant_keys only strips `name` when it matches).
+        new_enums = {}
+        for name, enum in schema.enums.items():
+            new_name = renames.get(name, name)
+            enum.name = new_name
+            new_enums[new_name] = enum
+        schema.enums = new_enums
+
+        # Re-point slot ranges (enumerated slots use any_of; be defensive about
+        # a direct range too).
+        for cls in schema.classes.values():
+            for slot in cls.attributes.values():
+                for branch in slot.any_of or []:
+                    if branch.range in renames:
+                        branch.range = renames[branch.range]
+                if slot.range in renames:
+                    slot.range = renames[slot.range]
+
+        # Keep the annotation-tracking dicts consistent with the new names.
+        self._field_enum_values = {
+            renames.get(k, k): v for k, v in self._field_enum_values.items()
+        }
+        self._enum_users = {
+            renames.get(k, k): v for k, v in self._enum_users.items()
+        }
 
     def dumps(self, rows: List[Row]) -> str:
         """Build the schema and dump it as readable YAML.

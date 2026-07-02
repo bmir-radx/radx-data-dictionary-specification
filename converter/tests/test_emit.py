@@ -88,17 +88,47 @@ def test_examples_are_split_on_pipe(schema):
 def test_enumeration_uses_any_of_with_standard_codes(schema):
     sample_type = schema["classes"]["Record"]["attributes"]["SampleType"]
     ranges = [b["range"] for b in sample_type["any_of"]]
-    assert ranges == ["SalivaBloodEnum", "StandardMissingValueCodes"]
+    assert ranges == ["SampleTypeEnum", "StandardMissingValueCodes"]
     # underlying datatype is preserved (annotations serialize as bare strings)
     assert sample_type["annotations"]["value_datatype"] == "integer"
 
 
 def test_single_user_enum_names_its_data_element(schema):
-    # SampleType is the only user of SalivaBloodEnum -> named in the description.
+    # SampleType is the only user of SampleTypeEnum -> named in the description.
     assert (
-        schema["enums"]["SalivaBloodEnum"]["description"]
+        schema["enums"]["SampleTypeEnum"]["description"]
         == "Permissible values for the `SampleType` data element."
     )
+
+
+def test_single_use_enum_named_after_data_element():
+    # One data element -> enum named DataElementCamelCaseEnum, referenced correctly.
+    csv = 'Id,Label,Datatype,Enumeration\nsample_type,ST,integer,"""0""=[Saliva] | ""1""=[Blood]"\n'
+    schema = yaml.safe_load(emit_schema(read_data_dictionary(_csv(csv))))
+    assert "SampleTypeEnum" in schema["enums"]
+    ranges = [
+        b["range"]
+        for b in schema["classes"]["Record"]["attributes"]["sample_type"]["any_of"]
+    ]
+    assert "SampleTypeEnum" in ranges  # reference re-pointed to the new name
+
+
+def test_shared_enum_keeps_value_derived_name():
+    # Two data elements share the enum -> value-derived name, not either field.
+    csv = (
+        "Id,Label,Datatype,Enumeration\n"
+        'q1,Q1,integer,"""0""=[No] | ""1""=[Yes]"\n'
+        'q2,Q2,integer,"""0""=[No] | ""1""=[Yes]"\n'
+    )
+    schema = yaml.safe_load(emit_schema(read_data_dictionary(_csv(csv))))
+    names = [n for n in schema["enums"] if n != "StandardMissingValueCodes"]
+    assert names == ["NoYesEnum"]  # not Q1Enum / Q2Enum
+    for f in ("q1", "q2"):
+        ranges = [
+            b["range"]
+            for b in schema["classes"]["Record"]["attributes"][f]["any_of"]
+        ]
+        assert "NoYesEnum" in ranges
 
 
 def test_shared_enum_description_is_generic():
@@ -115,7 +145,7 @@ def test_shared_enum_description_is_generic():
 
 
 def test_enum_values_carry_meaning(schema):
-    pvs = schema["enums"]["SalivaBloodEnum"]["permissible_values"]
+    pvs = schema["enums"]["SampleTypeEnum"]["permissible_values"]
     assert pvs["0"]["meaning"] == "UBERON:0001836"
     assert pvs["0"]["title"] == "Saliva"
 
@@ -193,12 +223,12 @@ def test_redundant_name_and_text_keys_dropped(schema_yaml, schema):
     # `name:` is inferred from the mapping key; it should not be emitted.
     assert "\n    name:" not in schema_yaml and "\n        name:" not in schema_yaml
     # Permissible-value `text:` equal to its key should be dropped.
-    pvs = schema["enums"]["SalivaBloodEnum"]["permissible_values"]
+    pvs = schema["enums"]["SampleTypeEnum"]["permissible_values"]
     assert "text" not in pvs["0"]
     assert pvs["0"]["title"] == "Saliva"
     # Class / enum names still resolve (they come from the keys).
     assert "Record" in schema["classes"]
-    assert "SalivaBloodEnum" in schema["enums"]
+    assert "SampleTypeEnum" in schema["enums"]
 
 
 def test_header_comment_present(schema_yaml):
@@ -234,7 +264,7 @@ def test_description_has_no_trailing_blank_lines_in_output():
 
 def test_entries_are_numbered_n_of_m(schema_yaml):
     # Enums numbered within all enums; the sample fixture yields 2 (field + std).
-    assert "SalivaBloodEnum:  # 1 of 2 enums" in schema_yaml
+    assert "SampleTypeEnum:  # 1 of 2 enums" in schema_yaml
     assert "StandardMissingValueCodes:  # 2 of 2 enums" in schema_yaml
     # The single tree_root class is 1 of 1 (singularised).
     assert "Record:  # 1 of 1 class" in schema_yaml
@@ -264,7 +294,7 @@ def test_annotate_enum_usage_lists_using_data_elements():
         EmitOptions(schema_name="s", class_name="Record", annotate_enum_usage=True),
     )
     # Appended to the enum's existing "n of m enums" numbering comment.
-    assert "SalivaBloodEnum:  # 1 of 2 enums; used by: SampleType" in out
+    assert "SampleTypeEnum:  # 1 of 2 enums; used by: SampleType" in out
     # StandardMissingValueCodes is not a field enum -> no "used by".
     assert "StandardMissingValueCodes:  # 2 of 2 enums\n" in out
 
@@ -279,7 +309,7 @@ def test_annotate_enum_usage_dedup_and_cap():
 
 def test_annotate_enum_values_off_by_default(schema_yaml):
     # Default output: no value comment after the enum range.
-    assert "range: SalivaBloodEnum\n" in schema_yaml
+    assert "range: SampleTypeEnum\n" in schema_yaml
     assert "# 0=Saliva" not in schema_yaml
 
 
@@ -289,7 +319,7 @@ def test_annotate_enum_values_adds_capped_comment():
         rows,
         EmitOptions(schema_name="s", class_name="Record", annotate_enum_values=True),
     )
-    assert "- range: SalivaBloodEnum  # 0=Saliva | 1=Blood" in out
+    assert "- range: SampleTypeEnum  # 0=Saliva | 1=Blood" in out
     # StandardMissingValueCodes is not a field enum -> never annotated.
     assert "range: StandardMissingValueCodes  #" not in out
 
