@@ -5,6 +5,10 @@ data dictionary is a CSV file that describes the structure of another CSV file
 (a *datafile*): one row per field, giving each field's identifier, label,
 datatype, permissible values, units, ontology terms, and more.
 
+> **Note:** The RADx data hub has since evolved into
+> [Canopy](https://github.com/canopy-datahub), an open-source platform for
+> FAIR-aligned scientific data hubs.
+
 📄 **[Read the specification →](radx-data-dictionary-specification.md)**
 
 The Markdown specification is the authoritative document. The LinkML schemas and
