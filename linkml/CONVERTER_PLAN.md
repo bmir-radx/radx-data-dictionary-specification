@@ -1,11 +1,16 @@
-# RADx Data Dictionary → LinkML Schema Converter — Plan
+# RADx Data Dictionary → LinkML Schema Converter — Design
+
+> **Status:** Implemented in [`../converter/`](../converter/) as the
+> `radx-dd-to-linkml` tool. This document is the design record: it explains what
+> the converter does and why the mapping decisions were made. Where the code and
+> this document ever disagree, the code (and its tests) is authoritative.
 
 ## Goal
 
-A Python tool that reads a RADx data dictionary in CSV format and emits a
-**LinkML schema** describing the *target datafile* that the dictionary
-documents. Each data element (row) becomes a **slot**; the datafile as a whole
-becomes a **class** (`Record`).
+The converter reads a RADx data dictionary in CSV format and emits a **LinkML
+schema** describing the *target datafile* that the dictionary documents. Each
+data element (row) becomes a **slot**; the datafile as a whole becomes a
+**class** (default name `Record`).
 
 This is *metamodeling*: the dictionary is metadata about a datafile, and the
 output schema is a formal description of that datafile's structure, suitable for
@@ -221,8 +226,14 @@ radx_dd_converter/
   cli.py           # argparse entry point
 tests/
   fixtures/        # small CSVs incl. the spec's own worked examples
-  test_reader.py test_parse.py test_datatypes.py test_emit.py test_e2e.py
+  test_reader.py test_parse.py test_terms.py test_datatypes.py
+  test_tables.py test_emit.py test_cli.py
 ```
+
+The emitter also post-processes its YAML for readability (literal `|` blocks for
+multi-line text, section-header comments, blank lines between entries, redundant
+`name:`/`text:` keys dropped, `annotations` last); a round-trip test asserts this
+never alters the schema content.
 
 **Two layers, cleanly separated:**
 1. **Parser layer** (`grammar/`) — turns cell mini-grammars into Python objects.
@@ -239,10 +250,12 @@ tests/
 - Unknown / mis-cased datatype name → error listing the offending value + row.
 - Malformed `Enumeration` / `MissingValueCodes` cell → parser error with the
   cell content and row index.
-- Duplicate `Id`, or an `Alias` colliding with an `Id`/alias → error (the spec's
-  uniqueness rule).
-- Unresolvable CURIE prefix in `Terms`/enum `meaning` → warn, emit the CURIE
-  anyway, and add the prefix as a `TODO` annotation.
+- Duplicate `Id` → error naming both lines. (Alias-vs-Id/alias uniqueness across
+  the whole dictionary is specified but not yet enforced by the reader; noted as
+  future work.)
+- Non-OBO CURIE prefix in `Terms`/enum `meaning` → the prefix is registered with
+  a best-effort OBO expansion and a warning is logged (shown with `--verbose`),
+  rather than failing.
 
 ## Validation strategy
 
@@ -272,8 +285,8 @@ tests/
    dictionaries have no standard metadata row).
 
 3. **Packaging (decided).** An installable Python package living in this
-   repository under [`converter/`](../converter/), with a `radx-dd-to-linkml`
-   console script (added once the CLI layer exists).
+   repository under [`converter/`](../converter/), exposing the
+   `radx-dd-to-linkml` console script.
 
 ## Future work (not v1)
 
@@ -300,6 +313,9 @@ Future items:
   (rewrite RADx bare-pipe cells to `[a|b|c]`, or a custom loader) before
   `linkml-convert` can be used. It is not a no-op.
 - Reverse direction: LinkML schema → RADx data dictionary CSV.
+- **Alias uniqueness enforcement.** The reader rejects a duplicate `Id`, but does
+  not yet check that an `Alias` never collides with another record's `Id` or
+  alias (the spec's cross-dictionary uniqueness rule).
 
 ## Tested note: LinkML in-cell multi-value behavior (LinkML 1.11)
 
