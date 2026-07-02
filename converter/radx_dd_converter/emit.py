@@ -13,8 +13,8 @@ import json
 import logging
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
+import jsonasobj2
 import yaml
 from linkml_runtime.dumpers import json_dumper
 from linkml_runtime.linkml_model.meta import (
@@ -43,7 +43,14 @@ logger = logging.getLogger(__name__)
 
 _URL_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
 _CURIE_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_.-]*):(.+)$")
+# Also defined in terms_lookup.py; kept independent to avoid coupling the modules.
 _OBO_PURL = "http://purl.obolibrary.org/obo/"
+
+# Indentation (in spaces) of entries within the rendered YAML: top-level section
+# entries (enums, subsets, one class) sit at 2; a class's slots sit at 6
+# (class -> attributes -> slot). Used when placing comment blocks/blank lines.
+_SECTION_ENTRY_INDENT = 2
+_SLOT_INDENT = 6
 
 
 def _clean_text(text: str) -> str:
@@ -91,7 +98,8 @@ def _class_case(name: str) -> str:
     """CamelCase a name for use as an enum/class name.
 
     Splits on any non-alphanumeric character, including underscores, so
-    ``nih_race`` -> ``NihRace`` (not ``Nih_race``).
+    ``nih_race`` -> ``NihRace`` (not ``Nih_race``). (cf. ``_class_from_name`` in
+    cli.py, which is the same casing with a different empty-input fallback.)
     """
     parts = re.split(r"[^A-Za-z0-9]+", name.strip())
     return "".join(p[:1].upper() + p[1:] for p in parts if p) or "X"
@@ -105,7 +113,7 @@ _ENUM_NAME_LEAD_VALUES = 3
 _ENUM_NAME_MAX_LEN = 48
 
 
-def _value_derived_enum_name(items: List["EnumItem"]) -> Optional[str]:
+def _value_derived_enum_name(items: list[EnumItem]) -> str | None:
     """Build an enum name from its values, e.g. ``NoYesEnum`` or ``NoYesEtcEnum``.
 
     Uses the first few values' labels (falling back to the value itself),
@@ -142,31 +150,31 @@ class EmitOptions:
     schema_id: str = "https://w3id.org/radx/generated"
     schema_name: str = "radx_generated"
     class_name: str = "Record"
-    default_prefix: Optional[str] = None  # defaults to schema_name
+    default_prefix: str | None = None  # defaults to schema_name
     annotate_terms: bool = False  # look up ontology term names and add as comments
     resolver: str = "ols4"  # term-name resolver: "ols4" or "bioportal"
-    bioportal_apikey: Optional[str] = None  # required when resolver == "bioportal"
+    bioportal_apikey: str | None = None  # required when resolver == "bioportal"
     annotate_enum_values: bool = False  # comment field-enum values after range:
 
 
 class Emitter:
     """Builds a LinkML SchemaDefinition from data dictionary rows."""
 
-    def __init__(self, options: Optional[EmitOptions] = None):
+    def __init__(self, options: EmitOptions | None = None):
         self.opts = options or EmitOptions()
-        self._prefixes: Dict[str, str] = {}
-        self._enum_by_signature: Dict[str, str] = {}  # dedup identical enumerations
+        self._prefixes: dict[str, str] = {}
+        self._enum_by_signature: dict[str, str] = {}  # dedup identical enumerations
         self._terms: set = set()  # every term identifier emitted (for annotation)
         # Field enums (from Enumeration cells) mapped to their (value, label)
         # pairs, for the optional value comment after `range: <Enum>`. Excludes
         # StandardMissingValueCodes and field-specific missing-code enums.
-        self._field_enum_values: Dict[str, list] = {}
+        self._field_enum_values: dict[str, list] = {}
         # Field enum name -> list of slot names that use it (for the optional
         # "used by" reverse-reference comment on the enum definition).
-        self._enum_users: Dict[str, list] = {}
+        self._enum_users: dict[str, list] = {}
         # Subset (Section) name -> list of slot names in it (for the section
         # comment block above each subset definition).
-        self._section_users: Dict[str, list] = {}
+        self._section_users: dict[str, list] = {}
 
     # -- prefixes / term identifiers ---------------------------------------
 
@@ -201,7 +209,7 @@ class Emitter:
     # -- enumerations ------------------------------------------------------
 
     def _emit_enum(self, schema: SchemaDefinition, base_name: str,
-                   items: List[EnumItem]) -> str:
+                   items: list[EnumItem]) -> str:
         """Create (or reuse) an enum for ``items``; return its name.
 
         The enum is named after its *values* (e.g. ``NoYesEnum``) rather than the
@@ -215,11 +223,12 @@ class Emitter:
             return self._enum_by_signature[signature]
 
         enum_name = _value_derived_enum_name(items) or f"{_class_case(base_name)}Enum"
-        # Avoid name collisions with an existing, differently-valued enum.
-        n, suffix = enum_name, 2
-        while n in schema.enums:
-            n, suffix = f"{enum_name}{suffix}", suffix + 1
-        enum_name = n
+        # Avoid name collisions with an existing, differently-valued enum by
+        # appending a numeric suffix (SomeEnum, SomeEnum2, SomeEnum3, ...).
+        candidate, suffix = enum_name, 2
+        while candidate in schema.enums:
+            candidate, suffix = f"{enum_name}{suffix}", suffix + 1
+        enum_name = candidate
 
         enum = EnumDefinition(
             name=enum_name,
@@ -370,7 +379,7 @@ class Emitter:
 
     # -- top-level build ---------------------------------------------------
 
-    def build(self, rows: List[Row]) -> SchemaDefinition:
+    def build(self, rows: list[Row]) -> SchemaDefinition:
         opts = self.opts
         schema = SchemaDefinition(
             id=opts.schema_id,
@@ -395,7 +404,7 @@ class Emitter:
         # by exactly one data element is renamed after that element (which is
         # meaningful and unambiguous with a single owner); shared enums keep
         # their value-derived name. Descriptions are set to match.
-        renames: Dict[str, str] = {}
+        renames: dict[str, str] = {}
         for enum_name, users in list(self._enum_users.items()):
             enum = schema.enums.get(enum_name)
             if enum is None:
@@ -403,10 +412,10 @@ class Emitter:
             if len(users) == 1:
                 new_name = f"{_class_case(users[0])}Enum"
                 # Collision-check against other enums (skip self).
-                n, suffix = new_name, 2
-                while n in schema.enums and n != enum_name:
-                    n, suffix = f"{new_name}{suffix}", suffix + 1
-                new_name = n
+                candidate, suffix = new_name, 2
+                while candidate in schema.enums and candidate != enum_name:
+                    candidate, suffix = f"{new_name}{suffix}", suffix + 1
+                new_name = candidate
                 if new_name != enum_name:
                     renames[enum_name] = new_name
                 enum.description = (
@@ -424,18 +433,20 @@ class Emitter:
         # Always place the shared StandardMissingValueCodes enum last by
         # rebuilding the enums mapping in the desired order. schema.enums may be
         # a plain dict or a linkml JsonObj, so iterate via jsonasobj2.
-        import jsonasobj2
-
-        pairs = list(jsonasobj2.items(schema.enums))
-        if any(name == STANDARD_ENUM_NAME for name, _ in pairs):
-            reordered = {n: e for n, e in pairs if n != STANDARD_ENUM_NAME}
-            reordered[STANDARD_ENUM_NAME] = dict(pairs)[STANDARD_ENUM_NAME]
+        enums_by_name = dict(jsonasobj2.items(schema.enums))
+        if STANDARD_ENUM_NAME in enums_by_name:
+            reordered = {
+                name: enum
+                for name, enum in enums_by_name.items()
+                if name != STANDARD_ENUM_NAME
+            }
+            reordered[STANDARD_ENUM_NAME] = enums_by_name[STANDARD_ENUM_NAME]
             schema.enums = reordered
 
         return schema
 
     def _apply_enum_renames(
-        self, schema: SchemaDefinition, renames: Dict[str, str]
+        self, schema: SchemaDefinition, renames: dict[str, str]
     ) -> None:
         """Rename enums and re-point every reference to them.
 
@@ -446,8 +457,6 @@ class Emitter:
         # Rebuild the enums mapping preserving order, with renamed keys. Keep the
         # enum's own `name` in sync with its key, else validation rejects the
         # mismatch (and _drop_redundant_keys only strips `name` when it matches).
-        import jsonasobj2
-
         new_enums = {}
         for name, enum in jsonasobj2.items(schema.enums):
             new_name = renames.get(name, name)
@@ -473,7 +482,7 @@ class Emitter:
             renames.get(k, k): v for k, v in self._enum_users.items()
         }
 
-    def dumps(self, rows: List[Row]) -> str:
+    def dumps(self, rows: list[Row]) -> str:
         """Build the schema and dump it as readable YAML.
 
         The schema object is converted to a plain dict via ``json_dumper``
@@ -506,12 +515,16 @@ class Emitter:
         # count / referencing ids); data elements get a 1-line block. This
         # replaces the trailing counters _render added for them.
         if self._enum_users:
-            text = _annotate_blocks(text, 2, "Enum", "enums", self._enum_users)
+            text = _annotate_blocks(
+                text, _SECTION_ENTRY_INDENT, "Enum", "enums", self._enum_users
+            )
         if self._section_users:
             text = _annotate_blocks(
-                text, 2, "Section", "sections", self._section_users
+                text, _SECTION_ENTRY_INDENT, "Section", "sections", self._section_users
             )
-        text = _annotate_blocks(text, 6, "Data element", "data elements")
+        text = _annotate_blocks(
+            text, _SLOT_INDENT, "Data element", "data elements"
+        )
         return text
 
 
@@ -562,6 +575,21 @@ def _dump_yaml(obj) -> str:
     )
 
 
+def _is_entry_line(line: str, indent: int) -> bool:
+    """True if ``line`` is a mapping entry (``key:``) at exactly ``indent``.
+
+    Entry lines have exactly ``indent`` leading spaces followed by a non-space,
+    non-``-`` character. More deeply indented lines, list items, and block-scalar
+    text start differently and are excluded, so multi-line descriptions and
+    nested keys are never mistaken for entries.
+    """
+    prefix = " " * indent
+    if not line.startswith(prefix):
+        return False
+    rest = line[indent:]
+    return bool(rest) and not rest[0].isspace() and not rest.startswith("-")
+
+
 def _space_entries_at(text: str, indent: int) -> str:
     """Insert a blank line before each mapping entry at the given indent.
 
@@ -570,18 +598,10 @@ def _space_entries_at(text: str, indent: int) -> str:
     indented, are list items, or are block-scalar text start differently and are
     left untouched, so multi-line descriptions are preserved verbatim.
     """
-    prefix = " " * indent
-    out: List[str] = []
+    out: list[str] = []
     seen_first = False
     for line in text.split("\n"):
-        stripped = line[indent:] if line.startswith(prefix) else ""
-        is_entry = (
-            line.startswith(prefix)
-            and bool(stripped)
-            and not stripped[0].isspace()
-            and not stripped.startswith("-")
-        )
-        if is_entry:
+        if _is_entry_line(line, indent):
             if seen_first:
                 out.append("")
             seen_first = True
@@ -609,20 +629,12 @@ def _number_entries_at(
     _SINGULAR = {"data elements": "data element", "enums": "enum",
                  "sections": "section", "classes": "class"}
     noun = _SINGULAR.get(label, label) if total == 1 else label
-    prefix = " " * indent
-    out: List[str] = []
-    n = 0
+    out: list[str] = []
+    position = 0
     for line in section_yaml.split("\n"):
-        stripped = line[indent:] if line.startswith(prefix) else ""
-        is_entry = (
-            line.startswith(prefix)
-            and bool(stripped)
-            and not stripped[0].isspace()
-            and not stripped.startswith("-")
-        )
-        if is_entry and "#" not in line:
-            n += 1
-            out.append(f"{line}  # {n} of {total} {noun}")
+        if _is_entry_line(line, indent) and "#" not in line:
+            position += 1
+            out.append(f"{line}  # {position} of {total} {noun}")
         else:
             out.append(line)
     return "\n".join(out)
@@ -630,8 +642,8 @@ def _number_entries_at(
 
 def _render(as_dict: dict) -> str:
     """Render the schema dict to YAML with section comments and blank lines."""
-    scalar_header: List[str] = []
-    blocks: List[str] = []
+    scalar_header: list[str] = []
+    blocks: list[str] = []
 
     for key, value in as_dict.items():
         # Group the leading scalar/simple header keys together (no blank lines
@@ -644,22 +656,26 @@ def _render(as_dict: dict) -> str:
         body = _dump_yaml({key: value}).rstrip("\n")
         if key == "classes":
             # Slots live two levels down under `attributes:`; space them there.
-            body = _space_entries_at(body, indent=6)
-            # Number the class(es) at indent 2 and the slots at indent 6.
-            body = _number_entries_at(body, indent=2, total=len(value or {}), label="classes")
+            body = _space_entries_at(body, indent=_SLOT_INDENT)
+            # Number the class(es) at the section indent and the slots deeper.
+            body = _number_entries_at(
+                body, indent=_SECTION_ENTRY_INDENT, total=len(value or {}), label="classes"
+            )
             slot_total = sum(
                 len((cls or {}).get("attributes") or {}) for cls in value.values()
             )
             body = _number_entries_at(
-                body, indent=6, total=slot_total, label="data elements"
+                body, indent=_SLOT_INDENT, total=slot_total, label="data elements"
             )
         elif key in _SPACED_SECTIONS:
-            body = _space_entries_at(body, indent=2)
+            body = _space_entries_at(body, indent=_SECTION_ENTRY_INDENT)
 
         # Number the entries of enums / subsets as "n of m" (classes handled above).
         if key in _NUMBERED_SECTIONS and key != "classes":
             label = "sections" if key == "subsets" else key
-            body = _number_entries_at(body, indent=2, total=len(value or {}), label=label)
+            body = _number_entries_at(
+                body, indent=_SECTION_ENTRY_INDENT, total=len(value or {}), label=label
+            )
         blocks.append(f"# --- {comment} ---\n{body}")
 
     header = "\n".join(scalar_header)
@@ -726,13 +742,13 @@ def _annotations_last(as_dict: dict) -> None:
     ``provenance``, ``original_id``) at the bottom. Mutates ``as_dict`` in place.
     """
     for cls in as_dict.get("classes", {}).values():
-        for slot_name, slot in list(cls.get("attributes", {}).items()):
+        for slot in cls.get("attributes", {}).values():
             if isinstance(slot, dict) and "annotations" in slot:
-                ann = slot.pop("annotations")
-                slot["annotations"] = ann  # re-insert at the end
+                annotations = slot.pop("annotations")
+                slot["annotations"] = annotations  # re-insert at the end
 
 
-def _annotate_term_lines(text: str, labels: Dict[str, str]) -> str:
+def _annotate_term_lines(text: str, labels: dict[str, str]) -> str:
     """Append ``  # <label>`` to YAML lines whose value is a known term.
 
     Matches only the two shapes in which term identifiers appear: a mapping
@@ -741,12 +757,13 @@ def _annotate_term_lines(text: str, labels: Dict[str, str]) -> str:
     and unrelated lines are never touched. A line already carrying a comment is
     left alone.
     """
-    line_re = re.compile(r"^(\s*(?:-\s+|[\w.]+:\s+))(\S+)\s*$")
-    out: List[str] = []
+    line_re = re.compile(r"^\s*(?:-\s+|[\w.]+:\s+)(?P<term>\S+)\s*$")
+    out: list[str] = []
     for line in text.split("\n"):
-        m = line_re.match(line)
-        if m and m.group(2) in labels and "#" not in line:
-            out.append(f"{line}  # {labels[m.group(2)]}")
+        match = line_re.match(line)
+        term = match.group("term") if match else None
+        if term in labels and "#" not in line:
+            out.append(f"{line}  # {labels[term]}")
         else:
             out.append(line)
     return "\n".join(out)
@@ -766,7 +783,7 @@ def _format_enum_comment(pairs: list) -> str:
     return body
 
 
-def _annotate_enum_ranges(text: str, field_enum_values: Dict[str, list]) -> str:
+def _annotate_enum_ranges(text: str, field_enum_values: dict[str, list]) -> str:
     """Append a capped value=label comment after ``range: <FieldEnum>`` lines.
 
     Only enum names present in ``field_enum_values`` are annotated (so the
@@ -774,12 +791,13 @@ def _annotate_enum_ranges(text: str, field_enum_values: Dict[str, list]) -> str:
     skipped). Matches both ``range: X`` and ``- range: X`` (the ``any_of``
     branch). Lines already carrying a comment are left alone.
     """
-    line_re = re.compile(r"^(\s*(?:-\s+)?range:\s+)(\S+)\s*$")
-    out: List[str] = []
+    line_re = re.compile(r"^\s*(?:-\s+)?range:\s+(?P<enum>\S+)\s*$")
+    out: list[str] = []
     for line in text.split("\n"):
-        m = line_re.match(line)
-        if m and m.group(2) in field_enum_values and "#" not in line:
-            comment = _format_enum_comment(field_enum_values[m.group(2)])
+        match = line_re.match(line)
+        enum_name = match.group("enum") if match else None
+        if enum_name in field_enum_values and "#" not in line:
+            comment = _format_enum_comment(field_enum_values[enum_name])
             out.append(f"{line}  # {comment}")
         else:
             out.append(line)
@@ -794,7 +812,7 @@ def _annotate_blocks(
     indent: int,
     kind: str,
     counter_noun: str,
-    users: Optional[Dict[str, list]] = None,
+    users: dict[str, list] | None = None,
 ) -> str:
     """Move an entry's trailing "n of m <noun>" counter into a block above it.
 
@@ -816,25 +834,26 @@ def _annotate_blocks(
     plural = re.escape(counter_noun)
     singular = re.escape(counter_noun[:-1] if counter_noun.endswith("s") else counter_noun)
     line_re = re.compile(
-        rf"^{pad}(\S+):\s*(#\s*(\d+) of (\d+) (?:{plural}|{singular}))?\s*$"
+        rf"^{pad}(?P<name>\S+):"
+        rf"\s*(?P<counter># *(?P<position>\d+) of (?P<total>\d+) (?:{plural}|{singular}))?\s*$"
     )
-    out: List[str] = []
+    out: list[str] = []
     for line in text.split("\n"):
-        m = line_re.match(line)
-        name = m.group(1) if m else None
-        rewrite = m and (users is None or name in users) and m.group(2)
-        if rewrite:
-            n, total = m.group(3), m.group(4)
-            out.append(f"{pad}# {kind} {n} of {total}")
+        match = line_re.match(line)
+        name = match.group("name") if match else None
+        has_counter = match and match.group("counter")
+        should_rewrite = has_counter and (users is None or name in users)
+        if should_rewrite:
+            out.append(f"{pad}# {kind} {match.group('position')} of {match.group('total')}")
             if users is not None and name in users:
-                who = users[name]
-                shown = who[:_ENUM_USERS_CAP]
+                user_ids = users[name]
+                shown = user_ids[:_ENUM_USERS_CAP]
                 id_list = " | ".join(shown)
-                extra = len(who) - len(shown)
-                if extra > 0:
-                    id_list += f" (+{extra} more)"
-                de = "data element" if len(who) == 1 else "data elements"
-                out.append(f"{pad}# Used by {len(who)} {de}")
+                hidden = len(user_ids) - len(shown)
+                if hidden > 0:
+                    id_list += f" (+{hidden} more)"
+                element_noun = "data element" if len(user_ids) == 1 else "data elements"
+                out.append(f"{pad}# Used by {len(user_ids)} {element_noun}")
                 out.append(f"{pad}# {id_list}")
             out.append(f"{pad}{name}:")  # bare key line
         else:
@@ -855,10 +874,10 @@ def _strip_type_keys(obj):
     return obj
 
 
-def _split_pipe(cell: str) -> List[str]:
+def _split_pipe(cell: str) -> list[str]:
     if not cell or not cell.strip():
         return []
-    return [part for part in cell.split("|")]
+    return cell.split("|")
 
 
 def _looks_obo(prefix: str) -> bool:
@@ -866,6 +885,6 @@ def _looks_obo(prefix: str) -> bool:
     return bool(re.fullmatch(r"[A-Z][A-Z0-9]+", prefix))
 
 
-def emit_schema(rows: List[Row], options: Optional[EmitOptions] = None) -> str:
+def emit_schema(rows: list[Row], options: EmitOptions | None = None) -> str:
     """Convenience: build and dump a LinkML schema YAML string from rows."""
     return Emitter(options).dumps(rows)

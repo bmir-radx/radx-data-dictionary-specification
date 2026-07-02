@@ -17,7 +17,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Optional, Sequence
+from collections.abc import Sequence
 
 from .datatypes import UnknownDatatypeError
 from .emit import EmitOptions, emit_schema
@@ -48,7 +48,8 @@ def _name_from_filename(path: Path) -> str:
 
 def _class_from_name(name: str) -> str:
     # Split on any non-alphanumeric, including underscores, so
-    # "patient_data" -> "PatientData".
+    # "patient_data" -> "PatientData". (cf. _class_case in emit.py, the same
+    # casing; here the empty-input fallback is "Record" rather than "X".)
     parts = re.split(r"[^A-Za-z0-9]+", name)
     return "".join(p[:1].upper() + p[1:] for p in parts if p) or "Record"
 
@@ -67,7 +68,12 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Output schema file (default: stdout).",
     )
     parser.add_argument("--name", default=None, help="Schema name (default: from filename).")
-    parser.add_argument("--id", dest="schema_id", default=None, help="Schema id/URI (default: derived from name).")
+    parser.add_argument(
+        "--id",
+        dest="schema_id",
+        default=None,
+        help="Schema id/URI (default: derived from name).",
+    )
     parser.add_argument(
         "--class-name",
         default=None,
@@ -128,7 +134,7 @@ def _resolve_options(args: argparse.Namespace) -> EmitOptions:
     )
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
     logging.basicConfig(
         level=logging.WARNING if args.verbose else logging.ERROR,

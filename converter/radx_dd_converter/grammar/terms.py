@@ -10,14 +10,13 @@ IRI/CURIE (that is left to the emitter, which decides how strict to be).
 from __future__ import annotations
 
 import re
-from typing import List
 
 # The separators the spec allows between terms: ASCII space, non-breaking space,
 # tab, and newline. Any run of these is a single separator.
 _SEPARATOR = re.compile(r"[  \t\r\n]+")
 
 
-def parse_terms(cell: str) -> List[str]:
+def parse_terms(cell: str) -> list[str]:
     """Split a ``Terms`` cell into its individual term identifiers.
 
     A blank or whitespace-only cell yields an empty list. Leading and trailing

@@ -13,7 +13,8 @@ import csv
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Sequence, TextIO, Union
+from typing import TextIO
+from collections.abc import Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +58,7 @@ class Row:
     listed in ``extra_columns``.
     """
 
-    cells: Dict[str, str]
+    cells: dict[str, str]
     line: int
     extra_columns: Sequence[str] = field(default_factory=tuple)
 
@@ -70,26 +71,26 @@ class Row:
         return self.get("Id")
 
 
-def _validate_header(header: Sequence[str]) -> List[str]:
+def _validate_header(header: Sequence[str]) -> list[str]:
     """Validate the header record; return the list of extra (non-canonical) columns."""
-    seen = [h.strip() for h in header]
+    columns = [h.strip() for h in header]
     # Duplicate headers make column-by-name access ambiguous.
-    dupes = {h for h in seen if seen.count(h) > 1}
-    if dupes:
-        raise ReadError(f"Duplicate column header(s): {', '.join(sorted(dupes))}")
-    missing = [c for c in REQUIRED_COLUMNS if c not in seen]
+    duplicates = {c for c in columns if columns.count(c) > 1}
+    if duplicates:
+        raise ReadError(f"Duplicate column header(s): {', '.join(sorted(duplicates))}")
+    missing = [c for c in REQUIRED_COLUMNS if c not in columns]
     if missing:
         raise ReadError(
             "Missing required column header(s): " + ", ".join(missing)
         )
-    return [h for h in seen if h and h not in KNOWN_COLUMNS]
+    return [c for c in columns if c and c not in KNOWN_COLUMNS]
 
 
 def read_data_dictionary(
-    source: Union[str, Path, TextIO],
+    source: str | Path | TextIO,
     *,
     allow_duplicates: bool = False,
-) -> List[Row]:
+) -> list[Row]:
     """Read a data dictionary CSV and return its rows in order.
 
     ``source`` may be a path (``str``/``Path``) or an open text file object.
@@ -100,17 +101,17 @@ def read_data_dictionary(
     a warning is logged for each.
     """
     if isinstance(source, (str, Path)):
-        with open(source, "r", encoding="utf-8-sig", newline="") as handle:
+        with open(source, encoding="utf-8-sig", newline="") as handle:
             return _read(handle, allow_duplicates)
     return _read(source, allow_duplicates)
 
 
-def _read(handle: TextIO, allow_duplicates: bool = False) -> List[Row]:
+def _read(handle: TextIO, allow_duplicates: bool = False) -> list[Row]:
     reader = csv.reader(handle)  # RFC 4180 defaults: comma, double-quote
     try:
         header = next(reader)
     except StopIteration:
-        raise ReadError("Data dictionary is empty (no header record).")
+        raise ReadError("Data dictionary is empty (no header record).") from None
 
     # Strip a UTF-8 BOM from the first header cell. Opening a path uses
     # encoding="utf-8-sig" which removes it, but a caller-supplied stream may
@@ -121,19 +122,22 @@ def _read(handle: TextIO, allow_duplicates: bool = False) -> List[Row]:
     header = [h.strip() for h in header]
     extra_columns = tuple(_validate_header(header))
 
-    rows: List[Row] = []
-    seen_ids: Dict[str, int] = {}
-    for offset, raw in enumerate(reader):
+    rows: list[Row] = []
+    seen_ids: dict[str, int] = {}
+    for offset, raw_cells in enumerate(reader):
         line = offset + 2  # +1 for header, +1 for 1-based
-        if not any(cell.strip() for cell in raw):
+        if not any(cell.strip() for cell in raw_cells):
             continue  # skip wholly blank lines
 
-        cells = {header[i]: (raw[i] if i < len(raw) else "") for i in range(len(header))}
+        cells = {
+            header[i]: (raw_cells[i] if i < len(raw_cells) else "")
+            for i in range(len(header))
+        }
 
-        for req in REQUIRED_COLUMNS:
-            if cells.get(req, "").strip() == "":
+        for required_column in REQUIRED_COLUMNS:
+            if cells.get(required_column, "").strip() == "":
                 raise ReadError(
-                    f"Line {line}: required column {req!r} is blank."
+                    f"Line {line}: required column {required_column!r} is blank."
                 )
 
         row_id = cells["Id"].strip()

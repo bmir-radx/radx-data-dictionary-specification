@@ -19,12 +19,13 @@ import logging
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from typing import Dict, Iterable, Optional
+from collections.abc import Iterable
 
 logger = logging.getLogger(__name__)
 
 OLS4_TERMS_URL = "https://www.ebi.ac.uk/ols4/api/terms"
 BIOPORTAL_CLASS_URL = "https://data.bioontology.org/ontologies/{ont}/classes/{iri}"
+# Also defined in emit.py; kept independent to avoid coupling the modules.
 _OBO_PURL = "http://purl.obolibrary.org/obo/"
 
 _DEFAULT_TIMEOUT = 15.0
@@ -34,10 +35,13 @@ RESOLVERS = ("ols4", "bioportal")
 
 
 class LookupError_(Exception):
-    """Raised for a configuration problem (e.g. BioPortal selected without a key)."""
+    """Raised for a configuration problem (e.g. BioPortal selected without a key).
+
+    The trailing underscore avoids shadowing the built-in ``LookupError``.
+    """
 
 
-def _to_iri(term: str) -> Optional[str]:
+def _to_iri(term: str) -> str | None:
     """Expand a term to a full IRI, or return it if already an IRI.
 
     OBO-style CURIEs (``MONDO:0004979``) expand deterministically to
@@ -53,32 +57,32 @@ def _to_iri(term: str) -> Optional[str]:
     return None
 
 
-def _curie_prefix(term: str) -> Optional[str]:
+def _curie_prefix(term: str) -> str | None:
     """Return the id-space of a CURIE (used as the BioPortal ontology acronym)."""
     if ":" in term and not term.startswith(("http://", "https://")):
         return term.split(":", 1)[0]
     return None
 
 
-def _get_json(url: str, timeout: float, headers: Optional[dict] = None):
+def _get_json(url: str, timeout: float, headers: dict | None = None):
     req = urllib.request.Request(url, headers=headers or {})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return json.load(resp)
 
 
-def _fetch_ols4(term: str, timeout: float, _key: Optional[str]) -> Optional[str]:
+def _fetch_ols4(term: str, timeout: float, _key: str | None) -> str | None:
     iri = _to_iri(term)
     if iri is None:
         return None
     url = f"{OLS4_TERMS_URL}?{urllib.parse.urlencode({'iri': iri})}"
     data = _get_json(url, timeout)
-    for t in data.get("_embedded", {}).get("terms", []):
-        if t.get("label"):
-            return t["label"]
+    for term_obj in data.get("_embedded", {}).get("terms", []):
+        if term_obj.get("label"):
+            return term_obj["label"]
     return None
 
 
-def _fetch_bioportal(term: str, timeout: float, apikey: Optional[str]) -> Optional[str]:
+def _fetch_bioportal(term: str, timeout: float, apikey: str | None) -> str | None:
     iri = _to_iri(term)
     ont = _curie_prefix(term)
     if iri is None or ont is None or not apikey:
@@ -100,10 +104,10 @@ def lookup_labels(
     terms: Iterable[str],
     *,
     resolver: str = "ols4",
-    apikey: Optional[str] = None,
+    apikey: str | None = None,
     timeout: float = _DEFAULT_TIMEOUT,
     workers: int = _DEFAULT_WORKERS,
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """Resolve many terms to labels, concurrently and de-duplicated.
 
     ``resolver`` selects the source (``"ols4"`` or ``"bioportal"``). BioPortal
@@ -119,23 +123,25 @@ def lookup_labels(
         )
 
     fetch = _FETCHERS[resolver]
-    unique = sorted({t.strip() for t in terms if t and t.strip()})
-    if not unique:
+    unique_terms = sorted({t.strip() for t in terms if t and t.strip()})
+    if not unique_terms:
         return {}
 
-    def one(term: str) -> Optional[str]:
+    def resolve_one(term: str) -> str | None:
         try:
             return fetch(term, timeout, apikey)
         except Exception as exc:  # network error, timeout, bad JSON, HTTP error
             logger.warning("Term lookup failed for %s (%s): %s", term, resolver, exc)
             return None
 
-    results: Dict[str, str] = {}
+    results: dict[str, str] = {}
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-        for term, label in zip(unique, pool.map(one, unique)):
+        for term, label in zip(
+            unique_terms, pool.map(resolve_one, unique_terms), strict=True
+        ):
             if label:
                 results[term] = label
     logger.info(
-        "Resolved %d/%d unique terms via %s.", len(results), len(unique), resolver
+        "Resolved %d/%d unique terms via %s.", len(results), len(unique_terms), resolver
     )
     return results
