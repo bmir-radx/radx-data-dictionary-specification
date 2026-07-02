@@ -320,23 +320,95 @@ class Emitter:
         return schema
 
     def dumps(self, rows: List[Row]) -> str:
-        """Build the schema and dump it as YAML with readable block strings.
+        """Build the schema and dump it as readable YAML.
 
         The schema object is converted to a plain dict via ``json_dumper``
         (which drops empty/None fields), then dumped with a PyYAML dumper that
-        renders multi-line strings as literal `|` blocks rather than the escaped
-        double-quoted form LinkML's default dumper produces.
+        renders multi-line strings as literal `|` blocks. Section-header
+        comments and blank lines are added between top-level sections and
+        between the entries within the mapping-valued sections (subsets, enums,
+        types, classes), to make the output easier to scan.
         """
         schema = self.build(rows)
         as_dict = _strip_type_keys(json.loads(json_dumper.dumps(schema)))
-        return yaml.dump(
-            as_dict,
-            Dumper=_BlockStyleDumper,
-            sort_keys=False,
-            allow_unicode=True,
-            default_flow_style=False,
-            width=88,
+        return _render(as_dict)
+
+
+# Human-readable header comments for the mapping-valued sections, and the
+# order in which top-level sections are emitted.
+_SECTION_COMMENTS = {
+    "subsets": "Subsets (from the data dictionary's Section column)",
+    "types": "Custom datatypes",
+    "enums": "Enumerations",
+    "slots": "Slots",
+    "classes": "Classes",
+}
+# Sections whose direct entries should be separated by a blank line.
+_SPACED_SECTIONS = {"subsets", "types", "enums", "classes"}
+
+
+def _dump_yaml(obj) -> str:
+    return yaml.dump(
+        obj,
+        Dumper=_BlockStyleDumper,
+        sort_keys=False,
+        allow_unicode=True,
+        default_flow_style=False,
+        width=88,
+    )
+
+
+def _space_entries_at(text: str, indent: int) -> str:
+    """Insert a blank line before each mapping entry at the given indent.
+
+    An "entry" line has exactly ``indent`` leading spaces followed by a
+    non-space, non-``-`` character (i.e. a ``key:``). Lines that are more deeply
+    indented, are list items, or are block-scalar text start differently and are
+    left untouched, so multi-line descriptions are preserved verbatim.
+    """
+    prefix = " " * indent
+    out: List[str] = []
+    seen_first = False
+    for line in text.split("\n"):
+        stripped = line[indent:] if line.startswith(prefix) else ""
+        is_entry = (
+            line.startswith(prefix)
+            and bool(stripped)
+            and not stripped[0].isspace()
+            and not stripped.startswith("-")
         )
+        if is_entry:
+            if seen_first:
+                out.append("")
+            seen_first = True
+        out.append(line)
+    return "\n".join(out)
+
+
+def _render(as_dict: dict) -> str:
+    """Render the schema dict to YAML with section comments and blank lines."""
+    scalar_header: List[str] = []
+    blocks: List[str] = []
+
+    for key, value in as_dict.items():
+        # Group the leading scalar/simple header keys together (no blank lines
+        # between them, no section comment): name, id, imports, prefixes, etc.
+        if key not in _SECTION_COMMENTS:
+            scalar_header.append(_dump_yaml({key: value}).rstrip("\n"))
+            continue
+
+        comment = _SECTION_COMMENTS[key]
+        if key == "classes":
+            # Slots live two levels down under `attributes:`; space them there.
+            body = _space_entries_at(_dump_yaml({key: value}).rstrip("\n"), indent=6)
+        elif key in _SPACED_SECTIONS:
+            body = _space_entries_at(_dump_yaml({key: value}).rstrip("\n"), indent=2)
+        else:
+            body = _dump_yaml({key: value}).rstrip("\n")
+        blocks.append(f"# --- {comment} ---\n{body}")
+
+    header = "\n".join(scalar_header)
+    return "\n\n".join([header, *blocks]) + "\n"
 
 
 def _strip_type_keys(obj):

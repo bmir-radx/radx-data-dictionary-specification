@@ -30,7 +30,9 @@ Work in progress. Implemented so far:
   raw `Unit` cell (by name or symbol) to a structured `UnitOfMeasure`.
 - **Emitter** (`radx_dd_converter/emit.py`) — `emit_schema(rows, options)`
   assembles rows + parsed cells into a `linkml_runtime` `SchemaDefinition` and
-  dumps YAML. Implements the full mapping: `Datatype` → range / custom type,
+  dumps readable YAML (multi-line descriptions as literal `|` blocks; section
+  comments and blank lines between slots/enums/types). Implements the full
+  mapping: `Datatype` → range / custom type,
   `Enumeration` → generated enum wired via slot `any_of` with the shared
   `StandardMissingValueCodes` (and per-field codes), `Provenance` →
   `source:`/annotation, `Section` → `in_subset`, `Unit` → native `unit:`

@@ -129,6 +129,41 @@ def test_unit_lookup_and_raw_preserved():
     assert slot["annotations"]["unit_raw"] == "mm"
 
 
+def test_output_has_section_comments_and_blank_lines(schema_yaml):
+    assert "# --- Slots ---" not in schema_yaml  # slots live under Classes
+    assert "# --- Classes ---" in schema_yaml
+    assert "# --- Enumerations ---" in schema_yaml
+    # A blank line separates slots (two attribute keys with a blank between).
+    assert "\n\n      PartId:" in schema_yaml or "\n\n      SampleType:" in schema_yaml
+
+
+def test_pretty_rendering_preserves_content(schema_yaml):
+    """The comment/blank-line pass must not alter the schema data."""
+    import json
+
+    from linkml_runtime.dumpers import json_dumper
+
+    from radx_dd_converter import read_data_dictionary
+    from radx_dd_converter.emit import Emitter, EmitOptions, _strip_type_keys
+
+    em = Emitter(EmitOptions(schema_id="https://example.org/s", schema_name="s",
+                             class_name="Record"))
+    schema = em.build(read_data_dictionary(FIXTURES / "sample.csv"))
+    ref = _strip_type_keys(json.loads(json_dumper.dumps(schema)))
+    from radx_dd_converter.emit import _render
+
+    assert yaml.safe_load(_render(ref)) == ref
+
+
+def test_multiline_description_is_block_scalar():
+    csv = (
+        "Id,Label,Datatype,Description\n"
+        'A,A,string,"line one' "\n" 'line two"\n'
+    )
+    out = emit_schema(read_data_dictionary(_csv(csv)))
+    assert "description: |" in out  # literal block, not escaped quoted string
+
+
 def test_identical_enumerations_are_deduplicated():
     csv = (
         "Id,Label,Datatype,Enumeration\n"
