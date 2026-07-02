@@ -1,6 +1,9 @@
 """Round-trip tests: CSV -> LinkML -> CSV should be semantically equivalent."""
 
 import io
+from pathlib import Path
+
+import pytest
 
 from radx_dd_converter import (
     EmitOptions,
@@ -9,6 +12,8 @@ from radx_dd_converter import (
     schema_to_csv,
 )
 from radx_dd_converter.grammar import parse_enumeration, parse_terms
+
+EXAMPLES = Path(__file__).resolve().parents[1] / "examples"
 
 # A small dictionary exercising the tricky columns: an enumeration (with an
 # ontology meaning), a multivalued field, a datatype, terms, unit, section,
@@ -86,3 +91,56 @@ def test_field_missing_value_codes_preserved():
         {r.id: r for r in rebuilt}["sample"].get("MissingValueCodes")
     )
     assert [(c.value, c.label) for c in codes] == [("-1", "Refused")]
+
+
+# --- Round-trip on the committed real-world example dictionaries ------------
+
+# gcb is spec-clean; rad has duplicate Ids (kept-first via allow_duplicates).
+_EXAMPLE_DICTS = [
+    pytest.param("gcb.dd.csv", False, id="gcb"),
+    pytest.param("rad.dd.csv", True, id="rad"),
+]
+
+
+def _column_equivalent(column: str, original: str, rebuilt: str) -> bool:
+    """Compare a reconstructed column to the original, allowing the forward
+    conversion's documented normalisations (whitespace, Terms spacing, blank
+    ==single Cardinality, canonical Enumeration serialisation)."""
+    if column in ("Enumeration", "MissingValueCodes"):
+        return parse_enumeration(original) == parse_enumeration(rebuilt)
+    if column == "Terms":
+        return parse_terms(original) == parse_terms(rebuilt)
+    if column == "Cardinality":
+        return (_norm(original) or "single") == (_norm(rebuilt) or "single")
+    return _norm(original) == _norm(rebuilt)
+
+
+@pytest.mark.parametrize("filename, allow_dup", _EXAMPLE_DICTS)
+def test_example_dictionary_roundtrips(filename, allow_dup):
+    """Each committed example dictionary must survive CSV -> LinkML -> CSV with
+    every column semantically equivalent for every data element."""
+    path = EXAMPLES / filename
+    if not path.exists():
+        pytest.skip(f"{filename} not available")
+
+    original = read_data_dictionary(path, allow_duplicates=allow_dup)
+    schema = emit_schema(original, EmitOptions(schema_name="ex", class_name="Record"))
+    rebuilt = read_data_dictionary(
+        io.StringIO(schema_to_csv(schema)), allow_duplicates=allow_dup
+    )
+
+    orig_by_id = {r.id: r for r in original}
+    rebuilt_by_id = {r.id: r for r in rebuilt}
+    assert set(orig_by_id) == set(rebuilt_by_id)
+
+    from radx_dd_converter.reader import KNOWN_COLUMNS
+
+    mismatches = []
+    for row_id, orig_row in orig_by_id.items():
+        rebuilt_row = rebuilt_by_id[row_id]
+        for column in KNOWN_COLUMNS:
+            if not _column_equivalent(
+                column, orig_row.get(column), rebuilt_row.get(column)
+            ):
+                mismatches.append(f"{row_id}.{column}")
+    assert not mismatches, f"{len(mismatches)} column mismatches: {mismatches[:10]}"

@@ -20,37 +20,29 @@ of it.
 | Path | What it is |
 | --- | --- |
 | [`radx-data-dictionary-specification.md`](radx-data-dictionary-specification.md) | The authoritative specification. |
-| [`linkml/`](linkml/) | [LinkML](https://linkml.io) renderings of the specification (see below). |
-| [`converter/`](converter/) | `radx-dd-to-linkml` — a Python tool that converts a data dictionary CSV into a LinkML schema. |
-
-## LinkML representation
-
-The [`linkml/`](linkml/) folder holds two LinkML renderings of the
-specification, plus the converter's design notes:
-
-- [`linkml/data-dictionary-csv.yaml`](linkml/data-dictionary-csv.yaml) — a
-  **CSV-faithful** schema: one row per data element, every column a single
-  string cell. Rich values (enumerations, ontology terms) stay encoded in-cell
-  using the grammars defined in the specification.
-- [`linkml/data-dictionary.yaml`](linkml/data-dictionary.yaml) — the **parsed
-  object model**: the same information once the in-cell grammars have been
-  decomposed into structured objects.
-- [`linkml/CONVERTER_PLAN.md`](linkml/CONVERTER_PLAN.md) — the design record for
-  the converter.
+| [`converter/`](converter/) | A Python tool that converts between a data dictionary CSV and a LinkML schema, in both directions. |
+| [`linkml/`](linkml/) | Hand-written [LinkML](https://linkml.io) renderings of the specification. |
 
 ## Converter
 
-[`converter/`](converter/) contains `radx-dd-to-linkml`, which reads a RADx data
-dictionary CSV and emits a LinkML schema describing the *target datafile* (one
-slot per data element):
+[`converter/`](converter/) is a Python tool that translates **both directions**
+between a data dictionary and a [LinkML](https://linkml.io) schema:
 
 ```sh
 pip install ./converter
+
+# Data dictionary CSV -> LinkML schema
 radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml
+
+# LinkML schema -> data dictionary CSV
+linkml-to-radx-dd my_schema.yaml -o my_dictionary.csv
 ```
 
-See the [converter README](converter/README.md) for the full set of options
-(ontology term-name lookup, enum-value annotations, and more).
+The generated schema describes the *target datafile* — one slot per data
+element — so datafiles can be validated and documented with standard LinkML
+tooling. The round-trip is *semantic* (the same information is preserved), not
+byte-exact. See the [converter README](converter/README.md) for the full set of
+options and the mapping details.
 
 ### Worked examples
 
@@ -61,6 +53,14 @@ them:
 | --- | --- |
 | [`gcb.dd.csv`](converter/examples/gcb.dd.csv) | [`gcb.yaml`](converter/examples/gcb.yaml) |
 | [`rad.dd.csv`](converter/examples/rad.dd.csv) | [`rad.yaml`](converter/examples/rad.yaml) |
+
+## Hand-written LinkML schemas
+
+Alongside the converter, [`linkml/`](linkml/) holds two hand-written LinkML
+renderings of the specification itself — one **CSV-faithful** (every column a
+single string cell) and one **parsed object model** (in-cell grammars decomposed
+into structured objects) — plus [`CONVERTER_PLAN.md`](linkml/CONVERTER_PLAN.md),
+the converter's design record.
 
 ## License
 
