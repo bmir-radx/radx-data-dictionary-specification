@@ -28,9 +28,15 @@ of it.
 [`converter/`](converter/) is a Python tool that translates **both directions**
 between a data dictionary and a [LinkML](https://linkml.io) schema:
 
-```sh
-pip install ./converter
+Install it straight from this repository (no clone needed):
 
+```sh
+pip install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter"
+```
+
+Then convert in either direction:
+
+```sh
 # Data dictionary CSV -> LinkML schema
 radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml
 
