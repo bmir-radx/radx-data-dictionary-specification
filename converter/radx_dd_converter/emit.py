@@ -97,6 +97,44 @@ def _class_case(name: str) -> str:
     return "".join(p[:1].upper() + p[1:] for p in parts if p) or "X"
 
 
+# Value-derived enum names are built from the first few values; when there are
+# more, an "Etc" marker is appended so the name stays short and does not imply a
+# single owning data element. A name longer than this after that is rejected
+# (fall back to the field-derived name).
+_ENUM_NAME_LEAD_VALUES = 3
+_ENUM_NAME_MAX_LEN = 48
+
+
+def _value_derived_enum_name(items: List["EnumItem"]) -> Optional[str]:
+    """Build an enum name from its values, e.g. ``NoYesEnum`` or ``NoYesEtcEnum``.
+
+    Uses the first few values' labels (falling back to the value itself),
+    CamelCased and concatenated in source order; appends ``Etc`` when there are
+    further values, so a value set shared by many data elements gets a short,
+    ownership-neutral name rather than being named after one field. Returns
+    ``None`` only when the leading values yield no usable text, so the caller
+    can fall back to a field-derived name.
+    """
+    if not items:
+        return None
+    lead = items[:_ENUM_NAME_LEAD_VALUES]
+    parts = [_class_case(item.label or item.value) for item in lead]
+    parts = [p for p in parts if p != "X"]  # drop values that sanitise to nothing
+    if not parts:
+        return None
+    name = "".join(parts) + ("Etc" if len(items) > len(lead) else "") + "Enum"
+    if len(name) > _ENUM_NAME_MAX_LEN:
+        return None
+    # Reject digit-heavy names: numeric-range value sets (labels like "100-150")
+    # CamelCase into an illegible digit mash, so fall back to the field name.
+    # Threshold: digits make up more than a quarter of the name.
+    if sum(c.isdigit() for c in name) * 4 > len(name):
+        return None
+    if name[0].isdigit():
+        name = f"X{name}"
+    return name
+
+
 @dataclass
 class EmitOptions:
     """Options controlling schema identity (from CLI flags / filename)."""
@@ -162,12 +200,19 @@ class Emitter:
 
     def _emit_enum(self, schema: SchemaDefinition, base_name: str,
                    items: List[EnumItem]) -> str:
-        """Create (or reuse) an enum for ``items``; return its name."""
+        """Create (or reuse) an enum for ``items``; return its name.
+
+        The enum is named after its *values* (e.g. ``NoYesEnum``) rather than the
+        data element that first used it, since a deduplicated enum may be shared
+        by many data elements and a field-derived name would misleadingly imply
+        a single owner. Falls back to the field-derived name when the values do
+        not yield a usable name.
+        """
         signature = repr([(i.value, i.label, i.iri) for i in items])
         if signature in self._enum_by_signature:
             return self._enum_by_signature[signature]
 
-        enum_name = f"{_class_case(base_name)}Enum"
+        enum_name = _value_derived_enum_name(items) or f"{_class_case(base_name)}Enum"
         # Avoid name collisions with an existing, differently-valued enum.
         n, suffix = enum_name, 2
         while n in schema.enums:
