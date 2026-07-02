@@ -34,7 +34,7 @@ LinkML's bracketed `[ | ]`).
 | `Description` | `description:` | |
 | `Section` | declared `subset` + slot `in_subset:` | See "Section grouping"; annotation only as fallback |
 | `Cardinality` | `multivalued: true` | Only when value is `multiple`; else single-valued |
-| `Terms` | `slot_uri:` (first) + `exact_mappings:` (rest) | CURIEs need prefixes registered in output |
+| `Terms` | `related_mappings:` (all terms) | Subject-matter annotations, not the slot's predicate URI; CURIE prefixes registered in output |
 | `Datatype` | `range:` | Via the datatype map below |
 | `Pattern` | `pattern:` | Emitted verbatim (XSD-regex dialect) |
 | `Unit` | native `unit:` (UnitOfMeasure), lookup-assisted | See "Unit mapping"; `annotations.unit_raw` always kept |

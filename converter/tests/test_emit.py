@@ -96,17 +96,30 @@ def test_enumeration_uses_any_of_with_standard_codes(schema):
 def test_enum_values_carry_meaning(schema):
     pvs = schema["enums"]["SampleTypeEnum"]["permissible_values"]
     assert pvs["0"]["meaning"] == "UBERON:0001836"
-    assert pvs["0"]["description"] == "Saliva"
+    assert pvs["0"]["title"] == "Saliva"
 
 
 def test_obo_prefix_is_auto_registered(schema):
     assert schema["prefixes"]["UBERON"] == "http://purl.obolibrary.org/obo/UBERON_"
 
 
+def test_terms_map_to_related_mappings_not_slot_uri():
+    csv = (
+        "Id,Label,Datatype,Terms\n"
+        "age,Age,integer,PATO:0000011 NCIT:C25150\n"
+    )
+    slot = yaml.safe_load(emit_schema(read_data_dictionary(_csv(csv))))[
+        "classes"
+    ]["Record"]["attributes"]["age"]
+    assert slot["related_mappings"] == ["PATO:0000011", "NCIT:C25150"]
+    assert "slot_uri" not in slot
+    assert "exact_mappings" not in slot
+
+
 def test_standard_codes_enum_present_and_complete(schema):
     pvs = schema["enums"]["StandardMissingValueCodes"]["permissible_values"]
     assert len(pvs) == 25
-    assert pvs["-9999"]["description"] == "Reason Unknown"
+    assert pvs["-9999"]["title"] == "Reason Unknown"
 
 
 def test_custom_type_emitted_for_timestamp():
@@ -153,6 +166,22 @@ def test_pretty_rendering_preserves_content(schema_yaml):
     from radx_dd_converter.emit import _render
 
     assert yaml.safe_load(_render(ref)) == ref
+
+
+def test_redundant_name_and_text_keys_dropped(schema_yaml, schema):
+    # `name:` is inferred from the mapping key; it should not be emitted.
+    assert "\n    name:" not in schema_yaml and "\n        name:" not in schema_yaml
+    # Permissible-value `text:` equal to its key should be dropped.
+    pvs = schema["enums"]["SampleTypeEnum"]["permissible_values"]
+    assert "text" not in pvs["0"]
+    assert pvs["0"]["title"] == "Saliva"
+    # Class / enum names still resolve (they come from the keys).
+    assert "Record" in schema["classes"]
+    assert "SampleTypeEnum" in schema["enums"]
+
+
+def test_header_comment_present(schema_yaml):
+    assert schema_yaml.startswith("# LinkML schema generated from a RADx data dictionary")
 
 
 def test_multiline_description_is_block_scalar():

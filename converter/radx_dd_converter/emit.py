@@ -86,8 +86,12 @@ def _sanitize(name: str) -> str:
 
 
 def _class_case(name: str) -> str:
-    """CamelCase a name for use as an enum/class name."""
-    parts = re.split(r"\W+", name.strip())
+    """CamelCase a name for use as an enum/class name.
+
+    Splits on any non-alphanumeric character, including underscores, so
+    ``nih_race`` -> ``NihRace`` (not ``Nih_race``).
+    """
+    parts = re.split(r"[^A-Za-z0-9]+", name.strip())
     return "".join(p[:1].upper() + p[1:] for p in parts if p) or "X"
 
 
@@ -156,7 +160,7 @@ class Emitter:
 
         enum = EnumDefinition(name=enum_name)
         for item in items:
-            pv = PermissibleValue(text=item.value, description=item.label or None)
+            pv = PermissibleValue(text=item.value, title=item.label or None)
             if item.iri:
                 pv.meaning = self._register_term(item.iri)
             enum.permissible_values[item.value] = pv
@@ -174,7 +178,7 @@ class Emitter:
         )
         for item in STANDARD_MISSING_VALUE_CODES:
             enum.permissible_values[item.value] = PermissibleValue(
-                text=item.value, description=item.label or None
+                text=item.value, title=item.label or None
             )
         schema.enums[STANDARD_ENUM_NAME] = enum
 
@@ -211,13 +215,11 @@ class Emitter:
         if row.get("Pattern"):
             slot.pattern = row.get("Pattern")
 
-        # Terms -> slot_uri (first) + exact_mappings (rest). SlotDefinition uses
-        # `slot_uri` (single) and `exact_mappings` (list).
-        terms = parse_terms(row.get("Terms"))
-        if terms:
-            slot.slot_uri = self._register_term(terms[0])
-            for t in terms[1:]:
-                slot.exact_mappings.append(self._register_term(t))
+        # Terms -> related_mappings. RADx Terms are subject-matter annotations
+        # (the concept a field relates to), not the slot's predicate URI, so
+        # they map to related_mappings rather than slot_uri / exact_mappings.
+        for term in parse_terms(row.get("Terms")):
+            slot.related_mappings.append(self._register_term(term))
 
         # Provenance -> source: if URL/CURIE, else annotation.
         prov = row.get("Provenance").strip()
@@ -233,7 +235,7 @@ class Emitter:
             subset_name = _sanitize(section)
             if subset_name not in schema.subsets:
                 schema.subsets[subset_name] = SubsetDefinition(
-                    name=subset_name, description=section
+                    name=subset_name, title=section
                 )
             slot.in_subset.append(subset_name)
 
@@ -331,6 +333,9 @@ class Emitter:
         """
         schema = self.build(rows)
         as_dict = _strip_type_keys(json.loads(json_dumper.dumps(schema)))
+        _drop_redundant_keys(as_dict)
+        _order_slot_keys(as_dict)
+        _annotations_last(as_dict)
         return _render(as_dict)
 
 
@@ -345,6 +350,29 @@ _SECTION_COMMENTS = {
 }
 # Sections whose direct entries should be separated by a blank line.
 _SPACED_SECTIONS = {"subsets", "types", "enums", "classes"}
+
+# Orientation header prepended to every generated schema.
+_HEADER_COMMENT = """\
+# LinkML schema generated from a RADx data dictionary by radx-dd-to-linkml.
+#
+# The single class below (the tree_root) describes a target datafile: each of
+# its slots corresponds to one field (column) of that datafile, in order. The
+# non-obvious conventions used here are:
+#
+#   * A field with an enumeration becomes a slot whose value must be one of the
+#     generated <Field>Enum values OR a StandardMissingValueCodes code (and any
+#     field-specific codes) -- expressed with `any_of`. The field's underlying
+#     datatype is kept in the `value_datatype` annotation.
+#   * A field's Section becomes a declared `subset`, referenced from the slot
+#     via `in_subset`.
+#   * Ontology terms are kept as CURIEs; their prefixes are declared in
+#     `prefixes` (OBO id spaces expand under purl.obolibrary.org).
+#   * Machine-oriented annotations (`unit_raw`, `value_datatype`, `provenance`,
+#     `original_id`) appear at the end of each slot.
+#
+# See the RADx Data Dictionary Specification for the source field definitions:
+# https://github.com/bmir-radx/radx-data-dictionary-specification
+"""
 
 
 def _dump_yaml(obj) -> str:
@@ -408,7 +436,73 @@ def _render(as_dict: dict) -> str:
         blocks.append(f"# --- {comment} ---\n{body}")
 
     header = "\n".join(scalar_header)
-    return "\n\n".join([header, *blocks]) + "\n"
+    return _HEADER_COMMENT + "\n" + "\n\n".join([header, *blocks]) + "\n"
+
+
+def _drop_redundant_keys(as_dict: dict) -> None:
+    """Drop identifier keys that merely repeat their mapping key.
+
+    Every element defined as an entry in a mapping (``enums``, ``classes``,
+    ``slots``, ``types``, ``subsets``) is named by its key, so an inner
+    ``name:`` equal to that key is redundant. Likewise a permissible value's
+    ``text:`` equal to its key. LinkML infers both from the key, so removing
+    them is lossless and de-clutters the output. Mutates ``as_dict`` in place.
+    """
+    def strip_named(mapping):
+        """Drop `name:` from any entry whose name equals its key."""
+        for key, element in (mapping or {}).items():
+            if isinstance(element, dict) and element.get("name") == key:
+                del element["name"]
+
+    # Top-level named sections: types, subsets (Sections), slots, enums.
+    for section in ("types", "subsets", "slots", "enums"):
+        strip_named(as_dict.get(section, {}))
+
+    # Permissible values: drop `text:` when it equals the value key.
+    for enum in (as_dict.get("enums") or {}).values():
+        for pv_key, pv in (enum.get("permissible_values") or {}).items():
+            if isinstance(pv, dict) and pv.get("text") == pv_key:
+                del pv["text"]
+
+    # Classes, and their nested slots (attributes).
+    strip_named(as_dict.get("classes", {}))
+    for cls in (as_dict.get("classes") or {}).values():
+        strip_named(cls.get("attributes", {}))
+
+
+# Preferred leading key order for a slot definition. Keys not listed keep their
+# existing relative order after these; `annotations` is forced last separately.
+_SLOT_KEY_ORDER = ("title", "description", "range")
+
+
+def _order_slot_keys(as_dict: dict) -> None:
+    """Reorder each slot's keys so title, description, range come first.
+
+    Remaining keys keep their existing order. Mutates ``as_dict`` in place.
+    """
+    for cls in (as_dict.get("classes") or {}).values():
+        attrs = cls.get("attributes") or {}
+        for slot_name, slot in list(attrs.items()):
+            if not isinstance(slot, dict):
+                continue
+            front = [k for k in _SLOT_KEY_ORDER if k in slot]
+            rest = [k for k in slot if k not in _SLOT_KEY_ORDER]
+            attrs[slot_name] = {k: slot[k] for k in (*front, *rest)}
+
+
+def _annotations_last(as_dict: dict) -> None:
+    """Reorder each slot mapping so ``annotations`` is its last key.
+
+    LinkML emits ``annotations`` near the top of a slot; moving it to the end
+    keeps the human-relevant fields (description, range, ...) first and groups
+    the machine-oriented annotations (``unit_raw``, ``value_datatype``,
+    ``provenance``, ``original_id``) at the bottom. Mutates ``as_dict`` in place.
+    """
+    for cls in as_dict.get("classes", {}).values():
+        for slot_name, slot in list(cls.get("attributes", {}).items()):
+            if isinstance(slot, dict) and "annotations" in slot:
+                ann = slot.pop("annotations")
+                slot["annotations"] = ann  # re-insert at the end
 
 
 def _strip_type_keys(obj):
