@@ -193,6 +193,24 @@ def test_multiline_description_is_block_scalar():
     assert "description: |" in out  # literal block, not escaped quoted string
 
 
+def test_clean_text_strips_trailing_and_leading_blank_lines():
+    from radx_dd_converter.emit import _clean_text
+
+    # trailing blank lines and per-line trailing spaces removed; internal
+    # newlines and spacing preserved.
+    assert _clean_text("hello   \n\n\n") == "hello"
+    assert _clean_text("\n\nhead\n\nmid\n\n") == "head\n\nmid"
+    assert _clean_text("a  \nb  ") == "a\nb"
+
+
+def test_description_has_no_trailing_blank_lines_in_output():
+    # A description whose cell ends with blank lines must not carry them through.
+    csv = 'Id,Label,Datatype,Description\nA,A,string,"body text\n\n\n"\n'
+    schema = yaml.safe_load(emit_schema(read_data_dictionary(_csv(csv))))
+    desc = schema["classes"]["Record"]["attributes"]["A"]["description"]
+    assert desc == "body text"
+
+
 def test_identical_enumerations_are_deduplicated():
     csv = (
         "Id,Label,Datatype,Enumeration\n"

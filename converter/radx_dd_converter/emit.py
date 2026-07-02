@@ -49,12 +49,14 @@ _OBO_PURL = "http://purl.obolibrary.org/obo/"
 def _clean_text(text: str) -> str:
     """Tidy a free-text field for readable YAML output.
 
-    Strips trailing whitespace from each line. Trailing spaces carry no meaning
-    but prevent YAML from using the readable literal-block (`|`) style, forcing
-    the escaped double-quoted form instead. Newlines and internal spacing are
+    Strips trailing whitespace from each line, and strips leading/trailing blank
+    lines from the whole field. Trailing spaces prevent YAML from using the
+    readable literal-block (`|`) style, and trailing blank lines leave a run of
+    empty lines at the end of a block scalar. Internal newlines and spacing are
     preserved, so this is a lossless-in-intent normalisation.
     """
-    return "\n".join(line.rstrip() for line in text.split("\n"))
+    per_line = "\n".join(line.rstrip() for line in text.split("\n"))
+    return per_line.strip("\n")
 
 
 class _BlockStyleDumper(yaml.SafeDumper):
