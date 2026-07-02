@@ -21,6 +21,10 @@ environment and puts the commands on your `PATH`:
 pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter"
 ```
 
+On first use of pipx, its bin directory may not be on your `PATH` (pipx warns
+if so). Run `pipx ensurepath` once — then open a new terminal — to add it, after
+which the commands are available everywhere.
+
 Either way this installs the `radx-dd-to-linkml` and `linkml-to-radx-dd`
 commands and their dependencies (`linkml`, `lark`). If you have cloned the
 repository, `pip install ./converter` from the repo root works too.
