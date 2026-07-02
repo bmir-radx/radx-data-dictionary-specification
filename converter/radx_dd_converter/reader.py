@@ -12,7 +12,7 @@ from __future__ import annotations
 import csv
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, TextIO, Union
+from typing import Dict, List, Sequence, TextIO, Union
 
 # The canonical header sequence from the specification. Order here is the
 # recommended order; the reader does not require this order (columns are keyed

@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
-from lark import Lark, Token, Tree
+from lark import Lark, Tree
 from lark.exceptions import LarkError
 
 _GRAMMAR_PATH = Path(__file__).with_name("enumeration.lark")

@@ -6,7 +6,7 @@ for the design.
 
 ## Status
 
-Work in progress. Implemented so far:
+Feature-complete for v1. Components:
 
 - **Reader** (`radx_dd_converter/reader.py`) — `read_data_dictionary` parses a
   data dictionary CSV per RFC 4180, validates the header (required columns

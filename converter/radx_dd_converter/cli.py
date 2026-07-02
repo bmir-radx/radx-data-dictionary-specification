@@ -16,7 +16,7 @@ import logging
 import re
 import sys
 from pathlib import Path
-from typing import List, Optional, Sequence
+from typing import Optional, Sequence
 
 from .datatypes import UnknownDatatypeError
 from .emit import EmitOptions, emit_schema
