@@ -145,6 +145,24 @@ multi-line descriptions use block (`|`) style, and each enum, section, and data
 element carries a short comment block noting its position and (for enums and
 sections) which data elements reference it.
 
+## Reconstructing the dictionary (round-trip)
+
+The reverse tool `linkml-to-radx-dd` rebuilds a data dictionary CSV from a
+generated schema:
+
+```
+linkml-to-radx-dd my_schema.yaml -o my_dictionary.csv
+```
+
+The round-trip (CSV → LinkML → CSV) is **semantic, not byte-exact**: the forward
+conversion normalises some things for readability — it strips trailing
+whitespace and blank lines from descriptions, re-joins `Terms` with single
+spaces, treats a blank `Cardinality` as the default `single`, and re-serialises
+the `Enumeration` cell in a canonical `"value"=[label](iri)` form. The
+reconstructed dictionary carries the same information (verified field-by-field
+on the worked examples) but a cell may not match the original character for
+character.
+
 ## Worked examples
 
 The [`examples/`](examples/) folder contains real data dictionaries and the

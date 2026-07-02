@@ -19,6 +19,7 @@ test = ["pytest>=7"]
 
 [project.scripts]
 radx-dd-to-linkml = "radx_dd_converter.cli:main"
+linkml-to-radx-dd = "radx_dd_converter.reverse:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
