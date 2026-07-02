@@ -108,6 +108,7 @@ class EmitOptions:
     annotate_terms: bool = False  # look up ontology term names and add as comments
     resolver: str = "ols4"  # term-name resolver: "ols4" or "bioportal"
     bioportal_apikey: Optional[str] = None  # required when resolver == "bioportal"
+    annotate_enum_values: bool = False  # comment field-enum values after range:
 
 
 class Emitter:
@@ -118,6 +119,10 @@ class Emitter:
         self._prefixes: Dict[str, str] = {}
         self._enum_by_signature: Dict[str, str] = {}  # dedup identical enumerations
         self._terms: set = set()  # every term identifier emitted (for annotation)
+        # Field enums (from Enumeration cells) mapped to their (value, label)
+        # pairs, for the optional value comment after `range: <Enum>`. Excludes
+        # StandardMissingValueCodes and field-specific missing-code enums.
+        self._field_enum_values: Dict[str, list] = {}
 
     # -- prefixes / term identifiers ---------------------------------------
 
@@ -272,6 +277,9 @@ class Emitter:
         if enum_items:
             # Enumeration is the controlling set; underlying datatype preserved.
             enum_name = self._emit_enum(schema, row.id, enum_items)
+            self._field_enum_values.setdefault(
+                enum_name, [(i.value, i.label) for i in enum_items]
+            )
             slot.annotations["value_datatype"] = row.get("Datatype")
 
             branches = [AnonymousSlotExpression(range=enum_name)]
@@ -354,6 +362,8 @@ class Emitter:
             )
             if labels:
                 text = _annotate_term_lines(text, labels)
+        if self.opts.annotate_enum_values and self._field_enum_values:
+            text = _annotate_enum_ranges(text, self._field_enum_values)
         return text
 
 
@@ -538,6 +548,40 @@ def _annotate_term_lines(text: str, labels: Dict[str, str]) -> str:
         m = line_re.match(line)
         if m and m.group(2) in labels and "#" not in line:
             out.append(f"{line}  # {labels[m.group(2)]}")
+        else:
+            out.append(line)
+    return "\n".join(out)
+
+
+_ENUM_VALUE_CAP = 6  # max value=label pairs shown inline before "(+N more)"
+
+
+def _format_enum_comment(pairs: list) -> str:
+    """Build a capped ``value=label | ...`` comment body for an enum."""
+    shown = pairs[:_ENUM_VALUE_CAP]
+    parts = [f"{v}={label}" if label else f"{v}" for v, label in shown]
+    body = " | ".join(parts)
+    extra = len(pairs) - len(shown)
+    if extra > 0:
+        body += f" (+{extra} more)"
+    return body
+
+
+def _annotate_enum_ranges(text: str, field_enum_values: Dict[str, list]) -> str:
+    """Append a capped value=label comment after ``range: <FieldEnum>`` lines.
+
+    Only enum names present in ``field_enum_values`` are annotated (so the
+    shared StandardMissingValueCodes and field-specific missing-code enums are
+    skipped). Matches both ``range: X`` and ``- range: X`` (the ``any_of``
+    branch). Lines already carrying a comment are left alone.
+    """
+    line_re = re.compile(r"^(\s*(?:-\s+)?range:\s+)(\S+)\s*$")
+    out: List[str] = []
+    for line in text.split("\n"):
+        m = line_re.match(line)
+        if m and m.group(2) in field_enum_values and "#" not in line:
+            comment = _format_enum_comment(field_enum_values[m.group(2)])
+            out.append(f"{line}  # {comment}")
         else:
             out.append(line)
     return "\n".join(out)

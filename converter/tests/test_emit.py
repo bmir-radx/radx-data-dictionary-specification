@@ -211,6 +211,34 @@ def test_description_has_no_trailing_blank_lines_in_output():
     assert desc == "body text"
 
 
+def test_annotate_enum_values_off_by_default(schema_yaml):
+    # Default output: no value comment after the enum range.
+    assert "range: SampleTypeEnum\n" in schema_yaml
+    assert "# 0=Saliva" not in schema_yaml
+
+
+def test_annotate_enum_values_adds_capped_comment():
+    rows = read_data_dictionary(FIXTURES / "sample.csv")
+    out = emit_schema(
+        rows,
+        EmitOptions(schema_name="s", class_name="Record", annotate_enum_values=True),
+    )
+    assert "- range: SampleTypeEnum  # 0=Saliva | 1=Blood" in out
+    # StandardMissingValueCodes is not a field enum -> never annotated.
+    assert "range: StandardMissingValueCodes  #" not in out
+
+
+def test_enum_value_comment_is_capped():
+    from radx_dd_converter.emit import _annotate_enum_ranges
+
+    pairs = [(str(i), f"L{i}") for i in range(10)]
+    out = _annotate_enum_ranges(
+        "        - range: BigEnum\n", {"BigEnum": pairs}
+    )
+    assert "(+4 more)" in out  # 10 values, cap 6 -> 4 hidden
+    assert out.count("=") == 6  # exactly 6 value=label pairs shown
+
+
 def test_identical_enumerations_are_deduplicated():
     csv = (
         "Id,Label,Datatype,Enumeration\n"

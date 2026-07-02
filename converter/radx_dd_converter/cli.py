@@ -92,6 +92,12 @@ def _build_parser() -> argparse.ArgumentParser:
         help="BioPortal API key (overrides the BIOPORTAL_API_KEY env var).",
     )
     parser.add_argument(
+        "--annotate-enum-values",
+        action="store_true",
+        help="After a field enum range, add a comment listing its value=label "
+        "pairs (capped, with a '(+N more)' overflow).",
+    )
+    parser.add_argument(
         "--allow-duplicates",
         action="store_true",
         help="Do not fail on a duplicate Id; keep the first occurrence, skip "
@@ -118,6 +124,7 @@ def _resolve_options(args: argparse.Namespace) -> EmitOptions:
         annotate_terms=args.annotate_terms,
         resolver=args.resolver,
         bioportal_apikey=apikey,
+        annotate_enum_values=args.annotate_enum_values,
     )
 
 

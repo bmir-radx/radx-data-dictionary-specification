@@ -78,6 +78,14 @@ BIOPORTAL_API_KEY=... radx-dd-to-linkml my_dictionary.csv -o out.yaml \
     --annotate-terms --resolver bioportal
 ```
 
+`--annotate-enum-values` adds a comment after each field enum's `range:` listing
+its `value=label` pairs (capped, with a `(+N more)` overflow), so the allowed
+values are visible at the point of use without scrolling to the `enums:` section:
+
+```yaml
+- range: SampleTypeEnum  # 0=Saliva | 1=Blood
+```
+
 ## Usage (library)
 
 ```python
