@@ -72,9 +72,9 @@ def _fetch_ols4(term: str, timeout: float, _key: Optional[str]) -> Optional[str]
         return None
     url = f"{OLS4_TERMS_URL}?{urllib.parse.urlencode({'iri': iri})}"
     data = _get_json(url, timeout)
-    for t in data.get("_embedded", {}).get("terms", []):
-        if t.get("label"):
-            return t["label"]
+    for term_obj in data.get("_embedded", {}).get("terms", []):
+        if term_obj.get("label"):
+            return term_obj["label"]
     return None
 
 
@@ -119,11 +119,11 @@ def lookup_labels(
         )
 
     fetch = _FETCHERS[resolver]
-    unique = sorted({t.strip() for t in terms if t and t.strip()})
-    if not unique:
+    unique_terms = sorted({t.strip() for t in terms if t and t.strip()})
+    if not unique_terms:
         return {}
 
-    def one(term: str) -> Optional[str]:
+    def resolve_one(term: str) -> Optional[str]:
         try:
             return fetch(term, timeout, apikey)
         except Exception as exc:  # network error, timeout, bad JSON, HTTP error
@@ -132,10 +132,10 @@ def lookup_labels(
 
     results: Dict[str, str] = {}
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-        for term, label in zip(unique, pool.map(one, unique)):
+        for term, label in zip(unique_terms, pool.map(resolve_one, unique_terms)):
             if label:
                 results[term] = label
     logger.info(
-        "Resolved %d/%d unique terms via %s.", len(results), len(unique), resolver
+        "Resolved %d/%d unique terms via %s.", len(results), len(unique_terms), resolver
     )
     return results

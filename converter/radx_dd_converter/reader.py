@@ -72,17 +72,17 @@ class Row:
 
 def _validate_header(header: Sequence[str]) -> List[str]:
     """Validate the header record; return the list of extra (non-canonical) columns."""
-    seen = [h.strip() for h in header]
+    columns = [h.strip() for h in header]
     # Duplicate headers make column-by-name access ambiguous.
-    dupes = {h for h in seen if seen.count(h) > 1}
-    if dupes:
-        raise ReadError(f"Duplicate column header(s): {', '.join(sorted(dupes))}")
-    missing = [c for c in REQUIRED_COLUMNS if c not in seen]
+    duplicates = {c for c in columns if columns.count(c) > 1}
+    if duplicates:
+        raise ReadError(f"Duplicate column header(s): {', '.join(sorted(duplicates))}")
+    missing = [c for c in REQUIRED_COLUMNS if c not in columns]
     if missing:
         raise ReadError(
             "Missing required column header(s): " + ", ".join(missing)
         )
-    return [h for h in seen if h and h not in KNOWN_COLUMNS]
+    return [c for c in columns if c and c not in KNOWN_COLUMNS]
 
 
 def read_data_dictionary(
@@ -123,17 +123,20 @@ def _read(handle: TextIO, allow_duplicates: bool = False) -> List[Row]:
 
     rows: List[Row] = []
     seen_ids: Dict[str, int] = {}
-    for offset, raw in enumerate(reader):
+    for offset, raw_cells in enumerate(reader):
         line = offset + 2  # +1 for header, +1 for 1-based
-        if not any(cell.strip() for cell in raw):
+        if not any(cell.strip() for cell in raw_cells):
             continue  # skip wholly blank lines
 
-        cells = {header[i]: (raw[i] if i < len(raw) else "") for i in range(len(header))}
+        cells = {
+            header[i]: (raw_cells[i] if i < len(raw_cells) else "")
+            for i in range(len(header))
+        }
 
-        for req in REQUIRED_COLUMNS:
-            if cells.get(req, "").strip() == "":
+        for required_column in REQUIRED_COLUMNS:
+            if cells.get(required_column, "").strip() == "":
                 raise ReadError(
-                    f"Line {line}: required column {req!r} is blank."
+                    f"Line {line}: required column {required_column!r} is blank."
                 )
 
         row_id = cells["Id"].strip()

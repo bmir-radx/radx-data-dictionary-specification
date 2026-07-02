@@ -15,6 +15,7 @@ import re
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
+import jsonasobj2
 import yaml
 from linkml_runtime.dumpers import json_dumper
 from linkml_runtime.linkml_model.meta import (
@@ -215,11 +216,12 @@ class Emitter:
             return self._enum_by_signature[signature]
 
         enum_name = _value_derived_enum_name(items) or f"{_class_case(base_name)}Enum"
-        # Avoid name collisions with an existing, differently-valued enum.
-        n, suffix = enum_name, 2
-        while n in schema.enums:
-            n, suffix = f"{enum_name}{suffix}", suffix + 1
-        enum_name = n
+        # Avoid name collisions with an existing, differently-valued enum by
+        # appending a numeric suffix (SomeEnum, SomeEnum2, SomeEnum3, ...).
+        candidate, suffix = enum_name, 2
+        while candidate in schema.enums:
+            candidate, suffix = f"{enum_name}{suffix}", suffix + 1
+        enum_name = candidate
 
         enum = EnumDefinition(
             name=enum_name,
@@ -403,10 +405,10 @@ class Emitter:
             if len(users) == 1:
                 new_name = f"{_class_case(users[0])}Enum"
                 # Collision-check against other enums (skip self).
-                n, suffix = new_name, 2
-                while n in schema.enums and n != enum_name:
-                    n, suffix = f"{new_name}{suffix}", suffix + 1
-                new_name = n
+                candidate, suffix = new_name, 2
+                while candidate in schema.enums and candidate != enum_name:
+                    candidate, suffix = f"{new_name}{suffix}", suffix + 1
+                new_name = candidate
                 if new_name != enum_name:
                     renames[enum_name] = new_name
                 enum.description = (
@@ -424,12 +426,14 @@ class Emitter:
         # Always place the shared StandardMissingValueCodes enum last by
         # rebuilding the enums mapping in the desired order. schema.enums may be
         # a plain dict or a linkml JsonObj, so iterate via jsonasobj2.
-        import jsonasobj2
-
-        pairs = list(jsonasobj2.items(schema.enums))
-        if any(name == STANDARD_ENUM_NAME for name, _ in pairs):
-            reordered = {n: e for n, e in pairs if n != STANDARD_ENUM_NAME}
-            reordered[STANDARD_ENUM_NAME] = dict(pairs)[STANDARD_ENUM_NAME]
+        enums_by_name = dict(jsonasobj2.items(schema.enums))
+        if STANDARD_ENUM_NAME in enums_by_name:
+            reordered = {
+                name: enum
+                for name, enum in enums_by_name.items()
+                if name != STANDARD_ENUM_NAME
+            }
+            reordered[STANDARD_ENUM_NAME] = enums_by_name[STANDARD_ENUM_NAME]
             schema.enums = reordered
 
         return schema
@@ -446,8 +450,6 @@ class Emitter:
         # Rebuild the enums mapping preserving order, with renamed keys. Keep the
         # enum's own `name` in sync with its key, else validation rejects the
         # mismatch (and _drop_redundant_keys only strips `name` when it matches).
-        import jsonasobj2
-
         new_enums = {}
         for name, enum in jsonasobj2.items(schema.enums):
             new_name = renames.get(name, name)
@@ -562,6 +564,21 @@ def _dump_yaml(obj) -> str:
     )
 
 
+def _is_entry_line(line: str, indent: int) -> bool:
+    """True if ``line`` is a mapping entry (``key:``) at exactly ``indent``.
+
+    Entry lines have exactly ``indent`` leading spaces followed by a non-space,
+    non-``-`` character. More deeply indented lines, list items, and block-scalar
+    text start differently and are excluded, so multi-line descriptions and
+    nested keys are never mistaken for entries.
+    """
+    prefix = " " * indent
+    if not line.startswith(prefix):
+        return False
+    rest = line[indent:]
+    return bool(rest) and not rest[0].isspace() and not rest.startswith("-")
+
+
 def _space_entries_at(text: str, indent: int) -> str:
     """Insert a blank line before each mapping entry at the given indent.
 
@@ -570,18 +587,10 @@ def _space_entries_at(text: str, indent: int) -> str:
     indented, are list items, or are block-scalar text start differently and are
     left untouched, so multi-line descriptions are preserved verbatim.
     """
-    prefix = " " * indent
     out: List[str] = []
     seen_first = False
     for line in text.split("\n"):
-        stripped = line[indent:] if line.startswith(prefix) else ""
-        is_entry = (
-            line.startswith(prefix)
-            and bool(stripped)
-            and not stripped[0].isspace()
-            and not stripped.startswith("-")
-        )
-        if is_entry:
+        if _is_entry_line(line, indent):
             if seen_first:
                 out.append("")
             seen_first = True
@@ -609,20 +618,12 @@ def _number_entries_at(
     _SINGULAR = {"data elements": "data element", "enums": "enum",
                  "sections": "section", "classes": "class"}
     noun = _SINGULAR.get(label, label) if total == 1 else label
-    prefix = " " * indent
     out: List[str] = []
-    n = 0
+    position = 0
     for line in section_yaml.split("\n"):
-        stripped = line[indent:] if line.startswith(prefix) else ""
-        is_entry = (
-            line.startswith(prefix)
-            and bool(stripped)
-            and not stripped[0].isspace()
-            and not stripped.startswith("-")
-        )
-        if is_entry and "#" not in line:
-            n += 1
-            out.append(f"{line}  # {n} of {total} {noun}")
+        if _is_entry_line(line, indent) and "#" not in line:
+            position += 1
+            out.append(f"{line}  # {position} of {total} {noun}")
         else:
             out.append(line)
     return "\n".join(out)
@@ -741,12 +742,13 @@ def _annotate_term_lines(text: str, labels: Dict[str, str]) -> str:
     and unrelated lines are never touched. A line already carrying a comment is
     left alone.
     """
-    line_re = re.compile(r"^(\s*(?:-\s+|[\w.]+:\s+))(\S+)\s*$")
+    line_re = re.compile(r"^\s*(?:-\s+|[\w.]+:\s+)(?P<term>\S+)\s*$")
     out: List[str] = []
     for line in text.split("\n"):
-        m = line_re.match(line)
-        if m and m.group(2) in labels and "#" not in line:
-            out.append(f"{line}  # {labels[m.group(2)]}")
+        match = line_re.match(line)
+        term = match.group("term") if match else None
+        if term in labels and "#" not in line:
+            out.append(f"{line}  # {labels[term]}")
         else:
             out.append(line)
     return "\n".join(out)
@@ -774,12 +776,13 @@ def _annotate_enum_ranges(text: str, field_enum_values: Dict[str, list]) -> str:
     skipped). Matches both ``range: X`` and ``- range: X`` (the ``any_of``
     branch). Lines already carrying a comment are left alone.
     """
-    line_re = re.compile(r"^(\s*(?:-\s+)?range:\s+)(\S+)\s*$")
+    line_re = re.compile(r"^\s*(?:-\s+)?range:\s+(?P<enum>\S+)\s*$")
     out: List[str] = []
     for line in text.split("\n"):
-        m = line_re.match(line)
-        if m and m.group(2) in field_enum_values and "#" not in line:
-            comment = _format_enum_comment(field_enum_values[m.group(2)])
+        match = line_re.match(line)
+        enum_name = match.group("enum") if match else None
+        if enum_name in field_enum_values and "#" not in line:
+            comment = _format_enum_comment(field_enum_values[enum_name])
             out.append(f"{line}  # {comment}")
         else:
             out.append(line)
@@ -816,25 +819,26 @@ def _annotate_blocks(
     plural = re.escape(counter_noun)
     singular = re.escape(counter_noun[:-1] if counter_noun.endswith("s") else counter_noun)
     line_re = re.compile(
-        rf"^{pad}(\S+):\s*(#\s*(\d+) of (\d+) (?:{plural}|{singular}))?\s*$"
+        rf"^{pad}(?P<name>\S+):"
+        rf"\s*(?P<counter># *(?P<position>\d+) of (?P<total>\d+) (?:{plural}|{singular}))?\s*$"
     )
     out: List[str] = []
     for line in text.split("\n"):
-        m = line_re.match(line)
-        name = m.group(1) if m else None
-        rewrite = m and (users is None or name in users) and m.group(2)
-        if rewrite:
-            n, total = m.group(3), m.group(4)
-            out.append(f"{pad}# {kind} {n} of {total}")
+        match = line_re.match(line)
+        name = match.group("name") if match else None
+        has_counter = match and match.group("counter")
+        should_rewrite = has_counter and (users is None or name in users)
+        if should_rewrite:
+            out.append(f"{pad}# {kind} {match.group('position')} of {match.group('total')}")
             if users is not None and name in users:
-                who = users[name]
-                shown = who[:_ENUM_USERS_CAP]
+                user_ids = users[name]
+                shown = user_ids[:_ENUM_USERS_CAP]
                 id_list = " | ".join(shown)
-                extra = len(who) - len(shown)
-                if extra > 0:
-                    id_list += f" (+{extra} more)"
-                de = "data element" if len(who) == 1 else "data elements"
-                out.append(f"{pad}# Used by {len(who)} {de}")
+                hidden = len(user_ids) - len(shown)
+                if hidden > 0:
+                    id_list += f" (+{hidden} more)"
+                element_noun = "data element" if len(user_ids) == 1 else "data elements"
+                out.append(f"{pad}# Used by {len(user_ids)} {element_noun}")
                 out.append(f"{pad}# {id_list}")
             out.append(f"{pad}{name}:")  # bare key line
         else:
