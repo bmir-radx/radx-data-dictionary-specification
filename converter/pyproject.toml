@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radx-dd-converter"
+version = "0.0.1"
+description = "Convert a RADx data dictionary CSV into a LinkML schema"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "BSD-2-Clause" }
+dependencies = [
+    "lark>=1.1",
+    "linkml>=1.8",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+radx-dd-to-linkml = "radx_dd_converter.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["radx_dd_converter*"]
+
+[tool.setuptools.package-data]
+radx_dd_converter = ["grammar/*.lark"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

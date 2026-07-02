@@ -1,0 +1,36 @@
+// Grammar for the RADx enumeration / missing-value-codes cell syntax.
+//
+// Mirrors the EBNF in radx-data-dictionary-specification.md, section
+// "Semantics of Enumeration Values":
+//
+//   enumeration          = enumerationValuePair {'|' enumerationValuePair} ;
+//   enumerationValuePair = value '=' label [ bracketedIri ] ;
+//   value                = quotedString ;   // "..."  (no unescaped ")
+//   label                = boxedString ;    // [...]  (no unescaped ])
+//   bracketedIri         = "(" (fullIri | oboId) ")" ;
+//
+// White space surrounding the '|' and '=' terminals is not significant; it is
+// discarded via the %ignore directive below. White space *inside* a quoted
+// value or boxed label is significant and is preserved (those terminals match
+// their delimiters explicitly).
+
+enumeration: pair ("|" pair)*
+
+pair: value "=" label bracketed_iri?
+
+value: QUOTED
+label: BOXED
+bracketed_iri: PARENED
+
+// A double-quoted string. The value between the quotes is any run of
+// characters that is not a double quote.
+QUOTED: "\"" /[^"]*/ "\""
+
+// A square-bracketed label. Any run of characters that is not a ']'.
+BOXED: "[" /[^\]]*/ "]"
+
+// A round-bracketed IRI or OBO id. Any run of characters that is not a ')'.
+PARENED: "(" /[^)]*/ ")"
+
+%import common.WS
+%ignore WS

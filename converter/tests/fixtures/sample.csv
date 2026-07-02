@@ -1,0 +1,4 @@
+Id,Label,Description,Cardinality,Datatype,Pattern,Enumeration,Examples
+PartId,Participant Id,The participant identifier,single,string,^[NP](\d+)$,,N001|N002
+SampleType,Sample Type,The type of sample collected,single,integer,,"""0""=[Saliva](UBERON:0001836) | ""1""=[Blood](UBERON:0000178)",0
+Symptoms,Symptoms,Reported symptoms,multiple,string,,,cough|headache

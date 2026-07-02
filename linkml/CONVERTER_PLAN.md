@@ -1,11 +1,16 @@
-# RADx Data Dictionary → LinkML Schema Converter — Plan
+# RADx Data Dictionary → LinkML Schema Converter — Design
+
+> **Status:** Implemented in [`../converter/`](../converter/) as the
+> `radx-dd-to-linkml` tool. This document is the design record: it explains what
+> the converter does and why the mapping decisions were made. Where the code and
+> this document ever disagree, the code (and its tests) is authoritative.
 
 ## Goal
 
-A Python tool that reads a RADx data dictionary in CSV format and emits a
-**LinkML schema** describing the *target datafile* that the dictionary
-documents. Each data element (row) becomes a **slot**; the datafile as a whole
-becomes a **class** (`Record`).
+The converter reads a RADx data dictionary in CSV format and emits a **LinkML
+schema** describing the *target datafile* that the dictionary documents. Each
+data element (row) becomes a **slot**; the datafile as a whole becomes a
+**class** (default name `Record`).
 
 This is *metamodeling*: the dictionary is metadata about a datafile, and the
 output schema is a formal description of that datafile's structure, suitable for
@@ -34,7 +39,7 @@ LinkML's bracketed `[ | ]`).
 | `Description` | `description:` | |
 | `Section` | declared `subset` + slot `in_subset:` | See "Section grouping"; annotation only as fallback |
 | `Cardinality` | `multivalued: true` | Only when value is `multiple`; else single-valued |
-| `Terms` | `slot_uri:` (first) + `exact_mappings:` (rest) | CURIEs need prefixes registered in output |
+| `Terms` | `related_mappings:` (all terms) | Subject-matter annotations, not the slot's predicate URI; CURIE prefixes registered in output |
 | `Datatype` | `range:` | Via the datatype map below |
 | `Pattern` | `pattern:` | Emitted verbatim (XSD-regex dialect) |
 | `Unit` | native `unit:` (UnitOfMeasure), lookup-assisted | See "Unit mapping"; `annotations.unit_raw` always kept |
@@ -221,8 +226,14 @@ radx_dd_converter/
   cli.py           # argparse entry point
 tests/
   fixtures/        # small CSVs incl. the spec's own worked examples
-  test_reader.py test_parse.py test_datatypes.py test_emit.py test_e2e.py
+  test_reader.py test_parse.py test_terms.py test_datatypes.py
+  test_tables.py test_emit.py test_cli.py
 ```
+
+The emitter also post-processes its YAML for readability (literal `|` blocks for
+multi-line text, section-header comments, blank lines between entries, redundant
+`name:`/`text:` keys dropped, `annotations` last); a round-trip test asserts this
+never alters the schema content.
 
 **Two layers, cleanly separated:**
 1. **Parser layer** (`grammar/`) — turns cell mini-grammars into Python objects.
@@ -239,10 +250,12 @@ tests/
 - Unknown / mis-cased datatype name → error listing the offending value + row.
 - Malformed `Enumeration` / `MissingValueCodes` cell → parser error with the
   cell content and row index.
-- Duplicate `Id`, or an `Alias` colliding with an `Id`/alias → error (the spec's
-  uniqueness rule).
-- Unresolvable CURIE prefix in `Terms`/enum `meaning` → warn, emit the CURIE
-  anyway, and add the prefix as a `TODO` annotation.
+- Duplicate `Id` → error naming both lines. (Alias-vs-Id/alias uniqueness across
+  the whole dictionary is specified but not yet enforced by the reader; noted as
+  future work.)
+- Non-OBO CURIE prefix in `Terms`/enum `meaning` → the prefix is registered with
+  a best-effort OBO expansion and a warning is logged (shown with `--verbose`),
+  rather than failing.
 
 ## Validation strategy
 
@@ -252,17 +265,28 @@ tests/
   schema in-test and assert 0 errors — the converter must always emit a valid
   schema.
 
-## Open questions / decisions still to make
+## Resolved decisions
 
-1. **Prefixes for `Terms`/`meaning` CURIEs.** OBO ids expand deterministically
-   (`MONDO:0004979` → `http://purl.obolibrary.org/obo/MONDO_0004979`). Do we
-   (a) always expand to full IRIs, or (b) register prefixes in the output
-   schema's `prefixes:` and keep CURIEs? (Leaning (b), with OBO expansion as a
-   known prefix map.)
-2. **Class name / schema id.** Derived from CLI flags, filename, or a dictionary
-   metadata row? (Start: CLI flags with filename fallback.)
-3. **Packaging.** Standalone script vs. installable package with an entry point.
-   Where does it live — this repo, or a sibling repo?
+1. **Prefixes for `Terms`/`meaning` CURIEs (decided).** Emit compact ids
+   (`UBERON:0001836`) **as-is** and register their prefixes in the output
+   schema's `prefixes:` block, rather than expanding to full IRIs. OBO Foundry
+   prefixes are auto-registered using the deterministic OBO rule
+   (`IDSPACE:LOCALID` → `http://purl.obolibrary.org/obo/IDSPACE_LOCALID`), so any
+   `IDSPACE:` prefix seen in the input maps to
+   `http://purl.obolibrary.org/obo/IDSPACE_`. Full IRIs are emitted unchanged. A
+   non-OBO CURIE whose prefix cannot be resolved is kept as-is and a warning is
+   logged (its prefix is left for the user to declare).
+
+2. **Schema `id` / `name` / root class name (decided).** Taken from CLI flags
+   (`--id`, `--name`, `--class-name`); when a flag is omitted, derived from the
+   input CSV filename (e.g. `patient_data.csv` → name `patient_data`, id under a
+   default base, class `PatientData`). The default root class name, when nothing
+   else is given, is **`Record`**. No dictionary metadata row is assumed (RADx
+   dictionaries have no standard metadata row).
+
+3. **Packaging (decided).** An installable Python package living in this
+   repository under [`converter/`](../converter/), exposing the
+   `radx-dd-to-linkml` console script.
 
 ## Future work (not v1)
 
@@ -289,6 +313,9 @@ Future items:
   (rewrite RADx bare-pipe cells to `[a|b|c]`, or a custom loader) before
   `linkml-convert` can be used. It is not a no-op.
 - Reverse direction: LinkML schema → RADx data dictionary CSV.
+- **Alias uniqueness enforcement.** The reader rejects a duplicate `Id`, but does
+  not yet check that an `Alias` never collides with another record's `Id` or
+  alias (the spec's cross-dictionary uniqueness rule).
 
 ## Tested note: LinkML in-cell multi-value behavior (LinkML 1.11)
 
