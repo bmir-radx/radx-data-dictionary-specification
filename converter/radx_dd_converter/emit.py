@@ -441,6 +441,36 @@ def _space_entries_at(text: str, indent: int) -> str:
     return "\n".join(out)
 
 
+# Sections whose direct entries are numbered "n of m" as a trailing comment.
+_NUMBERED_SECTIONS = {"enums", "subsets", "classes"}
+
+
+def _number_entries_at(section_yaml: str, indent: int, total: int) -> str:
+    """Append `# n of m` to each mapping entry at ``indent`` within a section.
+
+    An entry line has exactly ``indent`` leading spaces then a ``key:`` (not a
+    list item, not deeper). Block-scalar text and nested keys are left untouched.
+    A line already carrying a comment is not doubled.
+    """
+    prefix = " " * indent
+    out: List[str] = []
+    n = 0
+    for line in section_yaml.split("\n"):
+        stripped = line[indent:] if line.startswith(prefix) else ""
+        is_entry = (
+            line.startswith(prefix)
+            and bool(stripped)
+            and not stripped[0].isspace()
+            and not stripped.startswith("-")
+        )
+        if is_entry and "#" not in line:
+            n += 1
+            out.append(f"{line}  # {n} of {total}")
+        else:
+            out.append(line)
+    return "\n".join(out)
+
+
 def _render(as_dict: dict) -> str:
     """Render the schema dict to YAML with section comments and blank lines."""
     scalar_header: List[str] = []
@@ -454,13 +484,22 @@ def _render(as_dict: dict) -> str:
             continue
 
         comment = _SECTION_COMMENTS[key]
+        body = _dump_yaml({key: value}).rstrip("\n")
         if key == "classes":
             # Slots live two levels down under `attributes:`; space them there.
-            body = _space_entries_at(_dump_yaml({key: value}).rstrip("\n"), indent=6)
+            body = _space_entries_at(body, indent=6)
+            # Number the class(es) at indent 2 and the slots at indent 6.
+            body = _number_entries_at(body, indent=2, total=len(value or {}))
+            slot_total = sum(
+                len((cls or {}).get("attributes") or {}) for cls in value.values()
+            )
+            body = _number_entries_at(body, indent=6, total=slot_total)
         elif key in _SPACED_SECTIONS:
-            body = _space_entries_at(_dump_yaml({key: value}).rstrip("\n"), indent=2)
-        else:
-            body = _dump_yaml({key: value}).rstrip("\n")
+            body = _space_entries_at(body, indent=2)
+
+        # Number the entries of enums / subsets as "n of m" (classes handled above).
+        if key in _NUMBERED_SECTIONS and key != "classes":
+            body = _number_entries_at(body, indent=2, total=len(value or {}))
         blocks.append(f"# --- {comment} ---\n{body}")
 
     header = "\n".join(scalar_header)
