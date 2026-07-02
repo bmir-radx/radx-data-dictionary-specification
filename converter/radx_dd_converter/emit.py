@@ -104,6 +104,8 @@ class EmitOptions:
     class_name: str = "Record"
     default_prefix: Optional[str] = None  # defaults to schema_name
     annotate_terms: bool = False  # look up ontology term names and add as comments
+    resolver: str = "ols4"  # term-name resolver: "ols4" or "bioportal"
+    bioportal_apikey: Optional[str] = None  # required when resolver == "bioportal"
 
 
 class Emitter:
@@ -343,7 +345,11 @@ class Emitter:
         if self.opts.annotate_terms and self._terms:
             from .terms_lookup import lookup_labels
 
-            labels = lookup_labels(self._terms)
+            labels = lookup_labels(
+                self._terms,
+                resolver=self.opts.resolver,
+                apikey=self.opts.bioportal_apikey,
+            )
             if labels:
                 text = _annotate_term_lines(text, labels)
         return text

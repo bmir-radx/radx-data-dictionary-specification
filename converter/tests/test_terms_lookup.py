@@ -5,8 +5,15 @@ test the CURIE->IRI expansion and the YAML comment-annotation pass, which are
 the parts with logic worth pinning down.
 """
 
+import pytest
+
 from radx_dd_converter.emit import _annotate_term_lines
-from radx_dd_converter.terms_lookup import _to_iri
+from radx_dd_converter.terms_lookup import (
+    LookupError_,
+    _curie_prefix,
+    _to_iri,
+    lookup_labels,
+)
 
 
 def test_to_iri_expands_obo_curie():
@@ -60,3 +67,25 @@ def test_annotate_skips_unknown_terms_and_existing_comments():
     assert out.count("#") == 1
     # NCIT:C1 not in labels -> untouched
     assert "NCIT:C1\n" in out
+
+
+# --- resolver selection (offline) ------------------------------------------
+
+def test_curie_prefix():
+    assert _curie_prefix("MONDO:0004979") == "MONDO"
+    assert _curie_prefix("http://purl.obolibrary.org/obo/MONDO_0004979") is None
+
+
+def test_bioportal_requires_apikey():
+    with pytest.raises(LookupError_, match="API key"):
+        lookup_labels(["MONDO:0004979"], resolver="bioportal")
+
+
+def test_unknown_resolver_raises():
+    with pytest.raises(LookupError_, match="Unknown resolver"):
+        lookup_labels(["MONDO:0004979"], resolver="nope")
+
+
+def test_empty_terms_returns_empty_without_network():
+    # No terms -> no lookups attempted, returns {} even for bioportal w/o key.
+    assert lookup_labels([], resolver="ols4") == {}

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import re
 import sys
 from pathlib import Path
@@ -22,6 +23,7 @@ from .datatypes import UnknownDatatypeError
 from .emit import EmitOptions, emit_schema
 from .grammar import ParseError
 from .reader import ReadError, read_data_dictionary
+from .terms_lookup import LookupError_
 
 DEFAULT_ID_BASE = "https://w3id.org/radx"
 
@@ -74,8 +76,20 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--annotate-terms",
         action="store_true",
-        help="Look up ontology term names (via OLS4) and add them as YAML "
-        "comments. Requires network access; unresolved terms are skipped.",
+        help="Look up ontology term names and add them as YAML comments. "
+        "Requires network access; unresolved terms are skipped.",
+    )
+    parser.add_argument(
+        "--resolver",
+        choices=("ols4", "bioportal"),
+        default="ols4",
+        help="Term-name resolver for --annotate-terms (default: ols4). "
+        "'bioportal' requires an API key.",
+    )
+    parser.add_argument(
+        "--bioportal-apikey",
+        default=None,
+        help="BioPortal API key (overrides the BIOPORTAL_API_KEY env var).",
     )
     parser.add_argument(
         "-v",
@@ -90,11 +104,14 @@ def _resolve_options(args: argparse.Namespace) -> EmitOptions:
     name = args.name or _name_from_filename(args.input)
     class_name = args.class_name or _class_from_name(name)
     schema_id = args.schema_id or f"{DEFAULT_ID_BASE}/{name}"
+    apikey = args.bioportal_apikey or os.environ.get("BIOPORTAL_API_KEY")
     return EmitOptions(
         schema_id=schema_id,
         schema_name=name,
         class_name=class_name,
         annotate_terms=args.annotate_terms,
+        resolver=args.resolver,
+        bioportal_apikey=apikey,
     )
 
 
@@ -112,7 +129,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     try:
         rows = read_data_dictionary(args.input)
         schema_yaml = emit_schema(rows, _resolve_options(args))
-    except (ReadError, ParseError, UnknownDatatypeError) as exc:
+    except (ReadError, ParseError, UnknownDatatypeError, LookupError_) as exc:
         # Expected, user-facing errors: report cleanly without a traceback.
         print(f"error: {exc}", file=sys.stderr)
         return 1

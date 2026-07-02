@@ -61,9 +61,20 @@ radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml --annotate-terms
 ```
 
 With `--annotate-terms`, ontology CURIEs are annotated with their labels, e.g.
-`- MONDO:0004979  # asthma`. Lookups use the EBI Ontology Lookup Service (OLS4),
-are de-duplicated and run concurrently, and any term that cannot be resolved is
-left as a bare CURIE.
+`- MONDO:0004979  # asthma`. Lookups are de-duplicated, run concurrently, and any
+term that cannot be resolved is left as a bare CURIE.
+
+The resolver is selectable with `--resolver`:
+
+- `ols4` (default) — the EBI Ontology Lookup Service; open, no key required.
+- `bioportal` — BioPortal; requires an API key via `BIOPORTAL_API_KEY` (or
+  `--bioportal-apikey`).
+
+```sh
+radx-dd-to-linkml my_dictionary.csv -o out.yaml --annotate-terms --resolver ols4
+BIOPORTAL_API_KEY=... radx-dd-to-linkml my_dictionary.csv -o out.yaml \
+    --annotate-terms --resolver bioportal
+```
 
 ## Usage (library)
 
