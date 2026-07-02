@@ -93,6 +93,12 @@ def test_enumeration_uses_any_of_with_standard_codes(schema):
     assert sample_type["annotations"]["value_datatype"] == "integer"
 
 
+def test_field_enum_has_synthesized_description(schema):
+    assert schema["enums"]["SampleTypeEnum"]["description"].startswith(
+        "A controlled set of values"
+    )
+
+
 def test_enum_values_carry_meaning(schema):
     pvs = schema["enums"]["SampleTypeEnum"]["permissible_values"]
     assert pvs["0"]["meaning"] == "UBERON:0001836"

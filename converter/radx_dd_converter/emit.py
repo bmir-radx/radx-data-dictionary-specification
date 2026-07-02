@@ -174,7 +174,11 @@ class Emitter:
             n, suffix = f"{enum_name}{suffix}", suffix + 1
         enum_name = n
 
-        enum = EnumDefinition(name=enum_name)
+        enum = EnumDefinition(
+            name=enum_name,
+            description="A controlled set of values generated from a data "
+            "dictionary Enumeration cell.",
+        )
         for item in items:
             pv = PermissibleValue(text=item.value, title=item.label or None)
             if item.iri:
