@@ -343,6 +343,23 @@ class Emitter:
         for prefix, expansion in self._prefixes.items():
             schema.prefixes.setdefault(prefix, expansion)
 
+        # Finalise field-enum descriptions now that the full usage map is known:
+        # name the single data element when an enum is used by exactly one,
+        # otherwise keep the generic wording.
+        for enum_name, users in self._enum_users.items():
+            enum = schema.enums.get(enum_name)
+            if enum is None:
+                continue
+            if len(users) == 1:
+                enum.description = (
+                    f"Permissible values for the `{users[0]}` data element."
+                )
+            else:
+                enum.description = (
+                    f"Permissible values shared by {len(users)} data elements "
+                    f"(see the `used by` annotation)."
+                )
+
         return schema
 
     def dumps(self, rows: List[Row]) -> str:

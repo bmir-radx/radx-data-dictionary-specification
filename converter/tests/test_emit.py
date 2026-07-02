@@ -93,10 +93,25 @@ def test_enumeration_uses_any_of_with_standard_codes(schema):
     assert sample_type["annotations"]["value_datatype"] == "integer"
 
 
-def test_field_enum_has_synthesized_description(schema):
-    assert schema["enums"]["SampleTypeEnum"]["description"].startswith(
-        "A controlled set of values"
+def test_single_user_enum_names_its_data_element(schema):
+    # SampleType is the only user of SampleTypeEnum -> named in the description.
+    assert (
+        schema["enums"]["SampleTypeEnum"]["description"]
+        == "Permissible values for the `SampleType` data element."
     )
+
+
+def test_shared_enum_description_is_generic():
+    # Two data elements share one enumeration -> description mentions the count,
+    # not a single field.
+    csv = (
+        "Id,Label,Datatype,Enumeration\n"
+        'A,A,integer,"""0""=[No] | ""1""=[Yes]"\n'
+        'B,B,integer,"""0""=[No] | ""1""=[Yes]"\n'
+    )
+    schema = yaml.safe_load(emit_schema(read_data_dictionary(_csv(csv))))
+    enum = next(v for k, v in schema["enums"].items() if k != "StandardMissingValueCodes")
+    assert "shared by 2 data elements" in enum["description"]
 
 
 def test_enum_values_carry_meaning(schema):
