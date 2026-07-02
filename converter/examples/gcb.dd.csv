@@ -1,0 +1,1608 @@
+Id,Label,Description,Section,Cardinality,Terms,Datatype,Pattern,Unit,Enumeration,MissingValueCodes,Notes,Provenance,SeeAlso
+nih_record_id,User ID,"The `nih_record_id` variable records responses to the prompt, or a congruently meaning prompt, ""User ID"".  Equivalent prompts are: 
+
+- ""Record ID"" (RADx-UP)
+- ""User ID"" (RADx-Tech)
+- ""What is global identifier of participant?"" (RADx-DHT)
+
+The values for this variable are strings.
+
+The `nih_record_id` data element is the result of the harmonization of other RADx program data elements: `record_id` (RADx-UP); `record_id` (RADx-rad); `user_id` (RADx-Tech); `dht_identity` (RADx-DHT)
+",Identity,single,,string,,,,,,,
+nih_race,What is your race?,"The `nih_race` variable records responses to the prompt, or a congruently meaning prompt, ""What is your race?"".  Equivalent prompts are: 
+
+- ""What is your race? Mark one or more boxes. (Check all that apply)"" (RADx-UP)
+- ""What is your race? Mark one or more boxes."" (RADx-rad)
+- ""Black"" (RADx-Tech), - ""White"" (RADx-Tech), - ""Asian"" (RADx-Tech), - ""Pacific Islander"" (RADx-Tech), - ""American Indian"" (RADx-Tech), - ""Other"" (RADx-Tech), - ""Don't know"" (RADx-Tech)
+- ""What is your race? Mark one or more boxes"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 10 permissible integer values.
+
+The `nih_race` data element is the result of the harmonization of other RADx program data elements: `race_ethn_race` (RADx-UP); `race` (RADx-rad); `race_black`, `race_white`, `race_asian`, `race_pacisl`, `race_amind`, `race_other`, `race_dk` (RADx-Tech); `dht_race` (RADx-DHT)
+",Race,multiple,GSSO:002199,integer,,,"""0""=[American Indian or Alaska Native] |
+""1""=[Black or African American] |
+""2""=[Asian] |
+""3""=[Native Hawaiian or Other Pacific Islander] |
+""4""=[White] |
+""5""=[Middle Eastern or North African] |
+""6""=[Two or more races] |
+""97""=[Some other race] |
+""98""=[Do not know] |
+""99""=[Prefer not to answer]",,,,
+nih_ethnicity,Are you of Hispanic or Latino origin? May include Spanish origin.,"The `nih_ethnicity` variable records responses to the prompt, or a congruently meaning prompt, ""Are you of Hispanic or Latino origin? May include Spanish origin."".  Equivalent prompts are: 
+
+- ""Are you of Hispanic, Latino, or Spanish origin?"" (RADx-UP)
+- ""Are you of Hispanic or Latino origin?"" (RADx-rad)
+- ""Are you of Hispanic or Latino origin?"" (RADx-Tech)
+- ""Are you of Hispanic or Latino origin? "" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_ethnicity` data element is the result of the harmonization of other RADx program data elements: `race_ethn_hispanic` (RADx-UP); `ethnicity` (RADx-rad); `ethnicity` (RADx-Tech); `dht_ethnicity_origin` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Ethnicity,single,NCIT:C16564,integer,,,"""0""=[No, not of Hispanic or Latino origin] |
+""1""=[Yes, of Hispanic or Latino origin] |
+""97""=[Other] |
+""98""=[Don't Know] |
+""99""=[Prefer not to answer]",,,,
+nih_age,What is your age?,"The `nih_age` variable records responses to the prompt, or a congruently meaning prompt, ""What is your age?"".  Equivalent prompts are: 
+
+- ""Age For babies less than 1 year old, do not write the age in months. Write 0 as the age. (Years)"" (RADx-UP)
+- ""What is your age? (Age in years. For babies less than 1 year old, write 0 as the age)"" (RADx-rad)
+- ""Age"" (RADx-Tech)
+- ""What is your age?"" (RADx-DHT)
+
+The values for this variable are integers.
+
+The `nih_age` data element is the result of the harmonization of other RADx program data elements: `age_yrs` (RADx-UP); `age` (RADx-rad); `age_at_registration` (RADx-Tech); `dht_age` (RADx-DHT)
+",Age,single,PATO:0000011,integer,,year,,,,,
+nih_sex,What is your biological sex assigned at birth?,"The `nih_sex` variable records responses to the prompt, or a congruently meaning prompt, ""What is your biological sex assigned at birth?"".  Equivalent prompts are: 
+
+- ""What was your sex assigned at birth on your birth certificate?"" (RADx-UP)
+- ""What is your biological sex assigned at birth?"" (RADx-rad)
+- ""Gender"" (RADx-Tech)
+- ""What is your biological sex assigned at birth?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 6 permissible integer values.
+
+The `nih_sex` data element is the result of the harmonization of other RADx program data elements: `bio_sex_birth` (RADx-UP); `sex` (RADx-rad); `sex` (RADx-Tech); `dht_sex` (RADx-DHT)
+
+Note that the meaning of the value `96` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `96` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Sex,single,PATO:0000047,integer,,,"""0""=[Female] |
+""1""=[Male] |
+""2""=[Intersex] |
+""3""=[Non-binary] |
+""96""=[None of these describe me] |
+""99""=[Prefer not to answer]",,,,
+nih_education,What is the highest level of education you have achieved outside or in the United States?,"The `nih_education` variable records responses to the prompt, or a congruently meaning prompt, ""What is the highest level of education you have achieved outside or in the United States?"".  Equivalent prompts are: 
+
+- ""What is the highest level of education you have achieved outside or in the United States? Grades roughly equivalent to years of school."" (RADx-UP)
+- ""What is the highest grade or level of school you have completed or the highest degree you have received?"" (RADx-Tech)
+- ""How many years of education have you completed?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 9 permissible integer values.
+
+The `nih_education` data element is the result of the harmonization of other RADx program data elements: `edu_years_of_school` (RADx-UP); `education` (RADx-Tech); `dht_education` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Education Level,single,NCIT:C17953,integer,,,"""0""=[Have never gone to school] |
+""1""=[Some school (Includes any education received below highschool graduate level)] |
+""2""=[High school graduate or GED completed] |
+""3""=[Some college (graduated or not) associates degree,technical degree,or vocational degree] |
+""4""=[Bachelor's degree] |
+""5""=[Other advanced degree (Master's,Doctorate or Professional Doctorate)] |
+""97""=[Other] |
+""98""=[Don't know] |
+""99""=[Prefer not to answer]",,,,
+nih_education_yrs,How many years of education have you completed?,"The `nih_education_yrs` variable records responses to the prompt ""How many years of education have you completed?"".The values for this variable are decimals.
+
+The `nih_education_yrs` data element is the result of the harmonization of other RADx program data elements: `education` (RADx-rad)
+",Education Years,single,NCIT:C122393,decimal,,year,,,,,
+nih_zip,What is your zip code?,"The `nih_zip` variable records responses to the prompt, or a congruently meaning prompt, ""What is your zip code?"".  Equivalent prompts are: 
+
+- ""Zip Code"" (RADx-UP)
+- ""Zip or Postal Code: (De-Identified zip code)"" (RADx-rad)
+- ""Zipcode"" (RADx-Tech)
+- ""What is your zip code?"" (RADx-DHT)
+
+The values for this variable are strings.
+
+The `nih_zip` data element is the result of the harmonization of other RADx program data elements: `zip_code` (RADx-UP); `zip` (RADx-rad); `zip` (RADx-Tech); `dht_domicile` (RADx-DHT)
+",Domicile,single,"NCIT:C25720
+NCIT:C25621",string,,,,,,,
+nih_employment,Please specify your employment status.,"The `nih_employment` variable records responses to the prompt, or a congruently meaning prompt, ""Please specify your employment status."".  Equivalent prompts are: 
+
+- ""We would like to know about what you do -- are you working now, looking for work, retired, keeping house, a student, or something else?"" (RADx-UP)
+- ""Are you employed?"" (RADx-rad)
+- ""We would like to know about what you do-are you working now, looking for work, retired, keeping house, a student, or what?"" (RADx-Tech)
+- ""Are you employed?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 9 permissible integer values.
+
+The `nih_employment` data element is the result of the harmonization of other RADx program data elements: `current_employment_status` (RADx-UP); `employment` (RADx-rad); `working` (RADx-Tech); `dht_employment` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Employment,single,"NCIT:C179143
+NCIT:C25172",integer,,,"""0""=[Yes - Employed] |
+""1""=[No - Not Employed] |
+""2""=[Student] |
+""3""=[Keeping household] |
+""4""=[Retired] |
+""5""=[Disabled or government support] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_insurance,What kind of health insurance do you have?,"The `nih_insurance` variable records responses to the prompt, or a congruently meaning prompt, ""What kind of health insurance do you have?"".  Equivalent prompts are: 
+
+- ""What is the primary kind of health insurance or health care plan that you have now? (Exclude plans that pay for only one type of Service (such as, nursing home care, accidents, family planning, or dental care) and plans that only provide extra cash when hospitalized.
+)"" (RADx-UP)
+- ""What kind of health insurance do you have?"" (RADx-rad)
+- ""What insurance do you have?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 6 permissible integer values.
+
+The `nih_insurance` data element is the result of the harmonization of other RADx program data elements: `hi_coverage_type` (RADx-UP); `insurance` (RADx-rad); `dht_medical_insurance_short` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Insurance Status,single,NCIT:C157356,integer,,,"""0""=[None] |
+""1""=[Private] |
+""2""=[Public] |
+""97""=[Other] |
+""98""=[Don't know] |
+""99""=[Prefer not to answer]",,,,
+nih_disability,"Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?","The `nih_disability` variable records responses to the prompt, or a congruently meaning prompt, ""Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?"".  Equivalent prompts are: 
+
+- ""Do you have a disability that interferes with your ability to carry out daily activities? Examples of daily activities include walking, climbing stairs, shopping, balancing a checkbook, bathing or dressing."" (RADx-UP)
+- ""Do you have any serious physical or mental condition(s) that limit your ability to perform daily activities?"" (RADx-Tech)
+- ""Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_disability` data element is the result of the harmonization of other RADx program data elements: `self_reported_disability` (RADx-UP); `cond_prev_activity` (RADx-Tech); `dht_disability` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Disability Status,single,"GSSO:001811
+GSSO:001810",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_deaf,Are you deaf or do you have serious difficulty hearing?,"The `nih_deaf` variable records responses to the prompt, or a congruently meaning prompt, ""Are you deaf or do you have serious difficulty hearing?"".  Equivalent prompts are: 
+
+- ""Are you deaf, or do you have serious difficulty hearing?"" (RADx-UP)
+- ""Are you deaf or do you have serious difficulty hearing?"" (RADx-rad)
+- ""Are you deaf or do you have serious difficulty hearing?"" (RADx-Tech)
+- ""Are you deaf or do you have serious difficulty hearing?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_deaf` data element is the result of the harmonization of other RADx program data elements: `disability_deaf` (RADx-UP); `deaf` (RADx-rad); `hearing` (RADx-Tech); `dht_deaf` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Disability Status,single,"SYMP:0000019
+HP:0000364",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_blind,"Are you blind or do you have serious difficulty seeing, even when wearing glasses?","The `nih_blind` variable records responses to the prompt, or a congruently meaning prompt, ""Are you blind or do you have serious difficulty seeing, even when wearing glasses?"".  Equivalent prompts are: 
+
+- ""Are you blind, or do you have serious difficulty seeing, even when wearing glasses?"" (RADx-UP)
+- ""Are you blind or do you have serious difficulty seeing, even when wearing glasses?"" (RADx-rad)
+- ""Are you blind or do you have serious difficulty seeing, even when wearing glasses?"" (RADx-Tech)
+- ""Are you blind or do you have serious difficulty seeing, even when wearing glasses?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_blind` data element is the result of the harmonization of other RADx program data elements: `disability_blind` (RADx-UP); `blind` (RADx-rad); `vision` (RADx-Tech); `dht_blind` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Disability Status,single,MONDO:0001941,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_memory,"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?","The `nih_memory` variable records responses to the prompt, or a congruently meaning prompt, ""Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"".  Equivalent prompts are: 
+
+- ""Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years of age or older)"" (RADx-UP)
+- ""Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"" (RADx-rad)
+- ""Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years or older)"" (RADx-Tech)
+- ""Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_memory` data element is the result of the harmonization of other RADx program data elements: `disability_decisions` (RADx-UP); `memory_dis` (RADx-rad); `memory` (RADx-Tech); `dht_memory` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Disability Status,single,"SYMP:0000719
+SYMP:0000543
+SYMP:0020029
+SYMP:0000817
+SYMP:0000233
+MONDO:0002039",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_walk_climb,Do you have serious difficulty walking or climbing stairs?,"The `nih_walk_climb` variable records responses to the prompt, or a congruently meaning prompt, ""Do you have serious difficulty walking or climbing stairs?"".  Equivalent prompts are: 
+
+- ""Do you have serious difficulty walking or climbing stairs? (5 years of age or older)"" (RADx-UP)
+- ""Do you have serious difficulty walking or climbing stairs?"" (RADx-rad)
+- ""Do you have serious difficulty walking or climbing stairs? (5 years or older)"" (RADx-Tech)
+- ""Do you have serious difficulty walking or climbing stairs?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_walk_climb` data element is the result of the harmonization of other RADx program data elements: `disability_walking` (RADx-UP); `walking_climbing_dis` (RADx-rad); `walk_stairs` (RADx-Tech); `dht_walk_climb` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Disability Status,single,"NCIT:C111629
+NCIT:C175910
+",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_dress_bathe,Do you have difficulty dressing or bathing?,"The `nih_dress_bathe` variable records responses to the prompt, or a congruently meaning prompt, ""Do you have difficulty dressing or bathing?"".  Equivalent prompts are: 
+
+- ""Do you have difficulty dressing or bathing? (5 years of age or older)"" (RADx-UP)
+- ""Do you have difficulty dressing or bathing?"" (RADx-rad)
+- ""Do you have difficulty dressing or bathing? (5 years or older)"" (RADx-Tech)
+- ""Do you have difficulty dressing or bathing?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_dress_bathe` data element is the result of the harmonization of other RADx program data elements: `disability_dress` (RADx-UP); `dress_bathe_dis` (RADx-rad); `dressing_bathing` (RADx-Tech); `dht_dress_bathe` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Disability Status,single,"NCIT:C95544
+NCIT:C131923",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_errand,"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?","The `nih_errand` variable records responses to the prompt, or a congruently meaning prompt, ""Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?"".  Equivalent prompts are: 
+
+- ""Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping? (15 years of age or older)"" (RADx-UP)
+- ""Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?"" (RADx-rad)
+- ""Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping? (15 years old or older)"" (RADx-Tech)
+- ""Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_errand` data element is the result of the harmonization of other RADx program data elements: `disability_errands` (RADx-UP); `errand_dis` (RADx-rad); `doctor_shopping` (RADx-Tech); `dht_errand` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Disability Status,single,"NCIT:C121690
+NCIT:C95549",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_vaping_yn,Vaping use (Yes or No),"The `nih_vaping_yn` variable records responses to the prompt, or a congruently meaning prompt, ""Vaping use (Yes or No)"".  Equivalent prompts are: 
+
+- ""Vaping Use"" (RADx-rad)
+- ""Vaping use (Yes or No)"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_vaping_yn` data element is the result of the harmonization of other RADx program data elements: `vaping` (RADx-rad); `dht_vaping` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,"NCIT:C173621
+NCIT:C68751",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_nicotine_yn,Nicotine use (Yes or No),"The `nih_nicotine_yn` variable records responses to the prompt, or a congruently meaning prompt, ""Nicotine use (Yes or No)"".  Equivalent prompts are: 
+
+- ""Nicotine Use"" (RADx-rad)
+- ""Nicotine use (Yes or No)"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_nicotine_yn` data element is the result of the harmonization of other RADx program data elements: `nicotine` (RADx-rad); `dht_nicotine` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,"NCIT:C691
+NCIT:C68751
+NCIT:C173060",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_vape_freq,"Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?","The `nih_vape_freq` variable records responses to the prompt, or a congruently meaning prompt, ""Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?"".  Equivalent prompts are: 
+
+- ""Do you now use electronic cigarettes every day, some days, rarely, or not at all? "" (RADx-UP)
+- ""Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 6 permissible integer values.
+
+The `nih_vape_freq` data element is the result of the harmonization of other RADx program data elements: `vaper_cur_stat` (RADx-UP); `dht_vaping_frequency` (RADx-DHT)
+",Medical History,single,"NCIT:C173621
+NCIT:C120482
+NCIT:C68751
+NCIT:C173060",integer,,,"""0""=[Not at all] |
+""1""=[Rarely] |
+""2""=[Some Days] |
+""3""=[Every Day] |
+""98""=[Don't know] |
+""99""=[Prefer not to answer]",,,,
+nih_cig_smoke_freq,Nicotine Frequency: Do you now smoke cigarettes?,"The `nih_cig_smoke_freq` variable records responses to the prompt, or a congruently meaning prompt, ""Nicotine Frequency: Do you now smoke cigarettes?"".  Equivalent prompts are: 
+
+- ""Do you now smoke cigarettes?"" (RADx-UP)
+- ""Nicotine Frequency: Do you now smoke cigarettes?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 6 permissible integer values.
+
+The `nih_cig_smoke_freq` data element is the result of the harmonization of other RADx program data elements: `smoker_cur_stat` (RADx-UP); `dht_cig_smoking_frequency` (RADx-DHT)
+",Medical History,single,"NCIT:C19796
+NCIT:C68751
+NCIT:C173060",integer,,,"""0""=[Not at all] |
+""1""=[Rarely] |
+""2""=[Some Days] |
+""3""=[Every Day] |
+""98""=[Don't know] |
+""99""=[Prefer not to answer]",,,,
+nih_smoking_yn,"Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?","The `nih_smoking_yn` variable records responses to the prompt ""Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_smoking_yn` data element is the result of the harmonization of other RADx program data elements: `smoking` (RADx-Tech)
+",Medical History,single,"NBO:0045002
+NCIT:C17934",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_history_smoking,History of Smoking,"The `nih_history_smoking` variable records responses to the prompt ""History of Smoking"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_history_smoking` data element is the result of the harmonization of other RADx program data elements: `dht_history_smoking` (RADx-DHT)
+",Medical History,single,NBO:0015005,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_tobacco,Tobacco Use,"The `nih_tobacco` variable records responses to the prompt ""Tobacco Use"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_tobacco` data element is the result of the harmonization of other RADx program data elements: `dht_tobacco` (RADx-DHT)
+",Medical History,single,"NBO:0045002
+NCIT:C154329",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_alcohol_yn,Alcohol use (Yes or No),"The `nih_alcohol_yn` variable records responses to the prompt, or a congruently meaning prompt, ""Alcohol use (Yes or No)"".  Equivalent prompts are: 
+
+- ""Alcohol Use"" (RADx-rad)
+- ""Alcohol use (Yes or No)"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_alcohol_yn` data element is the result of the harmonization of other RADx program data elements: `alcohol_use` (RADx-rad); `dht_alcohol` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,"GSSO:006602
+NCIT:C81229
+NCIT:C16273
+NBO:0000131",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_lifetime_use_alcohol,"In your entire life, have you had at least 1 drink of any kind of alcohol, not counting small tastes or sips? (Yes or No)","The `nih_lifetime_use_alcohol` variable records responses to the prompt ""In your entire life, have you had at least 1 drink of any kind of alcohol, not counting small tastes or sips? (Yes or No)"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_lifetime_use_alcohol` data element is the result of the harmonization of other RADx program data elements: `lifetime_use_alcohol` (RADx-UP)
+",Medical History,single,"GSSO:006602
+NCIT:C81229
+NCIT:C16273
+NBO:0000131",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_alcohol_yrs,How often did you have a drink containing alcohol in the past year?,"The `nih_alcohol_yrs` variable records responses to the prompt ""How often did you have a drink containing alcohol in the past year?"".The values for this variable are integers that come from a list of 7 permissible integer values.
+
+The `nih_alcohol_yrs` data element is the result of the harmonization of other RADx program data elements: `alcohol` (RADx-Tech)
+",Medical History,single,"GSSO:006602
+NCIT:C81229
+NCIT:C16273
+NBO:0000131",integer,,,"""0""=[Never] |
+""1""=[Monthly Or Less] |
+""2""=[Two To Four Times Per Month] |
+""3""=[Two To Three Times Per Week] |
+""4""=[Four Or More Times Per Week] |
+""98""=[Don't know] |
+""99""=[Prefer not to answer]",,,,
+nih_alcohol_frequency,How often did you have a drink containing alcohol ?,"The `nih_alcohol_frequency` variable records responses to the prompt ""How often did you have a drink containing alcohol ?"".The values for this variable are integers that come from a list of 7 permissible integer values.
+
+The `nih_alcohol_frequency` data element is the result of the harmonization of other RADx program data elements: `dht_alcohol_frequency` (RADx-DHT)
+",Medical History,single,"GSSO:006602
+NCIT:C81229
+NCIT:C16273
+NBO:0000131",integer,,,"""0""=[Never] |
+""1""=[Monthly Or Less] |
+""2""=[Two To Four Times Per Month] |
+""3""=[Two To Three Times Per Week] |
+""4""=[Four Or More Times Per Week] |
+""98""=[Don't know] |
+""99""=[Prefer not to answer]",,,,
+nih_asthma,Asthma,"The `nih_asthma` variable records responses to the prompt, or a congruently meaning prompt, ""Asthma"".  Equivalent prompts are: 
+
+- ""Asthma "" (RADx-UP)
+- ""Asthma"" (RADx-rad)
+- ""Asthma, to the point that you use inhalers daily or have been to the hospital for your asthma?"" (RADx-Tech)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_asthma` data element is the result of the harmonization of other RADx program data elements: `cc_asthma` (RADx-UP); `asthma` (RADx-rad); `asthma` (RADx-Tech); `dht_asthma` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0004979,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_cancer,Cancer,"The `nih_cancer` variable records responses to the prompt, or a congruently meaning prompt, ""Cancer"".  Equivalent prompts are: 
+
+- ""Cancer"" (RADx-rad)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_cancer` data element is the result of the harmonization of other RADx program data elements: `cancer` (RADx-rad); `dht_cancer` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,"MONDO:0004992
+NCIT:C9305",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_cancer_active_treatment,Cancer (including leukemia or lymphoma) undergoing active treatment?,"The `nih_cancer_active_treatment` variable records responses to the prompt ""Cancer (including leukemia or lymphoma) undergoing active treatment?"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_cancer_active_treatment` data element is the result of the harmonization of other RADx program data elements: `cancer` (RADx-Tech)
+",Medical History,single,"MONDO:0004992
+NCIT:C9305
+NCIT:C19700",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_cancer_past_yr,Cancer diagnosis and/or treatment within the past 12 months,"The `nih_cancer_past_yr` variable records responses to the prompt ""Cancer diagnosis and/or treatment within the past 12 months"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_cancer_past_yr` data element is the result of the harmonization of other RADx program data elements: `cc_cancer` (RADx-UP)
+",Medical History,single,MONDO:0004992,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_cardiovascular_disease,Cardiovascular disease,"The `nih_cardiovascular_disease` variable records responses to the prompt, or a congruently meaning prompt, ""Cardiovascular disease"".  Equivalent prompts are: 
+
+- ""Cardiovascular disease (CVD or heart disease)"" (RADx-UP)
+- ""Cardiovascular disease"" (RADx-rad)
+- ""Cardiovascular disease"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_cardiovascular_disease` data element is the result of the harmonization of other RADx program data elements: `cc_cvd` (RADx-UP); `cardiovascular_disease` (RADx-rad); `dht_cardiovascular_disease` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0004995,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_chronic_kidney_disease,Chronic kidney disease,"The `nih_chronic_kidney_disease` variable records responses to the prompt, or a congruently meaning prompt, ""Chronic kidney disease"".  Equivalent prompts are: 
+
+- ""Chronic kidney disease (CKD)"" (RADx-UP)
+- ""Chronic kidney disease"" (RADx-rad)
+- ""Chronic kidney disease"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_chronic_kidney_disease` data element is the result of the harmonization of other RADx program data elements: `cc_chronickd` (RADx-UP); `chronic_kidney_disease` (RADx-rad); `dht_chronic_kidney_disease` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005300,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_chronic_kidney_disease_treatment,Chronic kidney disease treatment,"The `nih_chronic_kidney_disease_treatment` variable records responses to the prompt ""Chronic kidney disease treatment"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_chronic_kidney_disease_treatment` data element is the result of the harmonization of other RADx program data elements: `ckd` (RADx-Tech)
+",Medical History,single,MONDO:0005300,integer,,,"""0""=[No] |
+""1""=[Yes, But Not On Dialysis] |
+""2""=[Yes And On Dialysis] |
+""3""=[Yes, I've Had A Kidney Transplant And My Kidney Function Is Now Normal] |
+""77""=[Don't Know]",,,,
+nih_chronic_lung_disease,Chronic lung disease,"The `nih_chronic_lung_disease` variable records responses to the prompt, or a congruently meaning prompt, ""Chronic lung disease"".  Equivalent prompts are: 
+
+- ""Chronic lung disease"" (RADx-rad)
+- ""Chronic lung disease"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_chronic_lung_disease` data element is the result of the harmonization of other RADx program data elements: `chronic_lung_disease` (RADx-rad); `dht_chronic_lung_disease` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005275,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_diabetes,Diabetes,"The `nih_diabetes` variable records responses to the prompt, or a congruently meaning prompt, ""Diabetes"".  Equivalent prompts are: 
+
+- ""Diabetes"" (RADx-UP)
+- ""Diabetes"" (RADx-rad)
+- ""Diabetes? Do not include pre-diabetes."" (RADx-Tech)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_diabetes` data element is the result of the harmonization of other RADx program data elements: `cc_diabetes` (RADx-UP); `diabetes` (RADx-rad); `diabetes` (RADx-Tech); `dht_diabetes` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005015,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_hypertension,Hypertension,"The `nih_hypertension` variable records responses to the prompt, or a congruently meaning prompt, ""Hypertension"".  Equivalent prompts are: 
+
+- ""Hypertension (HTN, high blood pressure)"" (RADx-UP)
+- ""Hypertension"" (RADx-rad)
+- ""High blood pressure or hypertension (except that occurred during pregnancy and did not last after pregnancy)?"" (RADx-Tech)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_hypertension` data element is the result of the harmonization of other RADx program data elements: `cc_hypertension` (RADx-UP); `hypertension` (RADx-rad); `hbp` (RADx-Tech); `dht_hypertension` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005044,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_immunosuppressive_condition,Immunosuppressive condition,"The `nih_immunosuppressive_condition` variable records responses to the prompt, or a congruently meaning prompt, ""Immunosuppressive condition"".  Equivalent prompts are: 
+
+- ""Immunosuppressive condition"" (RADx-rad)
+- ""Immunosuppressive condition"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_immunosuppressive_condition` data element is the result of the harmonization of other RADx program data elements: `immunosuppressive_conditio` (RADx-rad); `dht_immunosuppressive_condition` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,NCIT:C178942,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_serious_mental_illness,Serious mental illness,"The `nih_serious_mental_illness` variable records responses to the prompt ""Serious mental illness"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_serious_mental_illness` data element is the result of the harmonization of other RADx program data elements: `serious_mental_illness` (RADx-rad)
+",Medical History,single,MONDO:0005084,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_mental_health_disorder,Mental health disorder,"The `nih_mental_health_disorder` variable records responses to the prompt, or a congruently meaning prompt, ""Mental health disorder"".  Equivalent prompts are: 
+
+- ""Have you ever been told by a physician, psychologist, or healthcare provider that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia, or other)?"" (RADx-Tech)
+- ""mental health disorder "" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_mental_health_disorder` data element is the result of the harmonization of other RADx program data elements: `mental_illness` (RADx-Tech); `dht_mental_illness` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005084,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_sickle_cell_disease,Sickle cell disease,"The `nih_sickle_cell_disease` variable records responses to the prompt, or a congruently meaning prompt, ""Sickle cell disease"".  Equivalent prompts are: 
+
+- ""Sickle Cell Anemia"" (RADx-UP)
+- ""Sickle cell disease"" (RADx-rad)
+- ""Have you ever been told by a physician or healthcare provider that you have sickle cell anemia?"" (RADx-Tech)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_sickle_cell_disease` data element is the result of the harmonization of other RADx program data elements: `cc_sickle` (RADx-UP); `sickle_cell_disease` (RADx-rad); `sc_anemia` (RADx-Tech); `dht_sickle_cell_disease` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0011382,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_pregnancy,Pregnancy status,"The `nih_pregnancy` variable records responses to the prompt, or a congruently meaning prompt, ""Pregnancy status"".  Equivalent prompts are: 
+
+- ""Are you currently pregnant?"" (RADx-UP)
+- ""Pregnancy status"" (RADx-rad)
+- ""Pregnancy status"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 4 permissible integer values.
+
+The `nih_pregnancy` data element is the result of the harmonization of other RADx program data elements: `pregnancy_status` (RADx-UP); `pregnancy_status` (RADx-rad); `dht_pregnant` (RADx-DHT)
+",Medical History,single,NCIT:C69218,integer,,,"""0""=[Not Pregnant] |
+""1""=[Pregnant] |
+""98""=[Don't know] |
+""99""=[Prefer not to answer]",,,,
+nih_immunocompromised,Immunocompromised condition,"The `nih_immunocompromised` variable records responses to the prompt, or a congruently meaning prompt, ""Immunocompromised condition"".  Equivalent prompts are: 
+
+- ""Immunocompromised condition"" (RADx-UP)
+- ""Immunocompromised"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_immunocompromised` data element is the result of the harmonization of other RADx program data elements: `cc_imm` (RADx-UP); `dht_immuno_compromised` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,NCIT:C14139,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_autoimm,Autoimmune disease,"The `nih_autoimm` variable records responses to the prompt, or a congruently meaning prompt, ""Autoimmune disease"".  Equivalent prompts are: 
+
+- ""Autoimmune disease"" (RADx-UP)
+- ""Autoimmune disease"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_autoimm` data element is the result of the harmonization of other RADx program data elements: `cc_autoimm` (RADx-UP); `dht_autoimmune` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0007179,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_copd,Chronic obstructive pulmonary disease (COPD),"The `nih_copd` variable records responses to the prompt, or a congruently meaning prompt, ""Chronic obstructive pulmonary disease (COPD)"".  Equivalent prompts are: 
+
+- ""Chronic obstructive pulmonary disease (COPD)"" (RADx-UP)
+- ""Chronic obstructive pulmonary disease (COPD)"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_copd` data element is the result of the harmonization of other RADx program data elements: `cc_copd` (RADx-UP); `dht_copd` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005002,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_chronic_lung,Other chronic lung disease,"The `nih_chronic_lung` variable records responses to the prompt ""Other chronic lung disease"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_chronic_lung` data element is the result of the harmonization of other RADx program data elements: `cc_clung` (RADx-UP)
+",Medical History,single,MONDO:0005275,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_depression,Depression,"The `nih_depression` variable records responses to the prompt, or a congruently meaning prompt, ""Depression"".  Equivalent prompts are: 
+
+- ""Depression"" (RADx-UP)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_depression` data element is the result of the harmonization of other RADx program data elements: `cc_depression` (RADx-UP); `dht_depression` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0002050,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_alc_sub_abuse,Alcohol or substance use disorder,"The `nih_alc_sub_abuse` variable records responses to the prompt, or a congruently meaning prompt, ""Alcohol or substance use disorder"".  Equivalent prompts are: 
+
+- ""Alcohol or substance use disorder"" (RADx-UP)
+- ""Alcohol or substance use disorder"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_alc_sub_abuse` data element is the result of the harmonization of other RADx program data elements: `cc_asud` (RADx-UP); `dht_alc_sub_abuse` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,"MONDO:0002494
+MONDO:0021698",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_iv_drug_use,Intravenous drug use,"The `nih_iv_drug_use` variable records responses to the prompt, or a congruently meaning prompt, ""Intravenous drug use"".  Equivalent prompts are: 
+
+- ""Intravenous drug use"" (RADx-UP)
+- ""Intravenous drug use"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_iv_drug_use` data element is the result of the harmonization of other RADx program data elements: `cc_intrav` (RADx-UP); `dht_iv_drug_use` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,NCIT:C84367,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_othermh,Other mental health disorder,"The `nih_othermh` variable records responses to the prompt, or a congruently meaning prompt, ""Other mental health disorder"".  Equivalent prompts are: 
+
+- ""Other mental health disorder"" (RADx-UP)
+- ""Other mental health disorder"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_othermh` data element is the result of the harmonization of other RADx program data elements: `cc_othermh` (RADx-UP); `dht_other_mental_health_disorder` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0002025,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_other_chronic_cond,Other chronic condition,"The `nih_other_chronic_cond` variable records responses to the prompt, or a congruently meaning prompt, ""Other chronic condition"".  Equivalent prompts are: 
+
+- ""Other chronic condition"" (RADx-UP)
+- ""Other chronic condition"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_other_chronic_cond` data element is the result of the harmonization of other RADx program data elements: `cc_otherchroniccond` (RADx-UP); `dht_other_chronic_cond` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,NCIT:C165593,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_coronary_artery_disease,Coronary artery disease,"The `nih_coronary_artery_disease` variable records responses to the prompt ""Coronary artery disease"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_coronary_artery_disease` data element is the result of the harmonization of other RADx program data elements: `dht_coronary_artery_disease` (RADx-DHT)
+",Medical History,single,MONDO:0005010,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_coronary_artery_disease_angina,Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?,"The `nih_coronary_artery_disease_angina` variable records responses to the prompt ""Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_coronary_artery_disease_angina` data element is the result of the harmonization of other RADx program data elements: `coronary_artery_disease` (RADx-Tech)
+",Medical History,single,MONDO:0005010,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_heart_attack,A heart attack (myocardial infarction)?,"The `nih_heart_attack` variable records responses to the prompt, or a congruently meaning prompt, ""A heart attack (myocardial infarction)?"".  Equivalent prompts are: 
+
+- ""A heart attack (myocardial infarction)?"" (RADx-Tech)
+- ""heart attack (myocardial infarction)?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_heart_attack` data element is the result of the harmonization of other RADx program data elements: `heart_attack` (RADx-Tech); `dht_heart_attack` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005068,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_chf,"Congestive Heart failure (CHF, Heart Failure)?","The `nih_chf` variable records responses to the prompt, or a congruently meaning prompt, ""Congestive Heart failure (CHF, Heart Failure)?"".  Equivalent prompts are: 
+
+- ""Congestive Heart failure (CHF, Heart Failure)?"" (RADx-Tech)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_chf` data element is the result of the harmonization of other RADx program data elements: `chf` (RADx-Tech); `dht_chf` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005009,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_stroke,Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?,"The `nih_stroke` variable records responses to the prompt, or a congruently meaning prompt, ""Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?"".  Equivalent prompts are: 
+
+- ""Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?"" (RADx-Tech)
+- ""Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_stroke` data element is the result of the harmonization of other RADx program data elements: `stroke` (RADx-Tech); `dht_stroke` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,"MONDO:0005264
+MONDO:0005098",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_immunodeficiency,Immunodeficiency (NOT including HIV)?,"The `nih_immunodeficiency` variable records responses to the prompt, or a congruently meaning prompt, ""Immunodeficiency (NOT including HIV)?"".  Equivalent prompts are: 
+
+- ""Immunodeficiency (NOT including HIV)?"" (RADx-Tech)
+- ""Immunodeficiency (NOT including HIV)?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_immunodeficiency` data element is the result of the harmonization of other RADx program data elements: `immunodeficiency` (RADx-Tech); `dht_immunodeficiency` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0021094,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_hiv,Chronic HIV infection?,"The `nih_hiv` variable records responses to the prompt, or a congruently meaning prompt, ""Chronic HIV infection?"".  Equivalent prompts are: 
+
+- ""Chronic HIV infection?"" (RADx-Tech)
+- ""Chronic HIV infection?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_hiv` data element is the result of the harmonization of other RADx program data elements: `hiv` (RADx-Tech); `dht_hiv` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005109,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_anemia,Anemia or other blood disorder (do not include leukemia or lymphoma)?,"The `nih_anemia` variable records responses to the prompt, or a congruently meaning prompt, ""Anemia or other blood disorder (do not include leukemia or lymphoma)?"".  Equivalent prompts are: 
+
+- ""Anemia or other blood disorder (do not include leukemia or lymphoma)?"" (RADx-Tech)
+- ""Anemia or other blood disorder (do not include leukemia or lymphoma)?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_anemia` data element is the result of the harmonization of other RADx program data elements: `anemia` (RADx-Tech); `dht_anemia` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0002280,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_premature_birth,History of premature birth (being born before 37 weeks of pregnancy),"The `nih_premature_birth` variable records responses to the prompt ""History of premature birth (being born before 37 weeks of pregnancy)"".The values for this variable are integers that come from a list of 6 permissible integer values.
+
+The `nih_premature_birth` data element is the result of the harmonization of other RADx program data elements: `premature` (RADx-Tech)
+",Medical History,single,GSSO:009644,integer,,,"""0""=[No] |
+""1""=[Yes, Between 32 - 37 Weeks] |
+""2""=[Yes, Between 28-32 Weeks] |
+""3""=[Yes, Less Than 28 Weeks] |
+""4""=[Yes, But Not Sure How Many Weeks] |
+""77""=[Dont Know]",,,,
+nih_chd,Chronic Heart Disease,"The `nih_chd` variable records responses to the prompt, or a congruently meaning prompt, ""Chronic Heart Disease"".  Equivalent prompts are: 
+
+- ""CHD"" (RADx-Tech)
+- ""Chronic Heart Disease"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_chd` data element is the result of the harmonization of other RADx program data elements: `chd` (RADx-Tech); `dht_chd` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0001493,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_cf,Cystic Fibrosis,"The `nih_cf` variable records responses to the prompt ""Cystic Fibrosis"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_cf` data element is the result of the harmonization of other RADx program data elements: `cf` (RADx-Tech)
+",Medical History,single,MONDO:0009061,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_cld_bpd,CLD BPD (Chronic Lung Disease Bronchopulmonary Dysplasia),"The `nih_cld_bpd` variable records responses to the prompt ""CLD BPD (Chronic Lung Disease Bronchopulmonary Dysplasia)"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_cld_bpd` data element is the result of the harmonization of other RADx program data elements: `cld_bpd` (RADx-Tech)
+",Medical History,single,MONDO:0019091,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_copd_plus,"Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?","The `nih_copd_plus` variable records responses to the prompt, or a congruently meaning prompt, ""Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?"".  Equivalent prompts are: 
+
+- ""COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?"" (RADx-Tech)
+- ""Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_copd_plus` data element is the result of the harmonization of other RADx program data elements: `copd` (RADx-Tech); `dht_copd_opd` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Medical History,single,MONDO:0005002,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_alz,Alzheimers,"The `nih_alz` variable records responses to the prompt ""Alzheimers"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_alz` data element is the result of the harmonization of other RADx program data elements: `dht_alz` (RADx-DHT)
+",Medical History,single,MONDO:0004975,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_anxiety,Anxiety,"The `nih_anxiety` variable records responses to the prompt ""Anxiety"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_anxiety` data element is the result of the harmonization of other RADx program data elements: `dht_anxiety` (RADx-DHT)
+",Medical History,single,MONDO:0011918,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_arrhythmia,Arrhythmia,"The `nih_arrhythmia` variable records responses to the prompt ""Arrhythmia"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_arrhythmia` data element is the result of the harmonization of other RADx program data elements: `dht_arrhythmia` (RADx-DHT)
+",Medical History,single,SYMP:0000287,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_arthritis,Arthritis,"The `nih_arthritis` variable records responses to the prompt ""Arthritis"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_arthritis` data element is the result of the harmonization of other RADx program data elements: `dht_arthritis` (RADx-DHT)
+",Medical History,single,MONDO:0008383,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_af,Atrial Fibrillation,"The `nih_af` variable records responses to the prompt ""Atrial Fibrillation"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_af` data element is the result of the harmonization of other RADx program data elements: `dht_af` (RADx-DHT)
+",Medical History,single,MONDO:0004981,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_chronic_pain,Chronic Pain,"The `nih_chronic_pain` variable records responses to the prompt ""Chronic Pain"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_chronic_pain` data element is the result of the harmonization of other RADx program data elements: `dht_chronic_pain` (RADx-DHT)
+",Medical History,single,NCIT:C26940,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_fibromyalgia,Fibromyalgia,"The `nih_fibromyalgia` variable records responses to the prompt ""Fibromyalgia"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_fibromyalgia` data element is the result of the harmonization of other RADx program data elements: `dht_fibromyalgia` (RADx-DHT)
+",Medical History,single,MONDO:0005546,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_gerd,Gastroesophageal reflux disease,"The `nih_gerd` variable records responses to the prompt ""Gastroesophageal reflux disease"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_gerd` data element is the result of the harmonization of other RADx program data elements: `dht_gerd` (RADx-DHT)
+",Medical History,single,MONDO:0007186,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_gestational_diabetes,Gestational Diabetes,"The `nih_gestational_diabetes` variable records responses to the prompt ""Gestational Diabetes"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_gestational_diabetes` data element is the result of the harmonization of other RADx program data elements: `dht_gestational_diabetes` (RADx-DHT)
+",Medical History,single,MONDO:0005406,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_cholesterol,High Cholesterol,"The `nih_cholesterol` variable records responses to the prompt ""High Cholesterol"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_cholesterol` data element is the result of the harmonization of other RADx program data elements: `dht_cholesterol` (RADx-DHT)
+",Medical History,single,NCIT:C37967,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_thyroid,Hypo/Hyper Thyroidism,"The `nih_thyroid` variable records responses to the prompt ""Hypo/Hyper Thyroidism"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_thyroid` data element is the result of the harmonization of other RADx program data elements: `dht_thyroid` (RADx-DHT)
+",Medical History,single,"MONDO:0005420
+MONDO:0004425",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_immuno_compromised_solid_organ,immunocompromised from solid organ transplant,"The `nih_immuno_compromised_solid_organ` variable records responses to the prompt ""immunocompromised from solid organ transplant"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_immuno_compromised_solid_organ` data element is the result of the harmonization of other RADx program data elements: `dht_immuno_compromised_solid_organ` (RADx-DHT)
+",Medical History,single,"NCIT:C14139
+NCIT:C130200",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_ibd,Inflammatory Bowel Disease,"The `nih_ibd` variable records responses to the prompt ""Inflammatory Bowel Disease"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_ibd` data element is the result of the harmonization of other RADx program data elements: `dht_ibd` (RADx-DHT)
+",Medical History,single,MONDO:0005265,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_insomnia,Insomnia,"The `nih_insomnia` variable records responses to the prompt ""Insomnia"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_insomnia` data element is the result of the harmonization of other RADx program data elements: `dht_insomnia` (RADx-DHT)
+",Medical History,single,MONDO:0013600,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_ibs,Irritable bowel syndrome,"The `nih_ibs` variable records responses to the prompt ""Irritable bowel syndrome"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_ibs` data element is the result of the harmonization of other RADx program data elements: `dht_ibs` (RADx-DHT)
+",Medical History,single,MONDO:0005052,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_liver_disease,"Liver disease (cirrhosis, hepB, hepC)","The `nih_liver_disease` variable records responses to the prompt ""Liver disease (cirrhosis, hepB, hepC)"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_liver_disease` data element is the result of the harmonization of other RADx program data elements: `dht_liver_disease` (RADx-DHT)
+",Medical History,single,MONDO:0005154,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_lupus,Lupus,"The `nih_lupus` variable records responses to the prompt ""Lupus"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_lupus` data element is the result of the harmonization of other RADx program data elements: `dht_lupus` (RADx-DHT)
+",Medical History,single,MONDO:0004670,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_migraines,Migraines,"The `nih_migraines` variable records responses to the prompt ""Migraines"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_migraines` data element is the result of the harmonization of other RADx program data elements: `dht_migraines` (RADx-DHT)
+",Medical History,single,MONDO:0005277,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_ms,Multiple Sclerosis,"The `nih_ms` variable records responses to the prompt ""Multiple Sclerosis"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_ms` data element is the result of the harmonization of other RADx program data elements: `dht_ms` (RADx-DHT)
+",Medical History,single,MONDO:0005301,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_neurodegenerative,Neurodegenerative disease,"The `nih_neurodegenerative` variable records responses to the prompt ""Neurodegenerative disease"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_neurodegenerative` data element is the result of the harmonization of other RADx program data elements: `dht_neurodegenerative` (RADx-DHT)
+",Medical History,single,MONDO:0005559,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_neurological_condition,Neurological Condition,"The `nih_neurological_condition` variable records responses to the prompt ""Neurological Condition"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_neurological_condition` data element is the result of the harmonization of other RADx program data elements: `dht_neurological_condition` (RADx-DHT)
+",Medical History,single,MONDO:0005071,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_no_chronic_condition,No chronic condition,"The `nih_no_chronic_condition` variable records responses to the prompt ""No chronic condition"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_no_chronic_condition` data element is the result of the harmonization of other RADx program data elements: `dht_no_chronic_condition` (RADx-DHT)
+",Medical History,single,,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_obesity,Obesity (BMI >= 30),"The `nih_obesity` variable records responses to the prompt ""Obesity (BMI >= 30)"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_obesity` data element is the result of the harmonization of other RADx program data elements: `dht_obesity` (RADx-DHT)
+",Medical History,single,MONDO:0011122,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_osteoporosis,Osteoporosis,"The `nih_osteoporosis` variable records responses to the prompt ""Osteoporosis"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_osteoporosis` data element is the result of the harmonization of other RADx program data elements: `dht_osteoporosis` (RADx-DHT)
+",Medical History,single,MONDO:0005298,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_pcos,Polycystic ovary syndrome,"The `nih_pcos` variable records responses to the prompt ""Polycystic ovary syndrome"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_pcos` data element is the result of the harmonization of other RADx program data elements: `dht_pcos` (RADx-DHT)
+",Medical History,single,MONDO:0008487,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_psoriasis,Psoriasis,"The `nih_psoriasis` variable records responses to the prompt ""Psoriasis"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_psoriasis` data element is the result of the harmonization of other RADx program data elements: `dht_psoriasis` (RADx-DHT)
+",Medical History,single,MONDO:0005083,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_renal,Renal disease,"The `nih_renal` variable records responses to the prompt ""Renal disease"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_renal` data element is the result of the harmonization of other RADx program data elements: `dht_renal` (RADx-DHT)
+",Medical History,single,MONDO:0005240,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_rls,Restless leg,"The `nih_rls` variable records responses to the prompt ""Restless leg"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_rls` data element is the result of the harmonization of other RADx program data elements: `dht_rls` (RADx-DHT)
+",Medical History,single,MONDO:0005391,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_ra,Rheumatoid Arthritis,"The `nih_ra` variable records responses to the prompt ""Rheumatoid Arthritis"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_ra` data element is the result of the harmonization of other RADx program data elements: `dht_ra` (RADx-DHT)
+",Medical History,single,MONDO:0008383,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_seasonal_allergies,Seasonal Allergies,"The `nih_seasonal_allergies` variable records responses to the prompt ""Seasonal Allergies"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_seasonal_allergies` data element is the result of the harmonization of other RADx program data elements: `dht_seasonal_allergies` (RADx-DHT)
+",Medical History,single,MONDO:0005324,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_heart_condition,"Serious heart condition (heart failure, CAD, cardiomyopathies)","The `nih_heart_condition` variable records responses to the prompt ""Serious heart condition (heart failure, CAD, cardiomyopathies)"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_heart_condition` data element is the result of the harmonization of other RADx program data elements: `dht_heart_condition` (RADx-DHT)
+",Medical History,single,MONDO:0005267,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_sleep_apnea,Sleep Apnea,"The `nih_sleep_apnea` variable records responses to the prompt ""Sleep Apnea"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_sleep_apnea` data element is the result of the harmonization of other RADx program data elements: `dht_sleep_apnea` (RADx-DHT)
+",Medical History,single,MONDO:0005296,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_substance_use,Substance use,"The `nih_substance_use` variable records responses to the prompt ""Substance use"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_substance_use` data element is the result of the harmonization of other RADx program data elements: `dht_substance_use` (RADx-DHT)
+",Medical History,single,NCIT:C18272,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_thalassemia,Thalassemia,"The `nih_thalassemia` variable records responses to the prompt ""Thalassemia"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_thalassemia` data element is the result of the harmonization of other RADx program data elements: `dht_thalassemia` (RADx-DHT)
+",Medical History,single,MONDO:0000984,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_t1d,Type 1 Diabetes,"The `nih_t1d` variable records responses to the prompt ""Type 1 Diabetes"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_t1d` data element is the result of the harmonization of other RADx program data elements: `dht_t1d` (RADx-DHT)
+",Medical History,single,MONDO:0005147,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_t2dm,Type 2 Diabetes,"The `nih_t2dm` variable records responses to the prompt ""Type 2 Diabetes"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_t2dm` data element is the result of the harmonization of other RADx program data elements: `dht_t2dm` (RADx-DHT)
+",Medical History,single,MONDO:0005148,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_cough,Cough,"The `nih_cough` variable records responses to the prompt, or a congruently meaning prompt, ""Cough"".  Equivalent prompts are: 
+
+- ""Cough"" (RADx-UP)
+- ""Cough"" (RADx-rad)
+- ""A cough (worse than usual)"" (RADx-Tech)
+- ""Cough"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_cough` data element is the result of the harmonization of other RADx program data elements: `covid_cough` (RADx-UP); `cough` (RADx-rad); `cough` (RADx-Tech); `dht_cough` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000614,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_fever_chills,Fever or Chills,"The `nih_fever_chills` variable records responses to the prompt, or a congruently meaning prompt, ""Fever or Chills"".  Equivalent prompts are: 
+
+- ""Fever or chills"" (RADx-UP)
+- ""Fever"" (RADx-rad), - ""Chills"" (RADx-rad)
+- ""Symptoms of fever or chills"" (RADx-Tech)
+- ""Fever, feeling hot/feverish, or having chills"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_fever_chills` data element is the result of the harmonization of other RADx program data elements: `covid_fever` (RADx-UP); `fever`, `chills` (RADx-rad); `fever_chills` (RADx-Tech); `dht_fever_chills`, `dht_chills`, `dht_fever` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000613,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_diff_breath,Shortness of breath or difficulty breathing,"The `nih_diff_breath` variable records responses to the prompt, or a congruently meaning prompt, ""Shortness of breath or difficulty breathing"".  Equivalent prompts are: 
+
+- ""Shortness of breath or difficulty breathing"" (RADx-UP)
+- ""Shortness of breath or difficulty breathing"" (RADx-rad)
+- ""Shortness of breath"" (RADx-Tech)
+- ""Shortness of breath or difficulty breathing"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_diff_breath` data element is the result of the harmonization of other RADx program data elements: `covid_diffbreath` (RADx-UP); `shortness_of_breath_or_dif` (RADx-rad); `shortness_of_breath` (RADx-Tech); `dht_diff_breath`, `dht_shortness_of_breath` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0019153,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_headache,Headache,"The `nih_headache` variable records responses to the prompt, or a congruently meaning prompt, ""Headache"".  Equivalent prompts are: 
+
+- ""Headache"" (RADx-UP)
+- ""Headache"" (RADx-rad)
+- ""Headache"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_headache` data element is the result of the harmonization of other RADx program data elements: `covid_headache` (RADx-UP); `headache` (RADx-rad); `dht_headache` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000504,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_muscle_ache,Muscle ache,"The `nih_muscle_ache` variable records responses to the prompt, or a congruently meaning prompt, ""Muscle ache"".  Equivalent prompts are: 
+
+- ""Muscle or body aches"" (RADx-UP)
+- ""Muscle ache"" (RADx-rad)
+- ""Muscle aches (worse than usual)"" (RADx-Tech)
+- ""Muscle, body, or joint aches (not due to exercise)"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_muscle_ache` data element is the result of the harmonization of other RADx program data elements: `covid_myalgia` (RADx-UP); `muscle_ache` (RADx-rad); `muscle_aches` (RADx-Tech); `dht_body_pain`, `dht_chest_pain`, `dht_joint_pain` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000626,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_olfactory,New loss of taste or smell,"The `nih_olfactory` variable records responses to the prompt, or a congruently meaning prompt, ""New loss of taste or smell"".  Equivalent prompts are: 
+
+- ""New loss of taste or smell"" (RADx-UP)
+- ""New loss of taste or smell"" (RADx-rad)
+- ""Unable to taste or smell"" (RADx-Tech)
+- ""New loss of taste or smell"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_olfactory` data element is the result of the harmonization of other RADx program data elements: `covid_olfactory` (RADx-UP); `new_loss_of_taste_or_smell` (RADx-rad); `unable_to_taste_or_smell` (RADx-Tech); `dht_olfactory`, `dht_loss_smell`, `dht_loss_taste` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0020004,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_fatigue,Excessive fatigue,"The `nih_fatigue` variable records responses to the prompt, or a congruently meaning prompt, ""Excessive fatigue"".  Equivalent prompts are: 
+
+- ""Lack of energy or general tired feeling"" (RADx-UP)
+- ""Excessive fatigue"" (RADx-rad)
+- ""Fatigue (more than normal)"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_fatigue` data element is the result of the harmonization of other RADx program data elements: `covid_fatique`, `covid_fatigue` (RADx-UP); `excessive_fatigue` (RADx-rad); `dht_fatigue` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000280,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_nausea_vomiting_diarrhea,"Nausea, vomiting, or diarrhea","The `nih_nausea_vomiting_diarrhea` variable records responses to the prompt, or a congruently meaning prompt, ""Nausea, vomiting, or diarrhea"".  Equivalent prompts are: 
+
+- ""Feeling sick to your stomach or vomiting, diarrhea"" (RADx-UP)
+- ""Nausea/vomiting"" (RADx-rad), - ""Diarrhea"" (RADx-rad)
+- ""Nausea, vomiting or diarrhea"" (RADx-Tech)
+- ""Nausea, vomiting, or diarrhea"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_nausea_vomiting_diarrhea` data element is the result of the harmonization of other RADx program data elements: `covid_nausea` (RADx-UP); `nausea_vomiting`, `diarrhea` (RADx-rad); `nausea_vomiting_diarrhea` (RADx-Tech); `dht_nausea_vomiting_diarrhea`, `dht_diarrhea`, `dht_nausea_vomiting` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,"SYMP:0000458
+SYMP:0019145
+SYMP:0000570",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_abdom_pain,Abdominal pain,"The `nih_abdom_pain` variable records responses to the prompt, or a congruently meaning prompt, ""Abdominal pain"".  Equivalent prompts are: 
+
+- ""Abdominal Pain"" (RADx-UP)
+- ""Abdominal pain"" (RADx-rad)
+- ""Stomach or abdominal pain"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_abdom_pain` data element is the result of the harmonization of other RADx program data elements: `covid_abpain` (RADx-UP); `abdominal_pain` (RADx-rad); `dht_abdom_pain` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000457,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_skin_rash,Skin rash,"The `nih_skin_rash` variable records responses to the prompt, or a congruently meaning prompt, ""Skin rash"".  Equivalent prompts are: 
+
+- ""Skin Rash"" (RADx-UP)
+- ""Skin rash"" (RADx-rad)
+- ""Skin rash"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_skin_rash` data element is the result of the harmonization of other RADx program data elements: `covid_skinrash` (RADx-UP); `skin_rash` (RADx-rad); `dht_skin_rash` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000487,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_conjunctivitis,Conjunctivitis,"The `nih_conjunctivitis` variable records responses to the prompt, or a congruently meaning prompt, ""Conjunctivitis"".  Equivalent prompts are: 
+
+- ""Conjunctivitis"" (RADx-rad)
+- ""Pink eye or conjunctivitis"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_conjunctivitis` data element is the result of the harmonization of other RADx program data elements: `conjunctivitis` (RADx-rad); `dht_conjunctivitis` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,MONDO:0003799,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_throat_congestion_nose,"Sore throat, congestion or runny nose","The `nih_throat_congestion_nose` variable records responses to the prompt, or a congruently meaning prompt, ""Sore throat, congestion or runny nose"".  Equivalent prompts are: 
+
+- ""Sore throat, congestion or runny nose "" (RADx-UP)
+- ""Congestion, runny nose, sore throat"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_throat_congestion_nose` data element is the result of the harmonization of other RADx program data elements: `covid_runnynose` (RADx-UP); `dht_congestion_sorethroat_runnynose`, `dht_runny_nose`, `dht_scratchy_throat`, `dht_nasal_congestion`, `dht_sneezing`, `dht_sore_throat` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,"SYMP:0000505
+SYMP:0000237
+SYMP:0000372",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_red_eyes,Red or painful eyes,"The `nih_red_eyes` variable records responses to the prompt, or a congruently meaning prompt, ""Red or painful eyes"".  Equivalent prompts are: 
+
+- ""Red or painful eyes"" (RADx-Tech)
+- ""Red or painful eyes"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_red_eyes` data element is the result of the harmonization of other RADx program data elements: `red_eyes` (RADx-Tech); `dht_red_eyes` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,"SYMP:0000446
+SYMP:0000828",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_high_temp,A temperature greater than 100.4 °F,"The `nih_high_temp` variable records responses to the prompt, or a congruently meaning prompt, ""A temperature greater than 100.4 ¬∞F"".  Equivalent prompts are: 
+
+- ""A temperature greater than 100.4 ¬∞F"" (RADx-Tech)
+- ""A temperature greater than 100.4¬∞F"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_high_temp` data element is the result of the harmonization of other RADx program data elements: `high_temp` (RADx-Tech); `dht_high_temp` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000613,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_other_symp,Other,"The `nih_other_symp` variable records responses to the prompt, or a congruently meaning prompt, ""Other"".  Equivalent prompts are: 
+
+- ""Other"" (RADx-UP)
+- ""Other "" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_other_symp` data element is the result of the harmonization of other RADx program data elements: `covid_other` (RADx-UP); `dht_other_symp` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,SYMP:0000462,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_no_sympt,None of the above,"The `nih_no_sympt` variable records responses to the prompt, or a congruently meaning prompt, ""None of the above"".  Equivalent prompts are: 
+
+- ""None of the above"" (RADx-Tech)
+- ""None of the above"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_no_sympt` data element is the result of the harmonization of other RADx program data elements: `no_symptoms` (RADx-Tech); `dht_no_symp` (RADx-DHT)
+
+Note that the meaning of the value `97` is context specific and depends on the subset of permissible value used by a specific study (not all studies presented the full set of permissible values documented here for this data element). Therefore, the meaning of the value `97` in an individual data record MUST be determined by referring to the original data dictionary for the non-harmonized data in that study.
+",Symptoms,single,,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_wheezing,Wheezing,"The `nih_wheezing` variable records responses to the prompt ""Wheezing"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_wheezing` data element is the result of the harmonization of other RADx program data elements: `dht_wheezing` (RADx-DHT)
+",Symptoms,single,SYMP:0000604,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_blue_lips,Bluish lips or face,"The `nih_blue_lips` variable records responses to the prompt ""Bluish lips or face"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_blue_lips` data element is the result of the harmonization of other RADx program data elements: `dht_blue_lips` (RADx-DHT)
+",Symptoms,single,SYMP:0000537,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_balance,Loss of balance,"The `nih_balance` variable records responses to the prompt ""Loss of balance"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_balance` data element is the result of the harmonization of other RADx program data elements: `dht_balance` (RADx-DHT)
+",Symptoms,single,SYMP:0000318,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_slurred_peech,Slurred speech,"The `nih_slurred_peech` variable records responses to the prompt ""Slurred speech"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_slurred_peech` data element is the result of the harmonization of other RADx program data elements: `dht_slurred_peech` (RADx-DHT)
+",Symptoms,single,SYMP:0000342,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_confusion,New confusion,"The `nih_confusion` variable records responses to the prompt ""New confusion"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_confusion` data element is the result of the harmonization of other RADx program data elements: `dht_confusion` (RADx-DHT)
+",Symptoms,single,SYMP:0000016,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_neuro_shakes,Unusual shivering or shaking,"The `nih_neuro_shakes` variable records responses to the prompt ""Unusual shivering or shaking"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_neuro_shakes` data element is the result of the harmonization of other RADx program data elements: `dht_neuro_shakes` (RADx-DHT)
+",Symptoms,single,SYMP:0000662,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_numb_extremities,Tingling or numbness or swelling of hands and feet,"The `nih_numb_extremities` variable records responses to the prompt ""Tingling or numbness or swelling of hands and feet"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_numb_extremities` data element is the result of the harmonization of other RADx program data elements: `dht_numb_extremities` (RADx-DHT)
+",Symptoms,single,SYMP:0000834,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_sweating,Excessive sweating,"The `nih_sweating` variable records responses to the prompt ""Excessive sweating"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_sweating` data element is the result of the harmonization of other RADx program data elements: `dht_sweating` (RADx-DHT)
+",Symptoms,single,SYMP:0019152,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_seizures,Seizures,"The `nih_seizures` variable records responses to the prompt ""Seizures"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_seizures` data element is the result of the harmonization of other RADx program data elements: `dht_seizures` (RADx-DHT)
+",Symptoms,single,SYMP:0000124,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_rash_toes,Red or purple rash or lesions on toes,"The `nih_rash_toes` variable records responses to the prompt ""Red or purple rash or lesions on toes"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_rash_toes` data element is the result of the harmonization of other RADx program data elements: `dht_rash_toes` (RADx-DHT)
+",Symptoms,single,SYMP:0000487,integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_appetite,Change in or loss of appetite,"The `nih_appetite` variable records responses to the prompt ""Change in or loss of appetite"".The values for this variable are integers that come from a list of 5 permissible integer values.
+
+The `nih_appetite` data element is the result of the harmonization of other RADx program data elements: `dht_appetite` (RADx-DHT)
+",Symptoms,single,"SYMP:0000309
+SYMP:0000245",integer,,,"""0""=[No] |
+""1""=[Yes] |
+""97""=[Other] |
+""98""=[Don’t know] |
+""99""=[Prefer not to answer]",,,,
+nih_health_status,"Would you say that (your) health in general is excellent, very good, good, fair, or poor?","The `nih_health_status` variable records responses to the prompt, or a congruently meaning prompt, ""Would you say that (your) health in general is excellent, very good, good, fair, or poor?"".  Equivalent prompts are: 
+
+- ""Would you say that (your) health in general is excellent, very good, good, fair or poor?"" (RADx-rad)
+- ""Self-report health status"" (RADx-DHT)
+
+The values for this variable are integers that come from a list of 7 permissible integer values.
+
+The `nih_health_status` data element is the result of the harmonization of other RADx program data elements: `self_reported_health_status_assessment` (RADx-UP); `health_status` (RADx-rad); `dht_health_status` (RADx-DHT)
+",Health Status,single,,integer,,,"""0""=[Excellent] |
+""1""=[Very Good] |
+""2""=[Good] |
+""3""=[Fair] |
+""4""=[Poor] |
+""98""=[Don't know] |
+""99""=[Prefer not to state]",,,,
+nih_height,What is your height in inches?,"The `nih_height` variable records responses to the prompt, or a congruently meaning prompt, ""What is your height in inches?"".  Equivalent prompts are: 
+
+- ""Feet"" (RADx-UP), - ""Inches"" (RADx-UP), - ""Meters"" (RADx-UP), - ""Centimeters"" (RADx-UP)
+- ""Height Feet"" (RADx-rad), - ""Height Inches"" (RADx-rad)
+- ""What is your height in inches?"" (RADx-DHT)
+
+The values for this variable are integers.
+
+The `nih_height` data element is the result of the harmonization of other RADx program data elements: `self_reported_height_feet`, `self_reported_height_inches`, `self_reported_height_meters`, `self_reported_height_centimeters` (RADx-UP); `height_feet`, `height_inches` (RADx-rad); `dht_height` (RADx-DHT)
+",Health Status,single,PATO:0000119,integer,,inch,,,,,
+nih_weight,What is your weight in pounds?,"The `nih_weight` variable records responses to the prompt, or a congruently meaning prompt, ""What is your weight in pounds?"".  Equivalent prompts are: 
+
+- ""How much do you weigh without clothes or shoes? If you are currently pregnant, how much did you weigh before your pregnancy?"" (RADx-UP), - ""How much do you weigh without clothes or shoes? If you are currently pregnant, how much did you weigh before your pregnancy?"" (RADx-UP)
+- ""What is your weight? (Weight in pounds)"" (RADx-rad)
+- ""What is your weight in pounds?"" (RADx-DHT)
+
+The values for this variable are integers.
+
+The `nih_weight` data element is the result of the harmonization of other RADx program data elements: `self_reported_weight_kgs`, `self_reported_weight_lbs` (RADx-UP); `weight_lbs` (RADx-rad); `dht_weight` (RADx-DHT)
+",Health Status,single,PATO:0000125,integer,,pound,,,,,
+nih_height_category,Approximately what is your height?,"The `nih_height_category` variable records responses to the prompt ""Approximately what is your height?"".The values for this variable are integers that come from a list of 3 permissible integer values.
+
+The `nih_height_category` data element is the result of the harmonization of other RADx program data elements: `dht_height_category` (RADx-DHT)
+",Health Status,single,PATO:0000119,integer,,,"""1""=[5'1"" - 5'6""] |
+""2""=[5'7""-5'11""] |
+""3""=[6' and over]",,,,
+nih_weight_category,Approximately what is your weight?,"The `nih_weight_category` variable records responses to the prompt ""Approximately what is your weight?"".The values for this variable are integers that come from a list of 3 permissible integer values.
+
+The `nih_weight_category` data element is the result of the harmonization of other RADx program data elements: `dht_weight_category` (RADx-DHT)
+",Health Status,single,PATO:0000125,integer,,,"""1""=[100-150] |
+""2""=[151-200] |
+""3""=[over 200]",,,,

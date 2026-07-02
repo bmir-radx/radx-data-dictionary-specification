@@ -52,6 +52,16 @@ radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml
 See the [converter README](converter/README.md) for the full set of options
 (ontology term-name lookup, enum-value annotations, and more).
 
+### Worked examples
+
+Two real data dictionaries and the LinkML schemas the converter produces from
+them:
+
+| Data dictionary (input) | Generated LinkML schema (output) |
+| --- | --- |
+| [`gcb.dd.csv`](converter/examples/gcb.dd.csv) | [`gcb.yaml`](converter/examples/gcb.yaml) |
+| [`rad.dd.csv`](converter/examples/rad.dd.csv) | [`rad.yaml`](converter/examples/rad.yaml) |
+
 ## License
 
 Released under the [BSD 2-Clause License](LICENSE).
