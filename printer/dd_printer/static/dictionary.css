@@ -1,0 +1,148 @@
+:root {
+  /* Badge colours, from the original Java template. */
+  --data-element: #68b622;
+  --data-element-dark: #579a1d;
+  --facet: #eb944c;
+  --choice: #59aaf8;
+  --missing: #86878a;
+  --term: #9d7bdb;
+  /* Card/layout neutrals. */
+  --ink: #1f2933;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --card: #ffffff;
+  --page: #f4f6f8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  color: var(--ink);
+  line-height: 1.55;
+  margin: 0;
+  background: var(--page);
+}
+
+.container {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.5rem;
+}
+
+.section { margin-top: 2.5rem; }
+.section__name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0 0 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--line);
+}
+
+/* Each data element is a card. */
+.record {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+  padding: 0.5rem 1.25rem;
+  margin-bottom: 1.25rem;
+  scroll-margin-top: 1rem;
+}
+
+.record__table { border-collapse: collapse; width: 100%; }
+.record__table > tbody > tr { border-bottom: 1px solid #f1f3f5; }
+.record__table > tbody > tr:last-child { border-bottom: none; }
+.record__table th {
+  text-align: left;
+  vertical-align: top;
+  width: 9rem;
+  padding: 0.55rem 0.75rem 0.55rem 0;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.record__table td { padding: 0.55rem 0; vertical-align: top; }
+
+.record__number {
+  color: var(--data-element);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.record__label { font-size: 1.05rem; }
+
+.badge {
+  display: inline-block;
+  padding: 0.22em 0.6em;
+  font-size: 0.82em;
+  font-weight: 600;
+  line-height: 1.4;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+.record__id,
+.record__description a.record__id,
+.record__notes a.record__id {
+  background: var(--data-element);
+  color: #fff;
+  text-decoration: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+a.record__id:hover { background: var(--data-element-dark); }
+.record__facet { background: var(--facet); color: #fff; }
+.term {
+  background: var(--term);
+  color: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.choice__value {
+  background: var(--choice);
+  color: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  min-width: 1.5rem;
+  text-align: center;
+}
+.choice__value--missing-value-code { background: var(--missing); }
+
+code {
+  background: #eef1f4;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Enumeration: value badge + label per row. */
+.enumeration { border-collapse: collapse; }
+.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0; vertical-align: middle; }
+.choice__label { color: var(--ink); }
+
+.record__description, .record__notes { max-width: 62ch; }
+.record__description :first-child,
+.record__notes :first-child { margin-top: 0; }
+.record__description :last-child,
+.record__notes :last-child { margin-bottom: 0; }
+.record__description a { color: var(--choice); }
+
+@media print {
+  body { background: #fff; }
+  html { font-size: 10.5px; }
+  a { text-decoration: none; }
+  .record {
+    break-inside: avoid;
+    box-shadow: none;
+    border-color: #d0d5dd;
+  }
+  .badge { border: none; }
+}

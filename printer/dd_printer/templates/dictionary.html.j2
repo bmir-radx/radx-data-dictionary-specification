@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ dictionary.title }}</title>
+<style>{{ css | safe }}</style>
+</head>
+<body>
+<div class="container">
+  <h1 class="title">{{ dictionary.title }}</h1>
+
+  {% for section in dictionary.sections %}
+  <section class="section">
+    <h2 class="section__name">{{ section.name }}</h2>
+
+    {% for record in section.records %}
+    <article class="record" id="{{ record.id }}">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">{{ record.number }})</th>
+            <td><span class="badge record__id">{{ record.id }}</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">{{ record.label }}</strong></td></tr>
+          {% if record.datatype %}
+          <tr><th>Datatype</th><td><span class="badge record__facet">{{ record.datatype }}</span></td></tr>
+          {% endif %}
+          {% if record.cardinality %}
+          <tr><th>Cardinality</th><td><span class="badge record__facet">{{ record.cardinality }}</span></td></tr>
+          {% endif %}
+          {% if record.unit %}
+          <tr><th>Unit</th><td><span class="badge record__facet">{{ record.unit }}</span></td></tr>
+          {% endif %}
+          {% if record.pattern %}
+          <tr><th>Pattern</th><td><code>{{ record.pattern }}</code></td></tr>
+          {% endif %}
+          {% if record.terms %}
+          <tr><th>Terms</th><td>
+            {% for term in record.terms %}<span class="badge term">{{ term }}</span> {% endfor %}
+          </td></tr>
+          {% endif %}
+          {% if record.description_html %}
+          <tr><th>Description</th><td class="record__description">{{ record.description_html | safe }}</td></tr>
+          {% endif %}
+          {% if record.choices %}
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              {% for choice in record.choices %}
+                <tr>
+                  <td><span class="badge choice__value{% if choice.is_missing_value_code %} choice__value--missing-value-code{% endif %}">{{ choice.value }}</span></td>
+                  <td class="choice__label">{{ choice.label }}</td>
+                  {% if choice.meaning %}<td><span class="badge term">{{ choice.meaning }}</span></td>{% endif %}
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </td></tr>
+          {% endif %}
+          {% if record.notes_html %}
+          <tr><th>Notes</th><td class="record__notes">{{ record.notes_html | safe }}</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </article>
+    {% endfor %}
+  </section>
+  {% endfor %}
+</div>
+</body>
+</html>
