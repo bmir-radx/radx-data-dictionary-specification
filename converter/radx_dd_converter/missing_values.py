@@ -46,3 +46,17 @@ STANDARD_MISSING_VALUE_CODES: list[EnumItem] = parse_missing_value_codes(
 
 # The name of the shared enum the emitter generates for these codes.
 STANDARD_ENUM_NAME = "StandardMissingValueCodes"
+
+
+def parse_missing_value_codes_file(path) -> list[EnumItem]:
+    """Read a missing-value-codes override from a file.
+
+    The file contains the same enumeration-cell grammar as a ``MissingValueCodes``
+    cell (``"code"=[label] | ...``). Returns the parsed codes, which callers can
+    pass to the emitter to replace the built-in default set. An empty/blank file
+    yields an empty list (meaning "no shared missing-value-codes enum").
+    """
+    from pathlib import Path
+
+    text = Path(path).read_text(encoding="utf-8-sig")
+    return parse_missing_value_codes(text)

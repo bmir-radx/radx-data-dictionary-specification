@@ -173,6 +173,44 @@ def test_standard_codes_enum_present_and_complete(schema):
     assert pvs["-9999"]["title"] == "Reason Unknown"
 
 
+_ENUM_CSV = 'Id,Label,Datatype,Enumeration\nq,Q,integer,"""0""=[No] | ""1""=[Yes]"\n'
+
+
+def test_missing_value_codes_override():
+    from radx_dd_converter.grammar import parse_missing_value_codes
+
+    custom = parse_missing_value_codes('"-1"=[Refused] | "-2"=[Unknown]')
+    schema = yaml.safe_load(
+        emit_schema(
+            read_data_dictionary(_csv(_ENUM_CSV)),
+            EmitOptions(schema_name="s", class_name="Record", missing_value_codes=custom),
+        )
+    )
+    pvs = schema["enums"]["StandardMissingValueCodes"]["permissible_values"]
+    assert list(pvs) == ["-1", "-2"]
+
+
+def test_missing_value_codes_empty_omits_shared_enum():
+    schema = yaml.safe_load(
+        emit_schema(
+            read_data_dictionary(_csv(_ENUM_CSV)),
+            EmitOptions(schema_name="s", class_name="Record", missing_value_codes=[]),
+        )
+    )
+    assert "StandardMissingValueCodes" not in schema["enums"]
+    ranges = [b["range"] for b in schema["classes"]["Record"]["attributes"]["q"]["any_of"]]
+    assert ranges == ["QEnum"]  # only the field enum, no shared missing-codes branch
+
+
+def test_parse_missing_value_codes_file(tmp_path):
+    from radx_dd_converter import parse_missing_value_codes_file
+
+    path = tmp_path / "codes.txt"
+    path.write_text('"-1"=[Refused] | "-2"=[Unknown]')
+    codes = parse_missing_value_codes_file(path)
+    assert [(c.value, c.label) for c in codes] == [("-1", "Refused"), ("-2", "Unknown")]
+
+
 def test_custom_type_emitted_for_timestamp():
     rows = read_data_dictionary(
         _csv("Id,Label,Datatype\nWhen,When,timestamp\n")
@@ -208,7 +246,7 @@ def test_pretty_rendering_preserves_content(schema_yaml):
     from linkml_runtime.dumpers import json_dumper
 
     from radx_dd_converter import read_data_dictionary
-    from radx_dd_converter.emit import Emitter, EmitOptions, _strip_type_keys
+    from radx_dd_converter.emit import EmitOptions, _strip_type_keys
 
     em = Emitter(EmitOptions(schema_id="https://example.org/s", schema_name="s",
                              class_name="Record"))

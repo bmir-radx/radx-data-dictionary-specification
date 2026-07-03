@@ -20,6 +20,7 @@ from .missing_values import (
     STANDARD_ENUM_NAME,
     STANDARD_MISSING_VALUE_CODES,
     STANDARD_MISSING_VALUE_CODES_TEXT,
+    parse_missing_value_codes_file,
 )
 from .reader import (
     KNOWN_COLUMNS,
@@ -44,6 +45,7 @@ __all__ = [
     "STANDARD_ENUM_NAME",
     "STANDARD_MISSING_VALUE_CODES",
     "STANDARD_MISSING_VALUE_CODES_TEXT",
+    "parse_missing_value_codes_file",
     "UnitOfMeasure",
     "lookup_unit",
     "KNOWN_COLUMNS",

@@ -104,6 +104,14 @@ def _build_parser() -> argparse.ArgumentParser:
         "pairs (capped, with a '(+N more)' overflow).",
     )
     parser.add_argument(
+        "--missing-value-codes",
+        type=Path,
+        default=None,
+        metavar="FILE",
+        help="Override the built-in missing-value codes with those in FILE (an "
+        'enumeration cell, `"code"=[label] | ...`). An empty file omits them.',
+    )
+    parser.add_argument(
         "--allow-duplicates",
         action="store_true",
         help="Do not fail on a duplicate Id; keep the first occurrence, skip "
@@ -123,6 +131,11 @@ def _resolve_options(args: argparse.Namespace) -> EmitOptions:
     class_name = args.class_name or _class_from_name(name)
     schema_id = args.schema_id or f"{DEFAULT_ID_BASE}/{name}"
     apikey = args.bioportal_apikey or os.environ.get("BIOPORTAL_API_KEY")
+    missing_codes = None
+    if args.missing_value_codes is not None:
+        from .missing_values import parse_missing_value_codes_file
+
+        missing_codes = parse_missing_value_codes_file(args.missing_value_codes)
     return EmitOptions(
         schema_id=schema_id,
         schema_name=name,
@@ -131,6 +144,7 @@ def _resolve_options(args: argparse.Namespace) -> EmitOptions:
         resolver=args.resolver,
         bioportal_apikey=apikey,
         annotate_enum_values=args.annotate_enum_values,
+        missing_value_codes=missing_codes,
     )
 
 

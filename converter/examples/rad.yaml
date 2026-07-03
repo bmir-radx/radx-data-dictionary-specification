@@ -1705,7 +1705,7 @@ enums:
         title: inconclusive
 
   StandardMissingValueCodes:  # 65 of 65 enums
-    description: The standard set of RADx missing-value codes, which always applies to a missing-value-coded
+    description: The shared set of missing-value codes that applies to every missing-value-coded
       field.
     permissible_values:
       '-9999':
