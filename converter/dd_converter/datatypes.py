@@ -1,6 +1,6 @@
-"""Map RADx / XSD datatype names to LinkML ranges.
+"""Map XSD datatype names to LinkML ranges.
 
-A RADx ``Datatype`` value is either a LinkML built-in range (returned directly)
+A ``Datatype`` value is either a LinkML built-in range (returned directly)
 or a datatype with no LinkML built-in, for which the converter must emit a
 custom ``type`` into the output schema's ``types:`` block so the schema is
 self-contained (see ``linkml/CONVERTER_PLAN.md``).
@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-# --- Direct mappings: RADx/XSD name -> LinkML built-in range ---------------
+# --- Direct mappings: XSD name -> LinkML built-in range ---------------
 #
 # Grouped by target for readability. Every one of the 47 allowable datatype
 # names is accounted for either here or in CUSTOM_TYPES below.
@@ -64,7 +64,7 @@ BUILTIN_RANGES: dict[str, str] = {
 class CustomType:
     """A LinkML custom ``type`` the converter must emit for a datatype.
 
-    ``name`` is both the RADx datatype name and the emitted type name.
+    ``name`` is both the datatype name and the emitted type name.
     ``typeof`` is the base LinkML type it derives from. ``pattern`` is an
     optional lexical constraint. ``uri`` records the type's provenance
     (typically ``xsd:<name>``) so the emitted type is self-describing.
@@ -77,13 +77,13 @@ class CustomType:
     description: str | None = None
 
 
-# --- Custom types: RADx/XSD name -> CustomType spec ------------------------
+# --- Custom types: XSD name -> CustomType spec ------------------------
 #
-# XSD types with no LinkML built-in, plus the three RADx-specific names. The
+# XSD types with no LinkML built-in, plus three non-XSD extension names. The
 # emitter adds each USED custom type to the output schema's `types:` block.
 
 CUSTOM_TYPES: dict[str, CustomType] = {
-    # RADx-specific datatypes.
+    # Non-XSD extension datatypes.
     "date_mdy": CustomType(
         "date_mdy",
         typeof="date",
@@ -140,11 +140,11 @@ CUSTOM_TYPES: dict[str, CustomType] = {
 
 
 class UnknownDatatypeError(ValueError):
-    """Raised when a Datatype value is not a recognised RADx/XSD datatype name."""
+    """Raised when a Datatype value is not a recognised XSD datatype name."""
 
 
 def resolve_datatype(name: str) -> str | CustomType:
-    """Resolve a RADx ``Datatype`` name.
+    """Resolve a ``Datatype`` name.
 
     Returns either a LinkML built-in range name (``str``) that can be used
     directly as a slot ``range``, or a :class:`CustomType` that the emitter must
@@ -159,6 +159,6 @@ def resolve_datatype(name: str) -> str | CustomType:
         return CUSTOM_TYPES[name]
     raise UnknownDatatypeError(
         f"Unknown datatype name {name!r}. Datatype names are case-sensitive and "
-        f"must be an XML Schema datatype name or a RADx extension "
+        f"must be an XML Schema datatype name or a non-XSD extension "
         f"(date_mdy, date_dmy, timestamp)."
     )

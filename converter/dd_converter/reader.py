@@ -1,4 +1,4 @@
-"""Read a RADx data dictionary CSV into ordered rows.
+"""Read a data dictionary CSV into ordered rows.
 
 The reader parses the CSV per RFC 4180 (via the standard library ``csv``
 module), validates the header record, and returns an ordered list of

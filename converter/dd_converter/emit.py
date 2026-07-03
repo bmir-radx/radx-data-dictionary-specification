@@ -147,8 +147,8 @@ def _value_derived_enum_name(items: list[EnumItem]) -> str | None:
 class EmitOptions:
     """Options controlling schema identity (from CLI flags / filename)."""
 
-    schema_id: str = "https://w3id.org/radx/generated"
-    schema_name: str = "radx_generated"
+    schema_id: str = "https://example.org/data-dictionary/generated"
+    schema_name: str = "generated"
     class_name: str = "Record"
     default_prefix: str | None = None  # defaults to schema_name
     annotate_terms: bool = False  # look up ontology term names and add as comments
@@ -301,7 +301,7 @@ class Emitter:
         if row.get("Pattern"):
             slot.pattern = row.get("Pattern")
 
-        # Terms -> related_mappings. RADx Terms are subject-matter annotations
+        # Terms -> related_mappings. Terms are subject-matter annotations
         # (the concept a field relates to), not the slot's predicate URI, so
         # they map to related_mappings rather than slot_uri / exact_mappings.
         for term in parse_terms(row.get("Terms")):
@@ -571,7 +571,7 @@ _HEADER_COMMENT = """\
 #   * Machine-oriented annotations (`unit_raw`, `value_datatype`, `provenance`,
 #     `original_id`) appear at the end of each slot.
 #
-# See the RADx Data Dictionary Specification for the source field definitions:
+# See the Data Dictionary Specification for the source field definitions:
 # https://github.com/bmir-radx/radx-data-dictionary-specification
 """
 

@@ -3,10 +3,10 @@
 # https://github.com/perma-id/w3id.org before these URIs will resolve.
 id: https://w3id.org/radx/data-dictionary
 name: radxdatadictionary
-title: RADx Data Dictionary Schema
+title: Data Dictionary Schema
 description: >-
-  A LinkML rendering of the RADx Data Dictionary Specification. It models a RADx
-  data dictionary as a list of DataElement records, each describing one field
+  A LinkML rendering of the Data Dictionary Specification. It models a data
+  dictionary as a list of DataElement records, each describing one field
   (column) of a target datafile. See the `source` for the authoritative prose
   specification.
 license: https://opensource.org/licenses/BSD-2-Clause
@@ -41,7 +41,7 @@ classes:
         description: >-
           The Id field in the data dictionary specifies an identifier for the
           datafile field being described. Datafile field identifiers are
-          strings. To cater for pre-existing RADx study data we do not impose
+          strings. To cater for pre-existing study data we do not impose
           any restrictions on the format or characters that make up a field
           identifier. Field identifiers may contain spaces.
 
@@ -264,7 +264,7 @@ enums:
     description: >-
       The set of allowable datatype names. This is the set of XML Schema Part 2
       built-in datatype names (the 19 primitive datatypes and the 25 datatypes
-      derived from them), extended with the RADx-specific datatype names
+      derived from them), extended with the format-specific datatype names
       date_mdy, date_dmy and timestamp.
     permissible_values:
 
@@ -316,7 +316,7 @@ enums:
       unsignedByte:
       positiveInteger:
 
-      # RADx-specific datatype names
+      # format-specific datatype names (beyond XML Schema)
       date_mdy:
       date_dmy:
       timestamp:

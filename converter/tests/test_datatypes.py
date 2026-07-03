@@ -1,4 +1,4 @@
-"""Tests for the RADx/XSD datatype -> LinkML range mapping."""
+"""Tests for the XSD datatype -> LinkML range mapping."""
 
 from pathlib import Path
 

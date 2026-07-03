@@ -44,7 +44,7 @@ def test_writes_output_file_with_filename_defaults(tmp_path, capsys):
     assert rc == 0
     schema = yaml.safe_load(out.read_text())
     assert schema["name"] == "sample"
-    assert schema["id"] == "https://w3id.org/radx/sample"
+    assert schema["id"] == "https://example.org/data-dictionary/sample"
     assert list(schema["classes"]) == ["Sample"]  # CamelCase of "sample"
 
 

@@ -1,4 +1,4 @@
-"""The standard set of RADx missing-value codes.
+"""The default set of missing-value codes (originally from RADx).
 
 Per the specification, this standard set of codes always applies to a
 ``MissingValueCodes`` field; any codes given in a field's cell *augment* it. The

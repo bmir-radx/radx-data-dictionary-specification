@@ -1,4 +1,4 @@
-# CSV-faithful rendering of the RADx Data Dictionary Specification.
+# CSV-faithful rendering of the Data Dictionary Specification.
 #
 # This schema models a data dictionary EXACTLY as it appears on the wire: a
 # single CSV file in which each row is one DataElement and every column is a
@@ -21,9 +21,9 @@
 # https://github.com/perma-id/w3id.org before these URIs will resolve.
 id: https://w3id.org/radx/data-dictionary-csv
 name: radxdatadictionarycsv
-title: RADx Data Dictionary Schema (CSV-faithful)
+title: Data Dictionary Schema (CSV-faithful)
 description: >-
-  A CSV-faithful LinkML rendering of the RADx Data Dictionary Specification.
+  A CSV-faithful LinkML rendering of the Data Dictionary Specification.
   Each row of the CSV is one DataElement and every column is a single string
   cell; rich values (enumerations, missing-value codes, ontology terms) are
   encoded within a single cell using the grammars defined in the specification.
@@ -219,7 +219,7 @@ enums:
     description: >-
       The set of allowable datatype names. This is the set of XML Schema Part 2
       built-in datatype names (the 19 primitive datatypes and the 25 datatypes
-      derived from them), extended with the RADx-specific datatype names
+      derived from them), extended with the format-specific datatype names
       date_mdy, date_dmy and timestamp.
     permissible_values:
 
@@ -271,7 +271,7 @@ enums:
       unsignedByte:
       positiveInteger:
 
-      # RADx-specific datatype names
+      # format-specific datatype names (beyond XML Schema)
       date_mdy:
       date_dmy:
       timestamp:

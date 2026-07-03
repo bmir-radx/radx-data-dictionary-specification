@@ -1,13 +1,13 @@
-# RADx Data Dictionary → LinkML Schema Converter — Design
+# Data Dictionary → LinkML Schema Converter — Design
 
 > **Status:** Implemented in [`../converter/`](../converter/) as the
-> `radx-dd-to-linkml` tool. This document is the design record: it explains what
+> `dd-to-linkml` tool. This document is the design record: it explains what
 > the converter does and why the mapping decisions were made. Where the code and
 > this document ever disagree, the code (and its tests) is authoritative.
 
 ## Goal
 
-The converter reads a RADx data dictionary in CSV format and emits a **LinkML
+The converter reads a data dictionary in CSV format and emits a **LinkML
 schema** describing the *target datafile* that the dictionary documents. Each
 data element (row) becomes a **slot**; the datafile as a whole becomes a
 **class** (default name `Record`).
@@ -15,7 +15,7 @@ data element (row) becomes a **slot**; the datafile as a whole becomes a
 This is *metamodeling*: the dictionary is metadata about a datafile, and the
 output schema is a formal description of that datafile's structure, suitable for
 validating the datafile with standard LinkML tooling — subject to the
-multi-value delimiter caveat noted under "Future work" (RADx bare `|` vs.
+multi-value delimiter caveat noted under "Future work" (bare `|` vs.
 LinkML's bracketed `[ | ]`).
 
 > Not in scope for v1 (but the parser core is shared with it): converting a data
@@ -27,7 +27,7 @@ LinkML's bracketed `[ | ]`).
 - **Input:** one data dictionary CSV file (RFC 4180), with the header record and
   columns defined in `radx-data-dictionary-specification.md`.
 - **Output:** one LinkML schema YAML file describing the target datafile.
-- **CLI:** `radx-dd-to-linkml INPUT.csv -o SCHEMA.yaml [--name ... --id ...]`
+- **CLI:** `dd-to-linkml INPUT.csv -o SCHEMA.yaml [--name ... --id ...]`
 
 ## Core mapping: dictionary row → LinkML slot
 
@@ -61,7 +61,7 @@ These are easy to conflate but operate at different levels:
 - **Schema-level `source:`** — metadata about the *output schema as a whole*.
   Set once, to the authoritative prose specification / repository it was derived
   from (as in `data-dictionary.yaml`: the GitHub repo). Not per-field.
-- **RADx `Provenance`** — a *per-field* dictionary column: where the *definition*
+- **`Provenance`** — a *per-field* dictionary column: where the *definition*
   of that field came from (typically a Common Data Element it is based on). Per
   the spec its value is *ideally* a URL to a CDE repository, but *may* also be a
   free-text unambiguous CDE name.
@@ -75,7 +75,7 @@ is set independently and is unaffected by this per-field mapping.
 
 ### Unit mapping (decided: native `unit:`, lookup-assisted)
 
-RADx `Unit` is a single **free-text** string (the spec provides no controlled
+`Unit` is a single **free-text** string (the spec provides no controlled
 list) — e.g. `mm`, `mg/dL`, `degrees Celsius`. LinkML has a native `unit:` slot
 whose range is `UnitOfMeasure`, with fields: `symbol`, `abbreviation`,
 `descriptive_name`, `exact_mappings`, `ucum_code`, `derivation`,
@@ -88,18 +88,18 @@ Mapping (decided — lookup-assisted):
   "common units" example table (23 rows: `millimeter`/`mm`/length …
   `moles per liter`/`mol/L`/concentration). Each entry maps a unit **name or
   symbol** → `{descriptive_name, symbol, ucum_code?}`.
-- If the RADx `Unit` value matches the table (by name **or** symbol), emit a
+- If the `Unit` value matches the table (by name **or** symbol), emit a
   populated `unit:` block (`descriptive_name` + `symbol`, plus `ucum_code` where
   known).
 - If it does **not** match, emit `unit: {symbol: <raw string>}` — `symbol` is the
-  fallback field, since RADx unit values are most often short symbols.
+  fallback field, since unit values are most often short symbols.
 - **In all cases**, also preserve the original cell verbatim as
   `annotations.unit_raw` so the un-normalized string is always recoverable and
   the mapping is lossless (a table match must never silently discard the raw
   input).
 
 Deliberately **not** doing UCUM validation / QUDT `has_quantity_kind` resolution
-in v1: RADx units are free-text and many will not be valid UCUM, so requiring a
+in v1: units are free-text and many will not be valid UCUM, so requiring a
 UCUM library would reject legitimate data. `ucum_code` is populated only for the
 table-known units. This can be revisited later.
 
@@ -126,9 +126,9 @@ the `subsets:` declarations were verified to survive schema materialization
 
 ## Datatype mapping (decided: emit custom LinkML types)
 
-Direct built-in mappings (RADx name → LinkML built-in range):
+Direct built-in mappings (datatype name → LinkML built-in range):
 
-| RADx / XSD | LinkML built-in |
+| Datatype name | LinkML built-in |
 |---|---|
 | `string`, `normalizedString`, `token`, `Name`, `NCName`, `language`, `NMTOKEN`, `QName`, etc. | `string` |
 | `integer`, `int`, `short`, `byte`, `long`, `nonNegativeInteger`, `positiveInteger`, `unsignedInt`, ... | `integer` |
@@ -144,7 +144,7 @@ Direct built-in mappings (RADx name → LinkML built-in range):
 Types with **no** LinkML built-in → the converter emits a **custom `type`** into
 the output schema's `types:` block, so the schema is self-contained:
 
-| RADx / XSD | Emitted custom type |
+| Datatype name | Emitted custom type |
 |---|---|
 | `date_mdy` | `typeof: date`, `pattern: '^\d{2}/\d{2}/\d{4}$'` (US mm/dd/yyyy) |
 | `date_dmy` | `typeof: date`, `pattern: '^\d{2}/\d{2}/\d{4}$'` (intl dd/mm/yyyy) |
@@ -152,7 +152,7 @@ the output schema's `types:` block, so the schema is self-contained:
 | `gYearMonth`, `gYear`, `gMonthDay`, `gDay`, `gMonth` | `typeof: string` + XSD `pattern`, `uri: xsd:<name>` |
 | `duration`, `hexBinary`, `base64Binary`, `NOTATION`, ID/IDREF(S)/ENTITY(IES) | `typeof: string`, `uri: xsd:<name>` |
 
-Every emitted custom type carries `uri: xsd:<name>` (or the RADx meaning) so the
+Every emitted custom type carries `uri: xsd:<name>` so the
 provenance of the type is explicit. Only the custom types *actually used* by the
 input are emitted.
 
@@ -211,13 +211,13 @@ This is why Option 3 (union at the slot) is used rather than enum inheritance.
 ## Architecture
 
 ```
-radx_dd_converter/
+dd_converter/
   reader.py        # RFC-4180 CSV -> list[Row]; validates required headers, ordering
   grammar/
     enumeration.lark   # EBNF from spec section "Semantics of Enumeration Values"
     parse.py           # cell string -> [EnumItem(value,label,iri?)]; also MissingValueCodes
     terms.py           # split Terms cell -> [iri|curie] (ws / NBSP / newline)
-  datatypes.py     # RADx datatype name -> LinkML range | CustomTypeSpec
+  datatypes.py     # datatype name -> LinkML range | CustomTypeSpec
   missing_values.py # the 25 standard missing-value codes (constant) -> StandardMissingValueCodes enum
   units.py         # built-in unit table (from the spec) -> UnitOfMeasure lookup by name/symbol
   emit.py          # rows + parsed cells -> linkml_runtime SchemaDefinition -> YAML
@@ -281,12 +281,12 @@ never alters the schema content.
    (`--id`, `--name`, `--class-name`); when a flag is omitted, derived from the
    input CSV filename (e.g. `patient_data.csv` → name `patient_data`, id under a
    default base, class `PatientData`). The default root class name, when nothing
-   else is given, is **`Record`**. No dictionary metadata row is assumed (RADx
+   else is given, is **`Record`**. No dictionary metadata row is assumed (these
    dictionaries have no standard metadata row).
 
 3. **Packaging (decided).** An installable Python package living in this
    repository under [`converter/`](../converter/), exposing the
-   `radx-dd-to-linkml` console script.
+   `dd-to-linkml` console script.
 
 ## Future work (not v1)
 
@@ -305,14 +305,14 @@ Future items:
   (`Enumeration`, `Terms`, `MissingValueCodes`) into nested objects — the one
   piece LinkML tooling cannot provide.
 - **Datafile CSV → data instances of the generated schema.** This is *almost*
-  free with stock `linkml-convert`, but **not entirely**: RADx multi-valued
+  free with stock `linkml-convert`, but **not entirely**: multi-valued
   cells use a **bare** pipe (`cough|headache`) whereas LinkML's CSV convention
   is a **bracketed** pipe (`[cough|headache]`), and LinkML's CSV reader does not
   split a bare-pipe (or space-separated) cell at all (see the tested note
   below). So this needs a small **delimiter-normalization** pre-processing step
-  (rewrite RADx bare-pipe cells to `[a|b|c]`, or a custom loader) before
+  (rewrite bare-pipe cells to `[a|b|c]`, or a custom loader) before
   `linkml-convert` can be used. It is not a no-op.
-- Reverse direction: LinkML schema → RADx data dictionary CSV.
+- Reverse direction: LinkML schema → data dictionary CSV.
 - **Alias uniqueness enforcement.** The reader rejects a duplicate `Id`, but does
   not yet check that an `Alias` never collides with another record's `Id` or
   alias (the spec's cross-dictionary uniqueness rule).
@@ -331,7 +331,7 @@ Verified empirically with `linkml-convert` on this machine:
   is emitted as `[cough|headache]` — pipe-separated **and wrapped in square
   brackets**.
 
-Consequence: RADx (bare `|`) and LinkML (bracketed `[ | ]`) multi-value cell
+Consequence: A bare-pipe dictionary (bare `|`) and LinkML (bracketed `[ | ]`) multi-value cell
 conventions are **not interchangeable**, even though both use the pipe
 character. Any datafile round-trip through stock LinkML tooling must normalize
 the delimiter first, or the values are silently mis-read as one string.

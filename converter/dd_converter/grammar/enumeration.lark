@@ -1,4 +1,4 @@
-// Grammar for the RADx enumeration / missing-value-codes cell syntax.
+// Grammar for the enumeration / missing-value-codes cell syntax.
 //
 // Mirrors the EBNF in radx-data-dictionary-specification.md, section
 // "Semantics of Enumeration Values":

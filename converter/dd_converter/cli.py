@@ -1,4 +1,4 @@
-"""Command-line interface for the RADx data dictionary -> LinkML converter.
+"""Command-line interface for the data dictionary -> LinkML converter.
 
 Usage::
 
@@ -25,14 +25,14 @@ from .grammar import ParseError
 from .reader import ReadError, read_data_dictionary
 from .terms_lookup import LookupError_
 
-DEFAULT_ID_BASE = "https://w3id.org/radx"
+DEFAULT_ID_BASE = "https://example.org/data-dictionary"
 
 
 def _name_from_filename(path: Path) -> str:
     """Derive a schema name from an input filename.
 
     ``gcb.dd.csv`` -> ``gcb``; ``patient_data.csv`` -> ``patient_data``. Strips
-    a trailing ``.dd`` (a common RADx data-dictionary suffix) and sanitises to a
+    a trailing ``.dd`` (a common data-dictionary suffix) and sanitises to a
     LinkML-safe token.
     """
     stem = path.name
@@ -57,7 +57,7 @@ def _class_from_name(name: str) -> str:
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="dd-to-linkml",
-        description="Convert a RADx data dictionary CSV into a LinkML schema.",
+        description="Convert a data dictionary CSV into a LinkML schema.",
     )
     parser.add_argument("input", type=Path, help="Path to the data dictionary CSV.")
     parser.add_argument(

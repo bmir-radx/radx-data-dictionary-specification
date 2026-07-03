@@ -1,6 +1,6 @@
-"""Built-in unit table for mapping a RADx ``Unit`` cell to a UnitOfMeasure.
+"""Built-in unit table for mapping a ``Unit`` cell to a UnitOfMeasure.
 
-RADx ``Unit`` values are free text (the specification provides no controlled
+``Unit`` values are free text (the specification provides no controlled
 list). This module carries the small table of common units from the
 specification's own example table, keyed by both unit name and symbol, so the
 converter can populate a structured LinkML ``unit:`` block (``descriptive_name``,

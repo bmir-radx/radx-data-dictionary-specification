@@ -1,4 +1,4 @@
-"""Reconstruct a RADx data dictionary CSV from a generated LinkML schema.
+"""Reconstruct a data dictionary CSV from a generated LinkML schema.
 
 This is the inverse of :mod:`emit`. It reads a schema produced by this converter
 and rebuilds the data dictionary, one row per slot of the root class, inverting
@@ -177,7 +177,7 @@ def main(argv=None) -> int:
 
     parser = argparse.ArgumentParser(
         prog="linkml-to-dd",
-        description="Reconstruct a RADx data dictionary CSV from a LinkML schema.",
+        description="Reconstruct a data dictionary CSV from a LinkML schema.",
     )
     parser.add_argument("input", type=Path, help="Path to the LinkML schema YAML.")
     parser.add_argument(
