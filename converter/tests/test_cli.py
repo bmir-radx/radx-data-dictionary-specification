@@ -106,3 +106,14 @@ def test_duplicate_id_fails_but_allow_duplicates_succeeds(tmp_path, capsys):
     schema = yaml.safe_load(out.read_text())
     attrs = list(schema["classes"].values())[0]["attributes"]
     assert list(attrs) == ["A"]  # duplicate collapsed to the first occurrence
+
+
+def test_missing_value_codes_flag(tmp_path):
+    dd = tmp_path / "d.csv"
+    dd.write_text('Id,Label,Datatype,Enumeration\nq,Q,integer,"""0""=[No] | ""1""=[Yes]"\n')
+    codes = tmp_path / "codes.txt"
+    codes.write_text('"-1"=[Refused]')
+    out = tmp_path / "out.yaml"
+    assert main([str(dd), "-o", str(out), "--missing-value-codes", str(codes)]) == 0
+    schema = yaml.safe_load(out.read_text())
+    assert list(schema["enums"]["StandardMissingValueCodes"]["permissible_values"]) == ["-1"]

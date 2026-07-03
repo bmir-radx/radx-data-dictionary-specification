@@ -155,6 +155,10 @@ class EmitOptions:
     resolver: str = "ols4"  # term-name resolver: "ols4" or "bioportal"
     bioportal_apikey: str | None = None  # required when resolver == "bioportal"
     annotate_enum_values: bool = False  # comment field-enum values after range:
+    # The shared missing-value codes wired into every enumerated slot. None uses
+    # the built-in default set; an empty list omits the shared enum entirely; a
+    # custom list replaces the default.
+    missing_value_codes: list | None = None
 
 
 class Emitter:
@@ -162,6 +166,12 @@ class Emitter:
 
     def __init__(self, options: EmitOptions | None = None):
         self.opts = options or EmitOptions()
+        # Resolve the shared missing-value code set once (default unless overridden).
+        self._missing_value_codes = (
+            self.opts.missing_value_codes
+            if self.opts.missing_value_codes is not None
+            else STANDARD_MISSING_VALUE_CODES
+        )
         self._prefixes: dict[str, str] = {}
         self._enum_by_signature: dict[str, str] = {}  # dedup identical enumerations
         self._terms: set = set()  # every term identifier emitted (for annotation)
@@ -249,10 +259,10 @@ class Emitter:
             return
         enum = EnumDefinition(
             name=STANDARD_ENUM_NAME,
-            description="The standard set of RADx missing-value codes, which "
-            "always applies to a missing-value-coded field.",
+            description="The shared set of missing-value codes that applies to "
+            "every missing-value-coded field.",
         )
-        for item in STANDARD_MISSING_VALUE_CODES:
+        for item in self._missing_value_codes:
             enum.permissible_values[item.value] = PermissibleValue(
                 text=item.value, title=item.label or None
             )
@@ -349,8 +359,10 @@ class Emitter:
             slot.annotations["value_datatype"] = row.get("Datatype")
 
             branches = [AnonymousSlotExpression(range=enum_name)]
-            self._ensure_standard_codes_enum(schema)
-            branches.append(AnonymousSlotExpression(range=STANDARD_ENUM_NAME))
+            # Wire in the shared missing-value codes, unless the set is empty.
+            if self._missing_value_codes:
+                self._ensure_standard_codes_enum(schema)
+                branches.append(AnonymousSlotExpression(range=STANDARD_ENUM_NAME))
             if field_codes:
                 field_codes_name = self._emit_enum(
                     schema, f"{row.id}MissingValueCodes", field_codes
