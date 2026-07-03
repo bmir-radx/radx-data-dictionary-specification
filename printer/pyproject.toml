@@ -15,7 +15,7 @@ dependencies = [
     # The data-dictionary reader/loader is reused from the sibling converter.
     # It is not on PyPI, so depend on it directly from this repository; this
     # lets `pip/pipx install <printer>` pull the converter in one step.
-    "radx-dd-converter @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter",
+    "dd-converter @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter",
 ]
 
 [project.optional-dependencies]

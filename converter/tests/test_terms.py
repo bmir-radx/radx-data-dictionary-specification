@@ -2,7 +2,7 @@
 
 import pytest
 
-from radx_dd_converter.grammar import parse_terms
+from dd_converter.grammar import parse_terms
 
 
 @pytest.mark.parametrize(

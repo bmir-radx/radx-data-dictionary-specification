@@ -7,8 +7,8 @@ the parts with logic worth pinning down.
 
 import pytest
 
-from radx_dd_converter.emit import _annotate_term_lines
-from radx_dd_converter.terms_lookup import (
+from dd_converter.emit import _annotate_term_lines
+from dd_converter.terms_lookup import (
     LookupError_,
     _curie_prefix,
     _to_iri,

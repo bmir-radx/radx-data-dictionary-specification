@@ -2,7 +2,7 @@
 
 A vocabulary-neutral printer: it groups a dictionary's data elements by section
 and renders each as a card (id, label, facets, description, enumeration). See
-``PRINTER_PLAN.md``. Input is loaded via the sibling ``radx_dd_converter``
+``PRINTER_PLAN.md``. Input is loaded via the sibling ``dd_converter``
 package (from a data dictionary CSV or a generated LinkML schema).
 """
 

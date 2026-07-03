@@ -168,7 +168,7 @@ def schema_to_csv(schema_yaml: str) -> str:
 def main(argv=None) -> int:
     """CLI: reconstruct a data dictionary CSV from a generated LinkML schema.
 
-    Usage: ``linkml-to-radx-dd SCHEMA.yaml -o DICTIONARY.csv``. The round-trip is
+    Usage: ``linkml-to-dd SCHEMA.yaml -o DICTIONARY.csv``. The round-trip is
     semantic, not byte-exact (see the module docstring).
     """
     import argparse
@@ -176,7 +176,7 @@ def main(argv=None) -> int:
     from pathlib import Path
 
     parser = argparse.ArgumentParser(
-        prog="linkml-to-radx-dd",
+        prog="linkml-to-dd",
         description="Reconstruct a RADx data dictionary CSV from a LinkML schema.",
     )
     parser.add_argument("input", type=Path, help="Path to the LinkML schema YAML.")

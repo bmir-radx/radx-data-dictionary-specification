@@ -6,7 +6,7 @@ parser is checked against the authoritative source.
 
 import pytest
 
-from radx_dd_converter.grammar import (
+from dd_converter.grammar import (
     EnumItem,
     ParseError,
     parse_enumeration,

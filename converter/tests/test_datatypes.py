@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from radx_dd_converter import (
+from dd_converter import (
     CustomType,
     UnknownDatatypeError,
     resolve_datatype,

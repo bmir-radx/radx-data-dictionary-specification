@@ -3,7 +3,6 @@
 import io
 import json
 
-import pytest
 
 from dd_printer.load import load_dictionary
 from dd_printer.markdown import render_description
@@ -43,7 +42,7 @@ def test_cardinality_and_enumeration_parsed():
 
 def test_loads_from_linkml_schema():
     # Round-trip the sample through the converter to a schema, then load that.
-    from radx_dd_converter import EmitOptions, emit_schema, read_data_dictionary
+    from dd_converter import EmitOptions, emit_schema, read_data_dictionary
 
     rows = read_data_dictionary(io.StringIO(SAMPLE))
     schema_yaml = emit_schema(rows, EmitOptions(schema_name="demo", class_name="Record"))

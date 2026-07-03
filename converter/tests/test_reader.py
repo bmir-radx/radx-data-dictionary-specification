@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from radx_dd_converter import ReadError, read_data_dictionary
+from dd_converter import ReadError, read_data_dictionary
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
