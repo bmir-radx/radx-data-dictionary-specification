@@ -15,11 +15,11 @@
 #   * Machine-oriented annotations (`unit_raw`, `value_datatype`, `provenance`,
 #     `original_id`) appear at the end of each slot.
 #
-# See the RADx Data Dictionary Specification for the source field definitions:
+# See the Data Dictionary Specification for the source field definitions:
 # https://github.com/bmir-radx/radx-data-dictionary-specification
 
 name: rad
-id: https://w3id.org/radx/rad
+id: https://example.org/data-dictionary/rad
 imports:
 - linkml:types
 prefixes:

@@ -13,7 +13,7 @@
 
 ## Goal
 
-Render a RADx data dictionary into human-readable output — primarily a
+Render a data dictionary into human-readable output — primarily a
 **self-contained HTML page** (and JSON), grouped by section, with each data
 element shown as a card: its id, label, facets (datatype, cardinality, unit,
 pattern), description (Markdown → HTML), and enumeration choices.
@@ -39,7 +39,7 @@ parts of `DescriptionGenerator`. **Do not port these.**
 ## Input (decided direction, confirm in first session)
 
 Read the **LinkML data dictionary schema** produced by `../converter/`
-(`radx-dd-to-linkml`), reusing the converter's reader/reverse code, rather than
+(`dd-to-linkml`), reusing the converter's reader/reverse code, rather than
 re-implementing a CSV parser. A data dictionary CSV can be printed by running it
 through the converter first (or we accept CSV directly via the converter's
 `read_data_dictionary`). This is the main reason the printer lives in this repo.
@@ -78,7 +78,7 @@ printer/
     static/dictionary.css   # extracted from template.html
   tests/
 ```
-Depends on: the local `radx_dd_converter` package, `markdown-it-py`, and Jinja2.
+Depends on: the local `dd_converter` package, `markdown-it-py`, and Jinja2.
 
 ## Resolved decisions
 

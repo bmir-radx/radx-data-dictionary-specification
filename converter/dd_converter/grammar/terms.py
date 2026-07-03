@@ -1,4 +1,4 @@
-"""Parse the RADx ``Terms`` cell into a list of ontology term identifiers.
+"""Parse the ``Terms`` cell into a list of ontology term identifiers.
 
 Per the specification, multiple term identifiers are separated by white space
 (space U+0020 or non-breaking space U+00A0) or newline characters (U+000A). Each

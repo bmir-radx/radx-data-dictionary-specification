@@ -1,4 +1,10 @@
-# RADx Data Dictionary Specification
+# Data Dictionary Specification
+
+> This is a general-purpose specification for CSV data dictionaries. It was
+> originally developed for the [RADx](https://github.com/canopy-datahub) data
+> hub, and some default value sets (e.g. the standard missing-value codes)
+> reflect that origin, but the format itself is not specific to RADx.
+
 
 ## Introduction
 
@@ -8,13 +14,13 @@ When data is stored in a tabular Comma Separated Values (CSV) file format, recor
 
 The table below shows an example CSV file that contains some data.  The data contains two records (orange boxes) made up of seven fields (blue boxes).   In this example, the field identifiers are:  `PartId`, `Date`, `Time`, `Age`, `Mental Status`, `FS LL`, and `FS RL`.  Thus, the 4th column contains `Age` fields.  In the first record (second row) the `Age` field has a field value of `67`.  In the second record (third row), the `FS RL` field value does not have a value and we say that this field is _blank_.
 
-All RADx datafiles SHOULD have header records.
+All datafiles SHOULD have header records.
 
 ![Records, Fields and Field Values](schematic.png)
 
-## RADx Data Dictionaries
+## Data Dictionaries
 
-A RADx _data dictionary_ is a Comma Separated Values (CSV) file that describes how RADx _data_ contained in another CSV file, a _datafile_, is structured.  A data dictionary CSV file contains EXACTLY ONE data dictionary.
+A _data dictionary_ is a Comma Separated Values (CSV) file that describes how _data_ contained in another CSV file, a _datafile_, is structured.  A data dictionary CSV file contains EXACTLY ONE data dictionary.
 
 A machine-processable [LinkML](https://linkml.io) rendering of this specification is available in the [`linkml/`](linkml/) folder of this repository (see the [`linkml/` README section](README.md#linkml-representation) for an overview).  This Markdown document remains the authoritative specification.
 
@@ -26,7 +32,7 @@ Data dictionaries may be created with tools such as Google Sheets or Microsoft E
 
 ## Data Dictionary Layout
 
-A data dictionary contains a list of records (known as _Data Elements_ in RADx terminology), represented as rows, that describe the sequence of fields in a target datafile.  There is exactly one data dictionary record per datafile field. 
+A data dictionary contains a list of records (known as _Data Elements_), represented as rows, that describe the sequence of fields in a target datafile.  There is exactly one data dictionary record per datafile field. 
 
 A data dictionary CSV file contains a header record plus _one record for each of the target datafile's fields_.  Since the target datafile's fields are in columns, this means a record in a data dictionary essentially describes a column in the target data file.  Thus, if the target datafile has five columns in it, the data dictionary will contain _six_ records – one header record plus five non-header records that describe the five datafile fields.
 
@@ -60,7 +66,7 @@ Each record in a data dictionary SHOULD contain the following, possibly empty, f
 
 __Value Status__: REQUIRED (the value for the `Id` field MUST NOT be empty)
 
-The `Id` field in the data dictionary specifies an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing RADx study data we do not impose any restrictions on the format or characters that make up a field identifier.  Field identifiers may contain spaces.
+The `Id` field in the data dictionary specifies an identifier for the datafile field being described.  Datafile field identifiers are strings.  To cater for pre-existing study data we do not impose any restrictions on the format or characters that make up a field identifier.  Field identifiers may contain spaces.
 
 ### Field: Aliases
 
@@ -116,7 +122,7 @@ This field is optional but we strongly encourage its use in order to make data m
 
 __Value Status__: REQUIRED (the value MUST NOT be empty)
 
-The `Datatype` field in the data dictionary specifies a datatype name that types field values.  Datatype names MUST be from the set of allowable datatype names.  This set is defined as the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names, defined below, that cover US date formats (that are present in RADx data).  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.
+The `Datatype` field in the data dictionary specifies a datatype name that types field values.  Datatype names MUST be from the set of allowable datatype names.  This set is defined as the set of [XML schema datatype](https://www.w3.org/TR/xmlschema-2/) names extended with a few datatype names, defined below, that cover US date formats.  We use XML Schema Datatypes because this set of datatypes has precisely defined syntax and semantics.
 
 If an enumeration is supplied to provide a list of controlled values, then the datatype name should be set as the datatype name of the values in the enumeration.  See the description of [Column: Enumeration](#field-enumeration).  For example, if an enumeration of `0 = Blood | 1 = Saliva` was specified for a field the datatype name for this field would be `integer`, since the values of this enumeration are integers.  Similarly, if an enumeration of `RBC = Red Blood Cells | WBC = White Blood Cells` is specified for a field then the datatype name for that field would be `string`, since the values of this enumeration are strings.  If the values of an enumeration are intended to represent boolean flags (for example `"0"=[No] | "1"=[Yes]`) then the datatype name `integer` should be used rather than `boolean`, since the enumeration values `0` and `1` are written as integers.
 
@@ -162,7 +168,7 @@ __Value Status__: OPTIONAL
 
 The `Unit` field in the data dictionary may be used to document the units for datafile values that represent quantities.
 
-Since there is no standardized list of units used for RADx studies we do not provide a controlled list of units here.  However, here are some common units that we have observed being used in RADx data dictionaries.
+Since there is no standardized list of units we do not provide a controlled list of units here.  However, here are some common units that we have observed being used in data dictionaries.
 
 | Unit name | Symbol | Dimension |
 | -- | -- | -- |
@@ -259,7 +265,7 @@ quotedString = ? A finite sequence of characters, which may include letters, num
 
 The online survey software [REDCap](https://www.project-redcap.org) has a syntax that supports choices for questions.  The syntax we use here is a more precisely specified while also being more general.  In particular, we support embedding semantic identifiers for choices where as REDCap syntax does not.  In addition to this, it is possible to produce choices using the REDCap software that cannot be round tripped using REDCap choices syntax (a REDCap data dictionary can be exported that cannot be reimported by REDCap).
 
-Given a string that represents a list of choices in the REDCap choices format, the following regular expression and regular expression replacement can be used to convert the string into a RADx Enumeration format.
+Given a string that represents a list of choices in the REDCap choices format, the following regular expression and regular expression replacement can be used to convert the string into the Enumeration format.
 
 Match,
 
@@ -318,7 +324,7 @@ The `SeeAlso` field may be used to hold a URL that, when resolved, provides furt
 
 ## Template
 
-While the format of a published RADx Data Dictionary MUST be CSV, tools like Google Sheets or Excel can be used for editing/producing the CSV file.  A Google Sheet template data dictionary may be found [here](https://docs.google.com/spreadsheets/d/1f5KcnCx7fEHcC8uSS5CB71-D-y51BDxFfGltSbj85iw/edit?usp=sharing).
+While the format of a published Data Dictionary MUST be CSV, tools like Google Sheets or Excel can be used for editing/producing the CSV file.  A Google Sheet template data dictionary may be found [here](https://docs.google.com/spreadsheets/d/1f5KcnCx7fEHcC8uSS5CB71-D-y51BDxFfGltSbj85iw/edit?usp=sharing).
 
 ## Ontology Term Identifiers
 

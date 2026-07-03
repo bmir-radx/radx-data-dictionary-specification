@@ -1,4 +1,4 @@
-"""Parse the RADx enumeration and missing-value-codes cell grammars.
+"""Parse the enumeration and missing-value-codes cell grammars.
 
 Both the ``Enumeration`` and ``MissingValueCodes`` fields use the same cell
 syntax::

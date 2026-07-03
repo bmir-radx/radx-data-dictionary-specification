@@ -1,4 +1,4 @@
-"""Parser layer for the RADx data dictionary in-cell mini-grammars."""
+"""Parser layer for the data dictionary in-cell mini-grammars."""
 
 from .parse import (
     EnumItem,

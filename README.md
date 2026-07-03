@@ -1,13 +1,15 @@
-# RADx Data Dictionary Specification
+# Data Dictionary Specification
 
-A specification for the CSV **data dictionaries** used in the RADx data hub. A
-data dictionary is a CSV file that describes the structure of another CSV file
-(a *datafile*): one row per field, giving each field's identifier, label,
-datatype, permissible values, units, ontology terms, and more.
+A specification for CSV **data dictionaries**. A data dictionary is a CSV file
+that describes the structure of another CSV file (a *datafile*): one row per
+field, giving each field's identifier, label, datatype, permissible values,
+units, ontology terms, and more.
 
-> **Note:** The RADx data hub has since evolved into
-> [Canopy](https://github.com/canopy-datahub), an open-source platform for
-> FAIR-aligned scientific data hubs.
+> **Origin:** This specification and toolkit were originally developed for the
+> [RADx](https://github.com/canopy-datahub) data hub (which has since evolved
+> into [Canopy](https://github.com/canopy-datahub), an open-source platform for
+> FAIR-aligned scientific data hubs). Some default value sets reflect that
+> origin, but the format itself is general-purpose and not specific to RADx.
 
 📄 **[Read the specification →](radx-data-dictionary-specification.md)**
 
@@ -39,10 +41,10 @@ Then convert in either direction:
 
 ```sh
 # Data dictionary CSV -> LinkML schema
-radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml
+dd-to-linkml my_dictionary.csv -o my_schema.yaml
 
 # LinkML schema -> data dictionary CSV
-linkml-to-radx-dd my_schema.yaml -o my_dictionary.csv
+linkml-to-dd my_schema.yaml -o my_dictionary.csv
 ```
 
 The generated schema describes the *target datafile* — one slot per data

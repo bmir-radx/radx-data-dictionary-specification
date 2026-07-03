@@ -1,6 +1,6 @@
-# RADx Data Dictionary → LinkML Converter
+# Data Dictionary → LinkML Converter
 
-`radx-dd-to-linkml` converts a [RADx data dictionary](../radx-data-dictionary-specification.md)
+`dd-to-linkml` converts a [data dictionary](../radx-data-dictionary-specification.md)
 CSV into a [LinkML](https://linkml.io) schema. The data dictionary *describes* a
 datafile; the generated schema is a formal, machine-processable description of
 that datafile that you can validate data against, generate documentation from,
@@ -25,7 +25,7 @@ On first use of pipx, its bin directory may not be on your `PATH` (pipx warns
 if so). Run `pipx ensurepath` once — then open a new terminal — to add it, after
 which the commands are available everywhere.
 
-Either way this installs the `radx-dd-to-linkml` and `linkml-to-radx-dd`
+Either way this installs the `dd-to-linkml` and `linkml-to-dd`
 commands and their dependencies (`linkml`, `lark`). If you have cloned the
 repository, `pip install ./converter` from the repo root works too.
 
@@ -34,13 +34,13 @@ repository, `pip install ./converter` from the repo root works too.
 Convert a data dictionary to a schema file:
 
 ```
-radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml
+dd-to-linkml my_dictionary.csv -o my_schema.yaml
 ```
 
 With no `-o`, the schema is written to standard output, so you can pipe it:
 
 ```
-radx-dd-to-linkml my_dictionary.csv | less
+dd-to-linkml my_dictionary.csv | less
 ```
 
 ### Naming the schema
@@ -50,7 +50,7 @@ filename (`patient_data.csv` → name `patient_data`, class `PatientData`).
 Override any of them:
 
 ```
-radx-dd-to-linkml my_dictionary.csv -o my_schema.yaml \
+dd-to-linkml my_dictionary.csv -o my_schema.yaml \
     --name my_data --id https://example.org/my_data --class-name Record
 ```
 
@@ -74,8 +74,8 @@ resolved is left as a bare identifier. Choose the lookup service with
   variable (or `--bioportal-apikey`).
 
 ```
-radx-dd-to-linkml my_dictionary.csv -o out.yaml --annotate-terms
-BIOPORTAL_API_KEY=… radx-dd-to-linkml my_dictionary.csv -o out.yaml \
+dd-to-linkml my_dictionary.csv -o out.yaml --annotate-terms
+BIOPORTAL_API_KEY=… dd-to-linkml my_dictionary.csv -o out.yaml \
     --annotate-terms --resolver bioportal
 ```
 
@@ -87,7 +87,7 @@ BIOPORTAL_API_KEY=… radx-dd-to-linkml my_dictionary.csv -o out.yaml \
 | `--allow-duplicates` | Tolerate a repeated `Id` (keep the first, skip later ones) instead of failing. |
 | `-v`, `--verbose` | Show warnings (unresolved term lookups, non-OBO prefixes, skipped duplicates). |
 
-Run `radx-dd-to-linkml --help` for the complete list.
+Run `dd-to-linkml --help` for the complete list.
 
 ## What gets generated
 
@@ -114,7 +114,7 @@ column maps to a LinkML feature of the slot:
 ### Enumerations and missing-value codes
 
 A data element with an `Enumeration` becomes a generated enum, and the slot
-accepts **either** one of that enum's values **or** a standard RADx
+accepts **either** one of that enum's values **or** a standard
 missing-value code. For example, this data dictionary row:
 
 ```csv
@@ -159,11 +159,11 @@ sections) which data elements reference it.
 
 ## Reconstructing the dictionary (round-trip)
 
-The reverse tool `linkml-to-radx-dd` rebuilds a data dictionary CSV from a
+The reverse tool `linkml-to-dd` rebuilds a data dictionary CSV from a
 generated schema:
 
 ```
-linkml-to-radx-dd my_schema.yaml -o my_dictionary.csv
+linkml-to-dd my_schema.yaml -o my_dictionary.csv
 ```
 
 The round-trip (CSV → LinkML → CSV) is **semantic, not byte-exact**: the forward
@@ -187,7 +187,7 @@ schemas produced from them: [`gcb.dd.csv`](examples/gcb.dd.csv) →
 The pipeline is also importable:
 
 ```python
-from radx_dd_converter import read_data_dictionary, emit_schema, EmitOptions
+from dd_converter import read_data_dictionary, emit_schema, EmitOptions
 
 rows = read_data_dictionary("my_dictionary.csv")
 print(emit_schema(rows, EmitOptions(schema_name="my_data", class_name="Record")))
