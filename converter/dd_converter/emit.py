@@ -554,7 +554,7 @@ _SPACED_SECTIONS = {"subsets", "types", "enums", "classes"}
 
 # Orientation header prepended to every generated schema.
 _HEADER_COMMENT = """\
-# LinkML schema generated from a RADx data dictionary by radx-dd-to-linkml.
+# LinkML schema generated from a data dictionary by dd-to-linkml.
 #
 # The single class below (the tree_root) describes a target datafile: each of
 # its slots corresponds to one field (column) of that datafile, in order. The

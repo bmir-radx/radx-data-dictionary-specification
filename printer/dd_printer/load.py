@@ -1,7 +1,7 @@
 """Load a data dictionary into the printer model.
 
 Input may be a data dictionary **CSV** or a generated **LinkML schema** — both
-are read via the sibling ``radx_dd_converter`` package and normalised to the same
+are read via the sibling ``dd_converter`` package and normalised to the same
 list of column dicts, then grouped into the printer's :class:`Dictionary` model.
 """
 
@@ -12,8 +12,8 @@ from pathlib import Path
 
 import yaml
 
-from radx_dd_converter import read_data_dictionary, schema_to_rows
-from radx_dd_converter.grammar import parse_enumeration, parse_missing_value_codes, parse_terms
+from dd_converter import read_data_dictionary, schema_to_rows
+from dd_converter.grammar import parse_enumeration, parse_missing_value_codes, parse_terms
 
 from .model import Choice, Dictionary, Record, Section
 

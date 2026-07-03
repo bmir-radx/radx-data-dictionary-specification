@@ -2,7 +2,7 @@
 
 Usage::
 
-    radx-dd-to-linkml INPUT.csv -o SCHEMA.yaml [--name ...] [--id ...] [--class-name ...]
+    dd-to-linkml INPUT.csv -o SCHEMA.yaml [--name ...] [--id ...] [--class-name ...]
 
 When ``--name`` / ``--id`` / ``--class-name`` are omitted they are derived from
 the input filename (e.g. ``patient_data.csv`` -> name ``patient_data``, class
@@ -56,7 +56,7 @@ def _class_from_name(name: str) -> str:
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="radx-dd-to-linkml",
+        prog="dd-to-linkml",
         description="Convert a RADx data dictionary CSV into a LinkML schema.",
     )
     parser.add_argument("input", type=Path, help="Path to the data dictionary CSV.")

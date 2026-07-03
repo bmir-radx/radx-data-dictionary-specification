@@ -5,13 +5,13 @@ from pathlib import Path
 
 import pytest
 
-from radx_dd_converter import (
+from dd_converter import (
     EmitOptions,
     emit_schema,
     read_data_dictionary,
     schema_to_csv,
 )
-from radx_dd_converter.grammar import parse_enumeration, parse_terms
+from dd_converter.grammar import parse_enumeration, parse_terms
 
 EXAMPLES = Path(__file__).resolve().parents[1] / "examples"
 
@@ -133,7 +133,7 @@ def test_example_dictionary_roundtrips(filename, allow_dup):
     rebuilt_by_id = {r.id: r for r in rebuilt}
     assert set(orig_by_id) == set(rebuilt_by_id)
 
-    from radx_dd_converter.reader import KNOWN_COLUMNS
+    from dd_converter.reader import KNOWN_COLUMNS
 
     mismatches = []
     for row_id, orig_row in orig_by_id.items():

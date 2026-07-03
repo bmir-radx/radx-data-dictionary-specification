@@ -2,7 +2,7 @@
 
 import pytest
 
-from radx_dd_converter import (
+from dd_converter import (
     STANDARD_MISSING_VALUE_CODES,
     UnitOfMeasure,
     lookup_unit,
