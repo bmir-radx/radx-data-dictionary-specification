@@ -12,8 +12,8 @@ datatype, permissible values, units, ontology terms, and more.
 📄 **[Read the specification →](radx-data-dictionary-specification.md)**
 
 The Markdown specification is the authoritative document. The LinkML schemas and
-the converter below are machine-processable renderings and tooling built on top
-of it.
+the tools below (a converter and a printer) are machine-processable renderings
+and tooling built on top of it.
 
 ## Repository contents
 
@@ -21,6 +21,7 @@ of it.
 | --- | --- |
 | [`radx-data-dictionary-specification.md`](radx-data-dictionary-specification.md) | The authoritative specification. |
 | [`converter/`](converter/) | A Python tool that converts between a data dictionary CSV and a LinkML schema, in both directions. |
+| [`printer/`](printer/) | A Python tool that renders a data dictionary to a human-readable HTML page (or JSON). |
 | [`linkml/`](linkml/) | Hand-written [LinkML](https://linkml.io) renderings of the specification. |
 
 ## Converter
@@ -59,6 +60,21 @@ them:
 | --- | --- |
 | [`gcb.dd.csv`](converter/examples/gcb.dd.csv) | [`gcb.yaml`](converter/examples/gcb.yaml) |
 | [`rad.dd.csv`](converter/examples/rad.dd.csv) | [`rad.yaml`](converter/examples/rad.yaml) |
+
+## Printer
+
+[`printer/`](printer/) renders a data dictionary into a human-readable,
+self-contained **HTML** page (or JSON) — grouped by section, with each data
+element shown as a card (id, label, facets, description, and enumeration). It
+reads a data dictionary CSV or a generated LinkML schema.
+
+```sh
+pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=printer"
+
+dd-print my_dictionary.csv -o my_dictionary.html
+```
+
+See the [printer README](printer/README.md) for options and details.
 
 ## Hand-written LinkML schemas
 
