@@ -23,14 +23,19 @@ def validate(
     checks.
     """
     header, rows = read_rows(source)
-    findings = list(_run(header, rows, check_duplicate_ids=check_duplicate_ids))
-    findings.sort(key=lambda f: f.sort_key)
+    findings = _run_all_checks(header, rows, check_duplicate_ids=check_duplicate_ids)
+    findings.sort(key=lambda finding: finding.sort_key)
     return findings
 
 
-def _run(
+def _run_all_checks(
     header: list[str], rows: list[RawRow], *, check_duplicate_ids: bool
 ) -> list[Finding]:
+    """Run every check and return the unsorted findings.
+
+    A file with no header record at all cannot be checked further, so that is
+    the single finding it produces.
+    """
     if not header:
         return [Finding(Level.ERROR, "empty-file", "the file has no header record")]
 

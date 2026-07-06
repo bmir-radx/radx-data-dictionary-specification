@@ -55,7 +55,9 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _inputs(path: Path) -> list[Path]:
+def _input_files(path: Path) -> list[Path]:
+    """Return the CSV files to validate: the path itself, or every non-hidden
+    ``*.csv`` beneath it when it is a directory."""
     if path.is_dir():
         return sorted(p for p in path.rglob("*.csv") if not p.name.startswith("."))
     return [path]
@@ -69,52 +71,52 @@ def main(argv=None) -> int:
 
     levels = {Level[name] for name in args.levels} if args.levels else None
 
-    sections: list[str] = []
+    per_file_reports: list[str] = []
     all_findings: list[Finding] = []
-    for path in _inputs(args.input):
+    for path in _input_files(args.input):
         findings = validate(path, check_duplicate_ids=not args.no_duplicate_check)
         if levels is not None:
-            findings = [f for f in findings if f.level in levels]
+            findings = [finding for finding in findings if finding.level in levels]
         all_findings.extend(findings)
-        sections.append(report.render(findings, args.format, file=str(path)))
+        per_file_reports.append(report.render(findings, args.format, file=str(path)))
 
-    rendered = _join(sections, args.format)
+    rendered = _join_reports(per_file_reports, args.format)
 
     if args.output is None:
         sys.stdout.write(rendered)
     else:
         args.output.write_text(rendered, encoding="utf-8")
 
-    errors = sum(1 for f in all_findings if f.level is Level.ERROR)
+    error_count = sum(1 for finding in all_findings if finding.level is Level.ERROR)
     print(
-        f"{len(all_findings)} finding(s), {errors} error(s).", file=sys.stderr
+        f"{len(all_findings)} finding(s), {error_count} error(s).", file=sys.stderr
     )
 
     if args.exit_zero:
         return 0
-    return 1 if errors else 0
+    return 1 if error_count else 0
 
 
-def _join(sections: list[str], fmt: str) -> str:
-    """Concatenate per-file report sections.
+def _join_reports(per_file_reports: list[str], fmt: str) -> str:
+    """Concatenate per-file reports into one document.
 
-    For the tabular formats each section carries its own header row; when
-    validating several files we keep the first header and drop the repeats so
-    the output is one table.
+    Each tabular (csv/tsv) report carries its own header row; when several
+    files were validated, keep the first header and drop the repeats so the
+    result is a single table.
     """
-    if fmt in ("csv", "tsv") and len(sections) > 1:
-        kept = []
+    if fmt in ("csv", "tsv") and len(per_file_reports) > 1:
+        joined_lines: list[str] = []
         header_seen = False
-        for section in sections:
-            lines = section.splitlines()
+        for file_report in per_file_reports:
+            lines = file_report.splitlines()
             if not lines:
                 continue
             if header_seen:
                 lines = lines[1:]  # drop the repeated header row
             header_seen = True
-            kept.extend(lines)
-        return "\n".join(kept) + ("\n" if kept else "")
-    return "".join(sections)
+            joined_lines.extend(lines)
+        return "\n".join(joined_lines) + ("\n" if joined_lines else "")
+    return "".join(per_file_reports)
 
 
 if __name__ == "__main__":  # pragma: no cover

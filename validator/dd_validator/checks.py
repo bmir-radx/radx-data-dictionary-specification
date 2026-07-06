@@ -21,6 +21,8 @@ from collections.abc import Iterable, Sequence
 from urllib.parse import urlsplit
 
 from dd_converter import (
+    BUILTIN_RANGES,
+    CUSTOM_TYPES,
     REQUIRED_COLUMNS,
     UnknownDatatypeError,
     resolve_datatype,
@@ -34,9 +36,15 @@ from dd_converter.grammar import (
 from .model import Finding, Level
 from .rows import RawRow
 
-# Known datatype names, for the "did you mean" suggestion. Resolving a name is
-# the source of truth for validity; this set is only used to find a
-# case-insensitive near-match to suggest.
+# Case-insensitive index of the valid datatype names, used to recover the
+# correctly-cased name from a near-miss (e.g. "Integer" -> "integer").
+# resolve_datatype() remains the source of truth for what is valid.
+_DATATYPES_BY_LOWERCASE = {
+    name.lower(): name for name in (*BUILTIN_RANGES, *CUSTOM_TYPES)
+}
+
+# Datatype names people commonly write that are not in the specification, and
+# the valid name each one usually means. From the reference Java validator.
 _DATATYPE_FIXES = {
     "bit": "boolean",
     "text": "string",
@@ -47,20 +55,14 @@ _DATATYPE_FIXES = {
 }
 
 
-def _suggest_datatype(name: str) -> str | None:
-    """Suggest a correct datatype name for an unknown ``name``, or ``None``.
+def _suggest_datatype(unknown_name: str) -> str | None:
+    """Suggest a valid datatype name for an unknown one, or ``None``.
 
-    First a case-insensitive exact match against the known names (catches a
-    miscased ``Integer``/``String``), then a small hardcoded fix map for common
-    non-XSD names. Mirrors the reference validator's ``getSuggestedName``.
+    Tries a case-insensitive match against the valid names first (catches a
+    miscased ``Integer``), then the common-mistake fix map.
     """
-    from dd_converter.datatypes import BUILTIN_RANGES, CUSTOM_TYPES
-
-    known = {*BUILTIN_RANGES, *CUSTOM_TYPES}
-    lowered = {n.lower(): n for n in known}
-    if name.lower() in lowered:
-        return lowered[name.lower()]
-    return _DATATYPE_FIXES.get(name.lower())
+    lowered = unknown_name.lower()
+    return _DATATYPES_BY_LOWERCASE.get(lowered) or _DATATYPE_FIXES.get(lowered)
 
 
 # --- header ----------------------------------------------------------------
@@ -72,44 +74,37 @@ def check_required_headers(header: Sequence[str]) -> Iterable[Finding]:
     (e.g. ``id`` for ``Id``).
     """
     present = set(header)
-    lowered = {h.lower(): h for h in header}
+    headers_by_lowercase = {h.lower(): h for h in header}
     for required in REQUIRED_COLUMNS:
         if required in present:
             continue
         message = f"required column {required!r} is missing"
-        near = lowered.get(required.lower())
-        if near is not None:
-            message += f" (did you mean the column {near!r}?)"
+        miscased = headers_by_lowercase.get(required.lower())
+        if miscased is not None:
+            message += f" (did you mean the column {miscased!r}?)"
         yield Finding(Level.ERROR, "required-header", message, column=required)
 
 
-# --- per-row helpers -------------------------------------------------------
-
-def _cell(row: RawRow, column: str, columns_present: set[str]) -> str | None:
-    """Return the (stripped) cell for ``column``, or ``None`` if the column is
-    absent from the header entirely. A blank cell returns the empty string."""
-    if column not in columns_present:
-        return None
-    return row.get(column)
-
+# --- per-row checks ---------------------------------------------------------
 
 def check_id(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Finding]:
     if "Id" not in columns_present:
         return  # required-header check already reports the missing column
     for row in rows:
-        raw = row.get("Id")
-        if raw.strip() == "":
+        # Deliberately unstripped: the whitespace checks below inspect it.
+        id_cell = row.get("Id")
+        if id_cell.strip() == "":
             yield Finding(Level.ERROR, "id-missing", "Id is missing", line=row.line, column="Id")
             continue
-        if raw.startswith(" "):
+        if id_cell.startswith(" "):
             yield Finding(
                 Level.ERROR, "id-leading-whitespace",
-                "Id starts with whitespace", line=row.line, column="Id", value=raw,
+                "Id starts with whitespace", line=row.line, column="Id", value=id_cell,
             )
-        if " " in raw:
+        if " " in id_cell:
             yield Finding(
                 Level.INFO, "id-whitespace",
-                "Id contains whitespace", line=row.line, column="Id", value=raw,
+                "Id contains whitespace", line=row.line, column="Id", value=id_cell,
             )
 
 
@@ -129,23 +124,23 @@ def check_datatype(rows: Iterable[RawRow], columns_present: set[str]) -> Iterabl
     if "Datatype" not in columns_present:
         return
     for row in rows:
-        name = row.get("Datatype").strip()
-        if name == "":
+        datatype_name = row.get("Datatype").strip()
+        if datatype_name == "":
             yield Finding(
                 Level.ERROR, "datatype-missing",
                 "Datatype is missing", line=row.line, column="Datatype",
             )
             continue
         try:
-            resolve_datatype(name)
+            resolve_datatype(datatype_name)
         except UnknownDatatypeError:
-            message = f"{name!r} is not a known datatype name"
-            suggestion = _suggest_datatype(name)
+            message = f"{datatype_name!r} is not a known datatype name"
+            suggestion = _suggest_datatype(datatype_name)
             if suggestion is not None:
                 message += f" (did you mean {suggestion!r}?)"
             yield Finding(
                 Level.ERROR, "unknown-datatype", message,
-                line=row.line, column="Datatype", value=name,
+                line=row.line, column="Datatype", value=datatype_name,
             )
 
 
@@ -153,14 +148,14 @@ def check_cardinality(rows: Iterable[RawRow], columns_present: set[str]) -> Iter
     if "Cardinality" not in columns_present:
         return
     for row in rows:
-        value = row.get("Cardinality").strip()
-        if value == "":
+        cardinality = row.get("Cardinality").strip()
+        if cardinality == "":
             continue
-        if value not in ("single", "multiple"):
+        if cardinality not in ("single", "multiple"):
             yield Finding(
                 Level.ERROR, "invalid-cardinality",
-                f"invalid cardinality {value!r} (expected 'single' or 'multiple')",
-                line=row.line, column="Cardinality", value=value,
+                f"invalid cardinality {cardinality!r} (expected 'single' or 'multiple')",
+                line=row.line, column="Cardinality", value=cardinality,
             )
 
 
@@ -168,16 +163,16 @@ def check_pattern(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable
     if "Pattern" not in columns_present:
         return
     for row in rows:
-        value = row.get("Pattern")
-        if value.strip() == "":
+        pattern = row.get("Pattern")
+        if pattern.strip() == "":
             continue
         try:
-            re.compile(value)
+            re.compile(pattern)
         except re.error as exc:
             yield Finding(
                 Level.ERROR, "malformed-pattern",
                 f"pattern is not a valid regular expression: {exc}",
-                line=row.line, column="Pattern", value=value,
+                line=row.line, column="Pattern", value=pattern,
             )
 
 
@@ -185,16 +180,16 @@ def check_enumeration(rows: Iterable[RawRow], columns_present: set[str]) -> Iter
     if "Enumeration" not in columns_present:
         return
     for row in rows:
-        value = row.get("Enumeration")
-        if value.strip() == "":
+        enumeration = row.get("Enumeration")
+        if enumeration.strip() == "":
             continue
         try:
-            parse_enumeration(value)
+            parse_enumeration(enumeration)
         except ParseError as exc:
             yield Finding(
                 Level.ERROR, "malformed-enumeration",
                 f"enumeration is malformed: {exc}",
-                line=row.line, column="Enumeration", value=value,
+                line=row.line, column="Enumeration", value=enumeration,
             )
 
 
@@ -204,16 +199,16 @@ def check_missing_value_codes(
     if "MissingValueCodes" not in columns_present:
         return
     for row in rows:
-        value = row.get("MissingValueCodes")
-        if value.strip() == "":
+        codes = row.get("MissingValueCodes")
+        if codes.strip() == "":
             continue
         try:
-            parse_missing_value_codes(value)
+            parse_missing_value_codes(codes)
         except ParseError as exc:
             yield Finding(
                 Level.ERROR, "malformed-missing-value-codes",
                 f"missing value codes are malformed: {exc}",
-                line=row.line, column="MissingValueCodes", value=value,
+                line=row.line, column="MissingValueCodes", value=codes,
             )
 
 
@@ -221,16 +216,16 @@ def check_see_also(rows: Iterable[RawRow], columns_present: set[str]) -> Iterabl
     if "SeeAlso" not in columns_present:
         return
     for row in rows:
-        value = row.get("SeeAlso").strip()
-        if value == "":
+        url = row.get("SeeAlso").strip()
+        if url == "":
             continue
         # An absolute URL must have a scheme (e.g. https). urlsplit does not
         # raise on ordinary strings, so we check the parsed scheme directly.
-        if not urlsplit(value).scheme:
+        if not urlsplit(url).scheme:
             yield Finding(
                 Level.ERROR, "malformed-see-also",
                 "SeeAlso is not an absolute URL",
-                line=row.line, column="SeeAlso", value=value,
+                line=row.line, column="SeeAlso", value=url,
             )
 
 
@@ -246,16 +241,16 @@ def check_duplicate_ids(
     """
     if "Id" not in columns_present:
         return
-    first_seen: dict[str, int] = {}
+    first_seen_line: dict[str, int] = {}
     for row in rows:
         row_id = row.get("Id").strip()
         if row_id == "":
             continue
-        if row_id in first_seen:
+        if row_id in first_seen_line:
             yield Finding(
                 Level.ERROR, "duplicate-id",
-                f"duplicate Id {row_id!r} (first seen on line {first_seen[row_id]})",
+                f"duplicate Id {row_id!r} (first seen on line {first_seen_line[row_id]})",
                 line=row.line, column="Id", value=row_id,
             )
         else:
-            first_seen[row_id] = row.line
+            first_seen_line[row_id] = row.line

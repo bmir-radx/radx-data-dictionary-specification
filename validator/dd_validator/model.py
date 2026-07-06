@@ -27,6 +27,7 @@ class Level(enum.Enum):
 
     @property
     def order(self) -> int:
+        """Sort rank: lower is more severe (ERROR sorts first)."""
         return self.value
 
     def __str__(self) -> str:

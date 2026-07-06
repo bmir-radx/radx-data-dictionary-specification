@@ -36,12 +36,15 @@ def render(findings: Sequence[Finding], fmt: str = "text", *, file: str = "") ->
 
 
 def _render_text(findings: Sequence[Finding], file: str) -> str:
-    prefix = f"{file}:" if file else ""
     lines = []
-    for f in findings:
-        loc = f"{prefix}{f.line}" if f.line is not None else (file or "<file>")
-        line = f"{loc}: {f.level} {f.check} — {f.message}"
-        lines.append(line)
+    for finding in findings:
+        # "file.csv:12" for a row finding; just the file name for a
+        # whole-file finding (e.g. a missing header) with no line number.
+        if finding.line is not None:
+            location = f"{file}:{finding.line}" if file else str(finding.line)
+        else:
+            location = file or "<file>"
+        lines.append(f"{location}: {finding.level} {finding.check} — {finding.message}")
     return "\n".join(lines) + ("\n" if lines else "")
 
 
@@ -49,15 +52,15 @@ def _render_table(findings: Sequence[Finding], file: str, *, delimiter: str) -> 
     buffer = io.StringIO()
     writer = csv.writer(buffer, delimiter=delimiter, lineterminator="\n")
     writer.writerow(_TABLE_HEADER)
-    for f in findings:
+    for finding in findings:
         writer.writerow(
             [
                 file,
-                "" if f.line is None else f.line,
-                f.level.name,
-                f.check,
-                f.message,
-                f.value or "",
+                "" if finding.line is None else finding.line,
+                finding.level.name,
+                finding.check,
+                finding.message,
+                finding.value or "",
             ]
         )
     return buffer.getvalue()
@@ -68,14 +71,14 @@ def _render_json(findings: Sequence[Finding], file: str) -> str:
         "file": file,
         "findings": [
             {
-                "level": f.level.name,
-                "check": f.check,
-                "message": f.message,
-                "line": f.line,
-                "column": f.column,
-                "value": f.value,
+                "level": finding.level.name,
+                "check": finding.check,
+                "message": finding.message,
+                "line": finding.line,
+                "column": finding.column,
+                "value": finding.value,
             }
-            for f in findings
+            for finding in findings
         ],
     }
     return json.dumps(payload, indent=2) + "\n"
