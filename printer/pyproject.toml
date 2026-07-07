@@ -12,10 +12,11 @@ license = { text = "BSD-2-Clause" }
 dependencies = [
     "jinja2>=3",
     "markdown-it-py[linkify]>=3",
-    # The data-dictionary reader/loader is reused from the sibling converter.
+    # Dictionaries are loaded through the sibling high-level API package.
     # It is not on PyPI, so depend on it directly from this repository; this
-    # lets `pip/pipx install <printer>` pull the converter in one step.
-    "dd-converter @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter",
+    # lets `pip/pipx install <printer>` pull it (and the converter it wraps)
+    # in one step.
+    "dd-api @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=api",
 ]
 
 [project.optional-dependencies]

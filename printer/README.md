@@ -21,9 +21,9 @@ pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specificatio
 On first use of pipx, its bin directory may not be on your `PATH` (pipx warns if
 so). Run `pipx ensurepath` once — then open a new terminal — to add it.
 
-The printer depends on the converter package (for reading dictionaries); the
-command above pulls it in automatically. To install into an existing environment
-instead of an isolated one, use `pip` in place of `pipx`.
+The printer depends on the sibling [API package](../api/) (for loading
+dictionaries); the command above pulls it in automatically. To install into an
+existing environment instead of an isolated one, use `pip` in place of `pipx`.
 
 ## Use it
 
