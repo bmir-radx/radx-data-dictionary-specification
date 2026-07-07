@@ -31,16 +31,22 @@ logger = logging.getLogger(__name__)
 _NONE_OF_THE_ABOVE = re.compile(r"@NONEOFTHEABOVE\s*=\s*['\"](\d+)((?:,\d+)*)['\"]")
 
 
-def convert_redcap(source: str | Path | TextIO, *, provenance: str = "") -> DataDictionary:
+def convert_redcap(
+    source: str | Path | TextIO, *, provenance: str = "", allow_duplicates: bool = False
+) -> DataDictionary:
     """Convert a REDCap data dictionary CSV into a :class:`DataDictionary`.
 
     ``source`` may be a path or an open text file; ``provenance`` fills every
     element's Provenance column (e.g. the study or instrument name). Raises
     :class:`~dd_redcap.ConversionError` when the file is not a REDCap
-    dictionary, and ``ValueError`` when two rows share a Variable name.
+    dictionary, and ``ValueError`` when two rows share a Variable name —
+    unless ``allow_duplicates`` is true, in which case the first occurrence
+    is kept and later ones are skipped with a logged warning (multi-form
+    exports commonly repeat shared fields on every form).
     """
     sheet = read_sheet(source)
     elements: list[DataElement] = []
+    seen_ids: set[str] = set()
     current_section = ""
     for row in sheet.rows:
         field_type = sheet.get(row, headers.FIELD_TYPE)
@@ -54,6 +60,13 @@ def convert_redcap(source: str | Path | TextIO, *, provenance: str = "") -> Data
         if not field_id:
             logger.warning("Skipping a row with no Variable / Field Name value.")
             continue
+        if field_id in seen_ids:
+            if allow_duplicates:
+                logger.warning(
+                    "Duplicate Variable %r: keeping the first occurrence.", field_id
+                )
+                continue
+        seen_ids.add(field_id)
         elements.append(_element_from_row(sheet, row, field_id, current_section, provenance))
     return DataDictionary(_drop_dangling_preconditions(elements))
 

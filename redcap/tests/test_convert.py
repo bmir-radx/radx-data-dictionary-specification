@@ -195,3 +195,12 @@ def test_windows_1252_export_reads(tmp_path):
     path.write_bytes("Variable,Label,Type\nage,Age\xa0(years),text\n".encode("cp1252"))
     dd = convert_redcap(path)
     assert dd["age"].label == "Age\xa0(years)"
+
+
+def test_duplicate_variables_raise_unless_allowed():
+    rows = ["a,form1,,text,A,,,,,,,,,,,,,", "a,form2,,text,A again,,,,,,,,,,,,,"]
+    with pytest.raises(ValueError, match="duplicate"):
+        _convert(rows)
+    dd = _convert(rows, allow_duplicates=True)
+    assert dd.ids == ("a",)
+    assert dd["a"].label == "A"  # first occurrence wins

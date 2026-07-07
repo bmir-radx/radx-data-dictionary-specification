@@ -21,3 +21,4 @@ converter/examples/*
 !converter/examples/up.dd.csv
 !converter/examples/up.yaml
 !converter/examples/up.redcap.csv
+!converter/examples/rad.redcap.csv

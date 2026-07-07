@@ -28,6 +28,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "--provenance", default="",
         help="Text for every element's Provenance column (e.g. the study name).",
     )
+    parser.add_argument(
+        "--allow-duplicates", action="store_true",
+        help="Tolerate a repeated Variable name (keep the first, skip later ones).",
+    )
     return parser
 
 
@@ -38,7 +42,9 @@ def main(argv=None) -> int:
         return 2
 
     try:
-        dictionary = convert_redcap(args.input, provenance=args.provenance)
+        dictionary = convert_redcap(
+            args.input, provenance=args.provenance, allow_duplicates=args.allow_duplicates
+        )
     except (ConversionError, ValueError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1

@@ -67,8 +67,9 @@ column is rejected with a clear error.
 
 ## Worked example
 
-The repository carries a complete real-world run of this tool: the RADx-UP
-REDCap export [`up.redcap.csv`](../converter/examples/up.redcap.csv)
+The repository carries two complete real-world runs of this tool (`up` and
+`rad`; the latter needs `--allow-duplicates`, since multi-form exports repeat
+shared fields). For instance the RADx-UP export [`up.redcap.csv`](../converter/examples/up.redcap.csv)
 converts to [`up.dd.csv`](../converter/examples/up.dd.csv) (159 elements,
 50 machine-readable preconditions from branching logic), whose LinkML
 schema is [`up.yaml`](../converter/examples/up.yaml).
