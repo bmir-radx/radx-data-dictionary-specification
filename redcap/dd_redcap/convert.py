@@ -60,12 +60,11 @@ def convert_redcap(
         if not field_id:
             logger.warning("Skipping a row with no Variable / Field Name value.")
             continue
-        if field_id in seen_ids:
-            if allow_duplicates:
-                logger.warning(
-                    "Duplicate Variable %r: keeping the first occurrence.", field_id
-                )
-                continue
+        # A repeated Variable is skipped only under allow_duplicates; otherwise
+        # it flows through so the DataDictionary constructor raises.
+        if field_id in seen_ids and allow_duplicates:
+            logger.warning("Duplicate Variable %r: keeping the first occurrence.", field_id)
+            continue
         seen_ids.add(field_id)
         elements.append(_element_from_row(sheet, row, field_id, current_section, provenance))
     return DataDictionary(_drop_dangling_preconditions(elements))
