@@ -145,3 +145,32 @@ def test_strict_bound_emits_inclusive_bound_plus_not_equal():
     severity = condition["slot_conditions"]["severity"]
     assert severity["minimum_value"] == 2
     assert severity["none_of"][0]["equals_string"] == "2"
+
+
+def test_emitted_yaml_with_many_rules_is_valid_yaml():
+    """Regression: slot numbering/spacing must not decorate the rules block.
+
+    A rule whose description wraps (long slot name) had a counter comment
+    appended to its first physical line, producing unparseable YAML."""
+    import io
+
+    import yaml
+
+    from dd_converter import emit_schema, read_data_dictionary
+
+    long_id = "self_reported_measurement_with_a_really_long_identifier"
+    text = (
+        "Id,Label,Datatype,Precondition\n"
+        "gate,Gate,integer,\n"
+        + "".join(f'{long_id}_{i},L{i},integer,"gate = ""1"""\n' for i in range(3))
+    )
+    schema_yaml = emit_schema(read_data_dictionary(io.StringIO(text)))
+    schema = yaml.safe_load(schema_yaml)  # must parse
+    assert len(schema["classes"]["Record"]["rules"]) == 3
+    # Counters must appear only on slots, never inside the rules block.
+    in_rules = False
+    for line in schema_yaml.splitlines():
+        if line.strip() == "rules:":
+            in_rules = True
+        if in_rules:
+            assert "data elements" not in line, line

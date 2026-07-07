@@ -765,6 +765,40 @@ def _number_entries_at(
     return "\n".join(out)
 
 
+def _transform_attributes_blocks(body: str, transform) -> str:
+    """Apply ``transform`` to the lines of each ``attributes:`` block only.
+
+    The classes body also contains sibling blocks (``rules:``) whose nested
+    keys sit at the same indentation as slots, so slot-level decoration must
+    be confined to the attributes block. A block starts at a class-level
+    ``attributes:`` line (indent 4) and ends at the next non-blank line at
+    class-key indentation or above.
+    """
+    lines = body.split("\n")
+    out: list[str] = []
+    block: list[str] | None = None
+
+    def flush() -> None:
+        nonlocal block
+        if block is not None:
+            out.extend(transform("\n".join(block)).split("\n"))
+            block = None
+
+    for line in lines:
+        stripped = line.strip()
+        indent = len(line) - len(line.lstrip(" "))
+        if block is not None and stripped and indent <= 4:
+            flush()
+        if block is not None:
+            block.append(line)
+        else:
+            out.append(line)
+            if stripped == "attributes:" and indent == 4:
+                block = []
+    flush()
+    return "\n".join(out)
+
+
 def _render(as_dict: dict) -> str:
     """Render the schema dict to YAML with section comments and blank lines."""
     scalar_header: list[str] = []
@@ -780,17 +814,23 @@ def _render(as_dict: dict) -> str:
         comment = _SECTION_COMMENTS[key]
         body = _dump_yaml({key: value}).rstrip("\n")
         if key == "classes":
-            # Slots live two levels down under `attributes:`; space them there.
-            body = _space_entries_at(body, indent=_SLOT_INDENT)
-            # Number the class(es) at the section indent and the slots deeper.
-            body = _number_entries_at(
-                body, indent=_SECTION_ENTRY_INDENT, total=len(value or {}), label="classes"
-            )
+            # Slots live two levels down under `attributes:`. Space and number
+            # them there — and ONLY there: a class's `rules:` block nests
+            # mapping keys at the same indentation, and decorating those would
+            # inflate the counters and break wrapped description lines.
             slot_total = sum(
                 len((cls or {}).get("attributes") or {}) for cls in value.values()
             )
+            body = _transform_attributes_blocks(
+                body,
+                lambda block: _number_entries_at(
+                    _space_entries_at(block, indent=_SLOT_INDENT),
+                    indent=_SLOT_INDENT, total=slot_total, label="data elements",
+                ),
+            )
+            # Number the class(es) themselves at the section indent.
             body = _number_entries_at(
-                body, indent=_SLOT_INDENT, total=slot_total, label="data elements"
+                body, indent=_SECTION_ENTRY_INDENT, total=len(value or {}), label="classes"
             )
         elif key in _SPACED_SECTIONS:
             body = _space_entries_at(body, indent=_SECTION_ENTRY_INDENT)
