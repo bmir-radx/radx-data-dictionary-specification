@@ -12,8 +12,12 @@
 #     via `in_subset`.
 #   * Ontology terms are kept as CURIEs; their prefixes are declared in
 #     `prefixes` (OBO id spaces expand under purl.obolibrary.org).
+#   * A field with a Precondition contributes class `rules`: the field must be
+#     blank unless the condition holds (and, if Required, must have a value
+#     when it does). The raw Precondition cell is kept in the `precondition`
+#     annotation.
 #   * Machine-oriented annotations (`unit_raw`, `value_datatype`, `provenance`,
-#     `original_id`) appear at the end of each slot.
+#     `original_id`, `precondition`, `required`) appear at the end of each slot.
 #
 # See the Data Dictionary Specification for the source field definitions:
 # https://github.com/bmir-radx/radx-data-dictionary-specification
