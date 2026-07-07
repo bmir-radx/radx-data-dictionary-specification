@@ -22,7 +22,7 @@ Round-tripping — a dictionary can be read from, and written to, both of the
 toolkit's formats::
 
     dd = DataDictionary.load("my_dictionary.csv")     # CSV in
-    dd = DataDictionary.from_linkml("my_schema.yaml") # generated LinkML in
+    dd = DataDictionary.from_linkml("my_schema.yaml") # LinkML schema in
     csv_text = dd.to_csv()                            # canonical CSV out
     schema_yaml = dd.to_linkml()                      # LinkML out
 
@@ -59,13 +59,13 @@ from dd_converter import (
     resolve_datatype,
     schema_to_rows,
 )
-from dd_converter.reverse import write_csv
 from dd_converter.grammar import (
     EnumItem,
     parse_enumeration,
     parse_missing_value_codes,
     parse_terms,
 )
+from dd_converter.reverse import write_csv
 
 
 @dataclass(frozen=True)
@@ -167,9 +167,9 @@ class DataElement:
 class DataDictionary:
     """A data dictionary: an ordered, id-indexed collection of data elements.
 
-    Create one with :meth:`load` (from a CSV file) or :meth:`from_rows` (from
-    rows already read some other way). The collection protocol works the way
-    you would expect::
+    Create one with :meth:`load` (from a CSV file), :meth:`from_linkml` (from
+    a LinkML schema), or :meth:`from_rows` (from rows already read some other
+    way). The collection protocol works the way you would expect::
 
         len(dd)                 # number of data elements
         for element in dd: ...  # iterate in file order
@@ -185,9 +185,9 @@ class DataDictionary:
     def __init__(self, elements: Sequence[DataElement]):
         """Build a dictionary from elements directly.
 
-        Ids must be unique — a duplicate raises :class:`ValueError` (the
-        normal constructors, :meth:`load` and :meth:`from_rows`, already
-        guarantee this).
+        Ids must be unique — a duplicate raises :class:`ValueError`. (This is
+        the backstop for every constructor; :meth:`load` additionally rejects
+        duplicates while reading, with the line numbers in its message.)
         """
         self._elements = tuple(elements)
         self._by_id: dict[str, DataElement] = {}
@@ -210,9 +210,10 @@ class DataDictionary:
         ``source`` may be a path or an open text file. Raises
         :class:`~dd_converter.reader.ReadError` on the first problem found —
         a malformed header, a blank required cell, a duplicate ``Id``, an
-        unknown datatype name, or a malformed cell — with the line number in
-        the message. When ``allow_duplicates`` is true, rows repeating an
-        earlier ``Id`` are skipped (with a logged warning) instead of raising.
+        unknown datatype name, or a malformed cell. Row-level problems name
+        the line; header-level problems have no single line to name. When
+        ``allow_duplicates`` is true, rows repeating an earlier ``Id`` are
+        skipped (with a logged warning) instead of raising.
         """
         return cls.from_rows(read_data_dictionary(source, allow_duplicates=allow_duplicates))
 
@@ -337,8 +338,8 @@ class DataDictionary:
 
         Produces the same output as the ``dd-to-linkml`` command; ``options``
         controls the schema's name, id, and class name. Only available for
-        dictionaries built from rows (:meth:`load` / :meth:`from_rows`), which
-        is how they are normally made.
+        dictionaries built by the loaders (:meth:`load`, :meth:`from_linkml`,
+        :meth:`from_rows`), which is how they are normally made.
         """
         rows = [element.row for element in self._elements]
         if any(row is None for row in rows):
@@ -347,42 +348,6 @@ class DataDictionary:
                 "hand-built DataElements with no row."
             )
         return emit_schema(rows, options)
-
-
-# --- element -> cells serialisation --------------------------------------------
-
-def _enum_items_to_cell(items: Sequence[EnumItem]) -> str:
-    """Serialise enumeration items back to the ``"value"=[label](iri)`` cell
-    notation (canonical spacing, matching the converter's round-trip form)."""
-    parts = []
-    for item in items:
-        text = f'"{item.value}"=[{item.label}]'
-        if item.iri:
-            text += f"({item.iri})"
-        parts.append(text)
-    return " | ".join(parts)
-
-
-def _element_to_cells(element: DataElement) -> dict[str, str]:
-    """Serialise one element to a dict of column name -> cell text."""
-    cells = dict.fromkeys(KNOWN_COLUMNS, "")
-    cells["Id"] = element.id
-    cells["Aliases"] = "|".join(element.aliases)
-    cells["Label"] = element.label
-    cells["Description"] = element.description or ""
-    cells["Section"] = element.section or ""
-    cells["Cardinality"] = element.cardinality
-    cells["Terms"] = " ".join(element.terms)
-    cells["Datatype"] = element.datatype
-    cells["Pattern"] = element.pattern or ""
-    cells["Unit"] = element.unit or ""
-    cells["Enumeration"] = _enum_items_to_cell(element.enumeration)
-    cells["MissingValueCodes"] = _enum_items_to_cell(element.missing_value_codes)
-    cells["Examples"] = "|".join(element.examples)
-    cells["Notes"] = element.notes or ""
-    cells["Provenance"] = element.provenance or ""
-    cells["SeeAlso"] = element.see_also or ""
-    return cells
 
 
 # --- row -> element parsing ---------------------------------------------------
@@ -452,3 +417,43 @@ def _element_from_row(row: Row) -> DataElement:
         line=row.line,
         row=row,
     )
+
+
+# --- element -> cells serialisation --------------------------------------------
+
+def _enum_items_to_cell(items: Sequence[EnumItem]) -> str:
+    """Serialise enumeration items back to the ``"value"=[label](iri)`` cell
+    notation (canonical spacing, matching the converter's round-trip form).
+
+    Values are written as-is, without escaping: a hand-built value containing
+    a double quote would not re-parse (parsed values never contain one).
+    """
+    parts = []
+    for item in items:
+        text = f'"{item.value}"=[{item.label}]'
+        if item.iri:
+            text += f"({item.iri})"
+        parts.append(text)
+    return " | ".join(parts)
+
+
+def _element_to_cells(element: DataElement) -> dict[str, str]:
+    """Serialise one element to a dict of column name -> cell text."""
+    cells = dict.fromkeys(KNOWN_COLUMNS, "")
+    cells["Id"] = element.id
+    cells["Aliases"] = "|".join(element.aliases)
+    cells["Label"] = element.label
+    cells["Description"] = element.description or ""
+    cells["Section"] = element.section or ""
+    cells["Cardinality"] = element.cardinality
+    cells["Terms"] = " ".join(element.terms)
+    cells["Datatype"] = element.datatype
+    cells["Pattern"] = element.pattern or ""
+    cells["Unit"] = element.unit or ""
+    cells["Enumeration"] = _enum_items_to_cell(element.enumeration)
+    cells["MissingValueCodes"] = _enum_items_to_cell(element.missing_value_codes)
+    cells["Examples"] = "|".join(element.examples)
+    cells["Notes"] = element.notes or ""
+    cells["Provenance"] = element.provenance or ""
+    cells["SeeAlso"] = element.see_also or ""
+    return cells
