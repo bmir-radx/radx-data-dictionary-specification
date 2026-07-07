@@ -1,0 +1,256 @@
+Id,Label,Description,Section,Terms,Cardinality,Datatype,Pattern,Unit,Enumeration,MissingValueCodes,Notes,Provenance,SeeAlso
+user_id,User ID,"The `user_id` data element records response to the prompt, _""User ID""_.
+
+
+
+",,,single,string,,,,,,,
+race_black,Black,"The `race_black` data element records response to the prompt, _""Black""_.
+
+Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+
+",,,single,integer,,,"""0""=[Unchecked]|""1""=[Checked]",,,,
+race_white,White,"The `race_white` data element records response to the prompt, _""White""_.
+
+Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+
+",,,single,integer,,,"""0""=[Unchecked]|""1""=[Checked]",,,,
+race_asian,Asian,"The `race_asian` data element records response to the prompt, _""Asian""_.
+
+Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+
+",,,single,integer,,,"""0""=[Unchecked]|""1""=[Checked]",,,,
+race_pacisl,Pacific Islander,"The `race_pacisl` data element records response to the prompt, _""Pacific Islander""_.
+
+Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+
+",,,single,integer,,,"""0""=[Unchecked]|""1""=[Checked]",,,,
+race_amind,American Indian,"The `race_amind` data element records response to the prompt, _""American Indian""_.
+
+Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+
+",,,single,integer,,,"""0""=[Unchecked]|""1""=[Checked]",,,,
+race_other,Other,"The `race_other` data element records response to the prompt, _""Other""_.
+
+Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+
+",,,single,integer,,,"""0""=[Unchecked]|""1""=[Checked]",,,,
+race_dk,Don't know,"The `race_dk` data element records response to the prompt, _""Don't know""_.
+
+Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+
+",,,single,integer,,,"""0""=[Unchecked]|""1""=[Checked]",,,,
+ethnicity,Are you of Hispanic or Latino origin?,"The `ethnicity` data element records response to the prompt, _""Are you of Hispanic or Latino origin?""_.
+
+Values for this data element are integers that are restricted to the list of 7 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes: Mexican, Mexican American Or Chicano]|""2""=[Yes: Puerto Rican]|""3""=[Yes: Cuban]|""77""=[Don't Know]|""88""=[Prefer Not To Answer]|""99""=[Yes: Other Or Mixed Hispanic, Latino Or Spanish Origin]",,,,
+age_at_registration,Age,"The `age_at_registration` data element records response to the prompt, _""Age""_.
+
+Values for this data element are strings that are restricted to the list of 1 permissible string values.
+
+",,,single,string,,,"""BEST""=[BEST]",,,,
+sex,Gender,"The `sex` data element records response to the prompt, _""Gender""_.
+
+Values for this data element are integers that are restricted to the list of 3 permissible integer values.
+
+",,,single,integer,,,"""1""=[Male]|""2""=[Female]|""88""=[Prefer Not To Answer]",,,,
+education,What is the highest grade or level of school you have completed or the highest degree you have received?,"The `education` data element records response to the prompt, _""What is the highest grade or level of school you have completed or the highest degree you have received?""_.
+
+Values for this data element are strings that are restricted to the list of 11 permissible string values.
+
+",,,single,string,,,"""no_hs""=[no_hs]|""hs""=[hs]|""ged""=[ged]|""some_college""=[some_college]|""aa""=[aa]|""bach""=[bach]|""master""=[master]|""prof""=[prof]|""doc""=[doc]|""refused""=[refused]|""dk""=[dk]",,,,
+zip,Zipcode,"The `zip` data element records response to the prompt, _""Zipcode""_.
+
+Values for this data element are strings that are restricted to the list of 1 permissible string values.
+
+",,,single,string,,,"""BEST""=[BEST]",,,,
+working,"We would like to know about what you do-are you working now, looking for work, retired, keeping house, a student, or what?","The `working` data element records response to the prompt, _""We would like to know about what you do-are you working now, looking for work, retired, keeping house, a student, or what?""_.
+
+Values for this data element are integers that are restricted to the list of 8 permissible integer values.
+
+",,,single,integer,,,"""1""=[Working Now]|""2""=[Only Temporarily Laid Off, Sick Leave, Or Maternity Leave]|""3""=[Looking For Work, Unemployed]|""4""=[Retired]|""5""=[Disabled, Permanently, Or Temporarily]|""6""=[Keeping House]|""7""=[Student]|""99""=[Other (Specify)]",,,,
+cond_prev_activity,Do you have any serious physical or mental condition(s) that limit your ability to perform daily activities?,"The `cond_prev_activity` data element records response to the prompt, _""Do you have any serious physical or mental condition(s) that limit your ability to perform daily activities?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+hearing,Are you deaf or do you have serious difficulty hearing?,"The `hearing` data element records response to the prompt, _""Are you deaf or do you have serious difficulty hearing?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+vision,"Are you blind or do you have serious difficulty seeing, even when wearing glasses?","The `vision` data element records response to the prompt, _""Are you blind or do you have serious difficulty seeing, even when wearing glasses?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+memory,"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years or older)","The `memory` data element records response to the prompt, _""Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years or older)""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+walk_stairs,Do you have serious difficulty walking or climbing stairs? (5 years or older),"The `walk_stairs` data element records response to the prompt, _""Do you have serious difficulty walking or climbing stairs? (5 years or older)""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+dressing_bathing,Do you have difficulty dressing or bathing? (5 years or older),"The `dressing_bathing` data element records response to the prompt, _""Do you have difficulty dressing or bathing? (5 years or older)""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+doctor_shopping,"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping? (15 years old or older)","The `doctor_shopping` data element records response to the prompt, _""Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping? (15 years old or older)""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+smoking,"Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?","The `smoking` data element records response to the prompt, _""Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+alcohol,How often did you have a drink containing alcohol in the past year?,"The `alcohol` data element records response to the prompt, _""How often did you have a drink containing alcohol in the past year?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[Never]|""1""=[Monthly Or Less]|""2""=[Two To Four Times Per Month]|""3""=[Two To Three Times Per Week]|""4""=[Four Or More Times Per Week]",,,,
+asthma,"Asthma, to the point that you use inhalers daily or have been to the hospital for your asthma?","The `asthma` data element records response to the prompt, _""Asthma, to the point that you use inhalers daily or have been to the hospital for your asthma?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+cancer,Cancer (including leukemia or lymphoma) undergoing active treatment?,"The `cancer` data element records response to the prompt, _""Cancer (including leukemia or lymphoma) undergoing active treatment?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+ckd,Decreased kidney (renal) function or kidney (renal) failure?,"The `ckd` data element records response to the prompt, _""Decreased kidney (renal) function or kidney (renal) failure?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes, But Not On Dialysis]|""2""=[Yes And On Dialysis]|""3""=[Yes, I've Had A Kidney Transplant And My Kidney Function Is Now Normal]|""77""=[Don't Know]",,,,
+diabetes,Diabetes? Do not include pre-diabetes.,"The `diabetes` data element records response to the prompt, _""Diabetes? Do not include pre-diabetes.""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+hbp,High blood pressure or hypertension (except that occurred during pregnancy and did not last after pregnancy)?,"The `hbp` data element records response to the prompt, _""High blood pressure or hypertension (except that occurred during pregnancy and did not last after pregnancy)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+mental_illness,"Have you ever been told by a physician, psychologist, or healthcare provider that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia, or other)?","The `mental_illness` data element records response to the prompt, _""Have you ever been told by a physician, psychologist, or healthcare provider that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia, or other)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+sc_anemia,Have you ever been told by a physician or healthcare provider that you have sickle cell anemia?,"The `sc_anemia` data element records response to the prompt, _""Have you ever been told by a physician or healthcare provider that you have sickle cell anemia?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+coronary_artery_disease,Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?,"The `coronary_artery_disease` data element records response to the prompt, _""Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+heart_attack,A heart attack (myocardial infarction)?,"The `heart_attack` data element records response to the prompt, _""A heart attack (myocardial infarction)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+chf,"Congestive Heart failure (CHF, Heart Failure)?","The `chf` data element records response to the prompt, _""Congestive Heart failure (CHF, Heart Failure)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+stroke,Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?,"The `stroke` data element records response to the prompt, _""Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+immunodeficiency,Immunodeficiency (NOT including HIV)?,"The `immunodeficiency` data element records response to the prompt, _""Immunodeficiency (NOT including HIV)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+hiv,Chronic HIV infection?,"The `hiv` data element records response to the prompt, _""Chronic HIV infection?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+anemia,Anemia or other blood disorder (do not include leukemia or lymphoma)?,"The `anemia` data element records response to the prompt, _""Anemia or other blood disorder (do not include leukemia or lymphoma)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+premature,History of premature birth (being born before 37 weeks of pregnancy),"The `premature` data element records response to the prompt, _""History of premature birth (being born before 37 weeks of pregnancy)""_.
+
+Values for this data element are integers that are restricted to the list of 6 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes, Between 32 - 37 Weeks]|""2""=[Yes, Between 28-32 Weeks]|""3""=[Yes, Less Than 28 Weeks]|""4""=[Yes, But Not Sure How Many Weeks]|""77""=[Dont Know]",,,,
+chd,CHD,"The `chd` data element records response to the prompt, _""CHD""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+cf,CF,"The `cf` data element records response to the prompt, _""CF""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+cld_bpd,CLD BPD,"The `cld_bpd` data element records response to the prompt, _""CLD BPD""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+copd,"COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?","The `copd` data element records response to the prompt, _""COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+cough,A cough (worse than usual),"The `cough` data element records response to the prompt, _""A cough (worse than usual)""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+fever_chills,Symptoms of fever or chills,"The `fever_chills` data element records response to the prompt, _""Symptoms of fever or chills""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+shortness_of_breath,Shortness of breath,"The `shortness_of_breath` data element records response to the prompt, _""Shortness of breath""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+muscle_aches,Muscle aches (worse than usual),"The `muscle_aches` data element records response to the prompt, _""Muscle aches (worse than usual)""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+unable_to_taste_or_smell,Unable to taste or smell,"The `unable_to_taste_or_smell` data element records response to the prompt, _""Unable to taste or smell""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+nausea_vomiting_diarrhea,"Nausea, vomiting or diarrhea","The `nausea_vomiting_diarrhea` data element records response to the prompt, _""Nausea, vomiting or diarrhea""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+red_eyes,Red or painful eyes,"The `red_eyes` data element records response to the prompt, _""Red or painful eyes""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+high_temp,A temperature greater than 100.4 °F,"The `high_temp` data element records response to the prompt, _""A temperature greater than 100.4 °F""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,
+no_symptoms,None of the above,"The `no_symptoms` data element records response to the prompt, _""None of the above""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",,,single,integer,,,"""0""=[No]|""1""=[Yes]|""77""=[Dont Know]|""88""=[Refused/Na]|""99""=[Other]",,,,

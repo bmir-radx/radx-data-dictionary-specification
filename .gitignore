@@ -14,3 +14,9 @@ converter/examples/*
 !converter/examples/gcb.yaml
 !converter/examples/rad.dd.csv
 !converter/examples/rad.yaml
+!converter/examples/dht.dd.csv
+!converter/examples/dht.yaml
+!converter/examples/tech.dd.csv
+!converter/examples/tech.yaml
+!converter/examples/up.dd.csv
+!converter/examples/up.yaml

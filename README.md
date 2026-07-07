@@ -58,13 +58,16 @@ options and the mapping details.
 
 ### Worked examples
 
-Two real data dictionaries and the LinkML schemas the converter produces from
+Five real data dictionaries and the LinkML schemas the converter produces from
 them:
 
 | Data dictionary (input) | Generated LinkML schema (output) |
 | --- | --- |
 | [`gcb.dd.csv`](converter/examples/gcb.dd.csv) | [`gcb.yaml`](converter/examples/gcb.yaml) |
 | [`rad.dd.csv`](converter/examples/rad.dd.csv) | [`rad.yaml`](converter/examples/rad.yaml) |
+| [`dht.dd.csv`](converter/examples/dht.dd.csv) | [`dht.yaml`](converter/examples/dht.yaml) |
+| [`tech.dd.csv`](converter/examples/tech.dd.csv) | [`tech.yaml`](converter/examples/tech.yaml) |
+| [`up.dd.csv`](converter/examples/up.dd.csv) | [`up.yaml`](converter/examples/up.yaml) |
 
 ## Printer
 

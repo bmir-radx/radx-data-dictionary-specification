@@ -180,9 +180,8 @@ character.
 ## Worked examples
 
 The [`examples/`](examples/) folder contains real data dictionaries and the
-schemas produced from them: [`gcb.dd.csv`](examples/gcb.dd.csv) →
-[`gcb.yaml`](examples/gcb.yaml), and [`rad.dd.csv`](examples/rad.dd.csv) →
-[`rad.yaml`](examples/rad.yaml).
+schemas produced from them: `gcb`, `rad`, `dht`, `tech` and `up` — each
+`<name>.dd.csv` → `<name>.yaml`.
 
 ## Library use
 
