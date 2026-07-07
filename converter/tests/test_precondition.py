@@ -174,3 +174,6 @@ def test_emitted_yaml_with_many_rules_is_valid_yaml():
             in_rules = True
         if in_rules:
             assert "data elements" not in line, line
+    # Each rule gets a comment block and a description naming the condition.
+    assert '# Rule 1 of 3 — ' in schema_yaml
+    assert 'blank unless gate = "1"' in schema_yaml

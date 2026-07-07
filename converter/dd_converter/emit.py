@@ -199,6 +199,9 @@ class Emitter:
         # Subset (Section) name -> list of slot names in it (for the section
         # comment block above each subset definition).
         self._section_users: dict[str, list] = {}
+        # One human-readable summary per emitted rule, in emission order (for
+        # the comment block above each rule in the rendered YAML).
+        self._rule_summaries: list[str] = []
 
     # -- prefixes / term identifiers ---------------------------------------
 
@@ -308,22 +311,24 @@ class Emitter:
                 slot.required = True
             return
 
-        slot.annotations["precondition"] = row.get("Precondition").strip()
+        condition_text = row.get("Precondition").strip()
+        slot.annotations["precondition"] = condition_text
         condition_expr = self._condition_expression(condition)
         cls.rules.append(
             ClassRule(
-                description=f"{slot.name} does not apply when its precondition is false",
+                description=f"{slot.name} must be blank unless {condition_text}",
                 preconditions=AnonymousClassExpression(none_of=[condition_expr]),
                 postconditions=AnonymousClassExpression(
                     slot_conditions={slot.name: SlotDefinition(slot.name, value_presence="ABSENT")}
                 ),
             )
         )
+        self._rule_summaries.append(f"{slot.name}: blank unless {condition_text}")
         if required:
             slot.annotations["required"] = "y"
             cls.rules.append(
                 ClassRule(
-                    description=f"{slot.name} is required when its precondition holds",
+                    description=f"{slot.name} must have a value when {condition_text}",
                     preconditions=condition_expr,
                     postconditions=AnonymousClassExpression(
                         slot_conditions={
@@ -332,6 +337,7 @@ class Emitter:
                     ),
                 )
             )
+            self._rule_summaries.append(f"{slot.name}: value required when {condition_text}")
 
     def _condition_expression(self, node) -> AnonymousClassExpression:
         """A precondition expression tree as a LinkML class expression."""
@@ -650,6 +656,8 @@ class Emitter:
         text = _annotate_blocks(
             text, _SLOT_INDENT, "Data element", "data elements"
         )
+        if self._rule_summaries:
+            text = _annotate_rules(text, self._rule_summaries)
         return text
 
 
@@ -681,8 +689,12 @@ _HEADER_COMMENT = """\
 #     via `in_subset`.
 #   * Ontology terms are kept as CURIEs; their prefixes are declared in
 #     `prefixes` (OBO id spaces expand under purl.obolibrary.org).
+#   * A field with a Precondition contributes class `rules`: the field must be
+#     blank unless the condition holds (and, if Required, must have a value
+#     when it does). The raw Precondition cell is kept in the `precondition`
+#     annotation.
 #   * Machine-oriented annotations (`unit_raw`, `value_datatype`, `provenance`,
-#     `original_id`) appear at the end of each slot.
+#     `original_id`, `precondition`, `required`) appear at the end of each slot.
 #
 # See the Data Dictionary Specification for the source field definitions:
 # https://github.com/bmir-radx/radx-data-dictionary-specification
@@ -762,6 +774,34 @@ def _number_entries_at(
             out.append(f"{line}  # {position} of {total} {noun}")
         else:
             out.append(line)
+    return "\n".join(out)
+
+
+def _annotate_rules(text: str, summaries: list[str]) -> str:
+    """Put a comment block above each rule, like other numbered entries get.
+
+    Each entry of a class-level ``rules:`` list gains a preceding blank line
+    and a ``# Rule n of m — <slot>: <what the rule enforces>`` comment, with
+    the summaries taken in emission order.
+    """
+    lines = text.split("\n")
+    out: list[str] = []
+    in_rules = False
+    position = 0
+    total = len(summaries)
+    for line in lines:
+        stripped = line.strip()
+        indent = len(line) - len(line.lstrip(" "))
+        if in_rules and stripped and indent <= 4 and not stripped.startswith("- "):
+            in_rules = False
+        if in_rules and line.startswith("    - ") and position < total:
+            if position > 0:
+                out.append("")
+            out.append(f"    # Rule {position + 1} of {total} — {summaries[position]}")
+            position += 1
+        out.append(line)
+        if stripped == "rules:" and indent == 4:
+            in_rules = True
     return "\n".join(out)
 
 
