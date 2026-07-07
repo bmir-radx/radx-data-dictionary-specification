@@ -12,6 +12,7 @@
 
   {% if dictionary.sections | length > 1 %}
   <nav class="toc">
+    <h2 class="toc__title">Sections</h2>
     <ul class="toc__list">
     {% for section in dictionary.sections %}
       <li><a href="#section-{{ loop.index }}">{{ section.name or "(no section)" }}</a><span class="toc__count">{{ section.records | length }}</span></li>

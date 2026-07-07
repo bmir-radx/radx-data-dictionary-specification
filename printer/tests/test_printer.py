@@ -157,6 +157,7 @@ def test_visual_navigation_and_badges():
     html = render_html(load_dictionary(io.StringIO(text)))
     # TOC with per-section counts; sections carry ids and counts.
     assert '<nav class="toc">' in html
+    assert '<h2 class="toc__title">Sections</h2>' in html
     assert '<a href="#section-1">One</a><span class="toc__count">1</span>' in html
     assert '<span class="section__count">1 element</span>' in html
     # Cardinality is always shown explicitly, single included.

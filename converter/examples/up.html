@@ -67,8 +67,16 @@ body {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.25rem 1rem;
   margin-bottom: 2rem;
+}
+.toc__title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0.25rem 0 0.6rem;
 }
 .toc__list {
   list-style: none;
@@ -260,6 +268,7 @@ code {
 
   
   <nav class="toc">
+    <h2 class="toc__title">Sections</h2>
     <ul class="toc__list">
     
       <li><a href="#section-1">(no section)</a><span class="toc__count">1</span></li>
