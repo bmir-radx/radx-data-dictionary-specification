@@ -1,10 +1,10 @@
 # Data Dictionary Python API
 
-`dd_api` is the toolkit's programmatic front door: load a
+`dd_api` is an API for programmatic access to a data dictionary: load a
 [data dictionary](../radx-data-dictionary-specification.md) and work with
 **typed, parsed objects** instead of raw CSV cells.
 
-New here? Start with the **[Cookbook](COOKBOOK.md)** — ten pasteable recipes
+If you are new to this start with the **[Cookbook](COOKBOOK.md)** — ten pasteable recipes
 with their output, from "load a file and look around" to "build a dictionary
 from scratch". Every docstring in the package also carries a runnable example
 (`help(DataDictionary.load)` shows one), and those examples run as doctests,
@@ -47,13 +47,15 @@ csv_text = dd.to_csv()       # CSV out (canonical formatting)
 schema_yaml = dd.to_linkml() # LinkML out, as dd-to-linkml would emit it
 ```
 
-`from_linkml` primarily inverts what `to_linkml` produces, but also accepts
-the common hand-authored LinkML shapes: fields as class `attributes:` or as a
-`slots:` list with `slot_usage:` refinements, and enumerations as named enums
-(referenced through `any_of` or directly as the `range:`) or inline
-`enum_range:`. Only information the schema actually carries can come back —
-without the converter's machine annotations, an enumerated field's underlying
-datatype defaults to `"string"` and units are not recovered.
+`from_linkml` works best with schemas this toolkit generated: those load back
+with full fidelity. Schemas written by hand load too — the schema is read
+with LinkML's own tooling, so it does not matter which of LinkML's equivalent
+styles the author happened to use. The one caveat with a hand-written schema
+is that only what it actually records can come back: generated schemas carry
+extra annotations (a field's underlying datatype, its unit), and without
+those the datatype of an enumerated field falls back to `"string"` and the
+unit is left empty. The exact shapes recognised are listed in the
+`from_linkml` docstring.
 
 `to_csv` writes canonical formatting (spec column order, `"value"=[label](iri)`
 enumerations with single spaces, explicit `single` cardinality), so load →
