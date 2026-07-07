@@ -54,6 +54,10 @@ tooling. The round-trip is *semantic* (the same information is preserved), not
 byte-exact. See the [converter README](converter/README.md) for the full set of
 options and the mapping details.
 
+The converter package is also the toolkit's **Python API**: load a dictionary
+with `DataDictionary.load(...)` and work with typed, parsed objects — see
+[Python API](converter/README.md#python-api).
+
 ### Worked examples
 
 Two real data dictionaries and the LinkML schemas the converter produces from

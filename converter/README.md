@@ -182,16 +182,54 @@ schemas produced from them: [`gcb.dd.csv`](examples/gcb.dd.csv) →
 [`gcb.yaml`](examples/gcb.yaml), and [`rad.dd.csv`](examples/rad.dd.csv) →
 [`rad.yaml`](examples/rad.yaml).
 
-## Library use
+## Python API
 
-The pipeline is also importable:
+For programmatic access, load a dictionary into the high-level object model:
+every cell is parsed for you, and you get typed objects rather than raw
+strings.
+
+```python
+from dd_converter import DataDictionary
+
+dd = DataDictionary.load("my_dictionary.csv")
+
+len(dd)                      # number of data elements
+"age" in dd                  # membership test by id
+age = dd["age"]              # element by id (dd.get("age") -> None if absent)
+
+for element in dd:           # elements, in file order
+    element.id               # "age"
+    element.label            # "Age"
+    element.datatype         # "integer" (name checked against the spec)
+    element.cardinality      # "single" or "multiple"
+    element.terms            # ("http://purl.obolibrary.org/obo/NCIT_C25150",)
+    element.unit             # "kg" — and element.unit_of_measure for the
+                             # structured unit (name, symbol, UCUM code)
+    for choice in element.enumeration:      # parsed "value"=[label](iri) pairs
+        choice.value, choice.label, choice.iri
+    element.missing_value_codes             # same shape as enumeration
+
+dd.sections                  # section names, in order of first appearance
+dd.elements_in_section("Demographics")
+dd.to_linkml()               # the LinkML schema, as dd-to-linkml would emit it
+```
+
+Blank optional cells come back as `None` (single values) or empty tuples
+(lists). Loading is fail-fast: the first problem — bad header, blank required
+cell, duplicate id, unknown datatype, malformed cell — raises `ReadError` with
+the line number. To list *all* problems in a dictionary instead, use the
+sibling [validator](../validator/).
+
+The lower-level pieces the model is built from are importable too:
 
 ```python
 from dd_converter import read_data_dictionary, emit_schema, EmitOptions
 
-rows = read_data_dictionary("my_dictionary.csv")
+rows = read_data_dictionary("my_dictionary.csv")   # raw rows (cell strings)
 print(emit_schema(rows, EmitOptions(schema_name="my_data", class_name="Record")))
 ```
+
+The API's design is recorded in [`API_PLAN.md`](API_PLAN.md).
 
 ## Design and development
 
