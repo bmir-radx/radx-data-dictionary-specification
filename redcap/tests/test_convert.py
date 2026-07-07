@@ -187,3 +187,11 @@ def test_mixed_connectives_not_translated():
         ]
     )
     assert dd["y"].precondition is None
+
+
+def test_windows_1252_export_reads(tmp_path):
+    # Real REDCap exports are often Excel-saved cp1252 (0xa0 = non-breaking space).
+    path = tmp_path / "export.csv"
+    path.write_bytes("Variable,Label,Type\nage,Age\xa0(years),text\n".encode("cp1252"))
+    dd = convert_redcap(path)
+    assert dd["age"].label == "Age\xa0(years)"
