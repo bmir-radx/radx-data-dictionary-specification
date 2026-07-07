@@ -12,18 +12,37 @@
   --choice: #59aaf8;
   --missing: #86878a;
   --term: #9d7bdb;
+  --required: #d64550;
   /* Card/layout neutrals. */
   --ink: #1f2933;
   --muted: #6b7280;
   --line: #e5e7eb;
   --card: #ffffff;
   --page: #f4f6f8;
+  --stripe: #f6f8fa;
+  --code-bg: #eef1f4;
+  --precondition-tint: #fdf6ec;
+}
+
+/* Dark palette: neutrals flip; the badge colours already read well on dark. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --line: #374151;
+    --card: #1f2933;
+    --page: #111827;
+    --stripe: #242f3d;
+    --code-bg: #2a3442;
+    --precondition-tint: #2e2a20;
+  }
 }
 
 * { box-sizing: border-box; }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Liberation Sans", sans-serif;
   color: var(--ink);
   line-height: 1.55;
   margin: 0;
@@ -43,7 +62,37 @@ body {
   margin: 0 0 1.5rem;
 }
 
-.section { margin-top: 2.5rem; }
+/* Table of contents: section names with element counts. */
+.toc {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 2rem;
+}
+.toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 14rem;
+  column-gap: 2rem;
+}
+.toc__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.15rem 0;
+  break-inside: avoid;
+}
+.toc__list a { color: var(--ink); text-decoration: none; }
+.toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
+.toc__count {
+  color: var(--muted);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+.section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
 .section__name {
   font-size: 1.15rem;
   font-weight: 700;
@@ -53,6 +102,14 @@ body {
   margin: 0 0 1rem;
   padding-bottom: 0.4rem;
   border-bottom: 2px solid var(--line);
+}
+.section__count {
+  float: right;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
 }
 
 /* Each data element is a card. */
@@ -84,8 +141,19 @@ body {
   color: var(--data-element);
   font-weight: 700;
   font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
 }
 .record__label { font-size: 1.05rem; }
+
+/* Per-card deep link: appears when the card is hovered. */
+.record__anchor {
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.record:hover .record__anchor { opacity: 1; }
+.record__anchor:hover { color: var(--data-element-dark); }
 
 .badge {
   display: inline-block;
@@ -107,6 +175,16 @@ body {
 }
 a.record__id:hover { background: var(--data-element-dark); }
 .record__facet { background: var(--facet); color: #fff; }
+.record__required { background: var(--required); color: #fff; }
+
+/* The precondition is logic, not a static fact: a tinted chip marks it out. */
+.record__precondition {
+  display: inline-block;
+  background: var(--precondition-tint);
+  border-left: 3px solid var(--facet);
+  border-radius: 0 6px 6px 0;
+  padding: 0.35rem 0.6rem;
+}
 .term {
   background: var(--term);
   color: #fff;
@@ -122,16 +200,37 @@ a.record__id:hover { background: var(--data-element-dark); }
 .choice__value--missing-value-code { background: var(--missing); }
 
 code {
-  background: #eef1f4;
+  background: var(--code-bg);
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 0.9em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* Enumeration: value badge + label per row. */
-.enumeration { border-collapse: collapse; }
-.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0; vertical-align: middle; }
+/* Floating back-to-top control. */
+.back-to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.12);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.back-to-top:hover { color: var(--data-element-dark); border-color: var(--data-element); }
+
+/* Enumeration: value badge + label per row, striped for long lists. */
+.enumeration { border-collapse: collapse; width: 100%; }
+.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0.25rem; vertical-align: middle; }
+.enumeration > tbody > tr:nth-child(even) { background: var(--stripe); }
 .choice__label { color: var(--ink); }
 
 .record__description, .record__notes { max-width: 62ch; }
@@ -151,16 +250,53 @@ code {
     border-color: #d0d5dd;
   }
   .badge { border: none; }
+  .back-to-top, .record__anchor { display: none; }
 }
 </style>
 </head>
-<body>
+<body id="top">
 <div class="container">
   <h1 class="title">dht data dictionary</h1>
 
   
-  <section class="section">
-    <h2 class="section__name">Identity</h2>
+  <nav class="toc">
+    <ul class="toc__list">
+    
+      <li><a href="#section-1">Identity</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-2">Race</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-3">Ethnicity</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-4">Age</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-5">Sex</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-6">Education Level</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-7">Domicile</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-8">Employment</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-9">Insurance Status</a><span class="toc__count">1</span></li>
+    
+      <li><a href="#section-10">Disability Status</a><span class="toc__count">7</span></li>
+    
+      <li><a href="#section-11">Medical History</a><span class="toc__count">71</span></li>
+    
+      <li><a href="#section-12">Symptoms</a><span class="toc__count">27</span></li>
+    
+      <li><a href="#section-13">Health Status</a><span class="toc__count">3</span></li>
+    
+      <li><a href="#section-14">Health Status Categorical</a><span class="toc__count">2</span></li>
+    
+    </ul>
+  </nav>
+  
+
+  
+  <section class="section" id="section-1">
+    <h2 class="section__name">Identity<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_identity">
@@ -168,14 +304,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">1)</th>
-            <td><span class="badge record__id">dht_identity</span></td>
+            <td><span class="badge record__id">dht_identity</span> <a class="record__anchor" href="#dht_identity" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is global identifier of participant?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -209,8 +343,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Race</h2>
+  <section class="section" id="section-2">
+    <h2 class="section__name">Race<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_race">
@@ -218,14 +352,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">2)</th>
-            <td><span class="badge record__id">dht_race</span></td>
+            <td><span class="badge record__id">dht_race</span> <a class="record__anchor" href="#dht_race" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your race? Mark one or more boxes</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -313,8 +445,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Ethnicity</h2>
+  <section class="section" id="section-3">
+    <h2 class="section__name">Ethnicity<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_ethnicity_origin">
@@ -322,14 +454,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">3)</th>
-            <td><span class="badge record__id">dht_ethnicity_origin</span></td>
+            <td><span class="badge record__id">dht_ethnicity_origin</span> <a class="record__anchor" href="#dht_ethnicity_origin" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you of Hispanic or Latino origin?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -381,8 +511,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Age</h2>
+  <section class="section" id="section-4">
+    <h2 class="section__name">Age<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_age">
@@ -390,14 +520,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">4)</th>
-            <td><span class="badge record__id">dht_age</span></td>
+            <td><span class="badge record__id">dht_age</span> <a class="record__anchor" href="#dht_age" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your age?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -437,8 +565,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Sex</h2>
+  <section class="section" id="section-5">
+    <h2 class="section__name">Sex<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_sex">
@@ -446,14 +574,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">5)</th>
-            <td><span class="badge record__id">dht_sex</span></td>
+            <td><span class="badge record__id">dht_sex</span> <a class="record__anchor" href="#dht_sex" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your biological sex assigned at birth?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -511,8 +637,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Education Level</h2>
+  <section class="section" id="section-6">
+    <h2 class="section__name">Education Level<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_education">
@@ -520,14 +646,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">6)</th>
-            <td><span class="badge record__id">dht_education</span></td>
+            <td><span class="badge record__id">dht_education</span> <a class="record__anchor" href="#dht_education" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How many years of education have you completed?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -633,8 +757,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Domicile</h2>
+  <section class="section" id="section-7">
+    <h2 class="section__name">Domicile<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_domicile">
@@ -642,14 +766,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">7)</th>
-            <td><span class="badge record__id">dht_domicile</span></td>
+            <td><span class="badge record__id">dht_domicile</span> <a class="record__anchor" href="#dht_domicile" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your zip code?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -683,8 +805,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Employment</h2>
+  <section class="section" id="section-8">
+    <h2 class="section__name">Employment<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_employment">
@@ -692,14 +814,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">8)</th>
-            <td><span class="badge record__id">dht_employment</span></td>
+            <td><span class="badge record__id">dht_employment</span> <a class="record__anchor" href="#dht_employment" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you employed?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -811,8 +931,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Insurance Status</h2>
+  <section class="section" id="section-9">
+    <h2 class="section__name">Insurance Status<span class="section__count">1 element</span></h2>
 
     
     <article class="record" id="dht_medical_insurance_short">
@@ -820,14 +940,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">9)</th>
-            <td><span class="badge record__id">dht_medical_insurance_short</span></td>
+            <td><span class="badge record__id">dht_medical_insurance_short</span> <a class="record__anchor" href="#dht_medical_insurance_short" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What insurance do you have?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -885,8 +1003,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Disability Status</h2>
+  <section class="section" id="section-10">
+    <h2 class="section__name">Disability Status<span class="section__count">7 elements</span></h2>
 
     
     <article class="record" id="dht_disability">
@@ -894,14 +1012,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">10)</th>
-            <td><span class="badge record__id">dht_disability</span></td>
+            <td><span class="badge record__id">dht_disability</span> <a class="record__anchor" href="#dht_disability" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -956,14 +1072,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">11)</th>
-            <td><span class="badge record__id">dht_deaf</span></td>
+            <td><span class="badge record__id">dht_deaf</span> <a class="record__anchor" href="#dht_deaf" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you deaf or do you have serious difficulty hearing?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1018,14 +1132,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">12)</th>
-            <td><span class="badge record__id">dht_blind</span></td>
+            <td><span class="badge record__id">dht_blind</span> <a class="record__anchor" href="#dht_blind" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you blind or do you have serious difficulty seeing, even when wearing glasses?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1080,14 +1192,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">13)</th>
-            <td><span class="badge record__id">dht_memory</span></td>
+            <td><span class="badge record__id">dht_memory</span> <a class="record__anchor" href="#dht_memory" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1142,14 +1252,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">14)</th>
-            <td><span class="badge record__id">dht_walk_climb</span></td>
+            <td><span class="badge record__id">dht_walk_climb</span> <a class="record__anchor" href="#dht_walk_climb" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have serious difficulty walking or climbing stairs?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1204,14 +1312,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">15)</th>
-            <td><span class="badge record__id">dht_dress_bathe</span></td>
+            <td><span class="badge record__id">dht_dress_bathe</span> <a class="record__anchor" href="#dht_dress_bathe" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have difficulty dressing or bathing?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1266,14 +1372,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">16)</th>
-            <td><span class="badge record__id">dht_errand</span></td>
+            <td><span class="badge record__id">dht_errand</span> <a class="record__anchor" href="#dht_errand" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor&#39;s office or shopping?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1325,8 +1429,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Medical History</h2>
+  <section class="section" id="section-11">
+    <h2 class="section__name">Medical History<span class="section__count">71 elements</span></h2>
 
     
     <article class="record" id="dht_vaping">
@@ -1334,14 +1438,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">17)</th>
-            <td><span class="badge record__id">dht_vaping</span></td>
+            <td><span class="badge record__id">dht_vaping</span> <a class="record__anchor" href="#dht_vaping" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Vaping use (Yes or No)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1396,14 +1498,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">18)</th>
-            <td><span class="badge record__id">dht_nicotine</span></td>
+            <td><span class="badge record__id">dht_nicotine</span> <a class="record__anchor" href="#dht_nicotine" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Nicotine use (Yes or No)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1458,14 +1558,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">19)</th>
-            <td><span class="badge record__id">dht_vaping_frequency</span></td>
+            <td><span class="badge record__id">dht_vaping_frequency</span> <a class="record__anchor" href="#dht_vaping_frequency" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1532,14 +1630,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">20)</th>
-            <td><span class="badge record__id">dht_cig_smoking_frequency</span></td>
+            <td><span class="badge record__id">dht_cig_smoking_frequency</span> <a class="record__anchor" href="#dht_cig_smoking_frequency" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Nicotine Frequency: Do you now smoke cigarettes?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1606,14 +1702,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">21)</th>
-            <td><span class="badge record__id">dht_history_smoking</span></td>
+            <td><span class="badge record__id">dht_history_smoking</span> <a class="record__anchor" href="#dht_history_smoking" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">History of Smoking</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1668,14 +1762,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">22)</th>
-            <td><span class="badge record__id">dht_tobacco</span></td>
+            <td><span class="badge record__id">dht_tobacco</span> <a class="record__anchor" href="#dht_tobacco" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Tobacco Use</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1736,14 +1828,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">23)</th>
-            <td><span class="badge record__id">dht_alcohol</span></td>
+            <td><span class="badge record__id">dht_alcohol</span> <a class="record__anchor" href="#dht_alcohol" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Alcohol use (Yes or No)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1798,14 +1888,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">24)</th>
-            <td><span class="badge record__id">dht_alcohol_frequency</span></td>
+            <td><span class="badge record__id">dht_alcohol_frequency</span> <a class="record__anchor" href="#dht_alcohol_frequency" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How often did you have a drink containing alcohol ?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1878,14 +1966,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">25)</th>
-            <td><span class="badge record__id">dht_asthma</span></td>
+            <td><span class="badge record__id">dht_asthma</span> <a class="record__anchor" href="#dht_asthma" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Asthma</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -1940,14 +2026,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">26)</th>
-            <td><span class="badge record__id">dht_cancer</span></td>
+            <td><span class="badge record__id">dht_cancer</span> <a class="record__anchor" href="#dht_cancer" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cancer</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2002,14 +2086,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">27)</th>
-            <td><span class="badge record__id">dht_cardiovascular_disease</span></td>
+            <td><span class="badge record__id">dht_cardiovascular_disease</span> <a class="record__anchor" href="#dht_cardiovascular_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cardiovascular disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2064,14 +2146,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">28)</th>
-            <td><span class="badge record__id">dht_chronic_kidney_disease</span></td>
+            <td><span class="badge record__id">dht_chronic_kidney_disease</span> <a class="record__anchor" href="#dht_chronic_kidney_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic kidney disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2126,14 +2206,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">29)</th>
-            <td><span class="badge record__id">dht_chronic_lung_disease</span></td>
+            <td><span class="badge record__id">dht_chronic_lung_disease</span> <a class="record__anchor" href="#dht_chronic_lung_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic lung disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2188,14 +2266,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">30)</th>
-            <td><span class="badge record__id">dht_diabetes</span></td>
+            <td><span class="badge record__id">dht_diabetes</span> <a class="record__anchor" href="#dht_diabetes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Diabetes</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2250,14 +2326,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">31)</th>
-            <td><span class="badge record__id">dht_hypertension</span></td>
+            <td><span class="badge record__id">dht_hypertension</span> <a class="record__anchor" href="#dht_hypertension" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Hypertension</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2312,14 +2386,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">32)</th>
-            <td><span class="badge record__id">dht_immunosuppressive_condition</span></td>
+            <td><span class="badge record__id">dht_immunosuppressive_condition</span> <a class="record__anchor" href="#dht_immunosuppressive_condition" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Immunosuppressive condition</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2374,14 +2446,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">33)</th>
-            <td><span class="badge record__id">dht_mental_illness</span></td>
+            <td><span class="badge record__id">dht_mental_illness</span> <a class="record__anchor" href="#dht_mental_illness" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">mental health disorder</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2436,14 +2506,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">34)</th>
-            <td><span class="badge record__id">dht_sickle_cell_disease</span></td>
+            <td><span class="badge record__id">dht_sickle_cell_disease</span> <a class="record__anchor" href="#dht_sickle_cell_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Sickle cell disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2498,14 +2566,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">35)</th>
-            <td><span class="badge record__id">dht_pregnant</span></td>
+            <td><span class="badge record__id">dht_pregnant</span> <a class="record__anchor" href="#dht_pregnant" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Pregnancy status</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2560,14 +2626,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">36)</th>
-            <td><span class="badge record__id">dht_immuno_compromised</span></td>
+            <td><span class="badge record__id">dht_immuno_compromised</span> <a class="record__anchor" href="#dht_immuno_compromised" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Immunocompromised</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2622,14 +2686,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">37)</th>
-            <td><span class="badge record__id">dht_autoimmune</span></td>
+            <td><span class="badge record__id">dht_autoimmune</span> <a class="record__anchor" href="#dht_autoimmune" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Autoimmune disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2684,14 +2746,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">38)</th>
-            <td><span class="badge record__id">dht_copd</span></td>
+            <td><span class="badge record__id">dht_copd</span> <a class="record__anchor" href="#dht_copd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic obstructive pulmonary disease (COPD)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2746,14 +2806,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">39)</th>
-            <td><span class="badge record__id">dht_depression</span></td>
+            <td><span class="badge record__id">dht_depression</span> <a class="record__anchor" href="#dht_depression" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Depression</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2808,14 +2866,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">40)</th>
-            <td><span class="badge record__id">dht_alc_sub_abuse</span></td>
+            <td><span class="badge record__id">dht_alc_sub_abuse</span> <a class="record__anchor" href="#dht_alc_sub_abuse" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Alcohol or substance use disorder</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2870,14 +2926,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">41)</th>
-            <td><span class="badge record__id">dht_iv_drug_use</span></td>
+            <td><span class="badge record__id">dht_iv_drug_use</span> <a class="record__anchor" href="#dht_iv_drug_use" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Intravenous drug use</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2932,14 +2986,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">42)</th>
-            <td><span class="badge record__id">dht_other_mental_health_disorder</span></td>
+            <td><span class="badge record__id">dht_other_mental_health_disorder</span> <a class="record__anchor" href="#dht_other_mental_health_disorder" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other mental health disorder</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -2994,14 +3046,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">43)</th>
-            <td><span class="badge record__id">dht_other_chronic_cond</span></td>
+            <td><span class="badge record__id">dht_other_chronic_cond</span> <a class="record__anchor" href="#dht_other_chronic_cond" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other chronic condition</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3056,14 +3106,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">44)</th>
-            <td><span class="badge record__id">dht_coronary_artery_disease</span></td>
+            <td><span class="badge record__id">dht_coronary_artery_disease</span> <a class="record__anchor" href="#dht_coronary_artery_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Coronary artery disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3118,14 +3166,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">45)</th>
-            <td><span class="badge record__id">dht_heart_attack</span></td>
+            <td><span class="badge record__id">dht_heart_attack</span> <a class="record__anchor" href="#dht_heart_attack" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">heart attack (myocardial infarction)?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3180,14 +3226,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">46)</th>
-            <td><span class="badge record__id">dht_chf</span></td>
+            <td><span class="badge record__id">dht_chf</span> <a class="record__anchor" href="#dht_chf" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Congestive Heart failure</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3242,14 +3286,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">47)</th>
-            <td><span class="badge record__id">dht_stroke</span></td>
+            <td><span class="badge record__id">dht_stroke</span> <a class="record__anchor" href="#dht_stroke" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3304,14 +3346,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">48)</th>
-            <td><span class="badge record__id">dht_immunodeficiency</span></td>
+            <td><span class="badge record__id">dht_immunodeficiency</span> <a class="record__anchor" href="#dht_immunodeficiency" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Immunodeficiency (NOT including HIV)?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3366,14 +3406,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">49)</th>
-            <td><span class="badge record__id">dht_hiv</span></td>
+            <td><span class="badge record__id">dht_hiv</span> <a class="record__anchor" href="#dht_hiv" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic HIV infection?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3428,14 +3466,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">50)</th>
-            <td><span class="badge record__id">dht_anemia</span></td>
+            <td><span class="badge record__id">dht_anemia</span> <a class="record__anchor" href="#dht_anemia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Anemia or other blood disorder (do not include leukemia or lymphoma)?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3490,14 +3526,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">51)</th>
-            <td><span class="badge record__id">dht_chd</span></td>
+            <td><span class="badge record__id">dht_chd</span> <a class="record__anchor" href="#dht_chd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic Heart Disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3552,14 +3586,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">52)</th>
-            <td><span class="badge record__id">dht_copd_opd</span></td>
+            <td><span class="badge record__id">dht_copd_opd</span> <a class="record__anchor" href="#dht_copd_opd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3614,14 +3646,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">53)</th>
-            <td><span class="badge record__id">dht_alz</span></td>
+            <td><span class="badge record__id">dht_alz</span> <a class="record__anchor" href="#dht_alz" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Alzheimers</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3676,14 +3706,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">54)</th>
-            <td><span class="badge record__id">dht_anxiety</span></td>
+            <td><span class="badge record__id">dht_anxiety</span> <a class="record__anchor" href="#dht_anxiety" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Anxiety</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3738,14 +3766,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">55)</th>
-            <td><span class="badge record__id">dht_arrhythmia</span></td>
+            <td><span class="badge record__id">dht_arrhythmia</span> <a class="record__anchor" href="#dht_arrhythmia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Arrhythmia</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3800,14 +3826,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">56)</th>
-            <td><span class="badge record__id">dht_arthritis</span></td>
+            <td><span class="badge record__id">dht_arthritis</span> <a class="record__anchor" href="#dht_arthritis" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Arthritis</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3862,14 +3886,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">57)</th>
-            <td><span class="badge record__id">dht_af</span></td>
+            <td><span class="badge record__id">dht_af</span> <a class="record__anchor" href="#dht_af" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Atrial Fibrillation</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3924,14 +3946,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">58)</th>
-            <td><span class="badge record__id">dht_chronic_pain</span></td>
+            <td><span class="badge record__id">dht_chronic_pain</span> <a class="record__anchor" href="#dht_chronic_pain" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic Pain</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -3986,14 +4006,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">59)</th>
-            <td><span class="badge record__id">dht_fibromyalgia</span></td>
+            <td><span class="badge record__id">dht_fibromyalgia</span> <a class="record__anchor" href="#dht_fibromyalgia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Fibromyalgia</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4048,14 +4066,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">60)</th>
-            <td><span class="badge record__id">dht_gerd</span></td>
+            <td><span class="badge record__id">dht_gerd</span> <a class="record__anchor" href="#dht_gerd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Gastroesophageal reflux disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4110,14 +4126,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">61)</th>
-            <td><span class="badge record__id">dht_gestational_diabetes</span></td>
+            <td><span class="badge record__id">dht_gestational_diabetes</span> <a class="record__anchor" href="#dht_gestational_diabetes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Gestational Diabetes</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4172,14 +4186,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">62)</th>
-            <td><span class="badge record__id">dht_cholesterol</span></td>
+            <td><span class="badge record__id">dht_cholesterol</span> <a class="record__anchor" href="#dht_cholesterol" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">High Cholesterol</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4234,14 +4246,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">63)</th>
-            <td><span class="badge record__id">dht_thyroid</span></td>
+            <td><span class="badge record__id">dht_thyroid</span> <a class="record__anchor" href="#dht_thyroid" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Hypo/Hyper Thyroidism</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4296,14 +4306,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">64)</th>
-            <td><span class="badge record__id">dht_immuno_compromised_solid_organ</span></td>
+            <td><span class="badge record__id">dht_immuno_compromised_solid_organ</span> <a class="record__anchor" href="#dht_immuno_compromised_solid_organ" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">immunocompromised from solid organ transplant</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4358,14 +4366,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">65)</th>
-            <td><span class="badge record__id">dht_ibd</span></td>
+            <td><span class="badge record__id">dht_ibd</span> <a class="record__anchor" href="#dht_ibd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Inflammatory Bowel Disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4420,14 +4426,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">66)</th>
-            <td><span class="badge record__id">dht_insomnia</span></td>
+            <td><span class="badge record__id">dht_insomnia</span> <a class="record__anchor" href="#dht_insomnia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Insomnia</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4482,14 +4486,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">67)</th>
-            <td><span class="badge record__id">dht_ibs</span></td>
+            <td><span class="badge record__id">dht_ibs</span> <a class="record__anchor" href="#dht_ibs" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Irritable bowel syndrome</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4544,14 +4546,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">68)</th>
-            <td><span class="badge record__id">dht_liver_disease</span></td>
+            <td><span class="badge record__id">dht_liver_disease</span> <a class="record__anchor" href="#dht_liver_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Liver disease (cirrhosis, hepB, hepC)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4606,14 +4606,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">69)</th>
-            <td><span class="badge record__id">dht_lupus</span></td>
+            <td><span class="badge record__id">dht_lupus</span> <a class="record__anchor" href="#dht_lupus" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Lupus</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4668,14 +4666,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">70)</th>
-            <td><span class="badge record__id">dht_migraines</span></td>
+            <td><span class="badge record__id">dht_migraines</span> <a class="record__anchor" href="#dht_migraines" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Migraines</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4730,14 +4726,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">71)</th>
-            <td><span class="badge record__id">dht_ms</span></td>
+            <td><span class="badge record__id">dht_ms</span> <a class="record__anchor" href="#dht_ms" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Multiple Sclerosis</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4792,14 +4786,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">72)</th>
-            <td><span class="badge record__id">dht_neurodegenerative</span></td>
+            <td><span class="badge record__id">dht_neurodegenerative</span> <a class="record__anchor" href="#dht_neurodegenerative" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Neurodegenerative disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4854,14 +4846,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">73)</th>
-            <td><span class="badge record__id">dht_neurological_condition</span></td>
+            <td><span class="badge record__id">dht_neurological_condition</span> <a class="record__anchor" href="#dht_neurological_condition" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Neurological Condition</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4916,14 +4906,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">74)</th>
-            <td><span class="badge record__id">dht_no_chronic_condition</span></td>
+            <td><span class="badge record__id">dht_no_chronic_condition</span> <a class="record__anchor" href="#dht_no_chronic_condition" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">No chronic condition</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -4978,14 +4966,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">75)</th>
-            <td><span class="badge record__id">dht_obesity</span></td>
+            <td><span class="badge record__id">dht_obesity</span> <a class="record__anchor" href="#dht_obesity" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Obesity (BMI &gt;= 30)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5040,14 +5026,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">76)</th>
-            <td><span class="badge record__id">dht_osteoporosis</span></td>
+            <td><span class="badge record__id">dht_osteoporosis</span> <a class="record__anchor" href="#dht_osteoporosis" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Osteoporosis</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5102,14 +5086,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">77)</th>
-            <td><span class="badge record__id">dht_pcos</span></td>
+            <td><span class="badge record__id">dht_pcos</span> <a class="record__anchor" href="#dht_pcos" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Polycystic ovary syndrome</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5164,14 +5146,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">78)</th>
-            <td><span class="badge record__id">dht_psoriasis</span></td>
+            <td><span class="badge record__id">dht_psoriasis</span> <a class="record__anchor" href="#dht_psoriasis" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Psoriasis</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5226,14 +5206,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">79)</th>
-            <td><span class="badge record__id">dht_renal</span></td>
+            <td><span class="badge record__id">dht_renal</span> <a class="record__anchor" href="#dht_renal" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Renal disease</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5288,14 +5266,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">80)</th>
-            <td><span class="badge record__id">dht_rls</span></td>
+            <td><span class="badge record__id">dht_rls</span> <a class="record__anchor" href="#dht_rls" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Restless leg</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5350,14 +5326,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">81)</th>
-            <td><span class="badge record__id">dht_ra</span></td>
+            <td><span class="badge record__id">dht_ra</span> <a class="record__anchor" href="#dht_ra" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Rheumatoid Arthritis</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5412,14 +5386,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">82)</th>
-            <td><span class="badge record__id">dht_seasonal_allergies</span></td>
+            <td><span class="badge record__id">dht_seasonal_allergies</span> <a class="record__anchor" href="#dht_seasonal_allergies" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Seasonal Allergies</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5474,14 +5446,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">83)</th>
-            <td><span class="badge record__id">dht_heart_condition</span></td>
+            <td><span class="badge record__id">dht_heart_condition</span> <a class="record__anchor" href="#dht_heart_condition" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Serious heart condition (heart failure, CAD, cardiomyopathies)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5536,14 +5506,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">84)</th>
-            <td><span class="badge record__id">dht_substance_use</span></td>
+            <td><span class="badge record__id">dht_substance_use</span> <a class="record__anchor" href="#dht_substance_use" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Substance use</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5598,14 +5566,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">85)</th>
-            <td><span class="badge record__id">dht_thalassemia</span></td>
+            <td><span class="badge record__id">dht_thalassemia</span> <a class="record__anchor" href="#dht_thalassemia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Thalassemia</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5660,14 +5626,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">86)</th>
-            <td><span class="badge record__id">dht_t1d</span></td>
+            <td><span class="badge record__id">dht_t1d</span> <a class="record__anchor" href="#dht_t1d" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Type 1 Diabetes</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5722,14 +5686,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">87)</th>
-            <td><span class="badge record__id">dht_t2dm</span></td>
+            <td><span class="badge record__id">dht_t2dm</span> <a class="record__anchor" href="#dht_t2dm" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Type 2 Diabetes</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5781,8 +5743,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Symptoms</h2>
+  <section class="section" id="section-12">
+    <h2 class="section__name">Symptoms<span class="section__count">27 elements</span></h2>
 
     
     <article class="record" id="dht_cough">
@@ -5790,14 +5752,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">88)</th>
-            <td><span class="badge record__id">dht_cough</span></td>
+            <td><span class="badge record__id">dht_cough</span> <a class="record__anchor" href="#dht_cough" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cough</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5852,14 +5812,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">89)</th>
-            <td><span class="badge record__id">dht_fever_chills</span></td>
+            <td><span class="badge record__id">dht_fever_chills</span> <a class="record__anchor" href="#dht_fever_chills" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Fever, feeling hot/feverish, or having chills</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5914,14 +5872,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">90)</th>
-            <td><span class="badge record__id">dht_diff_breath</span></td>
+            <td><span class="badge record__id">dht_diff_breath</span> <a class="record__anchor" href="#dht_diff_breath" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Shortness of breath or difficulty breathing</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -5976,14 +5932,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">91)</th>
-            <td><span class="badge record__id">dht_headache</span></td>
+            <td><span class="badge record__id">dht_headache</span> <a class="record__anchor" href="#dht_headache" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Headache</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6038,14 +5992,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">92)</th>
-            <td><span class="badge record__id">dht_body_pain</span></td>
+            <td><span class="badge record__id">dht_body_pain</span> <a class="record__anchor" href="#dht_body_pain" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Muscle, body, or joint aches (not due to exercise)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6100,14 +6052,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">93)</th>
-            <td><span class="badge record__id">dht_olfactory</span></td>
+            <td><span class="badge record__id">dht_olfactory</span> <a class="record__anchor" href="#dht_olfactory" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">New loss of taste or smell</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6162,14 +6112,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">94)</th>
-            <td><span class="badge record__id">dht_fatigue</span></td>
+            <td><span class="badge record__id">dht_fatigue</span> <a class="record__anchor" href="#dht_fatigue" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Fatigue (more than normal)</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6224,14 +6172,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">95)</th>
-            <td><span class="badge record__id">dht_nausea_vomiting_diarrhea</span></td>
+            <td><span class="badge record__id">dht_nausea_vomiting_diarrhea</span> <a class="record__anchor" href="#dht_nausea_vomiting_diarrhea" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Nausea, vomiting, or diarrhea</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6286,14 +6232,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">96)</th>
-            <td><span class="badge record__id">dht_abdom_pain</span></td>
+            <td><span class="badge record__id">dht_abdom_pain</span> <a class="record__anchor" href="#dht_abdom_pain" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Stomach or abdominal pain</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6348,14 +6292,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">97)</th>
-            <td><span class="badge record__id">dht_skin_rash</span></td>
+            <td><span class="badge record__id">dht_skin_rash</span> <a class="record__anchor" href="#dht_skin_rash" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Skin rash</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6410,14 +6352,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">98)</th>
-            <td><span class="badge record__id">dht_conjunctivitis</span></td>
+            <td><span class="badge record__id">dht_conjunctivitis</span> <a class="record__anchor" href="#dht_conjunctivitis" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Pink eye or conjunctivitis</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6472,14 +6412,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">99)</th>
-            <td><span class="badge record__id">dht_congestion_sorethroat_runnynose</span></td>
+            <td><span class="badge record__id">dht_congestion_sorethroat_runnynose</span> <a class="record__anchor" href="#dht_congestion_sorethroat_runnynose" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Congestion, runny nose, sore throat</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6534,14 +6472,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">100)</th>
-            <td><span class="badge record__id">dht_red_eyes</span></td>
+            <td><span class="badge record__id">dht_red_eyes</span> <a class="record__anchor" href="#dht_red_eyes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Red or painful eyes</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6596,14 +6532,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">101)</th>
-            <td><span class="badge record__id">dht_high_temp</span></td>
+            <td><span class="badge record__id">dht_high_temp</span> <a class="record__anchor" href="#dht_high_temp" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">A temperature greater than 100.4°F</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6658,14 +6592,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">102)</th>
-            <td><span class="badge record__id">dht_other_symp</span></td>
+            <td><span class="badge record__id">dht_other_symp</span> <a class="record__anchor" href="#dht_other_symp" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6720,14 +6652,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">103)</th>
-            <td><span class="badge record__id">dht_no_symp</span></td>
+            <td><span class="badge record__id">dht_no_symp</span> <a class="record__anchor" href="#dht_no_symp" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">None of the above</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6782,14 +6712,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">104)</th>
-            <td><span class="badge record__id">dht_wheezing</span></td>
+            <td><span class="badge record__id">dht_wheezing</span> <a class="record__anchor" href="#dht_wheezing" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Wheezing</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6844,14 +6772,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">105)</th>
-            <td><span class="badge record__id">dht_blue_lips</span></td>
+            <td><span class="badge record__id">dht_blue_lips</span> <a class="record__anchor" href="#dht_blue_lips" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Bluish lips or face</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6906,14 +6832,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">106)</th>
-            <td><span class="badge record__id">dht_balance</span></td>
+            <td><span class="badge record__id">dht_balance</span> <a class="record__anchor" href="#dht_balance" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Loss of balance</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -6968,14 +6892,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">107)</th>
-            <td><span class="badge record__id">dht_slurred_peech</span></td>
+            <td><span class="badge record__id">dht_slurred_peech</span> <a class="record__anchor" href="#dht_slurred_peech" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Slurred speech</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7030,14 +6952,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">108)</th>
-            <td><span class="badge record__id">dht_confusion</span></td>
+            <td><span class="badge record__id">dht_confusion</span> <a class="record__anchor" href="#dht_confusion" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">New confusion</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7092,14 +7012,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">109)</th>
-            <td><span class="badge record__id">dht_neuro_shakes</span></td>
+            <td><span class="badge record__id">dht_neuro_shakes</span> <a class="record__anchor" href="#dht_neuro_shakes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Unusual shivering or shaking</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7154,14 +7072,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">110)</th>
-            <td><span class="badge record__id">dht_numb_extremities</span></td>
+            <td><span class="badge record__id">dht_numb_extremities</span> <a class="record__anchor" href="#dht_numb_extremities" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Tingling or numbness or swelling of hands and feet</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7216,14 +7132,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">111)</th>
-            <td><span class="badge record__id">dht_sweating</span></td>
+            <td><span class="badge record__id">dht_sweating</span> <a class="record__anchor" href="#dht_sweating" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Excessive sweating</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7278,14 +7192,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">112)</th>
-            <td><span class="badge record__id">dht_seizures</span></td>
+            <td><span class="badge record__id">dht_seizures</span> <a class="record__anchor" href="#dht_seizures" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Seizures</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7340,14 +7252,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">113)</th>
-            <td><span class="badge record__id">dht_rash_toes</span></td>
+            <td><span class="badge record__id">dht_rash_toes</span> <a class="record__anchor" href="#dht_rash_toes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Red or purple rash or lesions on toes</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7402,14 +7312,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">114)</th>
-            <td><span class="badge record__id">dht_appetite</span></td>
+            <td><span class="badge record__id">dht_appetite</span> <a class="record__anchor" href="#dht_appetite" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Change in or loss of appetite</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7461,8 +7369,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Health Status</h2>
+  <section class="section" id="section-13">
+    <h2 class="section__name">Health Status<span class="section__count">3 elements</span></h2>
 
     
     <article class="record" id="dht_health_status">
@@ -7470,14 +7378,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">115)</th>
-            <td><span class="badge record__id">dht_health_status</span></td>
+            <td><span class="badge record__id">dht_health_status</span> <a class="record__anchor" href="#dht_health_status" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Self-report health status</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7550,14 +7456,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">116)</th>
-            <td><span class="badge record__id">dht_height</span></td>
+            <td><span class="badge record__id">dht_height</span> <a class="record__anchor" href="#dht_height" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your height in inches?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7594,14 +7498,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">117)</th>
-            <td><span class="badge record__id">dht_weight</span></td>
+            <td><span class="badge record__id">dht_weight</span> <a class="record__anchor" href="#dht_weight" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your weight in pounds?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7635,8 +7537,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Health Status Categorical</h2>
+  <section class="section" id="section-14">
+    <h2 class="section__name">Health Status Categorical<span class="section__count">2 elements</span></h2>
 
     
     <article class="record" id="dht_height_category">
@@ -7644,14 +7546,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">118)</th>
-            <td><span class="badge record__id">dht_height_category</span></td>
+            <td><span class="badge record__id">dht_height_category</span> <a class="record__anchor" href="#dht_height_category" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Approximately what is your height?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7700,14 +7600,12 @@ code {
         <tbody>
           <tr>
             <th class="record__number">119)</th>
-            <td><span class="badge record__id">dht_weight_category</span></td>
+            <td><span class="badge record__id">dht_weight_category</span> <a class="record__anchor" href="#dht_weight_category" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Approximately what is your weight?</strong></td></tr>
           
           <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
           
-          
-          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
           
           
           
@@ -7754,5 +7652,6 @@ code {
   </section>
   
 </div>
+<a class="back-to-top" href="#top" title="Back to top">&uarr;</a>
 </body>
 </html>

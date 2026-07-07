@@ -141,3 +141,27 @@ def test_precondition_renders_richly():
     assert 'includes <span class="badge choice__value">3</span> <em>(Headache)</em>' in html
     # The raw grammar text survives as a tooltip.
     assert 'title="smoker = &#34;1&#34; and packs_known &lt;&gt; &#34;&#34;"' in html
+
+
+def test_visual_navigation_and_badges():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    text = (
+        "Id,Label,Datatype,Section,Cardinality,Required\n"
+        "a,A,string,One,single,y\n"
+        "b,B,integer,Two,multiple,\n"
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    # TOC with per-section counts; sections carry ids and counts.
+    assert '<nav class="toc">' in html
+    assert '<a href="#section-1">One</a><span class="toc__count">1</span>' in html
+    assert '<span class="section__count">1 element</span>' in html
+    # Default 'single' cardinality is noise and is hidden; 'multiple' shows.
+    assert html.count("Cardinality") == 1 and ">multiple</span>" in html
+    # Required gets its own badge class; back-to-top and anchors exist.
+    assert 'class="badge record__required"' in html
+    assert 'class="back-to-top"' in html
+    assert 'class="record__anchor" href="#a"' in html

@@ -6,18 +6,37 @@
   --choice: #59aaf8;
   --missing: #86878a;
   --term: #9d7bdb;
+  --required: #d64550;
   /* Card/layout neutrals. */
   --ink: #1f2933;
   --muted: #6b7280;
   --line: #e5e7eb;
   --card: #ffffff;
   --page: #f4f6f8;
+  --stripe: #f6f8fa;
+  --code-bg: #eef1f4;
+  --precondition-tint: #fdf6ec;
+}
+
+/* Dark palette: neutrals flip; the badge colours already read well on dark. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --line: #374151;
+    --card: #1f2933;
+    --page: #111827;
+    --stripe: #242f3d;
+    --code-bg: #2a3442;
+    --precondition-tint: #2e2a20;
+  }
 }
 
 * { box-sizing: border-box; }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Liberation Sans", sans-serif;
   color: var(--ink);
   line-height: 1.55;
   margin: 0;
@@ -37,7 +56,37 @@ body {
   margin: 0 0 1.5rem;
 }
 
-.section { margin-top: 2.5rem; }
+/* Table of contents: section names with element counts. */
+.toc {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 2rem;
+}
+.toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 14rem;
+  column-gap: 2rem;
+}
+.toc__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.15rem 0;
+  break-inside: avoid;
+}
+.toc__list a { color: var(--ink); text-decoration: none; }
+.toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
+.toc__count {
+  color: var(--muted);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+.section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
 .section__name {
   font-size: 1.15rem;
   font-weight: 700;
@@ -47,6 +96,14 @@ body {
   margin: 0 0 1rem;
   padding-bottom: 0.4rem;
   border-bottom: 2px solid var(--line);
+}
+.section__count {
+  float: right;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
 }
 
 /* Each data element is a card. */
@@ -78,8 +135,19 @@ body {
   color: var(--data-element);
   font-weight: 700;
   font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
 }
 .record__label { font-size: 1.05rem; }
+
+/* Per-card deep link: appears when the card is hovered. */
+.record__anchor {
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.record:hover .record__anchor { opacity: 1; }
+.record__anchor:hover { color: var(--data-element-dark); }
 
 .badge {
   display: inline-block;
@@ -101,6 +169,16 @@ body {
 }
 a.record__id:hover { background: var(--data-element-dark); }
 .record__facet { background: var(--facet); color: #fff; }
+.record__required { background: var(--required); color: #fff; }
+
+/* The precondition is logic, not a static fact: a tinted chip marks it out. */
+.record__precondition {
+  display: inline-block;
+  background: var(--precondition-tint);
+  border-left: 3px solid var(--facet);
+  border-radius: 0 6px 6px 0;
+  padding: 0.35rem 0.6rem;
+}
 .term {
   background: var(--term);
   color: #fff;
@@ -116,16 +194,37 @@ a.record__id:hover { background: var(--data-element-dark); }
 .choice__value--missing-value-code { background: var(--missing); }
 
 code {
-  background: #eef1f4;
+  background: var(--code-bg);
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 0.9em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* Enumeration: value badge + label per row. */
-.enumeration { border-collapse: collapse; }
-.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0; vertical-align: middle; }
+/* Floating back-to-top control. */
+.back-to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.12);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.back-to-top:hover { color: var(--data-element-dark); border-color: var(--data-element); }
+
+/* Enumeration: value badge + label per row, striped for long lists. */
+.enumeration { border-collapse: collapse; width: 100%; }
+.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0.25rem; vertical-align: middle; }
+.enumeration > tbody > tr:nth-child(even) { background: var(--stripe); }
 .choice__label { color: var(--ink); }
 
 .record__description, .record__notes { max-width: 62ch; }
@@ -145,4 +244,5 @@ code {
     border-color: #d0d5dd;
   }
   .badge { border: none; }
+  .back-to-top, .record__anchor { display: none; }
 }
