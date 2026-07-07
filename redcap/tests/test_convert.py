@@ -204,3 +204,15 @@ def test_duplicate_variables_raise_unless_allowed():
     dd = _convert(rows, allow_duplicates=True)
     assert dd.ids == ("a",)
     assert dd["a"].label == "A"  # first occurrence wins
+
+
+def test_list_field_type_is_multivalued():
+    # `list` is a RADx-rad extension type (e.g. biorecognition_type); a cell
+    # may hold several chosen values, so it maps to multiple cardinality.
+    dd = _convert(
+        ['bio,form1,,list,Recognition entity,"aptamer | antibody | enzyme",,,,,,,,,,,,']
+    )
+    element = dd["bio"]
+    assert element.is_multivalued
+    assert [c.value for c in element.enumeration] == ["aptamer", "antibody", "enzyme"]
+    assert element.datatype == "string"

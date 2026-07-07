@@ -2540,6 +2540,7 @@ classes:
           Values for this variable are strings that are restricted to the list of 10 permissible string values.
         in_subset:
         - Technology_Metadata
+        multivalued: true
         any_of:
         - range: BiorecognitionTypeEnum  # aptamer=aptamer | antibody=antibody | antigen=antigen | molecular beacon=molecular beacon | nanobody=nanobody | primer=primer (+4 more)
         - range: StandardMissingValueCodes
@@ -2556,6 +2557,7 @@ classes:
           Values for this variable are strings that are restricted to the list of 17 permissible string values.
         in_subset:
         - Technology_Metadata
+        multivalued: true
         any_of:
         - range: TargetAnalyteTypeEnum  # antigen=antigen | viral RNA=viral RNA | virus=virus | antibody=antibody | human IgA=human IgA | human RBD IgA=human RBD IgA (+11 more)
         - range: StandardMissingValueCodes
@@ -2625,6 +2627,7 @@ classes:
         range: string
         in_subset:
         - Technology_Metadata
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -2636,6 +2639,7 @@ classes:
         range: string
         in_subset:
         - Technology_Metadata
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -5259,6 +5263,7 @@ classes:
         range: string
         in_subset:
         - Technology_Metadata_Receptor
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -5880,6 +5885,7 @@ classes:
         range: string
         in_subset:
         - Technology_Metadata_Reporter
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -7526,6 +7532,7 @@ classes:
           Values for this variable are strings that are restricted to the list of 18 permissible string values.
         in_subset:
         - Technology_Metadata_Olfactory_perception
+        multivalued: true
         any_of:
         - range: OdorantEnum  # Grape=Grape | Smoke=Smoke | Soap=Soap | Dirt=Dirt | Menthol=Menthol | Peach=Peach (+12 more)
         - range: StandardMissingValueCodes
@@ -9722,6 +9729,7 @@ classes:
         range: string
         in_subset:
         - Collection_Site
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -9738,6 +9746,7 @@ classes:
         range: string
         in_subset:
         - Collection_Site
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -9753,6 +9762,7 @@ classes:
         range: string
         in_subset:
         - Collection_Site
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -11953,6 +11963,7 @@ classes:
         range: string
         in_subset:
         - Analytical_Clinical_Performance
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -11964,6 +11975,7 @@ classes:
         range: string
         in_subset:
         - Analytical_Clinical_Performance
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
@@ -12201,6 +12213,7 @@ classes:
         range: string
         in_subset:
         - Analytical_Performance
+        multivalued: true
         annotations:
           provenance: RADx-rad
 
