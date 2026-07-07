@@ -14,8 +14,8 @@ units, ontology terms, and more.
 📄 **[Read the specification →](radx-data-dictionary-specification.md)**
 
 The Markdown specification is the authoritative document. The LinkML schemas and
-the tools below (a converter and a printer) are machine-processable renderings
-and tooling built on top of it.
+the tools below (a converter, a printer, and a validator) are machine-processable
+renderings and tooling built on top of it.
 
 ## Repository contents
 
@@ -24,6 +24,7 @@ and tooling built on top of it.
 | [`radx-data-dictionary-specification.md`](radx-data-dictionary-specification.md) | The authoritative specification. |
 | [`converter/`](converter/) | A Python tool that converts between a data dictionary CSV and a LinkML schema, in both directions. |
 | [`printer/`](printer/) | A Python tool that renders a data dictionary to a human-readable HTML page (or JSON). |
+| [`validator/`](validator/) | A Python tool that checks a data dictionary against the specification and reports violations. |
 | [`linkml/`](linkml/) | Hand-written [LinkML](https://linkml.io) renderings of the specification. |
 
 ## Converter
@@ -77,6 +78,23 @@ dd-print my_dictionary.csv -o my_dictionary.html
 ```
 
 See the [printer README](printer/README.md) for options and details.
+
+## Validator
+
+[`validator/`](validator/) checks a data dictionary CSV against the specification
+and reports every violation it finds — missing required columns, unknown datatype
+names, malformed enumerations and patterns, invalid cardinality, duplicate ids,
+and more — each with a severity (ERROR / WARNING / INFO) and a line number. It
+does not transform the dictionary; it tells you what is wrong.
+
+```sh
+pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=validator"
+
+dd-validate my_dictionary.csv
+```
+
+It exits non-zero when any error is found, so it can gate a CI build. See the
+[validator README](validator/README.md) for the full set of checks and options.
 
 ## Hand-written LinkML schemas
 
