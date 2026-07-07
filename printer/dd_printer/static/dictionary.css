@@ -147,15 +147,19 @@ body {
 }
 .record__label { font-size: 1.05rem; }
 
-/* Per-card deep link: appears when the card is hovered. */
+/* Per-card deep link. Always present but quiet (a faint link, not
+   decoration); it strengthens on hover/focus. A hover-only reveal was tried
+   but is invisible to touch users and reads as a stray glyph when it does
+   surface, so the mark stays visible. */
 .record__anchor {
-  color: var(--muted);
+  color: var(--line);
   text-decoration: none;
-  opacity: 0;
-  transition: opacity 0.15s;
+  margin-left: 0.15rem;
+  transition: color 0.15s;
 }
-.record:hover .record__anchor { opacity: 1; }
-.record__anchor:hover { color: var(--data-element-dark); }
+.record:hover .record__anchor { color: var(--muted); }
+.record__anchor:hover,
+.record__anchor:focus { color: var(--data-element-dark); }
 
 .badge {
   display: inline-block;
