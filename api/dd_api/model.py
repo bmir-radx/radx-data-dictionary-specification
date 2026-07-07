@@ -5,7 +5,7 @@ This is the programmatic front door to the toolkit. Where
 strings, this module parses every cell up front and hands back plain, typed
 objects::
 
-    from dd_converter import DataDictionary
+    from dd_api import DataDictionary
 
     dd = DataDictionary.load("my_dictionary.csv")
 
@@ -35,16 +35,22 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TextIO
 
-from .datatypes import resolve_datatype
-from .emit import EmitOptions, emit_schema
-from .grammar import (
+from dd_converter import (
+    EmitOptions,
+    ReadError,
+    Row,
+    UnitOfMeasure,
+    emit_schema,
+    lookup_unit,
+    read_data_dictionary,
+    resolve_datatype,
+)
+from dd_converter.grammar import (
     EnumItem,
     parse_enumeration,
     parse_missing_value_codes,
     parse_terms,
 )
-from .reader import ReadError, Row, read_data_dictionary
-from .units import UnitOfMeasure, lookup_unit
 
 
 @dataclass(frozen=True)

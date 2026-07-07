@@ -25,6 +25,7 @@ renderings and tooling built on top of it.
 | [`converter/`](converter/) | A Python tool that converts between a data dictionary CSV and a LinkML schema, in both directions. |
 | [`printer/`](printer/) | A Python tool that renders a data dictionary to a human-readable HTML page (or JSON). |
 | [`validator/`](validator/) | A Python tool that checks a data dictionary against the specification and reports violations. |
+| [`api/`](api/) | A high-level Python API: load a data dictionary and work with typed, parsed objects. |
 | [`linkml/`](linkml/) | Hand-written [LinkML](https://linkml.io) renderings of the specification. |
 
 ## Converter
@@ -53,10 +54,6 @@ element — so datafiles can be validated and documented with standard LinkML
 tooling. The round-trip is *semantic* (the same information is preserved), not
 byte-exact. See the [converter README](converter/README.md) for the full set of
 options and the mapping details.
-
-The converter package is also the toolkit's **Python API**: load a dictionary
-with `DataDictionary.load(...)` and work with typed, parsed objects — see
-[Python API](converter/README.md#python-api).
 
 ### Worked examples
 
@@ -99,6 +96,23 @@ dd-validate my_dictionary.csv
 
 It exits non-zero when any error is found, so it can gate a CI build. See the
 [validator README](validator/README.md) for the full set of checks and options.
+
+## Python API
+
+[`api/`](api/) is the toolkit's programmatic front door: load a data dictionary
+and work with typed, parsed objects — elements with their enumerations, units,
+ontology terms, and missing-value codes already decomposed.
+
+```python
+from dd_api import DataDictionary
+
+dd = DataDictionary.load("my_dictionary.csv")
+age = dd["age"]
+for choice in age.enumeration:
+    print(choice.value, choice.label)
+```
+
+See the [API README](api/README.md) for the conventions and the full surface.
 
 ## Hand-written LinkML schemas
 

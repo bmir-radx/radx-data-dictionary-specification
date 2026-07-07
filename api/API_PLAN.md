@@ -12,11 +12,10 @@ dicts of raw cell strings, and callers must glue the per-cell parsers
 together themselves. The printer built its own parsed model, but it is
 presentation-scoped and lives in the printer.
 
-This adds the missing piece: a first-class object model in `dd_converter`
-(the package the other tools already depend on), so that:
+This adds the missing piece: a first-class object model, so that:
 
 ```python
-from dd_converter import DataDictionary
+from dd_api import DataDictionary
 
 dd = DataDictionary.load("my_dictionary.csv")
 
@@ -32,11 +31,14 @@ dd.sections              # section names, in order of first appearance
 
 ## Where it lives
 
-`dd_converter/model.py`, exported from the package root. `dd_converter` is
-already the shared dependency of the printer and validator, so putting the
-model there gives every consumer access with **no new package and no new
-dependency plumbing**. The package's docstring/README will present it as the
-library API alongside the conversion functions.
+A top-level `api/` folder — package `dd_api` — following the repo's
+one-folder-per-tool layout (`converter/`, `printer/`, `validator/`). This
+keeps the converter focused on converting; the API is its own deliverable
+with its own README and plan. It depends on `dd_converter` (the same
+direct-git dependency pattern the printer and validator use) for the parsing
+it is built on, and re-exports every type a caller touches
+(`DataDictionary`, `DataElement`, `EnumItem`, `UnitOfMeasure`, `ReadError`,
+`EmitOptions`) so `dd_api` is the only import a consumer needs.
 
 ## The model
 

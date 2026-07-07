@@ -1,20 +1,10 @@
-"""Read, convert, and work with data dictionaries.
+"""Converter from data dictionary CSV to a LinkML schema.
 
-Two ways in:
-
-* **High-level** — :class:`DataDictionary` / :class:`DataElement` (see
-  ``model.py`` and ``API_PLAN.md``): load a dictionary and get typed, parsed
-  objects. Start here for programmatic access::
-
-      from dd_converter import DataDictionary
-      dd = DataDictionary.load("my_dictionary.csv")
-
-* **Low-level** — the pieces the model is built from: ``read_data_dictionary``
-  (raw rows), the ``grammar`` subpackage (the in-cell mini-grammars for
-  enumerations, missing-value codes, and term lists), ``resolve_datatype``,
-  and the LinkML conversion functions (``emit_schema``, ``schema_to_csv``).
-
-The CSV↔LinkML conversion is described in ``linkml/CONVERTER_PLAN.md``.
+This package is described in ``linkml/CONVERTER_PLAN.md``. The ``grammar``
+subpackage is the parser layer: it turns the in-cell mini-grammars used by
+data dictionaries (enumerations, missing-value codes, ontology term lists) into
+Python objects. It is the one piece that standard LinkML tooling cannot provide,
+because the structure is hidden inside string cells in a bespoke notation.
 """
 
 from .datatypes import (
@@ -25,8 +15,6 @@ from .datatypes import (
     resolve_datatype,
 )
 from .emit import EmitOptions, Emitter, emit_schema
-from .grammar import EnumItem
-from .model import DataDictionary, DataElement
 from .reverse import schema_to_csv, schema_to_rows
 from .missing_values import (
     STANDARD_ENUM_NAME,
@@ -44,9 +32,6 @@ from .reader import (
 from .units import UnitOfMeasure, lookup_unit
 
 __all__ = [
-    "DataDictionary",
-    "DataElement",
-    "EnumItem",
     "BUILTIN_RANGES",
     "CUSTOM_TYPES",
     "CustomType",
