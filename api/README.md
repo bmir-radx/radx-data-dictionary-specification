@@ -4,6 +4,12 @@
 [data dictionary](../radx-data-dictionary-specification.md) and work with
 **typed, parsed objects** instead of raw CSV cells.
 
+New here? Start with the **[Cookbook](COOKBOOK.md)** — ten pasteable recipes
+with their output, from "load a file and look around" to "build a dictionary
+from scratch". Every docstring in the package also carries a runnable example
+(`help(DataDictionary.load)` shows one), and those examples run as doctests,
+so they are always accurate.
+
 ```python
 from dd_api import DataDictionary
 

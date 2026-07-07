@@ -26,4 +26,8 @@ where = ["."]
 include = ["dd_api*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+# Docstring examples are executable: --doctest-modules runs every `>>>`
+# example in dd_api as a test, so the documentation cannot drift.
+testpaths = ["tests", "dd_api"]
+addopts = "--doctest-modules"
+doctest_optionflags = "ELLIPSIS NORMALIZE_WHITESPACE"

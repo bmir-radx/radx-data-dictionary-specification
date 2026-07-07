@@ -114,7 +114,9 @@ for choice in age.enumeration:
     print(choice.value, choice.label)
 ```
 
-See the [API README](api/README.md) for the conventions and the full surface.
+See the [API README](api/README.md) for the conventions and the full surface,
+and the [Cookbook](api/COOKBOOK.md) for ten pasteable recipes with their
+output.
 
 ## Hand-written LinkML schemas
 

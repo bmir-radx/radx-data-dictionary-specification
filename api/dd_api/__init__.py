@@ -1,5 +1,9 @@
 """A high-level Python API for data dictionaries.
 
+New here? ``COOKBOOK.md`` (next to this package) has ten pasteable recipes
+with their output, and every method's docstring carries a runnable example —
+``help(DataDictionary.load)`` is a good first stop.
+
 Load a dictionary and work with typed, parsed objects instead of raw CSV
 cells::
 
