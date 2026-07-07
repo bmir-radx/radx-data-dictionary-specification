@@ -63,6 +63,12 @@ accepted (`Variable`, `Label`, `Type`, `Choices`, …), so lightly hand-edited
 exports convert too. A file with no recognisable `Variable / Field Name`
 column is rejected with a clear error.
 
+## How the conversion works
+
+The algorithm — including how REDCap's **Field Type** drives row filtering,
+cardinality, enumerations, and datatypes — is documented in
+[`CONVERSION.md`](CONVERSION.md), with a verified worked example.
+
 ## Development
 
 The design is recorded in [`REDCAP_PLAN.md`](REDCAP_PLAN.md). To run the
