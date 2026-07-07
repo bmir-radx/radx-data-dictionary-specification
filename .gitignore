@@ -22,3 +22,8 @@ converter/examples/*
 !converter/examples/up.yaml
 !converter/examples/up.redcap.csv
 !converter/examples/rad.redcap.csv
+!converter/examples/gcb.html
+!converter/examples/rad.html
+!converter/examples/dht.html
+!converter/examples/tech.html
+!converter/examples/up.html

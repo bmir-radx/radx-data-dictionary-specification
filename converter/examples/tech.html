@@ -1,0 +1,3485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tech data dictionary</title>
+<style>:root {
+  /* Badge colours, from the original Java template. */
+  --data-element: #68b622;
+  --data-element-dark: #579a1d;
+  --facet: #eb944c;
+  --choice: #59aaf8;
+  --missing: #86878a;
+  --term: #9d7bdb;
+  /* Card/layout neutrals. */
+  --ink: #1f2933;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --card: #ffffff;
+  --page: #f4f6f8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  color: var(--ink);
+  line-height: 1.55;
+  margin: 0;
+  background: var(--page);
+}
+
+.container {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.5rem;
+}
+
+.section { margin-top: 2.5rem; }
+.section__name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0 0 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--line);
+}
+
+/* Each data element is a card. */
+.record {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+  padding: 0.5rem 1.25rem;
+  margin-bottom: 1.25rem;
+  scroll-margin-top: 1rem;
+}
+
+.record__table { border-collapse: collapse; width: 100%; }
+.record__table > tbody > tr { border-bottom: 1px solid #f1f3f5; }
+.record__table > tbody > tr:last-child { border-bottom: none; }
+.record__table th {
+  text-align: left;
+  vertical-align: top;
+  width: 9rem;
+  padding: 0.55rem 0.75rem 0.55rem 0;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.record__table td { padding: 0.55rem 0; vertical-align: top; }
+
+.record__number {
+  color: var(--data-element);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.record__label { font-size: 1.05rem; }
+
+.badge {
+  display: inline-block;
+  padding: 0.22em 0.6em;
+  font-size: 0.82em;
+  font-weight: 600;
+  line-height: 1.4;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+.record__id,
+.record__description a.record__id,
+.record__notes a.record__id {
+  background: var(--data-element);
+  color: #fff;
+  text-decoration: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+a.record__id:hover { background: var(--data-element-dark); }
+.record__facet { background: var(--facet); color: #fff; }
+.term {
+  background: var(--term);
+  color: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.choice__value {
+  background: var(--choice);
+  color: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  min-width: 1.5rem;
+  text-align: center;
+}
+.choice__value--missing-value-code { background: var(--missing); }
+
+code {
+  background: #eef1f4;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Enumeration: value badge + label per row. */
+.enumeration { border-collapse: collapse; }
+.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0; vertical-align: middle; }
+.choice__label { color: var(--ink); }
+
+.record__description, .record__notes { max-width: 62ch; }
+.record__description :first-child,
+.record__notes :first-child { margin-top: 0; }
+.record__description :last-child,
+.record__notes :last-child { margin-bottom: 0; }
+.record__description a { color: var(--choice); }
+
+@media print {
+  body { background: #fff; }
+  html { font-size: 10.5px; }
+  a { text-decoration: none; }
+  .record {
+    break-inside: avoid;
+    box-shadow: none;
+    border-color: #d0d5dd;
+  }
+  .badge { border: none; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 class="title">tech data dictionary</h1>
+
+  
+  <section class="section">
+    <h2 class="section__name"></h2>
+
+    
+    <article class="record" id="user_id">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">1)</th>
+            <td><span class="badge record__id">user_id</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">User ID</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#user_id" class="record__id badge">user_id</a> data element records response to the prompt, <em>&quot;User ID&quot;</em>.</p>
+</td></tr>
+          
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="race_black">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">2)</th>
+            <td><span class="badge record__id">race_black</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Black</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#race_black" class="record__id badge">race_black</a> data element records response to the prompt, <em>&quot;Black&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 2 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">Unchecked</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Checked</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="race_white">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">3)</th>
+            <td><span class="badge record__id">race_white</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">White</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#race_white" class="record__id badge">race_white</a> data element records response to the prompt, <em>&quot;White&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 2 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">Unchecked</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Checked</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="race_asian">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">4)</th>
+            <td><span class="badge record__id">race_asian</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Asian</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#race_asian" class="record__id badge">race_asian</a> data element records response to the prompt, <em>&quot;Asian&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 2 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">Unchecked</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Checked</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="race_pacisl">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">5)</th>
+            <td><span class="badge record__id">race_pacisl</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Pacific Islander</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#race_pacisl" class="record__id badge">race_pacisl</a> data element records response to the prompt, <em>&quot;Pacific Islander&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 2 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">Unchecked</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Checked</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="race_amind">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">6)</th>
+            <td><span class="badge record__id">race_amind</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">American Indian</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#race_amind" class="record__id badge">race_amind</a> data element records response to the prompt, <em>&quot;American Indian&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 2 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">Unchecked</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Checked</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="race_other">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">7)</th>
+            <td><span class="badge record__id">race_other</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Other</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#race_other" class="record__id badge">race_other</a> data element records response to the prompt, <em>&quot;Other&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 2 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">Unchecked</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Checked</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="race_dk">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">8)</th>
+            <td><span class="badge record__id">race_dk</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Don&#39;t know</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#race_dk" class="record__id badge">race_dk</a> data element records response to the prompt, <em>&quot;Don't know&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 2 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">Unchecked</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Checked</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="ethnicity">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">9)</th>
+            <td><span class="badge record__id">ethnicity</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Are you of Hispanic or Latino origin?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#ethnicity" class="record__id badge">ethnicity</a> data element records response to the prompt, <em>&quot;Are you of Hispanic or Latino origin?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 7 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes: Mexican, Mexican American Or Chicano</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">2</span></td>
+                  <td class="choice__label">Yes: Puerto Rican</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">3</span></td>
+                  <td class="choice__label">Yes: Cuban</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Don&#39;t Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Prefer Not To Answer</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Yes: Other Or Mixed Hispanic, Latino Or Spanish Origin</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="age_at_registration">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">10)</th>
+            <td><span class="badge record__id">age_at_registration</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Age</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#age_at_registration" class="record__id badge">age_at_registration</a> data element records response to the prompt, <em>&quot;Age&quot;</em>.</p>
+<p>Values for this data element are strings that are restricted to the list of 1 permissible string values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">BEST</span></td>
+                  <td class="choice__label">BEST</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="sex">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">11)</th>
+            <td><span class="badge record__id">sex</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Gender</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#sex" class="record__id badge">sex</a> data element records response to the prompt, <em>&quot;Gender&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 3 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Male</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">2</span></td>
+                  <td class="choice__label">Female</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Prefer Not To Answer</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="education">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">12)</th>
+            <td><span class="badge record__id">education</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">What is the highest grade or level of school you have completed or the highest degree you have received?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#education" class="record__id badge">education</a> data element records response to the prompt, <em>&quot;What is the highest grade or level of school you have completed or the highest degree you have received?&quot;</em>.</p>
+<p>Values for this data element are strings that are restricted to the list of 11 permissible string values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">no_hs</span></td>
+                  <td class="choice__label">no_hs</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">hs</span></td>
+                  <td class="choice__label">hs</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">ged</span></td>
+                  <td class="choice__label">ged</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">some_college</span></td>
+                  <td class="choice__label">some_college</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">aa</span></td>
+                  <td class="choice__label">aa</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">bach</span></td>
+                  <td class="choice__label">bach</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">master</span></td>
+                  <td class="choice__label">master</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">prof</span></td>
+                  <td class="choice__label">prof</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">doc</span></td>
+                  <td class="choice__label">doc</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">refused</span></td>
+                  <td class="choice__label">refused</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">dk</span></td>
+                  <td class="choice__label">dk</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="zip">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">13)</th>
+            <td><span class="badge record__id">zip</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Zipcode</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">string</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#zip" class="record__id badge">zip</a> data element records response to the prompt, <em>&quot;Zipcode&quot;</em>.</p>
+<p>Values for this data element are strings that are restricted to the list of 1 permissible string values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">BEST</span></td>
+                  <td class="choice__label">BEST</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="working">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">14)</th>
+            <td><span class="badge record__id">working</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">We would like to know about what you do-are you working now, looking for work, retired, keeping house, a student, or what?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#working" class="record__id badge">working</a> data element records response to the prompt, <em>&quot;We would like to know about what you do-are you working now, looking for work, retired, keeping house, a student, or what?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 8 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Working Now</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">2</span></td>
+                  <td class="choice__label">Only Temporarily Laid Off, Sick Leave, Or Maternity Leave</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">3</span></td>
+                  <td class="choice__label">Looking For Work, Unemployed</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">4</span></td>
+                  <td class="choice__label">Retired</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">5</span></td>
+                  <td class="choice__label">Disabled, Permanently, Or Temporarily</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">6</span></td>
+                  <td class="choice__label">Keeping House</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">7</span></td>
+                  <td class="choice__label">Student</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other (Specify)</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="cond_prev_activity">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">15)</th>
+            <td><span class="badge record__id">cond_prev_activity</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Do you have any serious physical or mental condition(s) that limit your ability to perform daily activities?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#cond_prev_activity" class="record__id badge">cond_prev_activity</a> data element records response to the prompt, <em>&quot;Do you have any serious physical or mental condition(s) that limit your ability to perform daily activities?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="hearing">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">16)</th>
+            <td><span class="badge record__id">hearing</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Are you deaf or do you have serious difficulty hearing?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#hearing" class="record__id badge">hearing</a> data element records response to the prompt, <em>&quot;Are you deaf or do you have serious difficulty hearing?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="vision">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">17)</th>
+            <td><span class="badge record__id">vision</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Are you blind or do you have serious difficulty seeing, even when wearing glasses?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#vision" class="record__id badge">vision</a> data element records response to the prompt, <em>&quot;Are you blind or do you have serious difficulty seeing, even when wearing glasses?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="memory">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">18)</th>
+            <td><span class="badge record__id">memory</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years or older)</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#memory" class="record__id badge">memory</a> data element records response to the prompt, <em>&quot;Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years or older)&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="walk_stairs">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">19)</th>
+            <td><span class="badge record__id">walk_stairs</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Do you have serious difficulty walking or climbing stairs? (5 years or older)</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#walk_stairs" class="record__id badge">walk_stairs</a> data element records response to the prompt, <em>&quot;Do you have serious difficulty walking or climbing stairs? (5 years or older)&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="dressing_bathing">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">20)</th>
+            <td><span class="badge record__id">dressing_bathing</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Do you have difficulty dressing or bathing? (5 years or older)</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#dressing_bathing" class="record__id badge">dressing_bathing</a> data element records response to the prompt, <em>&quot;Do you have difficulty dressing or bathing? (5 years or older)&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="doctor_shopping">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">21)</th>
+            <td><span class="badge record__id">doctor_shopping</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor&#39;s office or shopping? (15 years old or older)</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#doctor_shopping" class="record__id badge">doctor_shopping</a> data element records response to the prompt, <em>&quot;Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping? (15 years old or older)&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="smoking">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">22)</th>
+            <td><span class="badge record__id">smoking</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#smoking" class="record__id badge">smoking</a> data element records response to the prompt, <em>&quot;Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="alcohol">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">23)</th>
+            <td><span class="badge record__id">alcohol</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">How often did you have a drink containing alcohol in the past year?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#alcohol" class="record__id badge">alcohol</a> data element records response to the prompt, <em>&quot;How often did you have a drink containing alcohol in the past year?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">Never</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Monthly Or Less</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">2</span></td>
+                  <td class="choice__label">Two To Four Times Per Month</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">3</span></td>
+                  <td class="choice__label">Two To Three Times Per Week</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">4</span></td>
+                  <td class="choice__label">Four Or More Times Per Week</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="asthma">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">24)</th>
+            <td><span class="badge record__id">asthma</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Asthma, to the point that you use inhalers daily or have been to the hospital for your asthma?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#asthma" class="record__id badge">asthma</a> data element records response to the prompt, <em>&quot;Asthma, to the point that you use inhalers daily or have been to the hospital for your asthma?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="cancer">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">25)</th>
+            <td><span class="badge record__id">cancer</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Cancer (including leukemia or lymphoma) undergoing active treatment?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#cancer" class="record__id badge">cancer</a> data element records response to the prompt, <em>&quot;Cancer (including leukemia or lymphoma) undergoing active treatment?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="ckd">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">26)</th>
+            <td><span class="badge record__id">ckd</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Decreased kidney (renal) function or kidney (renal) failure?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#ckd" class="record__id badge">ckd</a> data element records response to the prompt, <em>&quot;Decreased kidney (renal) function or kidney (renal) failure?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes, But Not On Dialysis</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">2</span></td>
+                  <td class="choice__label">Yes And On Dialysis</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">3</span></td>
+                  <td class="choice__label">Yes, I&#39;ve Had A Kidney Transplant And My Kidney Function Is Now Normal</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Don&#39;t Know</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="diabetes">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">27)</th>
+            <td><span class="badge record__id">diabetes</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Diabetes? Do not include pre-diabetes.</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#diabetes" class="record__id badge">diabetes</a> data element records response to the prompt, <em>&quot;Diabetes? Do not include pre-diabetes.&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="hbp">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">28)</th>
+            <td><span class="badge record__id">hbp</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">High blood pressure or hypertension (except that occurred during pregnancy and did not last after pregnancy)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#hbp" class="record__id badge">hbp</a> data element records response to the prompt, <em>&quot;High blood pressure or hypertension (except that occurred during pregnancy and did not last after pregnancy)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="mental_illness">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">29)</th>
+            <td><span class="badge record__id">mental_illness</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Have you ever been told by a physician, psychologist, or healthcare provider that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia, or other)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#mental_illness" class="record__id badge">mental_illness</a> data element records response to the prompt, <em>&quot;Have you ever been told by a physician, psychologist, or healthcare provider that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia, or other)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="sc_anemia">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">30)</th>
+            <td><span class="badge record__id">sc_anemia</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Have you ever been told by a physician or healthcare provider that you have sickle cell anemia?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#sc_anemia" class="record__id badge">sc_anemia</a> data element records response to the prompt, <em>&quot;Have you ever been told by a physician or healthcare provider that you have sickle cell anemia?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="coronary_artery_disease">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">31)</th>
+            <td><span class="badge record__id">coronary_artery_disease</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#coronary_artery_disease" class="record__id badge">coronary_artery_disease</a> data element records response to the prompt, <em>&quot;Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="heart_attack">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">32)</th>
+            <td><span class="badge record__id">heart_attack</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">A heart attack (myocardial infarction)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#heart_attack" class="record__id badge">heart_attack</a> data element records response to the prompt, <em>&quot;A heart attack (myocardial infarction)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="chf">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">33)</th>
+            <td><span class="badge record__id">chf</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Congestive Heart failure (CHF, Heart Failure)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#chf" class="record__id badge">chf</a> data element records response to the prompt, <em>&quot;Congestive Heart failure (CHF, Heart Failure)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="stroke">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">34)</th>
+            <td><span class="badge record__id">stroke</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#stroke" class="record__id badge">stroke</a> data element records response to the prompt, <em>&quot;Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="immunodeficiency">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">35)</th>
+            <td><span class="badge record__id">immunodeficiency</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Immunodeficiency (NOT including HIV)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#immunodeficiency" class="record__id badge">immunodeficiency</a> data element records response to the prompt, <em>&quot;Immunodeficiency (NOT including HIV)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="hiv">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">36)</th>
+            <td><span class="badge record__id">hiv</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Chronic HIV infection?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#hiv" class="record__id badge">hiv</a> data element records response to the prompt, <em>&quot;Chronic HIV infection?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="anemia">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">37)</th>
+            <td><span class="badge record__id">anemia</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Anemia or other blood disorder (do not include leukemia or lymphoma)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#anemia" class="record__id badge">anemia</a> data element records response to the prompt, <em>&quot;Anemia or other blood disorder (do not include leukemia or lymphoma)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="premature">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">38)</th>
+            <td><span class="badge record__id">premature</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">History of premature birth (being born before 37 weeks of pregnancy)</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#premature" class="record__id badge">premature</a> data element records response to the prompt, <em>&quot;History of premature birth (being born before 37 weeks of pregnancy)&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 6 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes, Between 32 - 37 Weeks</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">2</span></td>
+                  <td class="choice__label">Yes, Between 28-32 Weeks</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">3</span></td>
+                  <td class="choice__label">Yes, Less Than 28 Weeks</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">4</span></td>
+                  <td class="choice__label">Yes, But Not Sure How Many Weeks</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="chd">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">39)</th>
+            <td><span class="badge record__id">chd</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">CHD</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#chd" class="record__id badge">chd</a> data element records response to the prompt, <em>&quot;CHD&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="cf">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">40)</th>
+            <td><span class="badge record__id">cf</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">CF</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#cf" class="record__id badge">cf</a> data element records response to the prompt, <em>&quot;CF&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="cld_bpd">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">41)</th>
+            <td><span class="badge record__id">cld_bpd</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">CLD BPD</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#cld_bpd" class="record__id badge">cld_bpd</a> data element records response to the prompt, <em>&quot;CLD BPD&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="copd">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">42)</th>
+            <td><span class="badge record__id">copd</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#copd" class="record__id badge">copd</a> data element records response to the prompt, <em>&quot;COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="cough">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">43)</th>
+            <td><span class="badge record__id">cough</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">A cough (worse than usual)</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#cough" class="record__id badge">cough</a> data element records response to the prompt, <em>&quot;A cough (worse than usual)&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="fever_chills">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">44)</th>
+            <td><span class="badge record__id">fever_chills</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Symptoms of fever or chills</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#fever_chills" class="record__id badge">fever_chills</a> data element records response to the prompt, <em>&quot;Symptoms of fever or chills&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="shortness_of_breath">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">45)</th>
+            <td><span class="badge record__id">shortness_of_breath</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Shortness of breath</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#shortness_of_breath" class="record__id badge">shortness_of_breath</a> data element records response to the prompt, <em>&quot;Shortness of breath&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="muscle_aches">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">46)</th>
+            <td><span class="badge record__id">muscle_aches</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Muscle aches (worse than usual)</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#muscle_aches" class="record__id badge">muscle_aches</a> data element records response to the prompt, <em>&quot;Muscle aches (worse than usual)&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="unable_to_taste_or_smell">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">47)</th>
+            <td><span class="badge record__id">unable_to_taste_or_smell</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Unable to taste or smell</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#unable_to_taste_or_smell" class="record__id badge">unable_to_taste_or_smell</a> data element records response to the prompt, <em>&quot;Unable to taste or smell&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="nausea_vomiting_diarrhea">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">48)</th>
+            <td><span class="badge record__id">nausea_vomiting_diarrhea</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Nausea, vomiting or diarrhea</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#nausea_vomiting_diarrhea" class="record__id badge">nausea_vomiting_diarrhea</a> data element records response to the prompt, <em>&quot;Nausea, vomiting or diarrhea&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="red_eyes">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">49)</th>
+            <td><span class="badge record__id">red_eyes</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">Red or painful eyes</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#red_eyes" class="record__id badge">red_eyes</a> data element records response to the prompt, <em>&quot;Red or painful eyes&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="high_temp">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">50)</th>
+            <td><span class="badge record__id">high_temp</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">A temperature greater than 100.4 °F</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#high_temp" class="record__id badge">high_temp</a> data element records response to the prompt, <em>&quot;A temperature greater than 100.4 °F&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+    <article class="record" id="no_symptoms">
+      <table class="record__table">
+        <tbody>
+          <tr>
+            <th class="record__number">51)</th>
+            <td><span class="badge record__id">no_symptoms</span></td>
+          </tr>
+          <tr><th>Label</th><td><strong class="record__label">None of the above</strong></td></tr>
+          
+          <tr><th>Datatype</th><td><span class="badge record__facet">integer</span></td></tr>
+          
+          
+          <tr><th>Cardinality</th><td><span class="badge record__facet">single</span></td></tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><th>Description</th><td class="record__description"><p>The <a href="#no_symptoms" class="record__id badge">no_symptoms</a> data element records response to the prompt, <em>&quot;None of the above&quot;</em>.</p>
+<p>Values for this data element are integers that are restricted to the list of 5 permissible integer values.</p>
+</td></tr>
+          
+          
+          <tr><th>Enumeration</th><td>
+            <table class="enumeration">
+              <tbody>
+              
+                <tr>
+                  <td><span class="badge choice__value">0</span></td>
+                  <td class="choice__label">No</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">1</span></td>
+                  <td class="choice__label">Yes</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">77</span></td>
+                  <td class="choice__label">Dont Know</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">88</span></td>
+                  <td class="choice__label">Refused/Na</td>
+                  
+                </tr>
+              
+                <tr>
+                  <td><span class="badge choice__value">99</span></td>
+                  <td class="choice__label">Other</td>
+                  
+                </tr>
+              
+              </tbody>
+            </table>
+          </td></tr>
+          
+          
+        </tbody>
+      </table>
+    </article>
+    
+  </section>
+  
+</div>
+</body>
+</html>
