@@ -177,3 +177,5 @@ def test_emitted_yaml_with_many_rules_is_valid_yaml():
     # Each rule gets a comment block and a description naming the condition.
     assert '# Rule 1 of 3 — ' in schema_yaml
     assert 'blank unless gate = "1"' in schema_yaml
+    # ...and each preconditioned slot points back at its rule.
+    assert "# Precondition enforced by rule 1 of 3 (see rules:)" in schema_yaml

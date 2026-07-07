@@ -200,8 +200,11 @@ class Emitter:
         # comment block above each subset definition).
         self._section_users: dict[str, list] = {}
         # One human-readable summary per emitted rule, in emission order (for
-        # the comment block above each rule in the rendered YAML).
+        # the comment block above each rule in the rendered YAML), and the
+        # 1-based rule numbers each slot contributed (for the reciprocal
+        # comment on the slot).
         self._rule_summaries: list[str] = []
+        self._slot_rule_numbers: dict[str, list[int]] = {}
 
     # -- prefixes / term identifiers ---------------------------------------
 
@@ -324,6 +327,7 @@ class Emitter:
             )
         )
         self._rule_summaries.append(f"{slot.name}: blank unless {condition_text}")
+        self._slot_rule_numbers.setdefault(slot.name, []).append(len(self._rule_summaries))
         if required:
             slot.annotations["required"] = "y"
             cls.rules.append(
@@ -338,6 +342,7 @@ class Emitter:
                 )
             )
             self._rule_summaries.append(f"{slot.name}: value required when {condition_text}")
+            self._slot_rule_numbers.setdefault(slot.name, []).append(len(self._rule_summaries))
 
     def _condition_expression(self, node) -> AnonymousClassExpression:
         """A precondition expression tree as a LinkML class expression."""
@@ -658,6 +663,9 @@ class Emitter:
         )
         if self._rule_summaries:
             text = _annotate_rules(text, self._rule_summaries)
+            text = _annotate_slot_rule_references(
+                text, self._slot_rule_numbers, len(self._rule_summaries)
+            )
         return text
 
 
@@ -802,6 +810,31 @@ def _annotate_rules(text: str, summaries: list[str]) -> str:
         out.append(line)
         if stripped == "rules:" and indent == 4:
             in_rules = True
+    return "\n".join(out)
+
+
+def _annotate_slot_rule_references(
+    text: str, slot_rules: dict[str, list[int]], total: int
+) -> str:
+    """Add a comment on each preconditioned slot pointing at its rule(s).
+
+    The reciprocal of the rule comments: under the slot's ``# Data element``
+    block line, a ``# Precondition enforced by rule n of m (see rules:)``
+    line says where the enforcement lives. Slots with a Required precondition
+    contribute two rules and reference both.
+    """
+    out: list[str] = []
+    for line in text.split("\n"):
+        match = re.match(r"^ {6}(?P<name>\S+):\s*$", line)
+        numbers = slot_rules.get(match.group("name")) if match else None
+        if numbers and out and out[-1].lstrip().startswith("# Data element"):
+            if len(numbers) == 1:
+                reference = f"rule {numbers[0]} of {total}"
+            else:
+                listed = " and ".join(str(n) for n in numbers)
+                reference = f"rules {listed} of {total}"
+            out.append(f"      # Precondition enforced by {reference} (see rules:)")
+        out.append(line)
     return "\n".join(out)
 
 
