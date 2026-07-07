@@ -115,3 +115,29 @@ def test_cli_missing_input_returns_2(capsys):
 
     assert main(["/no/such/file.csv"]) == 2
     assert "not found" in capsys.readouterr().err
+
+
+def test_precondition_renders_richly():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    text = (
+        "Id,Label,Datatype,Enumeration,Precondition,Required,Cardinality\n"
+        'smoker,Do you smoke?,integer,"""0""=[No] | ""1""=[Yes]",,,\n'
+        'packs,Packs,decimal,,"smoker = ""1"" and packs_known <> """"",y,\n'
+        'sym,Symptoms,integer,"""3""=[Headache]",,,multiple\n'
+        'detail,Detail,string,,"sym contains ""3""",,\n'
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    # Field reference links to the record card; value shows its choice label.
+    assert '<a href="#smoker" class="record__id badge">smoker</a> is' in html
+    assert '<span class="badge choice__value">1</span> <em>(Yes)</em>' in html
+    # Non-blank test reads as prose; connectives are emphasised.
+    assert "is not blank" in html
+    assert "<em>and</em>" in html
+    # contains renders as "includes", with the referenced choice labelled.
+    assert 'includes <span class="badge choice__value">3</span> <em>(Headache)</em>' in html
+    # The raw grammar text survives as a tooltip.
+    assert 'title="smoker = &#34;1&#34; and packs_known &lt;&gt; &#34;&#34;"' in html

@@ -8,6 +8,7 @@ from jinja2 import Environment, select_autoescape
 
 from .markdown import render_description
 from .model import Dictionary
+from .precondition import render_precondition
 
 _TEMPLATE = files("dd_printer.templates").joinpath("dictionary.html.j2").read_text(
     encoding="utf-8"
@@ -28,4 +29,5 @@ def render_html(dictionary: Dictionary) -> str:
             record.description, record, dictionary
         )
         record.notes_html = render_description(record.notes, record, dictionary)
+        record.precondition_html = render_precondition(record.precondition, dictionary)
     return template.render(dictionary=dictionary, css=_CSS)
