@@ -58,13 +58,18 @@ options and the mapping details.
 
 ### Worked examples
 
-Two real data dictionaries and the LinkML schemas the converter produces from
+Five real data dictionaries and the LinkML schemas the converter produces from
 them:
 
-| Data dictionary (input) | Generated LinkML schema (output) |
-| --- | --- |
-| [`gcb.dd.csv`](converter/examples/gcb.dd.csv) | [`gcb.yaml`](converter/examples/gcb.yaml) |
-| [`rad.dd.csv`](converter/examples/rad.dd.csv) | [`rad.yaml`](converter/examples/rad.yaml) |
+| Data dictionary (input) | Generated LinkML schema (output) | Rendered page |
+| --- | --- | --- |
+| [`gcb.dd.csv`](converter/examples/gcb.dd.csv) | [`gcb.yaml`](converter/examples/gcb.yaml) | [`gcb.html`](converter/examples/gcb.html) |
+| [`rad.dd.csv`](converter/examples/rad.dd.csv) | [`rad.yaml`](converter/examples/rad.yaml) | [`rad.html`](converter/examples/rad.html) |
+| [`dht.dd.csv`](converter/examples/dht.dd.csv) | [`dht.yaml`](converter/examples/dht.yaml) | [`dht.html`](converter/examples/dht.html) |
+| [`tech.dd.csv`](converter/examples/tech.dd.csv) | [`tech.yaml`](converter/examples/tech.yaml) | [`tech.html`](converter/examples/tech.html) |
+| [`up.dd.csv`](converter/examples/up.dd.csv) | [`up.yaml`](converter/examples/up.yaml) | [`up.html`](converter/examples/up.html) |
+
+The `up` and `rad` examples show the complete REDCap pipeline: a raw export (`<name>.redcap.csv`) → `redcap-to-dd` → the dictionary (`<name>.dd.csv`) → `dd-to-linkml` → the schema (`<name>.yaml`), whose class `rules` come from the export's branching logic via the `Precondition` field (50 rules for `up`, 5 for `rad`).
 
 ## Printer
 

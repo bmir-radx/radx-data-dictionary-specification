@@ -169,3 +169,82 @@ def test_duplicate_ids():
 def test_no_duplicate_ids():
     rows = _rows((2, {"Id": "a"}), (3, {"Id": "b"}))
     assert list(check_duplicate_ids(rows, {"Id"})) == []
+
+
+# --- precondition / required ---------------------------------------------------
+
+def _precondition_rows(*rows):
+    return list(rows), {"Id", "Datatype", "Cardinality", "Precondition", "Required"}
+
+
+def test_valid_precondition_is_silent():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "smoker", "Datatype": "integer", "Precondition": ""}, 2),
+        RawRow({"Id": "packs", "Datatype": "decimal", "Precondition": 'smoker = "1"'}, 3),
+    )
+    assert list(check_preconditions(rows, cols)) == []
+
+
+def test_malformed_precondition():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "x", "Precondition": "datediff(a) > 3"}, 2),
+    )
+    (f,) = list(check_preconditions(rows, cols))
+    assert f.check == "malformed-precondition" and f.level is Level.ERROR
+
+
+def test_unknown_precondition_field():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "x", "Precondition": 'ghost = "1"'}, 2),
+    )
+    (f,) = list(check_preconditions(rows, cols))
+    assert f.check == "unknown-precondition-field" and "ghost" in f.message
+
+
+def test_ordering_on_unordered_datatype():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "name", "Datatype": "string"}, 2),
+        RawRow({"Id": "x", "Precondition": "name > 5"}, 3),
+    )
+    (f,) = list(check_preconditions(rows, cols))
+    assert f.check == "invalid-precondition-comparison"
+
+
+def test_ordering_on_ordered_datatype_is_fine():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "age", "Datatype": "integer"}, 2),
+        RawRow({"Id": "x", "Precondition": "age >= 18"}, 3),
+    )
+    assert list(check_preconditions(rows, cols)) == []
+
+
+def test_contains_on_single_valued_field():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "sym", "Datatype": "integer", "Cardinality": "single"}, 2),
+        RawRow({"Id": "x", "Precondition": 'sym contains "3"'}, 3),
+    )
+    (f,) = list(check_preconditions(rows, cols))
+    assert f.check == "invalid-precondition-contains"
+
+
+def test_contains_on_multivalued_field_is_fine():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "sym", "Datatype": "integer", "Cardinality": "multiple"}, 2),
+        RawRow({"Id": "x", "Precondition": 'sym contains "3"'}, 3),
+    )
+    assert list(check_preconditions(rows, cols)) == []
+
+
+def test_invalid_required_value():
+    from dd_validator.checks import check_required
+    (f,) = list(check_required([RawRow({"Required": "maybe"}, 2)], {"Required"}))
+    assert f.check == "invalid-required"
+    assert list(check_required([RawRow({"Required": "y"}, 2)], {"Required"})) == []
+    assert list(check_required([RawRow({"Required": ""}, 2)], {"Required"})) == []

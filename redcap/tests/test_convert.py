@@ -130,3 +130,77 @@ def test_synonym_headers_accepted():
     dd = convert_redcap(io.StringIO(text))
     assert dd["age"].label == "Age"
     assert dd["age"].datatype == "string"
+
+
+# --- precondition / required ---------------------------------------------------
+
+def test_branching_logic_becomes_precondition():
+    dd = _convert(
+        [
+            'smoker,form1,,radio,Do you smoke?,"0, No | 1, Yes",,,,,,,y,,,,,',
+            "packs,form1,,text,Packs per day,,,number,,,,[smoker] = '1',y,,,,,",
+        ]
+    )
+    assert dd["packs"].precondition == 'smoker = "1"'
+    assert dd["packs"].required
+    assert dd["smoker"].required and dd["smoker"].precondition is None
+
+
+def test_checkbox_branching_becomes_contains():
+    dd = _convert(
+        [
+            'sym,form1,,checkbox,Symptoms,"1, Cough | 3, Headache",,,,,,,,,,,,',
+            "detail,form1,,text,Detail,,,,,,,[sym(3)] = '1',,,,,,",
+        ]
+    )
+    assert dd["detail"].precondition == 'sym contains "3"'
+
+
+def test_uniform_or_branching_translates():
+    dd = _convert(
+        [
+            'x,form1,,radio,X,"1, A | 2, B",,,,,,,,,,,,',
+            "y,form1,,text,Y,,,,,,,[x] = '1' or [x] = '2',,,,,,",
+        ]
+    )
+    assert dd["y"].precondition == 'x = "1" or x = "2"'
+
+
+def test_untranslatable_branching_stays_prose_only():
+    dd = _convert(["y,form1,,text,Y,,,,,,,[bmi] > 30,,,,,,"])
+    assert dd["y"].precondition is None
+    assert "the condition `[bmi] > 30` evaluates to true" in dd["y"].description
+
+
+def test_dangling_reference_precondition_dropped():
+    # [ghost] is not a field in the dictionary -> precondition must not dangle.
+    dd = _convert(["y,form1,,text,Y,,,,,,,[ghost] = '1',,,,,,"])
+    assert dd["y"].precondition is None
+
+
+def test_mixed_connectives_not_translated():
+    dd = _convert(
+        [
+            'a,form1,,radio,A,"1, X",,,,,,,,,,,,',
+            'b,form1,,radio,B,"1, X",,,,,,,,,,,,',
+            "y,form1,,text,Y,,,,,,,[a] = '1' and [b] = '1' or [a] = '2',,,,,,",
+        ]
+    )
+    assert dd["y"].precondition is None
+
+
+def test_windows_1252_export_reads(tmp_path):
+    # Real REDCap exports are often Excel-saved cp1252 (0xa0 = non-breaking space).
+    path = tmp_path / "export.csv"
+    path.write_bytes("Variable,Label,Type\nage,Age\xa0(years),text\n".encode("cp1252"))
+    dd = convert_redcap(path)
+    assert dd["age"].label == "Age\xa0(years)"
+
+
+def test_duplicate_variables_raise_unless_allowed():
+    rows = ["a,form1,,text,A,,,,,,,,,,,,,", "a,form2,,text,A again,,,,,,,,,,,,,"]
+    with pytest.raises(ValueError, match="duplicate"):
+        _convert(rows)
+    dd = _convert(rows, allow_duplicates=True)
+    assert dd.ids == ("a",)
+    assert dd["a"].label == "A"  # first occurrence wins

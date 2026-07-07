@@ -30,6 +30,8 @@ for element in dd:           # elements, in file order
     for choice in element.enumeration:      # parsed "value"=[label](iri) pairs
         choice.value, choice.label, choice.iri
     element.missing_value_codes             # same shape as enumeration
+    element.precondition     # 'smoker = "1"' — when the field applies
+    element.required         # True when a value must be present
 
 dd.sections                  # section names, in order of first appearance
 dd.elements_in_section("Demographics")

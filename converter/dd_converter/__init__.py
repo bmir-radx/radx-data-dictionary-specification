@@ -10,12 +10,12 @@ because the structure is hidden inside string cells in a bespoke notation.
 from .datatypes import (
     BUILTIN_RANGES,
     CUSTOM_TYPES,
+    ORDERED_DATATYPES,
     CustomType,
     UnknownDatatypeError,
     resolve_datatype,
 )
 from .emit import EmitOptions, Emitter, emit_schema
-from .reverse import schema_to_csv, schema_to_rows
 from .missing_values import (
     STANDARD_ENUM_NAME,
     STANDARD_MISSING_VALUE_CODES,
@@ -29,10 +29,12 @@ from .reader import (
     Row,
     read_data_dictionary,
 )
+from .reverse import schema_to_csv, schema_to_rows
 from .units import UnitOfMeasure, lookup_unit
 
 __all__ = [
     "BUILTIN_RANGES",
+    "ORDERED_DATATYPES",
     "CUSTOM_TYPES",
     "CustomType",
     "UnknownDatatypeError",

@@ -50,7 +50,7 @@ While the Id of a data dictionary record SHOULD match the target datafile Field 
 
 A data dictionary header record contains the following sequence of strings as its field identifiers:
 
-[Id](#field-id), [Aliases](#field-aliases), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Examples](#field-examples), [Notes](#field-notes), [Provenance](#field-provenance), [SeeAlso](#field-seealso).
+[Id](#field-id), [Aliases](#field-aliases), [Label](#field-label), [Description](#field-description), [Section](#field-section), [Cardinality](#field-cardinality), [Terms](#field-terms), [Datatype](#field-datatype), [Pattern](#field-pattern), [Unit](#field-unit), [Enumeration](#field-enumeration), [MissingValueCodes](#field-missingvaluecodes), [Precondition](#field-precondition), [Required](#field-required), [Examples](#field-examples), [Notes](#field-notes), [Provenance](#field-provenance), [SeeAlso](#field-seealso).
 
 These data dictionary fields are described in more detail below. 
 
@@ -293,6 +293,53 @@ The standard set of codes shown below always applies.  When the `MissingValueCod
 
 `"-9999"=[Reason Unknown] | "-9980"=[Not Sent to Data Hub] | "-9981"=[Data Transfer Agreement] | "-9982"=[No Participant Consent To Share] | "-9983"=[Not Available Or Mappable] | "-9984"=[Data Lost Or Inaccessible] | "-9985"=[Data Invalid] | "-9986"=[Anonymization Or Privacy Concerns] | "-9987"=[Other Unsent Reason Not Specified] | "-9960"=[Not Entered By Originator] | "-9961"=[Omitted This Value] | "-9962"=[Originator Chose to Omit] | "-9963"=[Question Not Applicable] | "-9964"=[Answer Not Known] | "-9965"=[Record Not Provided] | "-9966"=[All Originators Omitted Element] | "-9967"=[CDE Omitted With Exception] | "-9968"=[Other Unentered Reason Not Specified] | "-9940"=[Not Presented To Participant] | "-9941"=[Skip Logic] | "-9942"=[No Participant Consent to Ask] | "-9943"=[CDE Not Presented Due to Exception] | "-9944"=[Element Never Presented for Collection] | "-9945"=[Process Error] | "-9946"=[Other Unpresented Reason Not Specified]`.
 
+
+### Field: Precondition
+
+__Value Status__: OPTIONAL
+
+The `Precondition` field specifies the condition under which the field being described holds a value.  If the precondition evaluates to false for a given datafile record then the field's cell in that record is expected to be blank, and that blank means **not applicable** (rather than missing).  A blank `Precondition` (or an absent `Precondition` column) means the field always applies.
+
+A precondition is a boolean expression over the values of other fields **in the same data dictionary**.  The syntax is as follows:
+
+```
+expression := clause ( ("and" | "or") clause )*
+clause     := predicate | "(" expression ")"
+predicate  := fieldId "=" literal
+            | fieldId "<>" literal
+            | fieldId "<>" ""
+            | fieldId "in" "{" literal ("," literal)* "}"
+            | fieldId ("<" | "<=" | ">" | ">=") literal
+            | fieldId "contains" literal
+literal    := a double-quoted string ("65") or a bare numeral (65)
+```
+
+For example,
+
+```
+smoker = "1"
+consented = "1" and age >= 18
+status in {"1", "2"} or (symptoms contains "3" and severity > 2)
+```
+
+The following rules apply:
+
+- The keywords `and`, `or`, `in` and `contains` are matched case-insensitively.  Parentheses group sub-expressions; `and` binds more tightly than `or`.
+- A `fieldId` MUST be the `Id` of a field in the same data dictionary.
+- The predicate `fieldId <> ""` is true when the referenced field is non-blank.
+- The ordering predicates (`<`, `<=`, `>`, `>=`) are only valid on fields whose `Datatype` is ordered (the numeric datatypes, `date`, `time` and `dateTime`).  Comparison happens in the datatype's value space — never lexicographically on the cell text.
+- The `contains` predicate is only valid on fields whose `Cardinality` is `multiple`, and is true when the referenced value is one of the values held in the cell.
+- A blank cell makes every predicate on that field false.  A cell holding one of the field's `MissingValueCodes` likewise makes every predicate on that field false — a value that stands for "no data" neither equals, exceeds, nor contains anything.
+
+Function calls and any construct not shown in the grammar above are NOT part of the precondition language.  Conditions that cannot be expressed in this grammar should instead be explained, in prose, in the `Description` field.
+
+### Field: Required
+
+__Value Status__: OPTIONAL
+
+The `Required` field specifies whether the field being described must hold a value.  The value MUST be `y` (required) or blank (not required).
+
+`Required` composes with `Precondition`: a required field's cell MUST be non-blank — holding a genuine value or one of the field's `MissingValueCodes` — exactly when its precondition holds (or in every record, if it has no precondition).  When the precondition is false, `Required` imposes nothing: the cell is expected to be blank regardless.  A blank cell in a required, applicable field is a datafile error.
 
 ### Field: Examples
 

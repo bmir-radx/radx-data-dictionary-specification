@@ -9,15 +9,17 @@ works on it directly.
 
 from __future__ import annotations
 
+import dataclasses
 import logging
 import re
 from pathlib import Path
 from typing import TextIO
 
 from dd_api import DataDictionary, DataElement, EnumItem
+from dd_converter.grammar import parse_precondition, referenced_fields
 
 from . import headers
-from .branching import explain_branching_logic
+from .branching import branching_to_precondition, explain_branching_logic
 from .choices import parse_choices
 from .datatypes import extract_datatype
 from .headers import RedCapSheet, read_sheet
@@ -29,16 +31,22 @@ logger = logging.getLogger(__name__)
 _NONE_OF_THE_ABOVE = re.compile(r"@NONEOFTHEABOVE\s*=\s*['\"](\d+)((?:,\d+)*)['\"]")
 
 
-def convert_redcap(source: str | Path | TextIO, *, provenance: str = "") -> DataDictionary:
+def convert_redcap(
+    source: str | Path | TextIO, *, provenance: str = "", allow_duplicates: bool = False
+) -> DataDictionary:
     """Convert a REDCap data dictionary CSV into a :class:`DataDictionary`.
 
     ``source`` may be a path or an open text file; ``provenance`` fills every
     element's Provenance column (e.g. the study or instrument name). Raises
     :class:`~dd_redcap.ConversionError` when the file is not a REDCap
-    dictionary, and ``ValueError`` when two rows share a Variable name.
+    dictionary, and ``ValueError`` when two rows share a Variable name —
+    unless ``allow_duplicates`` is true, in which case the first occurrence
+    is kept and later ones are skipped with a logged warning (multi-form
+    exports commonly repeat shared fields on every form).
     """
     sheet = read_sheet(source)
     elements: list[DataElement] = []
+    seen_ids: set[str] = set()
     current_section = ""
     for row in sheet.rows:
         field_type = sheet.get(row, headers.FIELD_TYPE)
@@ -52,8 +60,37 @@ def convert_redcap(source: str | Path | TextIO, *, provenance: str = "") -> Data
         if not field_id:
             logger.warning("Skipping a row with no Variable / Field Name value.")
             continue
+        # A repeated Variable is skipped only under allow_duplicates; otherwise
+        # it flows through so the DataDictionary constructor raises.
+        if field_id in seen_ids and allow_duplicates:
+            logger.warning("Duplicate Variable %r: keeping the first occurrence.", field_id)
+            continue
+        seen_ids.add(field_id)
         elements.append(_element_from_row(sheet, row, field_id, current_section, provenance))
-    return DataDictionary(elements)
+    return DataDictionary(_drop_dangling_preconditions(elements))
+
+
+def _drop_dangling_preconditions(elements: list[DataElement]) -> list[DataElement]:
+    """Remove preconditions that refer to fields not in the dictionary.
+
+    Branching logic can reference a field that did not convert (or was
+    mistyped in the export); the prose explanation in the description still
+    covers such conditions, but a machine-readable precondition must not
+    dangle — the spec requires its references to exist.
+    """
+    ids = {element.id for element in elements}
+    cleaned = []
+    for element in elements:
+        if element.precondition is not None:
+            condition = parse_precondition(element.precondition)
+            if not referenced_fields(condition) <= ids:
+                logger.warning(
+                    "Dropping precondition of %r: it references fields not in "
+                    "the dictionary.", element.id,
+                )
+                element = dataclasses.replace(element, precondition=None)
+        cleaned.append(element)
+    return cleaned
 
 
 def _element_from_row(
@@ -72,6 +109,8 @@ def _element_from_row(
         enumeration=tuple(
             EnumItem(value=value, label=choice_label) for value, choice_label in choices.items()
         ),
+        precondition=branching_to_precondition(sheet, row),
+        required=sheet.get(row, headers.REQUIRED_FIELD).strip().lower() == "y",
         notes=_notes_from_annotations(sheet, row) or None,
         provenance=provenance or None,
     )

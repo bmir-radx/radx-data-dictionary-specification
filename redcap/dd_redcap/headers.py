@@ -43,6 +43,7 @@ CHOICES = "Choices, Calculations, OR Slider Labels"
 FIELD_NOTE = "Field Note"
 TEXT_VALIDATION = "Text Validation Type OR Show Slider Number"
 BRANCHING_LOGIC = "Branching Logic (Show field only if...)"
+REQUIRED_FIELD = "Required Field?"
 FIELD_ANNOTATION = "Field Annotation"
 
 
@@ -90,12 +91,20 @@ class RedCapSheet:
 def read_sheet(source: str | Path | TextIO) -> RedCapSheet:
     """Read a REDCap data dictionary CSV into a :class:`RedCapSheet`.
 
+    Files are read as UTF-8, falling back to Windows-1252 when the bytes are
+    not valid UTF-8 — real REDCap exports are frequently saved by Excel with
+    that encoding (curly quotes, non-breaking spaces).
+
     Raises :class:`ConversionError` if the file is empty or has no
     recognisable Variable / Field Name column (it is not a REDCap dictionary).
     """
     if isinstance(source, (str, Path)):
-        with open(source, encoding="utf-8-sig", newline="") as handle:
-            return _read(handle)
+        try:
+            with open(source, encoding="utf-8-sig", newline="") as handle:
+                return _read(handle)
+        except UnicodeDecodeError:
+            with open(source, encoding="cp1252", newline="") as handle:
+                return _read(handle)
     return _read(source)
 
 

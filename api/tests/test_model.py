@@ -211,10 +211,10 @@ def test_to_linkml_matches_emit_schema():
     assert "age" in schema["classes"]["Record"]["attributes"]
 
 
-def test_to_linkml_refuses_handbuilt_elements():
+def test_to_linkml_works_for_handbuilt_elements():
     dd = DataDictionary([DataElement(id="x", label="X", datatype="string")])
-    with pytest.raises(ValueError, match="hand-built"):
-        dd.to_linkml()
+    reloaded = DataDictionary.from_linkml(io.StringIO(dd.to_linkml()))
+    assert reloaded["x"].label == "X"
 
 
 def test_from_rows_equivalent_to_load():
@@ -327,3 +327,47 @@ def test_to_csv_works_for_hand_built_elements():
     reloaded = DataDictionary.load(io.StringIO(dd.to_csv()))
     assert reloaded["x"].label == "X"
     assert reloaded["x"].datatype == "string"
+
+
+# --- precondition / required ---------------------------------------------------
+
+def test_precondition_and_required_parse():
+    dd = _load(
+        "Id,Label,Datatype,Precondition,Required\n"
+        "smoker,Smoker,integer,,y\n"
+        'packs,Packs,decimal,"smoker = ""1""",y\n'
+        "age,Age,integer,,\n"
+    )
+    assert dd["smoker"].precondition is None and dd["smoker"].required
+    assert dd["packs"].precondition == 'smoker = "1"'
+    assert dd["packs"].required
+    assert not dd["age"].required
+    from dd_converter.grammar import Comparison
+    assert dd["packs"].parsed_precondition == Comparison("smoker", "=", "1")
+    assert dd["age"].parsed_precondition is None
+
+
+def test_malformed_precondition_raises_with_line():
+    from dd_converter.grammar import ParseError
+    with pytest.raises(ReadError, match="Line 2") as excinfo:
+        _load("Id,Label,Datatype,Precondition\nx,X,integer,datediff(a) > 3\n")
+    assert isinstance(excinfo.value.__cause__, ParseError)
+
+
+def test_invalid_required_raises():
+    with pytest.raises(ReadError, match="Required 'maybe'"):
+        _load("Id,Label,Datatype,Required\nx,X,integer,maybe\n")
+
+
+def test_precondition_round_trips_via_csv_and_linkml():
+    text = (
+        "Id,Label,Datatype,Precondition,Required\n"
+        "smoker,Smoker,integer,,\n"
+        'packs,Packs,decimal,"smoker = ""1"" and smoker <> """"",y\n'
+    )
+    original = _load(text)
+    via_csv = DataDictionary.load(io.StringIO(original.to_csv()))
+    assert via_csv.elements == original.elements
+    via_linkml = DataDictionary.from_linkml(io.StringIO(original.to_linkml()))
+    assert via_linkml["packs"].precondition == original["packs"].precondition
+    assert via_linkml["packs"].required

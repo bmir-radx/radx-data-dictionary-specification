@@ -60,6 +60,47 @@ def _explain_clause(clause: str, sheet: RedCapSheet) -> str:
     return f"the value of `{field}` is `{value}`, {quoted_label}"
 
 
+def branching_to_precondition(sheet: RedCapSheet, row: list[str]) -> str | None:
+    """Translate the row's branching logic to the spec's Precondition grammar.
+
+    Deliberately conservative: only expressions built from the three
+    recognised clause shapes, joined by a *uniform* connective (all ``and``
+    or all ``or``), translate — REDCap's precedence for mixed, unbracketed
+    connectives is not worth guessing at. Anything else returns ``None`` and
+    survives as prose in the description only.
+
+    Clause translations: ``[f(3)] = '1'`` (one checkbox choice ticked)
+    becomes ``f contains "3"`` (the converter folds a checkbox into one
+    multivalued field); ``[f] = '2'`` becomes ``f = "2"``; ``[f] <> ''``
+    becomes ``f <> ""``.
+    """
+    logic = sheet.get(row, headers.BRANCHING_LOGIC).strip()
+    if not logic or "(" in re.sub(r"\[[^\]]*\]", "", logic):
+        return None  # no logic, or grouping parentheses (not translated)
+    lowered = logic.lower()
+    if " and " in lowered and " or " in lowered:
+        return None  # mixed connectives without brackets: precedence unclear
+    connective = " or " if " or " in lowered else " and "
+    clauses = re.split(r"(?i) and | or ", logic)
+    translated = [_translate_clause(clause.strip()) for clause in clauses]
+    if any(t is None for t in translated):
+        return None
+    return connective.join(t for t in translated if t is not None)
+
+
+def _translate_clause(clause: str) -> str | None:
+    checkbox = _CHECKBOX_CHOICE.fullmatch(clause)
+    if checkbox:
+        return f'{checkbox.group(1)} contains "{checkbox.group(2)}"'
+    equals = _FIELD_EQUALS.fullmatch(clause)
+    if equals:
+        return f'{equals.group(1)} = "{equals.group(2)}"'
+    non_empty = _FIELD_NON_EMPTY.fullmatch(clause)
+    if non_empty:
+        return f'{non_empty.group(1)} <> ""'
+    return None
+
+
 def _choice_label(sheet: RedCapSheet, field_id: str, value: str) -> str | None:
     """What ``value`` means in ``field_id``'s choice list (its label).
 

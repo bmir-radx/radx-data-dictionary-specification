@@ -1,0 +1,2420 @@
+# LinkML schema generated from a data dictionary by dd-to-linkml.
+#
+# The single class below (the tree_root) describes a target datafile: each of
+# its slots corresponds to one field (column) of that datafile, in order. The
+# non-obvious conventions used here are:
+#
+#   * A field with an enumeration becomes a slot whose value must be one of the
+#     generated <Field>Enum values OR a StandardMissingValueCodes code (and any
+#     field-specific codes) -- expressed with `any_of`. The field's underlying
+#     datatype is kept in the `value_datatype` annotation.
+#   * A field's Section becomes a declared `subset`, referenced from the slot
+#     via `in_subset`.
+#   * Ontology terms are kept as CURIEs; their prefixes are declared in
+#     `prefixes` (OBO id spaces expand under purl.obolibrary.org).
+#   * A field with a Precondition contributes class `rules`: the field must be
+#     blank unless the condition holds (and, if Required, must have a value
+#     when it does). The raw Precondition cell is kept in the `precondition`
+#     annotation.
+#   * Machine-oriented annotations (`unit_raw`, `value_datatype`, `provenance`,
+#     `original_id`, `precondition`, `required`) appear at the end of each slot.
+#
+# See the Data Dictionary Specification for the source field definitions:
+# https://github.com/bmir-radx/radx-data-dictionary-specification
+
+name: dht
+id: https://example.org/data-dictionary/dht
+imports:
+- linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+default_prefix: dht
+default_range: string
+
+# --- Subsets (from the data dictionary's Section column) ---
+subsets:
+  # Section 1 of 14
+  # Used by 1 data element
+  # dht_identity
+  Identity:
+    title: Identity
+
+  # Section 2 of 14
+  # Used by 1 data element
+  # dht_race
+  Race:
+    title: Race
+
+  # Section 3 of 14
+  # Used by 1 data element
+  # dht_ethnicity_origin
+  Ethnicity:
+    title: Ethnicity
+
+  # Section 4 of 14
+  # Used by 1 data element
+  # dht_age
+  Age:
+    title: Age
+
+  # Section 5 of 14
+  # Used by 1 data element
+  # dht_sex
+  Sex:
+    title: Sex
+
+  # Section 6 of 14
+  # Used by 1 data element
+  # dht_education
+  Education_Level:
+    title: Education Level
+
+  # Section 7 of 14
+  # Used by 1 data element
+  # dht_domicile
+  Domicile:
+    title: Domicile
+
+  # Section 8 of 14
+  # Used by 1 data element
+  # dht_employment
+  Employment:
+    title: Employment
+
+  # Section 9 of 14
+  # Used by 1 data element
+  # dht_medical_insurance_short
+  Insurance_Status:
+    title: Insurance Status
+
+  # Section 10 of 14
+  # Used by 7 data elements
+  # dht_disability | dht_deaf | dht_blind | dht_memory | dht_walk_climb | dht_dress_bathe (+1 more)
+  Disability_Status:
+    title: Disability Status
+
+  # Section 11 of 14
+  # Used by 71 data elements
+  # dht_vaping | dht_nicotine | dht_vaping_frequency | dht_cig_smoking_frequency | dht_history_smoking | dht_tobacco (+65 more)
+  Medical_History:
+    title: Medical History
+
+  # Section 12 of 14
+  # Used by 27 data elements
+  # dht_cough | dht_fever_chills | dht_diff_breath | dht_headache | dht_body_pain | dht_olfactory (+21 more)
+  Symptoms:
+    title: Symptoms
+
+  # Section 13 of 14
+  # Used by 3 data elements
+  # dht_health_status | dht_height | dht_weight
+  Health_Status:
+    title: Health Status
+
+  # Section 14 of 14
+  # Used by 2 data elements
+  # dht_height_category | dht_weight_category
+  Health_Status_Categorical:
+    title: Health Status Categorical
+
+# --- Enumerations ---
+enums:
+  # Enum 1 of 20
+  # Used by 1 data element
+  # dht_identity
+  DhtIdentityEnum:
+    description: Permissible values for the `dht_identity` data element.
+    permissible_values:
+      'Text: May be combination of prefix text':
+        title: letters, numbers, and separator characters
+
+  # Enum 2 of 20
+  # Used by 1 data element
+  # dht_race
+  DhtRaceEnum:
+    description: Permissible values for the `dht_race` data element.
+    permissible_values:
+      '1':
+        title: American Indian or Alaska Native
+      '2':
+        title: Asian
+      '3':
+        title: Black or African American
+      '4':
+        title: Middle Eastern or North African
+      '5':
+        title: Native Hawaiian or Other Pacific Islander
+      '6':
+        title: White
+      '7':
+        title: Two or more races
+      '8':
+        title: Some other race
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 3 of 20
+  # Used by 1 data element
+  # dht_ethnicity_origin
+  DhtEthnicityOriginEnum:
+    description: Permissible values for the `dht_ethnicity_origin` data element.
+    permissible_values:
+      '0':
+        title: No, not of Hispanic or Latino origin
+      '1':
+        title: Yes, of Hispanic or Latino origin
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 4 of 20
+  # Used by 1 data element
+  # dht_age
+  DhtAgeEnum:
+    description: Permissible values for the `dht_age` data element.
+    permissible_values:
+      Age in years:
+        title: Age in years
+      de-identification per RADx guideline:
+        title: de-identification per RADx guideline
+
+  # Enum 5 of 20
+  # Used by 1 data element
+  # dht_sex
+  DhtSexEnum:
+    description: Permissible values for the `dht_sex` data element.
+    permissible_values:
+      '1':
+        title: Female
+      '2':
+        title: Male
+      '3':
+        title: Intersex
+      '4':
+        title: None of the above describe me
+      '99':
+        title: Prefer not to answer
+
+  # Enum 6 of 20
+  # Used by 1 data element
+  # dht_education
+  DhtEducationEnum:
+    description: Permissible values for the `dht_education` data element.
+    permissible_values:
+      '1':
+        title: No formal schooling
+      '2':
+        title: Some school, but did not graduate high school
+      '3':
+        title: High school diploma or equivalency (e.g., GED)
+      '4':
+        title: Associate degree (e.g., junior college)
+      '5':
+        title: Associate Degree (vocational)
+      '6':
+        title: Some college, but did not graduate college
+      '7':
+        title: Bachelor's degree
+      '8':
+        title: Master's degree
+      '9':
+        title: Doctorate (PhD)
+      '10':
+        title: Professional doctorate (MD, JD, DDS, etc.)
+      '11':
+        title: Other
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to state
+
+  # Enum 7 of 20
+  # Used by 1 data element
+  # dht_domicile
+  DhtDomicileEnum:
+    description: Permissible values for the `dht_domicile` data element.
+    permissible_values:
+      Included per HIPAA de-identification guidelines:
+        title: Included per HIPAA de-identification guidelines
+
+  # Enum 8 of 20
+  # Used by 1 data element
+  # dht_employment
+  DhtEmploymentEnum:
+    description: Permissible values for the `dht_employment` data element.
+    permissible_values:
+      '0':
+        title: Yes - Employed
+      '2':
+        title: Employed full time
+      '3':
+        title: Employed part-time
+      '5':
+        title: Employed in temporary position
+      '6':
+        title: No - Not Employed
+      '7':
+        title: Only temporarily laid off, sick leave, or maternity leave
+      '8':
+        title: Looking for work, unemployed
+      '9':
+        title: Student
+      '10':
+        title: Keeping house
+      '11':
+        title: Retired
+      '13':
+        title: Disabled or government support
+      '97':
+        title: Other
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 9 of 20
+  # Used by 1 data element
+  # dht_medical_insurance_short
+  DhtMedicalInsuranceShortEnum:
+    description: Permissible values for the `dht_medical_insurance_short` data element.
+    permissible_values:
+      '1':
+        title: No insurance
+      '2':
+        title: Private/Personal Insurance
+      '3':
+        title: Public Insurance
+      '98':
+        title: Don't Know
+      '99':
+        title: Prefer not to state
+
+  # Enum 10 of 20
+  # Used by 99 data elements
+  # dht_disability | dht_deaf | dht_blind | dht_memory | dht_walk_climb | dht_dress_bathe (+93 more)
+  NoYesDonTKnowEtcEnum:
+    description: Permissible values shared by 99 data elements (see the `used by` annotation).
+    permissible_values:
+      '0':
+        title: 'No'
+      '1':
+        title: 'Yes'
+      '98':
+        title: Don’t know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 11 of 20
+  # Used by 2 data elements
+  # dht_vaping_frequency | dht_cig_smoking_frequency
+  EveryDaySomeDaysRarelyEtcEnum:
+    description: Permissible values shared by 2 data elements (see the `used by` annotation).
+    permissible_values:
+      '1':
+        title: Every Day
+      '2':
+        title: Some Days
+      '3':
+        title: Rarely
+      '4':
+        title: Not at all
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 12 of 20
+  # Used by 1 data element
+  # dht_tobacco
+  DhtTobaccoEnum:
+    description: Permissible values for the `dht_tobacco` data element.
+    permissible_values:
+      '0':
+        title: No tobacco use
+      '1':
+        title: Current Tobacco user
+      '2':
+        title: Former Tobacco User
+      '98':
+        title: Don't Know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 13 of 20
+  # Used by 1 data element
+  # dht_alcohol_frequency
+  DhtAlcoholFrequencyEnum:
+    description: Permissible values for the `dht_alcohol_frequency` data element.
+    permissible_values:
+      '0':
+        title: Never
+      '1':
+        title: Monthly Or Less
+      '2':
+        title: Two To Four Times Per Month
+      '3':
+        title: Two To Three Times Per Week
+      '4':
+        title: Four Or More Times Per Week
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 14 of 20
+  # Used by 1 data element
+  # dht_pregnant
+  DhtPregnantEnum:
+    description: Permissible values for the `dht_pregnant` data element.
+    permissible_values:
+      '0':
+        title: Not Pregnant
+      '1':
+        title: Pregnant
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 15 of 20
+  # Used by 1 data element
+  # dht_neurodegenerative
+  DhtNeurodegenerativeEnum:
+    description: Permissible values for the `dht_neurodegenerative` data element.
+    permissible_values:
+      '0':
+        title: 'No'
+      1:Yes:
+        title: 1:Yes
+      98:Don't know:
+        title: 98:Don't know
+      '99':
+        title: Prefer not to answer
+
+  # Enum 16 of 20
+  # Used by 1 data element
+  # dht_health_status
+  DhtHealthStatusEnum:
+    description: Permissible values for the `dht_health_status` data element.
+    permissible_values:
+      '1':
+        title: Excellent
+      '2':
+        title: Very Good
+      '3':
+        title: Good
+      '4':
+        title: Fair
+      '5':
+        title: Poor
+      '98':
+        title: Don't know
+      '99':
+        title: Prefer not to state
+
+  # Enum 17 of 20
+  # Used by 2 data elements
+  # dht_height | dht_weight
+  IntegerEnum:
+    description: Permissible values shared by 2 data elements (see the `used by` annotation).
+    permissible_values:
+      integer:
+        title: integer
+
+  # Enum 18 of 20
+  # Used by 1 data element
+  # dht_height_category
+  DhtHeightCategoryEnum:
+    description: Permissible values for the `dht_height_category` data element.
+    permissible_values:
+      '1':
+        title: 5'1" - 5'6"
+      '2':
+        title: 5'7"-5'11"
+      '3':
+        title: 6' and over
+
+  # Enum 19 of 20
+  # Used by 1 data element
+  # dht_weight_category
+  DhtWeightCategoryEnum:
+    description: Permissible values for the `dht_weight_category` data element.
+    permissible_values:
+      '1':
+        title: 100-150
+      '2':
+        title: 151-200
+      '3':
+        title: over 200
+
+  StandardMissingValueCodes:  # 20 of 20 enums
+    description: The shared set of missing-value codes that applies to every missing-value-coded
+      field.
+    permissible_values:
+      '-9999':
+        title: Reason Unknown
+      '-9980':
+        title: Not Sent to Data Hub
+      '-9981':
+        title: Data Transfer Agreement
+      '-9982':
+        title: No Participant Consent To Share
+      '-9983':
+        title: Not Available Or Mappable
+      '-9984':
+        title: Data Lost Or Inaccessible
+      '-9985':
+        title: Data Invalid
+      '-9986':
+        title: Anonymization Or Privacy Concerns
+      '-9987':
+        title: Other Unsent Reason Not Specified
+      '-9960':
+        title: Not Entered By Originator
+      '-9961':
+        title: Omitted This Value
+      '-9962':
+        title: Originator Chose to Omit
+      '-9963':
+        title: Question Not Applicable
+      '-9964':
+        title: Answer Not Known
+      '-9965':
+        title: Record Not Provided
+      '-9966':
+        title: All Originators Omitted Element
+      '-9967':
+        title: CDE Omitted With Exception
+      '-9968':
+        title: Other Unentered Reason Not Specified
+      '-9940':
+        title: Not Presented To Participant
+      '-9941':
+        title: Skip Logic
+      '-9942':
+        title: No Participant Consent to Ask
+      '-9943':
+        title: CDE Not Presented Due to Exception
+      '-9944':
+        title: Element Never Presented for Collection
+      '-9945':
+        title: Process Error
+      '-9946':
+        title: Other Unpresented Reason Not Specified
+
+# --- Classes ---
+classes:
+  Dht:  # 1 of 1 class
+    attributes:
+      # Data element 1 of 119
+      dht_identity:
+        title: What is global identifier of participant?
+        description: |-
+          The `dht_identity` data element records response to the prompt, _"What is global identifier of participant?"_.
+
+          Values for this data element are strings that are restricted to the list of 1 permissible string values.
+        in_subset:
+        - Identity
+        any_of:
+        - range: DhtIdentityEnum  # Text: May be combination of prefix text=letters, numbers, and separator characters
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: string
+
+      # Data element 2 of 119
+      dht_race:
+        title: What is your race? Mark one or more boxes
+        description: |-
+          The `dht_race` data element records response to the prompt, _"What is your race? Mark one or more boxes"_.
+
+          Values for this data element are integers that are restricted to the list of 10 permissible integer values.
+        in_subset:
+        - Race
+        any_of:
+        - range: DhtRaceEnum  # 1=American Indian or Alaska Native | 2=Asian | 3=Black or African American | 4=Middle Eastern or North African | 5=Native Hawaiian or Other Pacific Islander | 6=White (+4 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 3 of 119
+      dht_ethnicity_origin:
+        title: 'Are you of Hispanic or Latino origin?             '
+        description: |-
+          The `dht_ethnicity_origin` data element records response to the prompt, _"Are you of Hispanic or Latino origin?             "_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Ethnicity
+        any_of:
+        - range: DhtEthnicityOriginEnum  # 0=No, not of Hispanic or Latino origin | 1=Yes, of Hispanic or Latino origin | 98=Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 4 of 119
+      dht_age:
+        title: What is your age?
+        description: |-
+          The `dht_age` data element records response to the prompt, _"What is your age?"_.
+
+          Values for this data element are strings that are restricted to the list of 2 permissible string values.
+        in_subset:
+        - Age
+        any_of:
+        - range: DhtAgeEnum  # Age in years=Age in years | de-identification per RADx guideline=de-identification per RADx guideline
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: string
+
+      # Data element 5 of 119
+      dht_sex:
+        title: What is your biological sex assigned at birth?
+        description: |-
+          The `dht_sex` data element records response to the prompt, _"What is your biological sex assigned at birth?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        in_subset:
+        - Sex
+        any_of:
+        - range: DhtSexEnum  # 1=Female | 2=Male | 3=Intersex | 4=None of the above describe me | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 6 of 119
+      dht_education:
+        title: How many years of education have you completed?
+        description: |-
+          The `dht_education` data element records response to the prompt, _"How many years of education have you completed?"_.
+
+          Values for this data element are integers that are restricted to the list of 13 permissible integer values.
+        in_subset:
+        - Education_Level
+        any_of:
+        - range: DhtEducationEnum  # 1=No formal schooling | 2=Some school, but did not graduate high school | 3=High school diploma or equivalency (e.g., GED) | 4=Associate degree (e.g., junior college) | 5=Associate Degree (vocational) | 6=Some college, but did not graduate college (+7 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 7 of 119
+      dht_domicile:
+        title: What is your zip code?
+        description: |-
+          The `dht_domicile` data element records response to the prompt, _"What is your zip code?"_.
+
+          Values for this data element are strings that are restricted to the list of 1 permissible string values.
+        in_subset:
+        - Domicile
+        any_of:
+        - range: DhtDomicileEnum  # Included per HIPAA de-identification guidelines=Included per HIPAA de-identification guidelines
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: string
+
+      # Data element 8 of 119
+      dht_employment:
+        title: Are you employed?
+        description: |-
+          The `dht_employment` data element records response to the prompt, _"Are you employed?"_.
+
+          Values for this data element are integers that are restricted to the list of 14 permissible integer values.
+        in_subset:
+        - Employment
+        any_of:
+        - range: DhtEmploymentEnum  # 0=Yes - Employed | 2=Employed full time | 3=Employed part-time | 5=Employed in temporary position | 6=No - Not Employed | 7=Only temporarily laid off, sick leave, or maternity leave (+8 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 9 of 119
+      dht_medical_insurance_short:
+        title: What insurance do you have?
+        description: |-
+          The `dht_medical_insurance_short` data element records response to the prompt, _"What insurance do you have?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        in_subset:
+        - Insurance_Status
+        any_of:
+        - range: DhtMedicalInsuranceShortEnum  # 1=No insurance | 2=Private/Personal Insurance | 3=Public Insurance | 98=Don't Know | 99=Prefer not to state
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 10 of 119
+      dht_disability:
+        title: Do you have a disability, including serious physical or mental conditions,
+          that interfere with your ability to carry out daily activities?
+        description: |-
+          The `dht_disability` data element records response to the prompt, _"Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Disability_Status
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 11 of 119
+      dht_deaf:
+        title: Are you deaf or do you have serious difficulty hearing?
+        description: |-
+          The `dht_deaf` data element records response to the prompt, _"Are you deaf or do you have serious difficulty hearing?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Disability_Status
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 12 of 119
+      dht_blind:
+        title: Are you blind or do you have serious difficulty seeing, even when wearing glasses?
+        description: |-
+          The `dht_blind` data element records response to the prompt, _"Are you blind or do you have serious difficulty seeing, even when wearing glasses?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Disability_Status
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 13 of 119
+      dht_memory:
+        title: Because of a physical, mental, or emotional condition, do you have serious
+          difficulty concentrating, remembering, or making decisions?
+        description: |-
+          The `dht_memory` data element records response to the prompt, _"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Disability_Status
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 14 of 119
+      dht_walk_climb:
+        title: Do you have serious difficulty walking or climbing stairs?
+        description: |-
+          The `dht_walk_climb` data element records response to the prompt, _"Do you have serious difficulty walking or climbing stairs?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Disability_Status
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 15 of 119
+      dht_dress_bathe:
+        title: Do you have difficulty dressing or bathing?
+        description: |-
+          The `dht_dress_bathe` data element records response to the prompt, _"Do you have difficulty dressing or bathing?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Disability_Status
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 16 of 119
+      dht_errand:
+        title: Because of a physical, mental, or emotional condition, do you have difficulty
+          doing errands alone such as visiting a doctor's office or shopping?
+        description: |-
+          The `dht_errand` data element records response to the prompt, _"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Disability_Status
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 17 of 119
+      dht_vaping:
+        title: Vaping use (Yes or No)
+        description: |-
+          The `dht_vaping` data element records response to the prompt, _"Vaping use (Yes or No)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 18 of 119
+      dht_nicotine:
+        title: Nicotine use (Yes or No)
+        description: |-
+          The `dht_nicotine` data element records response to the prompt, _"Nicotine use (Yes or No)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 19 of 119
+      dht_vaping_frequency:
+        title: 'Vaping Frequency: Do you now use electronic cigarettes every day, some days,
+          rarely, or not at all?'
+        description: |-
+          The `dht_vaping_frequency` data element records response to the prompt, _"Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?"_.
+
+          Values for this data element are integers that are restricted to the list of 6 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: EveryDaySomeDaysRarelyEtcEnum  # 1=Every Day | 2=Some Days | 3=Rarely | 4=Not at all | 98=Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 20 of 119
+      dht_cig_smoking_frequency:
+        title: 'Nicotine Frequency: Do you now smoke cigarettes?'
+        description: |-
+          The `dht_cig_smoking_frequency` data element records response to the prompt, _"Nicotine Frequency: Do you now smoke cigarettes?"_.
+
+          Values for this data element are integers that are restricted to the list of 6 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: EveryDaySomeDaysRarelyEtcEnum  # 1=Every Day | 2=Some Days | 3=Rarely | 4=Not at all | 98=Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 21 of 119
+      dht_history_smoking:
+        title: History of Smoking
+        description: |-
+          The `dht_history_smoking` data element records response to the prompt, _"History of Smoking"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 22 of 119
+      dht_tobacco:
+        title: Tobacco Use
+        description: |-
+          The `dht_tobacco` data element records response to the prompt, _"Tobacco Use"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: DhtTobaccoEnum  # 0=No tobacco use | 1=Current Tobacco user | 2=Former Tobacco User | 98=Don't Know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 23 of 119
+      dht_alcohol:
+        title: Alcohol use (Yes or No)
+        description: |-
+          The `dht_alcohol` data element records response to the prompt, _"Alcohol use (Yes or No)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 24 of 119
+      dht_alcohol_frequency:
+        title: How often did you have a drink containing alcohol ?
+        description: |-
+          The `dht_alcohol_frequency` data element records response to the prompt, _"How often did you have a drink containing alcohol ?"_.
+
+          Values for this data element are integers that are restricted to the list of 7 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: DhtAlcoholFrequencyEnum  # 0=Never | 1=Monthly Or Less | 2=Two To Four Times Per Month | 3=Two To Three Times Per Week | 4=Four Or More Times Per Week | 98=Don't know (+1 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 25 of 119
+      dht_asthma:
+        title: Asthma
+        description: |-
+          The `dht_asthma` data element records response to the prompt, _"Asthma"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 26 of 119
+      dht_cancer:
+        title: Cancer
+        description: |-
+          The `dht_cancer` data element records response to the prompt, _"Cancer"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 27 of 119
+      dht_cardiovascular_disease:
+        title: Cardiovascular disease
+        description: |-
+          The `dht_cardiovascular_disease` data element records response to the prompt, _"Cardiovascular disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 28 of 119
+      dht_chronic_kidney_disease:
+        title: Chronic kidney disease
+        description: |-
+          The `dht_chronic_kidney_disease` data element records response to the prompt, _"Chronic kidney disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 29 of 119
+      dht_chronic_lung_disease:
+        title: Chronic lung disease
+        description: |-
+          The `dht_chronic_lung_disease` data element records response to the prompt, _"Chronic lung disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 30 of 119
+      dht_diabetes:
+        title: Diabetes
+        description: |-
+          The `dht_diabetes` data element records response to the prompt, _"Diabetes"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 31 of 119
+      dht_hypertension:
+        title: Hypertension
+        description: |-
+          The `dht_hypertension` data element records response to the prompt, _"Hypertension"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 32 of 119
+      dht_immunosuppressive_condition:
+        title: Immunosuppressive condition
+        description: |-
+          The `dht_immunosuppressive_condition` data element records response to the prompt, _"Immunosuppressive condition"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 33 of 119
+      dht_mental_illness:
+        title: 'mental health disorder '
+        description: |-
+          The `dht_mental_illness` data element records response to the prompt, _"mental health disorder "_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 34 of 119
+      dht_sickle_cell_disease:
+        title: Sickle cell disease
+        description: |-
+          The `dht_sickle_cell_disease` data element records response to the prompt, _"Sickle cell disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 35 of 119
+      dht_pregnant:
+        title: Pregnancy status
+        description: |-
+          The `dht_pregnant` data element records response to the prompt, _"Pregnancy status"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: DhtPregnantEnum  # 0=Not Pregnant | 1=Pregnant | 98=Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 36 of 119
+      dht_immuno_compromised:
+        title: Immunocompromised
+        description: |-
+          The `dht_immuno_compromised` data element records response to the prompt, _"Immunocompromised"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 37 of 119
+      dht_autoimmune:
+        title: Autoimmune disease
+        description: |-
+          The `dht_autoimmune` data element records response to the prompt, _"Autoimmune disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 38 of 119
+      dht_copd:
+        title: Chronic obstructive pulmonary disease (COPD)
+        description: |-
+          The `dht_copd` data element records response to the prompt, _"Chronic obstructive pulmonary disease (COPD)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 39 of 119
+      dht_depression:
+        title: Depression
+        description: |-
+          The `dht_depression` data element records response to the prompt, _"Depression"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 40 of 119
+      dht_alc_sub_abuse:
+        title: Alcohol or substance use disorder
+        description: |-
+          The `dht_alc_sub_abuse` data element records response to the prompt, _"Alcohol or substance use disorder"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 41 of 119
+      dht_iv_drug_use:
+        title: Intravenous drug use
+        description: |-
+          The `dht_iv_drug_use` data element records response to the prompt, _"Intravenous drug use"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 42 of 119
+      dht_other_mental_health_disorder:
+        title: Other mental health disorder
+        description: |-
+          The `dht_other_mental_health_disorder` data element records response to the prompt, _"Other mental health disorder"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 43 of 119
+      dht_other_chronic_cond:
+        title: Other chronic condition
+        description: |-
+          The `dht_other_chronic_cond` data element records response to the prompt, _"Other chronic condition"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 44 of 119
+      dht_coronary_artery_disease:
+        title: Coronary artery disease
+        description: |-
+          The `dht_coronary_artery_disease` data element records response to the prompt, _"Coronary artery disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 45 of 119
+      dht_heart_attack:
+        title: heart attack (myocardial infarction)?
+        description: |-
+          The `dht_heart_attack` data element records response to the prompt, _"heart attack (myocardial infarction)?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 46 of 119
+      dht_chf:
+        title: 'Congestive Heart failure '
+        description: |-
+          The `dht_chf` data element records response to the prompt, _"Congestive Heart failure "_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 47 of 119
+      dht_stroke:
+        title: Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?
+        description: |-
+          The `dht_stroke` data element records response to the prompt, _"Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 48 of 119
+      dht_immunodeficiency:
+        title: Immunodeficiency (NOT including HIV)?
+        description: |-
+          The `dht_immunodeficiency` data element records response to the prompt, _"Immunodeficiency (NOT including HIV)?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 49 of 119
+      dht_hiv:
+        title: Chronic HIV infection?
+        description: |-
+          The `dht_hiv` data element records response to the prompt, _"Chronic HIV infection?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 50 of 119
+      dht_anemia:
+        title: Anemia or other blood disorder (do not include leukemia or lymphoma)?
+        description: |-
+          The `dht_anemia` data element records response to the prompt, _"Anemia or other blood disorder (do not include leukemia or lymphoma)?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 51 of 119
+      dht_chd:
+        title: Chronic Heart Disease
+        description: |-
+          The `dht_chd` data element records response to the prompt, _"Chronic Heart Disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 52 of 119
+      dht_copd_opd:
+        title: Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis,
+          obstructive pulmonary disease?
+        description: |-
+          The `dht_copd_opd` data element records response to the prompt, _"Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 53 of 119
+      dht_alz:
+        title: Alzheimers
+        description: |-
+          The `dht_alz` data element records response to the prompt, _"Alzheimers"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 54 of 119
+      dht_anxiety:
+        title: Anxiety
+        description: |-
+          The `dht_anxiety` data element records response to the prompt, _"Anxiety"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 55 of 119
+      dht_arrhythmia:
+        title: Arrhythmia
+        description: |-
+          The `dht_arrhythmia` data element records response to the prompt, _"Arrhythmia"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 56 of 119
+      dht_arthritis:
+        title: Arthritis
+        description: |-
+          The `dht_arthritis` data element records response to the prompt, _"Arthritis"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 57 of 119
+      dht_af:
+        title: Atrial Fibrillation
+        description: |-
+          The `dht_af` data element records response to the prompt, _"Atrial Fibrillation"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 58 of 119
+      dht_chronic_pain:
+        title: Chronic Pain
+        description: |-
+          The `dht_chronic_pain` data element records response to the prompt, _"Chronic Pain"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 59 of 119
+      dht_fibromyalgia:
+        title: Fibromyalgia
+        description: |-
+          The `dht_fibromyalgia` data element records response to the prompt, _"Fibromyalgia"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 60 of 119
+      dht_gerd:
+        title: Gastroesophageal reflux disease
+        description: |-
+          The `dht_gerd` data element records response to the prompt, _"Gastroesophageal reflux disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 61 of 119
+      dht_gestational_diabetes:
+        title: Gestational Diabetes
+        description: |-
+          The `dht_gestational_diabetes` data element records response to the prompt, _"Gestational Diabetes"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 62 of 119
+      dht_cholesterol:
+        title: High Cholesterol
+        description: |-
+          The `dht_cholesterol` data element records response to the prompt, _"High Cholesterol"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 63 of 119
+      dht_thyroid:
+        title: Hypo/Hyper Thyroidism
+        description: |-
+          The `dht_thyroid` data element records response to the prompt, _"Hypo/Hyper Thyroidism"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 64 of 119
+      dht_immuno_compromised_solid_organ:
+        title: immunocompromised from solid organ transplant
+        description: |-
+          The `dht_immuno_compromised_solid_organ` data element records response to the prompt, _"immunocompromised from solid organ transplant"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 65 of 119
+      dht_ibd:
+        title: Inflammatory Bowel Disease
+        description: |-
+          The `dht_ibd` data element records response to the prompt, _"Inflammatory Bowel Disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 66 of 119
+      dht_insomnia:
+        title: Insomnia
+        description: |-
+          The `dht_insomnia` data element records response to the prompt, _"Insomnia"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 67 of 119
+      dht_ibs:
+        title: Irritable bowel syndrome
+        description: |-
+          The `dht_ibs` data element records response to the prompt, _"Irritable bowel syndrome"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 68 of 119
+      dht_liver_disease:
+        title: Liver disease (cirrhosis, hepB, hepC)
+        description: |-
+          The `dht_liver_disease` data element records response to the prompt, _"Liver disease (cirrhosis, hepB, hepC)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 69 of 119
+      dht_lupus:
+        title: Lupus
+        description: |-
+          The `dht_lupus` data element records response to the prompt, _"Lupus"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 70 of 119
+      dht_migraines:
+        title: Migraines
+        description: |-
+          The `dht_migraines` data element records response to the prompt, _"Migraines"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 71 of 119
+      dht_ms:
+        title: Multiple Sclerosis
+        description: |-
+          The `dht_ms` data element records response to the prompt, _"Multiple Sclerosis"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 72 of 119
+      dht_neurodegenerative:
+        title: Neurodegenerative disease
+        description: |-
+          The `dht_neurodegenerative` data element records response to the prompt, _"Neurodegenerative disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: DhtNeurodegenerativeEnum  # 0=No | 1:Yes=1:Yes | 98:Don't know=98:Don't know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 73 of 119
+      dht_neurological_condition:
+        title: Neurological Condition
+        description: |-
+          The `dht_neurological_condition` data element records response to the prompt, _"Neurological Condition"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 74 of 119
+      dht_no_chronic_condition:
+        title: No chronic condition
+        description: |-
+          The `dht_no_chronic_condition` data element records response to the prompt, _"No chronic condition"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 75 of 119
+      dht_obesity:
+        title: Obesity (BMI >= 30)
+        description: |-
+          The `dht_obesity` data element records response to the prompt, _"Obesity (BMI >= 30)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 76 of 119
+      dht_osteoporosis:
+        title: Osteoporosis
+        description: |-
+          The `dht_osteoporosis` data element records response to the prompt, _"Osteoporosis"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 77 of 119
+      dht_pcos:
+        title: Polycystic ovary syndrome
+        description: |-
+          The `dht_pcos` data element records response to the prompt, _"Polycystic ovary syndrome"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 78 of 119
+      dht_psoriasis:
+        title: Psoriasis
+        description: |-
+          The `dht_psoriasis` data element records response to the prompt, _"Psoriasis"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 79 of 119
+      dht_renal:
+        title: Renal disease
+        description: |-
+          The `dht_renal` data element records response to the prompt, _"Renal disease"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 80 of 119
+      dht_rls:
+        title: Restless leg
+        description: |-
+          The `dht_rls` data element records response to the prompt, _"Restless leg"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 81 of 119
+      dht_ra:
+        title: Rheumatoid Arthritis
+        description: |-
+          The `dht_ra` data element records response to the prompt, _"Rheumatoid Arthritis"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 82 of 119
+      dht_seasonal_allergies:
+        title: Seasonal Allergies
+        description: |-
+          The `dht_seasonal_allergies` data element records response to the prompt, _"Seasonal Allergies"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 83 of 119
+      dht_heart_condition:
+        title: Serious heart condition (heart failure, CAD, cardiomyopathies)
+        description: |-
+          The `dht_heart_condition` data element records response to the prompt, _"Serious heart condition (heart failure, CAD, cardiomyopathies)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 84 of 119
+      dht_substance_use:
+        title: Substance use
+        description: |-
+          The `dht_substance_use` data element records response to the prompt, _"Substance use"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 85 of 119
+      dht_thalassemia:
+        title: Thalassemia
+        description: |-
+          The `dht_thalassemia` data element records response to the prompt, _"Thalassemia"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 86 of 119
+      dht_t1d:
+        title: Type 1 Diabetes
+        description: |-
+          The `dht_t1d` data element records response to the prompt, _"Type 1 Diabetes"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 87 of 119
+      dht_t2dm:
+        title: Type 2 Diabetes
+        description: |-
+          The `dht_t2dm` data element records response to the prompt, _"Type 2 Diabetes"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Medical_History
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 88 of 119
+      dht_cough:
+        title: Cough
+        description: |-
+          The `dht_cough` data element records response to the prompt, _"Cough"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 89 of 119
+      dht_fever_chills:
+        title: Fever, feeling hot/feverish, or having chills
+        description: |-
+          The `dht_fever_chills` data element records response to the prompt, _"Fever, feeling hot/feverish, or having chills"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 90 of 119
+      dht_diff_breath:
+        title: Shortness of breath or difficulty breathing
+        description: |-
+          The `dht_diff_breath` data element records response to the prompt, _"Shortness of breath or difficulty breathing"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 91 of 119
+      dht_headache:
+        title: Headache
+        description: |-
+          The `dht_headache` data element records response to the prompt, _"Headache"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 92 of 119
+      dht_body_pain:
+        title: Muscle, body, or joint aches (not due to exercise)
+        description: |-
+          The `dht_body_pain` data element records response to the prompt, _"Muscle, body, or joint aches (not due to exercise)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 93 of 119
+      dht_olfactory:
+        title: New loss of taste or smell
+        description: |-
+          The `dht_olfactory` data element records response to the prompt, _"New loss of taste or smell"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 94 of 119
+      dht_fatigue:
+        title: Fatigue (more than normal)
+        description: |-
+          The `dht_fatigue` data element records response to the prompt, _"Fatigue (more than normal)"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 95 of 119
+      dht_nausea_vomiting_diarrhea:
+        title: Nausea, vomiting, or diarrhea
+        description: |-
+          The `dht_nausea_vomiting_diarrhea` data element records response to the prompt, _"Nausea, vomiting, or diarrhea"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 96 of 119
+      dht_abdom_pain:
+        title: Stomach or abdominal pain
+        description: |-
+          The `dht_abdom_pain` data element records response to the prompt, _"Stomach or abdominal pain"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 97 of 119
+      dht_skin_rash:
+        title: Skin rash
+        description: |-
+          The `dht_skin_rash` data element records response to the prompt, _"Skin rash"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 98 of 119
+      dht_conjunctivitis:
+        title: Pink eye or conjunctivitis
+        description: |-
+          The `dht_conjunctivitis` data element records response to the prompt, _"Pink eye or conjunctivitis"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 99 of 119
+      dht_congestion_sorethroat_runnynose:
+        title: Congestion, runny nose, sore throat
+        description: |-
+          The `dht_congestion_sorethroat_runnynose` data element records response to the prompt, _"Congestion, runny nose, sore throat"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 100 of 119
+      dht_red_eyes:
+        title: Red or painful eyes
+        description: |-
+          The `dht_red_eyes` data element records response to the prompt, _"Red or painful eyes"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 101 of 119
+      dht_high_temp:
+        title: A temperature greater than 100.4°F
+        description: |-
+          The `dht_high_temp` data element records response to the prompt, _"A temperature greater than 100.4°F"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 102 of 119
+      dht_other_symp:
+        title: 'Other '
+        description: |-
+          The `dht_other_symp` data element records response to the prompt, _"Other "_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 103 of 119
+      dht_no_symp:
+        title: None of the above
+        description: |-
+          The `dht_no_symp` data element records response to the prompt, _"None of the above"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 104 of 119
+      dht_wheezing:
+        title: Wheezing
+        description: |-
+          The `dht_wheezing` data element records response to the prompt, _"Wheezing"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 105 of 119
+      dht_blue_lips:
+        title: Bluish lips or face
+        description: |-
+          The `dht_blue_lips` data element records response to the prompt, _"Bluish lips or face"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 106 of 119
+      dht_balance:
+        title: Loss of balance
+        description: |-
+          The `dht_balance` data element records response to the prompt, _"Loss of balance"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 107 of 119
+      dht_slurred_peech:
+        title: Slurred speech
+        description: |-
+          The `dht_slurred_peech` data element records response to the prompt, _"Slurred speech"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 108 of 119
+      dht_confusion:
+        title: New confusion
+        description: |-
+          The `dht_confusion` data element records response to the prompt, _"New confusion"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 109 of 119
+      dht_neuro_shakes:
+        title: 'Unusual shivering or shaking '
+        description: |-
+          The `dht_neuro_shakes` data element records response to the prompt, _"Unusual shivering or shaking "_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 110 of 119
+      dht_numb_extremities:
+        title: Tingling or numbness or swelling of hands and feet
+        description: |-
+          The `dht_numb_extremities` data element records response to the prompt, _"Tingling or numbness or swelling of hands and feet"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 111 of 119
+      dht_sweating:
+        title: Excessive sweating
+        description: |-
+          The `dht_sweating` data element records response to the prompt, _"Excessive sweating"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 112 of 119
+      dht_seizures:
+        title: Seizures
+        description: |-
+          The `dht_seizures` data element records response to the prompt, _"Seizures"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 113 of 119
+      dht_rash_toes:
+        title: Red or purple rash or lesions on toes
+        description: |-
+          The `dht_rash_toes` data element records response to the prompt, _"Red or purple rash or lesions on toes"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 114 of 119
+      dht_appetite:
+        title: Change in or loss of appetite
+        description: |-
+          The `dht_appetite` data element records response to the prompt, _"Change in or loss of appetite"_.
+
+          Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+        in_subset:
+        - Symptoms
+        any_of:
+        - range: NoYesDonTKnowEtcEnum  # 0=No | 1=Yes | 98=Don’t know | 99=Prefer not to answer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 115 of 119
+      dht_health_status:
+        title: Self-report health status
+        description: |-
+          The `dht_health_status` data element records response to the prompt, _"Self-report health status"_.
+
+          Values for this data element are integers that are restricted to the list of 7 permissible integer values.
+        in_subset:
+        - Health_Status
+        any_of:
+        - range: DhtHealthStatusEnum  # 1=Excellent | 2=Very Good | 3=Good | 4=Fair | 5=Poor | 98=Don't know (+1 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 116 of 119
+      dht_height:
+        title: What is your height in inches?
+        description: |-
+          The `dht_height` data element records response to the prompt, _"What is your height in inches?"_.
+
+          Values for this data element are strings that are restricted to the list of 1 permissible string values.
+        in_subset:
+        - Health_Status
+        any_of:
+        - range: IntegerEnum  # integer=integer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: string
+
+      # Data element 117 of 119
+      dht_weight:
+        title: What is your weight in pounds?
+        description: |-
+          The `dht_weight` data element records response to the prompt, _"What is your weight in pounds?"_.
+
+          Values for this data element are strings that are restricted to the list of 1 permissible string values.
+        in_subset:
+        - Health_Status
+        any_of:
+        - range: IntegerEnum  # integer=integer
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: string
+
+      # Data element 118 of 119
+      dht_height_category:
+        title: Approximately what is your height?
+        description: |-
+          The `dht_height_category` data element records response to the prompt, _"Approximately what is your height?"_.
+
+          Values for this data element are integers that are restricted to the list of 3 permissible integer values.
+        in_subset:
+        - Health_Status_Categorical
+        any_of:
+        - range: DhtHeightCategoryEnum  # 1=5'1" - 5'6" | 2=5'7"-5'11" | 3=6' and over
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+
+      # Data element 119 of 119
+      dht_weight_category:
+        title: Approximately what is your weight?
+        description: |-
+          The `dht_weight_category` data element records response to the prompt, _"Approximately what is your weight?"_.
+
+          Values for this data element are integers that are restricted to the list of 3 permissible integer values.
+        in_subset:
+        - Health_Status_Categorical
+        any_of:
+        - range: DhtWeightCategoryEnum  # 1=100-150 | 2=151-200 | 3=over 200
+        - range: StandardMissingValueCodes
+        annotations:
+          provenance: RADx-DHT DCC
+          value_datatype: integer
+    tree_root: true

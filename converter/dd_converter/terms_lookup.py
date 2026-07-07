@@ -18,8 +18,8 @@ import json
 import logging
 import urllib.parse
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor
 from collections.abc import Iterable
+from concurrent.futures import ThreadPoolExecutor
 
 logger = logging.getLogger(__name__)
 

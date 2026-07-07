@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from dd_converter.cli import _class_from_name, _name_from_filename, main
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sample.csv"

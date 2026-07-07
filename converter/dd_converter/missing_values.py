@@ -12,7 +12,6 @@ drift from the enumeration grammar or transcribe a code incorrectly.
 
 from __future__ import annotations
 
-
 from .grammar import EnumItem, parse_missing_value_codes
 
 # The "Standard Codes (Default value)" block from

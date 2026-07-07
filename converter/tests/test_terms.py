@@ -1,7 +1,6 @@
 """Tests for the Terms cell tokeniser."""
 
 import pytest
-
 from dd_converter.grammar import parse_terms
 
 

@@ -59,6 +59,25 @@ BUILTIN_RANGES: dict[str, str] = {
     "anyURI": "uri",
 }
 
+# Datatypes whose value space has a total order: the numeric datatypes plus
+# dates and times. Only these support the Precondition ordering predicates
+# (< <= > >=) -- see "Field: Precondition" in the specification.
+ORDERED_DATATYPES: frozenset[str] = frozenset(
+    (
+        *_INTEGER_LIKE,
+        "decimal",
+        "float",
+        "double",
+        "date",
+        "dateTime",
+        "time",
+        # Ordered extension datatypes (dates and Unix timestamps).
+        "date_mdy",
+        "date_dmy",
+        "timestamp",
+    )
+)
+
 
 @dataclass(frozen=True)
 class CustomType:

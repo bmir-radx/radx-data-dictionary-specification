@@ -28,6 +28,8 @@ Each finding has a severity:
 | Missing value codes | ERROR | A `MissingValueCodes` cell does not parse. |
 | SeeAlso URL | ERROR | A `SeeAlso` value is not an absolute URL. |
 | Duplicate Id | ERROR | An `Id` appears on more than one row. |
+| Precondition | ERROR | A `Precondition` cell does not parse, references an unknown field, orders an unordered datatype, or uses `contains` on a single-valued field. |
+| Required | ERROR | A `Required` value is not `y` or blank. |
 
 The datatype names, the enumeration grammar, and the missing-value-codes grammar
 are reused from the sibling [converter](../converter/), so the validator stays in

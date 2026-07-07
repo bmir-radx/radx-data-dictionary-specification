@@ -1,0 +1,596 @@
+Id,Label,Description,Section,Terms,Cardinality,Datatype,Pattern,Unit,Enumeration,MissingValueCodes,Notes,Provenance,SeeAlso
+dht_identity,What is global identifier of participant?,"The `dht_identity` data element records response to the prompt, _""What is global identifier of participant?""_.
+
+Values for this data element are strings that are restricted to the list of 1 permissible string values.
+
+",Identity,,single,string,,,"""Text: May be combination of prefix text""=[letters, numbers, and separator characters]",,,RADx-DHT DCC,
+dht_race,What is your race? Mark one or more boxes,"The `dht_race` data element records response to the prompt, _""What is your race? Mark one or more boxes""_.
+
+Values for this data element are integers that are restricted to the list of 10 permissible integer values.
+
+",Race,,single,integer,,,"""1""=[American Indian or Alaska Native]|""2""=[Asian]|""3""=[Black or African American]|""4""=[Middle Eastern or North African]|""5""=[Native Hawaiian or Other Pacific Islander]|""6""=[White]|""7""=[Two or more races]|""8""=[Some other race]|""98""=[Don't know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_ethnicity_origin,Are you of Hispanic or Latino origin?             ,"The `dht_ethnicity_origin` data element records response to the prompt, _""Are you of Hispanic or Latino origin?             ""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Ethnicity,,single,integer,,,"""0""=[No, not of Hispanic or Latino origin]|""1""=[Yes, of Hispanic or Latino origin]|""98""=[Don't know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_age,What is your age?,"The `dht_age` data element records response to the prompt, _""What is your age?""_.
+
+Values for this data element are strings that are restricted to the list of 2 permissible string values.
+
+",Age,,single,string,,,"""Age in years""=[Age in years]|""de-identification per RADx guideline""=[de-identification per RADx guideline]",,,RADx-DHT DCC,
+dht_sex,What is your biological sex assigned at birth?,"The `dht_sex` data element records response to the prompt, _""What is your biological sex assigned at birth?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",Sex,,single,integer,,,"""1""=[Female]|""2""=[Male]|""3""=[Intersex]|""4""=[None of the above describe me]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_education,How many years of education have you completed?,"The `dht_education` data element records response to the prompt, _""How many years of education have you completed?""_.
+
+Values for this data element are integers that are restricted to the list of 13 permissible integer values.
+
+",Education Level,,single,integer,,,"""1""=[No formal schooling]|""2""=[Some school, but did not graduate high school]|""3""=[High school diploma or equivalency (e.g., GED)]|""4""=[Associate degree (e.g., junior college)]|""5""=[Associate Degree (vocational)]|""6""=[Some college, but did not graduate college]|""7""=[Bachelor's degree]|""8""=[Master's degree]|""9""=[Doctorate (PhD)]|""10""=[Professional doctorate (MD, JD, DDS, etc.)]|""11""=[Other]|""98""=[Don't know]|""99""=[Prefer not to state]",,,RADx-DHT DCC,
+dht_domicile,What is your zip code?,"The `dht_domicile` data element records response to the prompt, _""What is your zip code?""_.
+
+Values for this data element are strings that are restricted to the list of 1 permissible string values.
+
+",Domicile,,single,string,,,"""Included per HIPAA de-identification guidelines""=[Included per HIPAA de-identification guidelines]",,,RADx-DHT DCC,
+dht_employment,Are you employed?,"The `dht_employment` data element records response to the prompt, _""Are you employed?""_.
+
+Values for this data element are integers that are restricted to the list of 14 permissible integer values.
+
+",Employment,,single,integer,,,"""0""=[Yes - Employed]|""2""=[Employed full time]|""3""=[Employed part-time]|""5""=[Employed in temporary position]|""6""=[No - Not Employed]|""7""=[Only temporarily laid off, sick leave, or maternity leave]|""8""=[Looking for work, unemployed]|""9""=[Student]|""10""=[Keeping house]|""11""=[Retired]|""13""=[Disabled or government support]|""97""=[Other]|""98""=[Don't know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_medical_insurance_short,What insurance do you have?,"The `dht_medical_insurance_short` data element records response to the prompt, _""What insurance do you have?""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",Insurance Status,,single,integer,,,"""1""=[No insurance]|""2""=[Private/Personal Insurance]|""3""=[Public Insurance]|""98""=[Don't Know]|""99""=[Prefer not to state]",,,RADx-DHT DCC,
+dht_disability,"Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?","The `dht_disability` data element records response to the prompt, _""Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Disability Status,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_deaf,Are you deaf or do you have serious difficulty hearing?,"The `dht_deaf` data element records response to the prompt, _""Are you deaf or do you have serious difficulty hearing?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Disability Status,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_blind,"Are you blind or do you have serious difficulty seeing, even when wearing glasses?","The `dht_blind` data element records response to the prompt, _""Are you blind or do you have serious difficulty seeing, even when wearing glasses?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Disability Status,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_memory,"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?","The `dht_memory` data element records response to the prompt, _""Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Disability Status,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_walk_climb,Do you have serious difficulty walking or climbing stairs?,"The `dht_walk_climb` data element records response to the prompt, _""Do you have serious difficulty walking or climbing stairs?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Disability Status,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_dress_bathe,Do you have difficulty dressing or bathing?,"The `dht_dress_bathe` data element records response to the prompt, _""Do you have difficulty dressing or bathing?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Disability Status,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_errand,"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?","The `dht_errand` data element records response to the prompt, _""Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Disability Status,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_vaping,Vaping use (Yes or No),"The `dht_vaping` data element records response to the prompt, _""Vaping use (Yes or No)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_nicotine,Nicotine use (Yes or No),"The `dht_nicotine` data element records response to the prompt, _""Nicotine use (Yes or No)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_vaping_frequency,"Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?","The `dht_vaping_frequency` data element records response to the prompt, _""Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?""_.
+
+Values for this data element are integers that are restricted to the list of 6 permissible integer values.
+
+",Medical History,,single,integer,,,"""1""=[Every Day]|""2""=[Some Days]|""3""=[Rarely]|""4""=[Not at all]|""98""=[Don't know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_cig_smoking_frequency,Nicotine Frequency: Do you now smoke cigarettes?,"The `dht_cig_smoking_frequency` data element records response to the prompt, _""Nicotine Frequency: Do you now smoke cigarettes?""_.
+
+Values for this data element are integers that are restricted to the list of 6 permissible integer values.
+
+",Medical History,,single,integer,,,"""1""=[Every Day]|""2""=[Some Days]|""3""=[Rarely]|""4""=[Not at all]|""98""=[Don't know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_history_smoking,History of Smoking,"The `dht_history_smoking` data element records response to the prompt, _""History of Smoking""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_tobacco,Tobacco Use,"The `dht_tobacco` data element records response to the prompt, _""Tobacco Use""_.
+
+Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No tobacco use]|""1""=[Current Tobacco user]|""2""=[Former Tobacco User]|""98""=[Don't Know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_alcohol,Alcohol use (Yes or No),"The `dht_alcohol` data element records response to the prompt, _""Alcohol use (Yes or No)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_alcohol_frequency,How often did you have a drink containing alcohol ?,"The `dht_alcohol_frequency` data element records response to the prompt, _""How often did you have a drink containing alcohol ?""_.
+
+Values for this data element are integers that are restricted to the list of 7 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[Never]|""1""=[Monthly Or Less]|""2""=[Two To Four Times Per Month]|""3""=[Two To Three Times Per Week]|""4""=[Four Or More Times Per Week]|""98""=[Don't know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_asthma,Asthma,"The `dht_asthma` data element records response to the prompt, _""Asthma""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_cancer,Cancer,"The `dht_cancer` data element records response to the prompt, _""Cancer""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_cardiovascular_disease,Cardiovascular disease,"The `dht_cardiovascular_disease` data element records response to the prompt, _""Cardiovascular disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_chronic_kidney_disease,Chronic kidney disease,"The `dht_chronic_kidney_disease` data element records response to the prompt, _""Chronic kidney disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_chronic_lung_disease,Chronic lung disease,"The `dht_chronic_lung_disease` data element records response to the prompt, _""Chronic lung disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_diabetes,Diabetes,"The `dht_diabetes` data element records response to the prompt, _""Diabetes""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_hypertension,Hypertension,"The `dht_hypertension` data element records response to the prompt, _""Hypertension""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_immunosuppressive_condition,Immunosuppressive condition,"The `dht_immunosuppressive_condition` data element records response to the prompt, _""Immunosuppressive condition""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_mental_illness,mental health disorder ,"The `dht_mental_illness` data element records response to the prompt, _""mental health disorder ""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_sickle_cell_disease,Sickle cell disease,"The `dht_sickle_cell_disease` data element records response to the prompt, _""Sickle cell disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_pregnant,Pregnancy status,"The `dht_pregnant` data element records response to the prompt, _""Pregnancy status""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[Not Pregnant]|""1""=[Pregnant]|""98""=[Don't know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_immuno_compromised,Immunocompromised,"The `dht_immuno_compromised` data element records response to the prompt, _""Immunocompromised""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_autoimmune,Autoimmune disease,"The `dht_autoimmune` data element records response to the prompt, _""Autoimmune disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_copd,Chronic obstructive pulmonary disease (COPD),"The `dht_copd` data element records response to the prompt, _""Chronic obstructive pulmonary disease (COPD)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_depression,Depression,"The `dht_depression` data element records response to the prompt, _""Depression""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_alc_sub_abuse,Alcohol or substance use disorder,"The `dht_alc_sub_abuse` data element records response to the prompt, _""Alcohol or substance use disorder""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_iv_drug_use,Intravenous drug use,"The `dht_iv_drug_use` data element records response to the prompt, _""Intravenous drug use""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_other_mental_health_disorder,Other mental health disorder,"The `dht_other_mental_health_disorder` data element records response to the prompt, _""Other mental health disorder""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_other_chronic_cond,Other chronic condition,"The `dht_other_chronic_cond` data element records response to the prompt, _""Other chronic condition""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_coronary_artery_disease,Coronary artery disease,"The `dht_coronary_artery_disease` data element records response to the prompt, _""Coronary artery disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_heart_attack,heart attack (myocardial infarction)?,"The `dht_heart_attack` data element records response to the prompt, _""heart attack (myocardial infarction)?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_chf,Congestive Heart failure ,"The `dht_chf` data element records response to the prompt, _""Congestive Heart failure ""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_stroke,Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?,"The `dht_stroke` data element records response to the prompt, _""Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_immunodeficiency,Immunodeficiency (NOT including HIV)?,"The `dht_immunodeficiency` data element records response to the prompt, _""Immunodeficiency (NOT including HIV)?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_hiv,Chronic HIV infection?,"The `dht_hiv` data element records response to the prompt, _""Chronic HIV infection?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_anemia,Anemia or other blood disorder (do not include leukemia or lymphoma)?,"The `dht_anemia` data element records response to the prompt, _""Anemia or other blood disorder (do not include leukemia or lymphoma)?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_chd,Chronic Heart Disease,"The `dht_chd` data element records response to the prompt, _""Chronic Heart Disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_copd_opd,"Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?","The `dht_copd_opd` data element records response to the prompt, _""Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_alz,Alzheimers,"The `dht_alz` data element records response to the prompt, _""Alzheimers""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_anxiety,Anxiety,"The `dht_anxiety` data element records response to the prompt, _""Anxiety""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_arrhythmia,Arrhythmia,"The `dht_arrhythmia` data element records response to the prompt, _""Arrhythmia""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_arthritis,Arthritis,"The `dht_arthritis` data element records response to the prompt, _""Arthritis""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_af,Atrial Fibrillation,"The `dht_af` data element records response to the prompt, _""Atrial Fibrillation""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_chronic_pain,Chronic Pain,"The `dht_chronic_pain` data element records response to the prompt, _""Chronic Pain""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_fibromyalgia,Fibromyalgia,"The `dht_fibromyalgia` data element records response to the prompt, _""Fibromyalgia""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_gerd,Gastroesophageal reflux disease,"The `dht_gerd` data element records response to the prompt, _""Gastroesophageal reflux disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_gestational_diabetes,Gestational Diabetes,"The `dht_gestational_diabetes` data element records response to the prompt, _""Gestational Diabetes""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_cholesterol,High Cholesterol,"The `dht_cholesterol` data element records response to the prompt, _""High Cholesterol""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_thyroid,Hypo/Hyper Thyroidism,"The `dht_thyroid` data element records response to the prompt, _""Hypo/Hyper Thyroidism""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_immuno_compromised_solid_organ,immunocompromised from solid organ transplant,"The `dht_immuno_compromised_solid_organ` data element records response to the prompt, _""immunocompromised from solid organ transplant""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_ibd,Inflammatory Bowel Disease,"The `dht_ibd` data element records response to the prompt, _""Inflammatory Bowel Disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_insomnia,Insomnia,"The `dht_insomnia` data element records response to the prompt, _""Insomnia""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_ibs,Irritable bowel syndrome,"The `dht_ibs` data element records response to the prompt, _""Irritable bowel syndrome""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_liver_disease,"Liver disease (cirrhosis, hepB, hepC)","The `dht_liver_disease` data element records response to the prompt, _""Liver disease (cirrhosis, hepB, hepC)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_lupus,Lupus,"The `dht_lupus` data element records response to the prompt, _""Lupus""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_migraines,Migraines,"The `dht_migraines` data element records response to the prompt, _""Migraines""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_ms,Multiple Sclerosis,"The `dht_ms` data element records response to the prompt, _""Multiple Sclerosis""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_neurodegenerative,Neurodegenerative disease,"The `dht_neurodegenerative` data element records response to the prompt, _""Neurodegenerative disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1:Yes""=[1:Yes]|""98:Don't know""=[98:Don't know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_neurological_condition,Neurological Condition,"The `dht_neurological_condition` data element records response to the prompt, _""Neurological Condition""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_no_chronic_condition,No chronic condition,"The `dht_no_chronic_condition` data element records response to the prompt, _""No chronic condition""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_obesity,Obesity (BMI >= 30),"The `dht_obesity` data element records response to the prompt, _""Obesity (BMI >= 30)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_osteoporosis,Osteoporosis,"The `dht_osteoporosis` data element records response to the prompt, _""Osteoporosis""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_pcos,Polycystic ovary syndrome,"The `dht_pcos` data element records response to the prompt, _""Polycystic ovary syndrome""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_psoriasis,Psoriasis,"The `dht_psoriasis` data element records response to the prompt, _""Psoriasis""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_renal,Renal disease,"The `dht_renal` data element records response to the prompt, _""Renal disease""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_rls,Restless leg,"The `dht_rls` data element records response to the prompt, _""Restless leg""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_ra,Rheumatoid Arthritis,"The `dht_ra` data element records response to the prompt, _""Rheumatoid Arthritis""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_seasonal_allergies,Seasonal Allergies,"The `dht_seasonal_allergies` data element records response to the prompt, _""Seasonal Allergies""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_heart_condition,"Serious heart condition (heart failure, CAD, cardiomyopathies)","The `dht_heart_condition` data element records response to the prompt, _""Serious heart condition (heart failure, CAD, cardiomyopathies)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_substance_use,Substance use,"The `dht_substance_use` data element records response to the prompt, _""Substance use""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_thalassemia,Thalassemia,"The `dht_thalassemia` data element records response to the prompt, _""Thalassemia""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_t1d,Type 1 Diabetes,"The `dht_t1d` data element records response to the prompt, _""Type 1 Diabetes""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_t2dm,Type 2 Diabetes,"The `dht_t2dm` data element records response to the prompt, _""Type 2 Diabetes""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Medical History,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_cough,Cough,"The `dht_cough` data element records response to the prompt, _""Cough""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_fever_chills,"Fever, feeling hot/feverish, or having chills","The `dht_fever_chills` data element records response to the prompt, _""Fever, feeling hot/feverish, or having chills""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_diff_breath,Shortness of breath or difficulty breathing,"The `dht_diff_breath` data element records response to the prompt, _""Shortness of breath or difficulty breathing""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_headache,Headache,"The `dht_headache` data element records response to the prompt, _""Headache""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_body_pain,"Muscle, body, or joint aches (not due to exercise)","The `dht_body_pain` data element records response to the prompt, _""Muscle, body, or joint aches (not due to exercise)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_olfactory,New loss of taste or smell,"The `dht_olfactory` data element records response to the prompt, _""New loss of taste or smell""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_fatigue,Fatigue (more than normal),"The `dht_fatigue` data element records response to the prompt, _""Fatigue (more than normal)""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_nausea_vomiting_diarrhea,"Nausea, vomiting, or diarrhea","The `dht_nausea_vomiting_diarrhea` data element records response to the prompt, _""Nausea, vomiting, or diarrhea""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_abdom_pain,Stomach or abdominal pain,"The `dht_abdom_pain` data element records response to the prompt, _""Stomach or abdominal pain""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_skin_rash,Skin rash,"The `dht_skin_rash` data element records response to the prompt, _""Skin rash""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_conjunctivitis,Pink eye or conjunctivitis,"The `dht_conjunctivitis` data element records response to the prompt, _""Pink eye or conjunctivitis""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_congestion_sorethroat_runnynose,"Congestion, runny nose, sore throat","The `dht_congestion_sorethroat_runnynose` data element records response to the prompt, _""Congestion, runny nose, sore throat""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_red_eyes,Red or painful eyes,"The `dht_red_eyes` data element records response to the prompt, _""Red or painful eyes""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_high_temp,A temperature greater than 100.4°F,"The `dht_high_temp` data element records response to the prompt, _""A temperature greater than 100.4°F""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_other_symp,Other ,"The `dht_other_symp` data element records response to the prompt, _""Other ""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_no_symp,None of the above,"The `dht_no_symp` data element records response to the prompt, _""None of the above""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_wheezing,Wheezing,"The `dht_wheezing` data element records response to the prompt, _""Wheezing""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_blue_lips,Bluish lips or face,"The `dht_blue_lips` data element records response to the prompt, _""Bluish lips or face""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_balance,Loss of balance,"The `dht_balance` data element records response to the prompt, _""Loss of balance""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_slurred_peech,Slurred speech,"The `dht_slurred_peech` data element records response to the prompt, _""Slurred speech""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_confusion,New confusion,"The `dht_confusion` data element records response to the prompt, _""New confusion""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_neuro_shakes,Unusual shivering or shaking ,"The `dht_neuro_shakes` data element records response to the prompt, _""Unusual shivering or shaking ""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_numb_extremities,Tingling or numbness or swelling of hands and feet,"The `dht_numb_extremities` data element records response to the prompt, _""Tingling or numbness or swelling of hands and feet""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_sweating,Excessive sweating,"The `dht_sweating` data element records response to the prompt, _""Excessive sweating""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_seizures,Seizures,"The `dht_seizures` data element records response to the prompt, _""Seizures""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_rash_toes,Red or purple rash or lesions on toes,"The `dht_rash_toes` data element records response to the prompt, _""Red or purple rash or lesions on toes""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_appetite,Change in or loss of appetite,"The `dht_appetite` data element records response to the prompt, _""Change in or loss of appetite""_.
+
+Values for this data element are integers that are restricted to the list of 4 permissible integer values.
+
+",Symptoms,,single,integer,,,"""0""=[No]|""1""=[Yes]|""98""=[Don’t know]|""99""=[Prefer not to answer]",,,RADx-DHT DCC,
+dht_health_status,Self-report health status,"The `dht_health_status` data element records response to the prompt, _""Self-report health status""_.
+
+Values for this data element are integers that are restricted to the list of 7 permissible integer values.
+
+",Health Status,,single,integer,,,"""1""=[Excellent]|""2""=[Very Good]|""3""=[Good]|""4""=[Fair]|""5""=[Poor]|""98""=[Don't know]|""99""=[Prefer not to state]",,,RADx-DHT DCC,
+dht_height,What is your height in inches?,"The `dht_height` data element records response to the prompt, _""What is your height in inches?""_.
+
+Values for this data element are strings that are restricted to the list of 1 permissible string values.
+
+",Health Status,,single,string,,,"""integer""=[integer]",,,RADx-DHT DCC,
+dht_weight,What is your weight in pounds?,"The `dht_weight` data element records response to the prompt, _""What is your weight in pounds?""_.
+
+Values for this data element are strings that are restricted to the list of 1 permissible string values.
+
+",Health Status,,single,string,,,"""integer""=[integer]",,,RADx-DHT DCC,
+dht_height_category,Approximately what is your height?,"The `dht_height_category` data element records response to the prompt, _""Approximately what is your height?""_.
+
+Values for this data element are integers that are restricted to the list of 3 permissible integer values.
+
+",Health Status Categorical,,single,integer,,,"""1""=[5'1"" - 5'6""]|""2""=[5'7""-5'11""]|""3""=[6' and over]",,,RADx-DHT DCC,
+dht_weight_category,Approximately what is your weight?,"The `dht_weight_category` data element records response to the prompt, _""Approximately what is your weight?""_.
+
+Values for this data element are integers that are restricted to the list of 3 permissible integer values.
+
+",Health Status Categorical,,single,integer,,,"""1""=[100-150]|""2""=[151-200]|""3""=[over 200]",,,RADx-DHT DCC,

@@ -19,6 +19,8 @@ Python through the [API](../api/).
 | Choices (`1, Yes \| 2, No`) | `Enumeration` (`"1"=[Yes] \| "2"=[No]`) |
 | Text Validation Type (`integer`, `number_2dp`, `date_mdy`, …) | `Datatype` (`integer`, `decimal`, `date_mdy`, …; unrecognised formats become `string`) |
 | Field Annotation | `Notes` |
+| Branching Logic | `Precondition` (when it fits the spec grammar) + prose in `Description` |
+| Required Field? | `Required` |
 | — (`--provenance` flag) | `Provenance` |
 
 Rows with Field Type `descriptive` are display text, not fields, and are
@@ -62,6 +64,15 @@ Column headers are matched case-insensitively and common short forms are
 accepted (`Variable`, `Label`, `Type`, `Choices`, …), so lightly hand-edited
 exports convert too. A file with no recognisable `Variable / Field Name`
 column is rejected with a clear error.
+
+## Worked example
+
+The repository carries two complete real-world runs of this tool (`up` and
+`rad`; the latter needs `--allow-duplicates`, since multi-form exports repeat
+shared fields). For instance the RADx-UP export [`up.redcap.csv`](../converter/examples/up.redcap.csv)
+converts to [`up.dd.csv`](../converter/examples/up.dd.csv) (159 elements,
+50 machine-readable preconditions from branching logic), whose LinkML
+schema is [`up.yaml`](../converter/examples/up.yaml).
 
 ## How the conversion works
 

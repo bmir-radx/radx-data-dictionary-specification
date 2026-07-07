@@ -144,8 +144,8 @@ dd = DataDictionary([
 print(dd.to_csv())
 
 # Id,Aliases,Label,Description,Section,Cardinality,Terms,Datatype,...
-# visit,,Visit number,,,single,,integer,,,,,,,,
-# consented,,Consent given,,,single,,integer,,,"""0""=[No] | ""1""=[Yes]",,,,,
+# visit,,Visit number,,,single,,integer,,,,,,,,,,
+# consented,,Consent given,,,single,,integer,,,"""0""=[No] | ""1""=[Yes]",,,,,,,
 ```
 
 ## 10. Handle a bad dictionary gracefully

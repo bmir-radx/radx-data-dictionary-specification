@@ -6,7 +6,6 @@ the parts with logic worth pinning down.
 """
 
 import pytest
-
 from dd_converter.emit import _annotate_term_lines
 from dd_converter.terms_lookup import (
     LookupError_,

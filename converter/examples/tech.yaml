@@ -1,0 +1,939 @@
+# LinkML schema generated from a data dictionary by dd-to-linkml.
+#
+# The single class below (the tree_root) describes a target datafile: each of
+# its slots corresponds to one field (column) of that datafile, in order. The
+# non-obvious conventions used here are:
+#
+#   * A field with an enumeration becomes a slot whose value must be one of the
+#     generated <Field>Enum values OR a StandardMissingValueCodes code (and any
+#     field-specific codes) -- expressed with `any_of`. The field's underlying
+#     datatype is kept in the `value_datatype` annotation.
+#   * A field's Section becomes a declared `subset`, referenced from the slot
+#     via `in_subset`.
+#   * Ontology terms are kept as CURIEs; their prefixes are declared in
+#     `prefixes` (OBO id spaces expand under purl.obolibrary.org).
+#   * A field with a Precondition contributes class `rules`: the field must be
+#     blank unless the condition holds (and, if Required, must have a value
+#     when it does). The raw Precondition cell is kept in the `precondition`
+#     annotation.
+#   * Machine-oriented annotations (`unit_raw`, `value_datatype`, `provenance`,
+#     `original_id`, `precondition`, `required`) appear at the end of each slot.
+#
+# See the Data Dictionary Specification for the source field definitions:
+# https://github.com/bmir-radx/radx-data-dictionary-specification
+
+name: tech
+id: https://example.org/data-dictionary/tech
+imports:
+- linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+default_prefix: tech
+default_range: string
+
+# --- Enumerations ---
+enums:
+  # Enum 1 of 11
+  # Used by 7 data elements
+  # race_black | race_white | race_asian | race_pacisl | race_amind | race_other (+1 more)
+  UncheckedCheckedEnum:
+    description: Permissible values shared by 7 data elements (see the `used by` annotation).
+    permissible_values:
+      '0':
+        title: Unchecked
+      '1':
+        title: Checked
+
+  # Enum 2 of 11
+  # Used by 1 data element
+  # ethnicity
+  EthnicityEnum:
+    description: Permissible values for the `ethnicity` data element.
+    permissible_values:
+      '0':
+        title: 'No'
+      '1':
+        title: 'Yes: Mexican, Mexican American Or Chicano'
+      '2':
+        title: 'Yes: Puerto Rican'
+      '3':
+        title: 'Yes: Cuban'
+      '77':
+        title: Don't Know
+      '88':
+        title: Prefer Not To Answer
+      '99':
+        title: 'Yes: Other Or Mixed Hispanic, Latino Or Spanish Origin'
+
+  # Enum 3 of 11
+  # Used by 2 data elements
+  # age_at_registration | zip
+  BESTEnum:
+    description: Permissible values shared by 2 data elements (see the `used by` annotation).
+    permissible_values:
+      BEST:
+        title: BEST
+
+  # Enum 4 of 11
+  # Used by 1 data element
+  # sex
+  SexEnum:
+    description: Permissible values for the `sex` data element.
+    permissible_values:
+      '1':
+        title: Male
+      '2':
+        title: Female
+      '88':
+        title: Prefer Not To Answer
+
+  # Enum 5 of 11
+  # Used by 1 data element
+  # education
+  EducationEnum:
+    description: Permissible values for the `education` data element.
+    permissible_values:
+      no_hs:
+        title: no_hs
+      hs:
+        title: hs
+      ged:
+        title: ged
+      some_college:
+        title: some_college
+      aa:
+        title: aa
+      bach:
+        title: bach
+      master:
+        title: master
+      prof:
+        title: prof
+      doc:
+        title: doc
+      refused:
+        title: refused
+      dk:
+        title: dk
+
+  # Enum 6 of 11
+  # Used by 1 data element
+  # working
+  WorkingEnum:
+    description: Permissible values for the `working` data element.
+    permissible_values:
+      '1':
+        title: Working Now
+      '2':
+        title: Only Temporarily Laid Off, Sick Leave, Or Maternity Leave
+      '3':
+        title: Looking For Work, Unemployed
+      '4':
+        title: Retired
+      '5':
+        title: Disabled, Permanently, Or Temporarily
+      '6':
+        title: Keeping House
+      '7':
+        title: Student
+      '99':
+        title: Other (Specify)
+
+  # Enum 7 of 11
+  # Used by 34 data elements
+  # cond_prev_activity | hearing | vision | memory | walk_stairs | dressing_bathing (+28 more)
+  NoYesDontKnowEtcEnum:
+    description: Permissible values shared by 34 data elements (see the `used by` annotation).
+    permissible_values:
+      '0':
+        title: 'No'
+      '1':
+        title: 'Yes'
+      '77':
+        title: Dont Know
+      '88':
+        title: Refused/Na
+      '99':
+        title: Other
+
+  # Enum 8 of 11
+  # Used by 1 data element
+  # alcohol
+  AlcoholEnum:
+    description: Permissible values for the `alcohol` data element.
+    permissible_values:
+      '0':
+        title: Never
+      '1':
+        title: Monthly Or Less
+      '2':
+        title: Two To Four Times Per Month
+      '3':
+        title: Two To Three Times Per Week
+      '4':
+        title: Four Or More Times Per Week
+
+  # Enum 9 of 11
+  # Used by 1 data element
+  # ckd
+  CkdEnum:
+    description: Permissible values for the `ckd` data element.
+    permissible_values:
+      '0':
+        title: 'No'
+      '1':
+        title: Yes, But Not On Dialysis
+      '2':
+        title: Yes And On Dialysis
+      '3':
+        title: Yes, I've Had A Kidney Transplant And My Kidney Function Is Now Normal
+      '77':
+        title: Don't Know
+
+  # Enum 10 of 11
+  # Used by 1 data element
+  # premature
+  PrematureEnum:
+    description: Permissible values for the `premature` data element.
+    permissible_values:
+      '0':
+        title: 'No'
+      '1':
+        title: Yes, Between 32 - 37 Weeks
+      '2':
+        title: Yes, Between 28-32 Weeks
+      '3':
+        title: Yes, Less Than 28 Weeks
+      '4':
+        title: Yes, But Not Sure How Many Weeks
+      '77':
+        title: Dont Know
+
+  StandardMissingValueCodes:  # 11 of 11 enums
+    description: The shared set of missing-value codes that applies to every missing-value-coded
+      field.
+    permissible_values:
+      '-9999':
+        title: Reason Unknown
+      '-9980':
+        title: Not Sent to Data Hub
+      '-9981':
+        title: Data Transfer Agreement
+      '-9982':
+        title: No Participant Consent To Share
+      '-9983':
+        title: Not Available Or Mappable
+      '-9984':
+        title: Data Lost Or Inaccessible
+      '-9985':
+        title: Data Invalid
+      '-9986':
+        title: Anonymization Or Privacy Concerns
+      '-9987':
+        title: Other Unsent Reason Not Specified
+      '-9960':
+        title: Not Entered By Originator
+      '-9961':
+        title: Omitted This Value
+      '-9962':
+        title: Originator Chose to Omit
+      '-9963':
+        title: Question Not Applicable
+      '-9964':
+        title: Answer Not Known
+      '-9965':
+        title: Record Not Provided
+      '-9966':
+        title: All Originators Omitted Element
+      '-9967':
+        title: CDE Omitted With Exception
+      '-9968':
+        title: Other Unentered Reason Not Specified
+      '-9940':
+        title: Not Presented To Participant
+      '-9941':
+        title: Skip Logic
+      '-9942':
+        title: No Participant Consent to Ask
+      '-9943':
+        title: CDE Not Presented Due to Exception
+      '-9944':
+        title: Element Never Presented for Collection
+      '-9945':
+        title: Process Error
+      '-9946':
+        title: Other Unpresented Reason Not Specified
+
+# --- Classes ---
+classes:
+  Tech:  # 1 of 1 class
+    attributes:
+      # Data element 1 of 51
+      user_id:
+        title: User ID
+        description: The `user_id` data element records response to the prompt, _"User ID"_.
+        range: string
+
+      # Data element 2 of 51
+      race_black:
+        title: Black
+        description: |-
+          The `race_black` data element records response to the prompt, _"Black"_.
+
+          Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+        any_of:
+        - range: UncheckedCheckedEnum  # 0=Unchecked | 1=Checked
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 3 of 51
+      race_white:
+        title: White
+        description: |-
+          The `race_white` data element records response to the prompt, _"White"_.
+
+          Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+        any_of:
+        - range: UncheckedCheckedEnum  # 0=Unchecked | 1=Checked
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 4 of 51
+      race_asian:
+        title: Asian
+        description: |-
+          The `race_asian` data element records response to the prompt, _"Asian"_.
+
+          Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+        any_of:
+        - range: UncheckedCheckedEnum  # 0=Unchecked | 1=Checked
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 5 of 51
+      race_pacisl:
+        title: Pacific Islander
+        description: |-
+          The `race_pacisl` data element records response to the prompt, _"Pacific Islander"_.
+
+          Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+        any_of:
+        - range: UncheckedCheckedEnum  # 0=Unchecked | 1=Checked
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 6 of 51
+      race_amind:
+        title: American Indian
+        description: |-
+          The `race_amind` data element records response to the prompt, _"American Indian"_.
+
+          Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+        any_of:
+        - range: UncheckedCheckedEnum  # 0=Unchecked | 1=Checked
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 7 of 51
+      race_other:
+        title: Other
+        description: |-
+          The `race_other` data element records response to the prompt, _"Other"_.
+
+          Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+        any_of:
+        - range: UncheckedCheckedEnum  # 0=Unchecked | 1=Checked
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 8 of 51
+      race_dk:
+        title: Don't know
+        description: |-
+          The `race_dk` data element records response to the prompt, _"Don't know"_.
+
+          Values for this data element are integers that are restricted to the list of 2 permissible integer values.
+        any_of:
+        - range: UncheckedCheckedEnum  # 0=Unchecked | 1=Checked
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 9 of 51
+      ethnicity:
+        title: Are you of Hispanic or Latino origin?
+        description: |-
+          The `ethnicity` data element records response to the prompt, _"Are you of Hispanic or Latino origin?"_.
+
+          Values for this data element are integers that are restricted to the list of 7 permissible integer values.
+        any_of:
+        - range: EthnicityEnum  # 0=No | 1=Yes: Mexican, Mexican American Or Chicano | 2=Yes: Puerto Rican | 3=Yes: Cuban | 77=Don't Know | 88=Prefer Not To Answer (+1 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 10 of 51
+      age_at_registration:
+        title: Age
+        description: |-
+          The `age_at_registration` data element records response to the prompt, _"Age"_.
+
+          Values for this data element are strings that are restricted to the list of 1 permissible string values.
+        any_of:
+        - range: BESTEnum  # BEST=BEST
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: string
+
+      # Data element 11 of 51
+      sex:
+        title: Gender
+        description: |-
+          The `sex` data element records response to the prompt, _"Gender"_.
+
+          Values for this data element are integers that are restricted to the list of 3 permissible integer values.
+        any_of:
+        - range: SexEnum  # 1=Male | 2=Female | 88=Prefer Not To Answer
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 12 of 51
+      education:
+        title: What is the highest grade or level of school you have completed or the highest
+          degree you have received?
+        description: |-
+          The `education` data element records response to the prompt, _"What is the highest grade or level of school you have completed or the highest degree you have received?"_.
+
+          Values for this data element are strings that are restricted to the list of 11 permissible string values.
+        any_of:
+        - range: EducationEnum  # no_hs=no_hs | hs=hs | ged=ged | some_college=some_college | aa=aa | bach=bach (+5 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: string
+
+      # Data element 13 of 51
+      zip:
+        title: Zipcode
+        description: |-
+          The `zip` data element records response to the prompt, _"Zipcode"_.
+
+          Values for this data element are strings that are restricted to the list of 1 permissible string values.
+        any_of:
+        - range: BESTEnum  # BEST=BEST
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: string
+
+      # Data element 14 of 51
+      working:
+        title: We would like to know about what you do-are you working now, looking for work,
+          retired, keeping house, a student, or what?
+        description: |-
+          The `working` data element records response to the prompt, _"We would like to know about what you do-are you working now, looking for work, retired, keeping house, a student, or what?"_.
+
+          Values for this data element are integers that are restricted to the list of 8 permissible integer values.
+        any_of:
+        - range: WorkingEnum  # 1=Working Now | 2=Only Temporarily Laid Off, Sick Leave, Or Maternity Leave | 3=Looking For Work, Unemployed | 4=Retired | 5=Disabled, Permanently, Or Temporarily | 6=Keeping House (+2 more)
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 15 of 51
+      cond_prev_activity:
+        title: Do you have any serious physical or mental condition(s) that limit your ability
+          to perform daily activities?
+        description: |-
+          The `cond_prev_activity` data element records response to the prompt, _"Do you have any serious physical or mental condition(s) that limit your ability to perform daily activities?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 16 of 51
+      hearing:
+        title: Are you deaf or do you have serious difficulty hearing?
+        description: |-
+          The `hearing` data element records response to the prompt, _"Are you deaf or do you have serious difficulty hearing?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 17 of 51
+      vision:
+        title: Are you blind or do you have serious difficulty seeing, even when wearing glasses?
+        description: |-
+          The `vision` data element records response to the prompt, _"Are you blind or do you have serious difficulty seeing, even when wearing glasses?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 18 of 51
+      memory:
+        title: Because of a physical, mental, or emotional condition, do you have serious
+          difficulty concentrating, remembering, or making decisions? (5 years or older)
+        description: |-
+          The `memory` data element records response to the prompt, _"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years or older)"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 19 of 51
+      walk_stairs:
+        title: Do you have serious difficulty walking or climbing stairs? (5 years or older)
+        description: |-
+          The `walk_stairs` data element records response to the prompt, _"Do you have serious difficulty walking or climbing stairs? (5 years or older)"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 20 of 51
+      dressing_bathing:
+        title: Do you have difficulty dressing or bathing? (5 years or older)
+        description: |-
+          The `dressing_bathing` data element records response to the prompt, _"Do you have difficulty dressing or bathing? (5 years or older)"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 21 of 51
+      doctor_shopping:
+        title: Because of a physical, mental, or emotional condition, do you have difficulty
+          doing errands alone such as visiting a doctor's office or shopping? (15 years old
+          or older)
+        description: |-
+          The `doctor_shopping` data element records response to the prompt, _"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor's office or shopping? (15 years old or older)"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 22 of 51
+      smoking:
+        title: Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes,
+          etc)?
+        description: |-
+          The `smoking` data element records response to the prompt, _"Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 23 of 51
+      alcohol:
+        title: How often did you have a drink containing alcohol in the past year?
+        description: |-
+          The `alcohol` data element records response to the prompt, _"How often did you have a drink containing alcohol in the past year?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: AlcoholEnum  # 0=Never | 1=Monthly Or Less | 2=Two To Four Times Per Month | 3=Two To Three Times Per Week | 4=Four Or More Times Per Week
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 24 of 51
+      asthma:
+        title: Asthma, to the point that you use inhalers daily or have been to the hospital
+          for your asthma?
+        description: |-
+          The `asthma` data element records response to the prompt, _"Asthma, to the point that you use inhalers daily or have been to the hospital for your asthma?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 25 of 51
+      cancer:
+        title: Cancer (including leukemia or lymphoma) undergoing active treatment?
+        description: |-
+          The `cancer` data element records response to the prompt, _"Cancer (including leukemia or lymphoma) undergoing active treatment?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 26 of 51
+      ckd:
+        title: Decreased kidney (renal) function or kidney (renal) failure?
+        description: |-
+          The `ckd` data element records response to the prompt, _"Decreased kidney (renal) function or kidney (renal) failure?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: CkdEnum  # 0=No | 1=Yes, But Not On Dialysis | 2=Yes And On Dialysis | 3=Yes, I've Had A Kidney Transplant And My Kidney Function Is Now Normal | 77=Don't Know
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 27 of 51
+      diabetes:
+        title: Diabetes? Do not include pre-diabetes.
+        description: |-
+          The `diabetes` data element records response to the prompt, _"Diabetes? Do not include pre-diabetes."_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 28 of 51
+      hbp:
+        title: High blood pressure or hypertension (except that occurred during pregnancy
+          and did not last after pregnancy)?
+        description: |-
+          The `hbp` data element records response to the prompt, _"High blood pressure or hypertension (except that occurred during pregnancy and did not last after pregnancy)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 29 of 51
+      mental_illness:
+        title: Have you ever been told by a physician, psychologist, or healthcare provider
+          that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia,
+          or other)?
+        description: |-
+          The `mental_illness` data element records response to the prompt, _"Have you ever been told by a physician, psychologist, or healthcare provider that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia, or other)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 30 of 51
+      sc_anemia:
+        title: Have you ever been told by a physician or healthcare provider that you have
+          sickle cell anemia?
+        description: |-
+          The `sc_anemia` data element records response to the prompt, _"Have you ever been told by a physician or healthcare provider that you have sickle cell anemia?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 31 of 51
+      coronary_artery_disease:
+        title: Coronary artery disease (blockages in your heart vessels) or angina (chest
+          pain)?
+        description: |-
+          The `coronary_artery_disease` data element records response to the prompt, _"Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 32 of 51
+      heart_attack:
+        title: A heart attack (myocardial infarction)?
+        description: |-
+          The `heart_attack` data element records response to the prompt, _"A heart attack (myocardial infarction)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 33 of 51
+      chf:
+        title: Congestive Heart failure (CHF, Heart Failure)?
+        description: |-
+          The `chf` data element records response to the prompt, _"Congestive Heart failure (CHF, Heart Failure)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 34 of 51
+      stroke:
+        title: Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?
+        description: |-
+          The `stroke` data element records response to the prompt, _"Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 35 of 51
+      immunodeficiency:
+        title: Immunodeficiency (NOT including HIV)?
+        description: |-
+          The `immunodeficiency` data element records response to the prompt, _"Immunodeficiency (NOT including HIV)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 36 of 51
+      hiv:
+        title: Chronic HIV infection?
+        description: |-
+          The `hiv` data element records response to the prompt, _"Chronic HIV infection?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 37 of 51
+      anemia:
+        title: Anemia or other blood disorder (do not include leukemia or lymphoma)?
+        description: |-
+          The `anemia` data element records response to the prompt, _"Anemia or other blood disorder (do not include leukemia or lymphoma)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 38 of 51
+      premature:
+        title: History of premature birth (being born before 37 weeks of pregnancy)
+        description: |-
+          The `premature` data element records response to the prompt, _"History of premature birth (being born before 37 weeks of pregnancy)"_.
+
+          Values for this data element are integers that are restricted to the list of 6 permissible integer values.
+        any_of:
+        - range: PrematureEnum  # 0=No | 1=Yes, Between 32 - 37 Weeks | 2=Yes, Between 28-32 Weeks | 3=Yes, Less Than 28 Weeks | 4=Yes, But Not Sure How Many Weeks | 77=Dont Know
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 39 of 51
+      chd:
+        title: CHD
+        description: |-
+          The `chd` data element records response to the prompt, _"CHD"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 40 of 51
+      cf:
+        title: CF
+        description: |-
+          The `cf` data element records response to the prompt, _"CF"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 41 of 51
+      cld_bpd:
+        title: CLD BPD
+        description: |-
+          The `cld_bpd` data element records response to the prompt, _"CLD BPD"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 42 of 51
+      copd:
+        title: COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?
+        description: |-
+          The `copd` data element records response to the prompt, _"COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 43 of 51
+      cough:
+        title: A cough (worse than usual)
+        description: |-
+          The `cough` data element records response to the prompt, _"A cough (worse than usual)"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 44 of 51
+      fever_chills:
+        title: Symptoms of fever or chills
+        description: |-
+          The `fever_chills` data element records response to the prompt, _"Symptoms of fever or chills"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 45 of 51
+      shortness_of_breath:
+        title: Shortness of breath
+        description: |-
+          The `shortness_of_breath` data element records response to the prompt, _"Shortness of breath"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 46 of 51
+      muscle_aches:
+        title: Muscle aches (worse than usual)
+        description: |-
+          The `muscle_aches` data element records response to the prompt, _"Muscle aches (worse than usual)"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 47 of 51
+      unable_to_taste_or_smell:
+        title: Unable to taste or smell
+        description: |-
+          The `unable_to_taste_or_smell` data element records response to the prompt, _"Unable to taste or smell"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 48 of 51
+      nausea_vomiting_diarrhea:
+        title: Nausea, vomiting or diarrhea
+        description: |-
+          The `nausea_vomiting_diarrhea` data element records response to the prompt, _"Nausea, vomiting or diarrhea"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 49 of 51
+      red_eyes:
+        title: Red or painful eyes
+        description: |-
+          The `red_eyes` data element records response to the prompt, _"Red or painful eyes"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 50 of 51
+      high_temp:
+        title: A temperature greater than 100.4 °F
+        description: |-
+          The `high_temp` data element records response to the prompt, _"A temperature greater than 100.4 °F"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+
+      # Data element 51 of 51
+      no_symptoms:
+        title: None of the above
+        description: |-
+          The `no_symptoms` data element records response to the prompt, _"None of the above"_.
+
+          Values for this data element are integers that are restricted to the list of 5 permissible integer values.
+        any_of:
+        - range: NoYesDontKnowEtcEnum  # 0=No | 1=Yes | 77=Dont Know | 88=Refused/Na | 99=Other
+        - range: StandardMissingValueCodes
+        annotations:
+          value_datatype: integer
+    tree_root: true

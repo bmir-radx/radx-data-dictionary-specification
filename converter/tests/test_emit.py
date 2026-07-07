@@ -12,7 +12,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from dd_converter import read_data_dictionary
 from dd_converter.emit import EmitOptions, Emitter, emit_schema
 
@@ -243,10 +242,9 @@ def test_pretty_rendering_preserves_content(schema_yaml):
     """The comment/blank-line pass must not alter the schema data."""
     import json
 
-    from linkml_runtime.dumpers import json_dumper
-
     from dd_converter import read_data_dictionary
     from dd_converter.emit import EmitOptions, _strip_type_keys
+    from linkml_runtime.dumpers import json_dumper
 
     em = Emitter(EmitOptions(schema_id="https://example.org/s", schema_name="s",
                              class_name="Record"))

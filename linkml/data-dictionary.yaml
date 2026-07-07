@@ -161,6 +161,22 @@ classes:
           codes always applies; codes specified here augment (are added to) that
           standard set rather than replacing it.
 
+      Precondition:
+        range: PreconditionClause
+        description: >-
+          The condition under which the field holds a value, decomposed into
+          its expression tree. When the precondition evaluates to false for a
+          datafile record, the field's cell is expected to be blank, and that
+          blank means "not applicable" rather than missing. Absent when the
+          field always applies.
+
+      Required:
+        range: boolean
+        description: >-
+          Whether the field must hold a value. Composes with Precondition: a
+          required field's cell must be non-blank — a genuine value or a
+          missing-value code — exactly when its precondition holds.
+
       # --- Documentation and provenance -----------------------------------
 
       Examples:
@@ -241,8 +257,99 @@ classes:
         range: string
         description: A human readable description of the reason for the missing value.
 
+  # --- Precondition expression tree ---------------------------------------
+  # The parsed form of the Precondition cell grammar: atomic predicates over
+  # other fields' values, combined by and/or. See "Field: Precondition" in
+  # the specification for the grammar and evaluation semantics.
+
+  PreconditionClause:
+    abstract: true
+    description: >-
+      One node of a precondition expression: an atomic predicate over a
+      field's value, or a boolean combination of other clauses.
+
+  Comparison:
+    is_a: PreconditionClause
+    description: >-
+      An atomic comparison of a field's value with a literal, e.g.
+      `smoker = "1"` or `age >= 18`. The non-blank test is a comparison
+      with the empty string (`field <> ""`). Ordering operators are only
+      valid on fields whose Datatype is ordered.
+    attributes:
+      field:
+        required: true
+        range: string
+        description: The Id of the field whose value is compared.
+      operator:
+        required: true
+        range: ComparisonOperatorEnum
+      value:
+        required: true
+        range: string
+        description: >-
+          The literal compared against, as written (quotes stripped).
+          Interpreted in the referenced field's datatype value space.
+
+  InSet:
+    is_a: PreconditionClause
+    description: >-
+      An atomic set-membership predicate: the field's value is one of a
+      list, e.g. `status in {"1", "2"}`.
+    attributes:
+      field:
+        required: true
+        range: string
+      values:
+        required: true
+        multivalued: true
+        range: string
+
+  Contains:
+    is_a: PreconditionClause
+    description: >-
+      An atomic value-set membership predicate on a multivalued field: the
+      cell's value set holds the given value, e.g. `symptoms contains "3"`.
+    attributes:
+      field:
+        required: true
+        range: string
+      value:
+        required: true
+        range: string
+
+  BooleanCombination:
+    is_a: PreconditionClause
+    description: >-
+      Clauses combined by a boolean operator. `and` requires every clause
+      to hold; `or` requires at least one. `and` binds more tightly than
+      `or` in the cell grammar; the tree makes grouping explicit.
+    attributes:
+      operator:
+        required: true
+        range: BooleanOperatorEnum
+      clauses:
+        required: true
+        multivalued: true
+        range: PreconditionClause
+
 
 enums:
+
+  ComparisonOperatorEnum:
+    description: The comparison operators of the Precondition grammar.
+    permissible_values:
+      "=":
+      "<>":
+      "<":
+      "<=":
+      ">":
+      ">=":
+
+  BooleanOperatorEnum:
+    description: The boolean connectives of the Precondition grammar.
+    permissible_values:
+      and:
+      or:
 
   CardinalityEnum:
     description: >-

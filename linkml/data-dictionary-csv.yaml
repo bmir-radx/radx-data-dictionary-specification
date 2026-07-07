@@ -165,6 +165,40 @@ classes:
           that standard set rather than replacing it. When the cell is blank only
           the standard set applies.
 
+      Precondition:
+        range: string
+        # Mechanically expanded from the spec grammar: a clause is a predicate
+        # (`field <op> literal`, `field in {literal, ...}`, or
+        # `field contains literal`, with literal = "quoted string" | numeral)
+        # or a parenthesised group of predicates; clauses are joined by
+        # and/or (case-insensitive, hence the leading (?i)). One limitation:
+        # regular expressions cannot match arbitrarily nested parentheses, so
+        # this accepts one level of grouping — which the grammar's real-world
+        # usage never exceeds. The parser, not this pattern, is authoritative.
+        pattern: '(?i)^\s*(?:(?:[A-Za-z_][A-Za-z0-9_]*\s*(?:<=|>=|<>|=|<|>)\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)|[A-Za-z_][A-Za-z0-9_]*\s+in\s*\{\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)(?:\s*,\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))*\s*\}|[A-Za-z_][A-Za-z0-9_]*\s+contains\s+(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))|\(\s*(?:[A-Za-z_][A-Za-z0-9_]*\s*(?:<=|>=|<>|=|<|>)\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)|[A-Za-z_][A-Za-z0-9_]*\s+in\s*\{\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)(?:\s*,\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))*\s*\}|[A-Za-z_][A-Za-z0-9_]*\s+contains\s+(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))(?:\s+(?:and|or)\s+(?:[A-Za-z_][A-Za-z0-9_]*\s*(?:<=|>=|<>|=|<|>)\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)|[A-Za-z_][A-Za-z0-9_]*\s+in\s*\{\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)(?:\s*,\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))*\s*\}|[A-Za-z_][A-Za-z0-9_]*\s+contains\s+(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)))*\s*\))(?:\s+(?:and|or)\s+(?:(?:[A-Za-z_][A-Za-z0-9_]*\s*(?:<=|>=|<>|=|<|>)\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)|[A-Za-z_][A-Za-z0-9_]*\s+in\s*\{\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)(?:\s*,\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))*\s*\}|[A-Za-z_][A-Za-z0-9_]*\s+contains\s+(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))|\(\s*(?:[A-Za-z_][A-Za-z0-9_]*\s*(?:<=|>=|<>|=|<|>)\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)|[A-Za-z_][A-Za-z0-9_]*\s+in\s*\{\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)(?:\s*,\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))*\s*\}|[A-Za-z_][A-Za-z0-9_]*\s+contains\s+(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))(?:\s+(?:and|or)\s+(?:[A-Za-z_][A-Za-z0-9_]*\s*(?:<=|>=|<>|=|<|>)\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)|[A-Za-z_][A-Za-z0-9_]*\s+in\s*\{\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)(?:\s*,\s*(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?))*\s*\}|[A-Za-z_][A-Za-z0-9_]*\s+contains\s+(?:"[^"]*"|-?[0-9]+(?:\.[0-9]+)?)))*\s*\)))*\s*$'
+        description: >-
+          A single string cell holding the condition under which the field
+          holds a value, as a boolean expression over other fields in the
+          same dictionary — e.g. `smoker = "1" and age >= 18`. Predicates
+          are `=`, `<>`, `<> ""` (non-blank), `in {...}`, ordered
+          comparisons (`<`, `<=`, `>`, `>=` — only on fields with an ordered
+          Datatype) and `contains` (only on multivalued fields), joined by
+          `and`/`or` with parentheses for grouping (`and` binds tighter).
+          When the precondition is false the field's cell is expected to be
+          blank, meaning "not applicable". Blank means the field always
+          applies. See "Field: Precondition" in the specification for the
+          full grammar and semantics.
+
+      Required:
+        range: string
+        # Exactly `y`, or blank/absent (not required).
+        pattern: '^y$'
+        description: >-
+          Whether the field must hold a value: `y` (required) or blank (not
+          required). Composes with Precondition: a required field's cell
+          must be non-blank — a genuine value or a missing-value code —
+          exactly when its precondition holds.
+
       # --- Documentation and provenance -----------------------------------
 
       Examples:

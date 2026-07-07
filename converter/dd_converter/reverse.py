@@ -149,6 +149,14 @@ def schema_to_rows(schema: dict | str) -> list[dict]:
         # Provenance: emitted as source: (URL/CURIE) or an annotation otherwise.
         row["Provenance"] = _get(slot, "source", "") or _annotation(slot, "provenance")
 
+        # Precondition: the raw cell is preserved as an annotation (the class
+        # rules carry the machine form; the annotation carries the round-trip).
+        row["Precondition"] = _annotation(slot, "precondition")
+        # Required: plain `required: true` when unconditional; the `required`
+        # annotation when requiredness was conditional on a precondition.
+        if _get(slot, "required") or _annotation(slot, "required") == "y":
+            row["Required"] = "y"
+
         # Unit: the raw cell was preserved as an annotation.
         row["Unit"] = _annotation(slot, "unit_raw")
 

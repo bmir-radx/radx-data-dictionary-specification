@@ -39,6 +39,8 @@ This is the authoritative description of the strategy; the code in
 | `Description` | Generated prose — see below. |
 | `Notes` | The Field Annotation, split on `\|`; `@NONEOFTHEABOVE` actions are removed (they are *explained* in the description instead); the rest joined as paragraphs. |
 | `Provenance` | The `--provenance` flag (or `provenance=` argument), the same for every element. |
+| `Precondition` | Translated from Branching Logic when it fits the spec grammar (see below); otherwise blank, with the prose description still explaining the condition. |
+| `Required` | `y` when REDCap's `Required Field?` column says `y`. |
 | `Aliases`, `Terms`, `Pattern`, `Unit`, `MissingValueCodes`, `Examples`, `SeeAlso` | Left empty — REDCap has no counterpart. (Text Validation Min/Max are currently not carried; a future version could render them into `Pattern` or the description.) |
 
 ## How Field Type drives the conversion
@@ -129,6 +131,15 @@ Up to three paragraphs, blank ones omitted:
    looking up the referenced field's own choice list — so `[smoker] = '1'`
    renders with `_"Yes"_`. A clause matching none of the shapes is quoted
    verbatim: "the condition `[bmi] > 30` evaluates to true".
+
+   Branching logic is additionally translated into the machine-readable
+   `Precondition` column when — and only when — it fits the spec's grammar:
+   the three clause shapes above, joined by a *uniform* connective (all
+   `and` or all `or`, since REDCap's precedence for mixed unbracketed
+   connectives is not worth guessing). `[f(3)] = '1'` becomes
+   `f contains "3"` (a checkbox is one multivalued field after
+   conversion). A translation that would reference a field not in the
+   dictionary is dropped. Untranslatable logic survives as prose only.
 
 ## Worked example
 
