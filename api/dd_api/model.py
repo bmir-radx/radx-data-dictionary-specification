@@ -46,7 +46,6 @@ from pathlib import Path
 from typing import Literal, TextIO
 
 import yaml
-
 from dd_converter import (
     KNOWN_COLUMNS,
     EmitOptions,
