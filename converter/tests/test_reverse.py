@@ -93,6 +93,114 @@ def test_field_missing_value_codes_preserved():
     assert [(c.value, c.label) for c in codes] == [("-1", "Refused")]
 
 
+# --- Datatypes whose LinkML range differs from the spec name -----------------
+
+def test_datatype_with_renamed_linkml_range_roundtrips():
+    """dateTime -> range datetime and anyURI -> range uri must map back to the
+    spec names, not leak LinkML range names into the reconstructed CSV."""
+    text = "Id,Label,Datatype\nwhen,When,dateTime\nlink,Link,anyURI\n"
+    _, rebuilt = _roundtrip(text)
+    datatypes = {r.id: r.get("Datatype") for r in rebuilt}
+    assert datatypes == {"when": "dateTime", "link": "anyURI"}
+
+
+# --- Hand-authored schema representation variants ----------------------------
+# schema_to_rows accepts common shapes a person would write, not only the
+# generated form: class-level slots + slot_usage, a named enum as the slot's
+# range, and inline enum_range.
+
+def test_slots_and_slot_usage_style():
+    from dd_converter import schema_to_rows
+
+    schema = {
+        "id": "https://example.org/t",
+        "name": "t",
+        "classes": {
+            "Record": {
+                "tree_root": True,
+                "slots": ["age", "name"],
+                "slot_usage": {"age": {"description": "Age in years"}},
+            }
+        },
+        "slots": {
+            "age": {"title": "Age", "range": "integer", "description": "overridden"},
+            "name": {"title": "Name", "range": "string"},
+        },
+    }
+    rows = {r["Id"]: r for r in schema_to_rows(schema)}
+    assert set(rows) == {"age", "name"}
+    assert rows["age"]["Datatype"] == "integer"
+    assert rows["age"]["Description"] == "Age in years"  # slot_usage wins
+    assert rows["name"]["Label"] == "Name"
+
+
+def test_inherited_slots_are_included():
+    from dd_converter import schema_to_rows
+
+    schema = {
+        "id": "https://example.org/t",
+        "name": "t",
+        "classes": {
+            "Base": {"slots": ["age"]},
+            "Record": {"tree_root": True, "is_a": "Base", "slots": ["name"]},
+        },
+        "slots": {
+            "age": {"title": "Age", "range": "integer"},
+            "name": {"title": "Name", "range": "string"},
+        },
+    }
+    rows = {r["Id"]: r for r in schema_to_rows(schema)}
+    assert set(rows) == {"age", "name"}  # `age` comes via is_a inheritance
+
+
+def test_named_enum_as_direct_range():
+    from dd_converter import schema_to_rows
+
+    schema = {
+        "id": "https://example.org/t",
+        "name": "t",
+        "classes": {
+            "Record": {
+                "tree_root": True,
+                "attributes": {"status": {"range": "StatusEnum"}},
+            }
+        },
+        "enums": {
+            "StatusEnum": {
+                "permissible_values": {"0": {"title": "Inactive"}, "1": {"title": "Active"}}
+            }
+        },
+    }
+    (row,) = schema_to_rows(schema)
+    items = parse_enumeration(row["Enumeration"])
+    assert [(i.value, i.label) for i in items] == [("0", "Inactive"), ("1", "Active")]
+    assert row["Datatype"] == "string"  # no value_datatype annotation to recover
+
+
+def test_inline_enum_range():
+    from dd_converter import schema_to_rows
+
+    schema = {
+        "id": "https://example.org/t",
+        "name": "t",
+        "classes": {
+            "Record": {
+                "tree_root": True,
+                "attributes": {
+                    "status": {
+                        "enum_range": {
+                            "permissible_values": {"y": {"title": "Yes"}, "n": {"title": "No"}}
+                        }
+                    }
+                },
+            }
+        },
+    }
+    (row,) = schema_to_rows(schema)
+    items = parse_enumeration(row["Enumeration"])
+    assert [(i.value, i.label) for i in items] == [("y", "Yes"), ("n", "No")]
+
+
 # --- Round-trip on the committed real-world example dictionaries ------------
 
 # gcb is spec-clean; rad has duplicate Ids (kept-first via allow_duplicates).

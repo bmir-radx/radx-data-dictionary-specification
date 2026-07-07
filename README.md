@@ -101,7 +101,9 @@ It exits non-zero when any error is found, so it can gate a CI build. See the
 
 [`api/`](api/) is the toolkit's programmatic front door: load a data dictionary
 and work with typed, parsed objects — elements with their enumerations, units,
-ontology terms, and missing-value codes already decomposed.
+ontology terms, and missing-value codes already decomposed. A dictionary reads
+from, and writes to, both of the toolkit's formats (`load`/`from_linkml` in,
+`to_csv`/`to_linkml` out).
 
 ```python
 from dd_api import DataDictionary

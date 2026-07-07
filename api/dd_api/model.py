@@ -17,25 +17,38 @@ objects::
     age = dd["age"]                        # lookup by id (KeyError if absent)
     "weight" in dd                         # membership test by id
     dd.sections                            # section names, in order
-    schema_yaml = dd.to_linkml()           # the LinkML rendering
+
+Round-tripping — a dictionary can be read from, and written to, both of the
+toolkit's formats::
+
+    dd = DataDictionary.load("my_dictionary.csv")     # CSV in
+    dd = DataDictionary.from_linkml("my_schema.yaml") # generated LinkML in
+    csv_text = dd.to_csv()                            # canonical CSV out
+    schema_yaml = dd.to_linkml()                      # LinkML out
 
 Loading is **fail-fast**: every cell is parsed eagerly, and the first problem
-raises :class:`~dd_converter.reader.ReadError` with the line number in the
-message (the specific parse error is chained as the cause). An object you get
-back is therefore known-good — no deferred surprises when an attribute is
-first touched. To list *all* problems in a dictionary instead of stopping at
-the first, use the validator tool (``dd-validate``), which exists for exactly
-that.
+raises :class:`~dd_converter.reader.ReadError`. Row-level problems carry the
+line number in the message; header-level problems (a missing or duplicated
+column) have no single line and carry none. Where the problem comes from a
+lower-level parser (an unknown datatype name, a malformed enumeration), that
+error is chained as the cause. An object you get back is therefore known-good
+— no deferred surprises when an attribute is first touched. To list *all*
+problems in a dictionary instead of stopping at the first, use the validator
+tool (``dd-validate``), which exists for exactly that.
 """
 
 from __future__ import annotations
 
-from collections.abc import Iterator, Sequence
+import io
+from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TextIO
+from typing import Literal, TextIO
+
+import yaml
 
 from dd_converter import (
+    KNOWN_COLUMNS,
     EmitOptions,
     ReadError,
     Row,
@@ -44,7 +57,9 @@ from dd_converter import (
     lookup_unit,
     read_data_dictionary,
     resolve_datatype,
+    schema_to_rows,
 )
+from dd_converter.reverse import write_csv
 from dd_converter.grammar import (
     EnumItem,
     parse_enumeration,
@@ -60,6 +75,10 @@ class DataElement:
     Blank optional cells become ``None`` (for single values) or an empty tuple
     (for lists), so ``if element.description:`` and ``for term in
     element.terms:`` both read naturally.
+
+    Elements are immutable and hashable. Equality is by **content** — the
+    provenance fields (:attr:`line`, :attr:`row`) do not participate, so the
+    same element loaded twice, or from two copies of a file, compares equal.
     """
 
     id: str
@@ -82,7 +101,7 @@ class DataElement:
     """The section (group of related fields) this element belongs to, or
     ``None`` when the dictionary does not use sections."""
 
-    cardinality: str = "single"
+    cardinality: Literal["single", "multiple"] = "single"
     """``"single"`` (one value per cell — the default) or ``"multiple"``."""
 
     terms: tuple[str, ...] = ()
@@ -94,11 +113,13 @@ class DataElement:
     written — XSD regex syntax is not Python's, so it is not compiled here."""
 
     unit: str | None = None
-    """The unit of measure exactly as written in the CSV, or ``None``."""
+    """The unit of measure **exactly as written** in the CSV, or ``None``.
+    See :attr:`resolved_unit` for the structured form."""
 
-    unit_of_measure: UnitOfMeasure | None = None
-    """The structured unit (name, symbol, UCUM code) when :attr:`unit` is one
-    the specification's unit table recognises; otherwise ``None``."""
+    resolved_unit: UnitOfMeasure | None = None
+    """The structured unit (name, symbol, UCUM code) that :attr:`unit`
+    resolves to when it is in the specification's unit table; ``None`` for an
+    unrecognised (or absent) unit."""
 
     enumeration: tuple[EnumItem, ...] = ()
     """The permissible values, parsed from the ``"value"=[label](iri)``
@@ -119,22 +140,27 @@ class DataElement:
     see_also: str | None = None
     """A URL with more information, or ``None``."""
 
-    line: int = 0
-    """The 1-based line number of this element in the source CSV."""
+    line: int | None = field(default=None, compare=False)
+    """The 1-based line number of this element in the source CSV, or ``None``
+    for a hand-built element. Provenance only — not part of equality."""
 
-    row: Row | None = field(default=None, repr=False)
+    row: Row | None = field(default=None, repr=False, compare=False)
     """The underlying raw :class:`~dd_converter.reader.Row` — the escape hatch
     for anything the typed fields do not cover (e.g. non-standard columns).
-    ``None`` only when a :class:`DataElement` is constructed by hand."""
+    ``None`` only when a :class:`DataElement` is constructed by hand.
+    Provenance only — not part of equality."""
 
     @property
     def is_enumerated(self) -> bool:
         """Whether the element restricts values to an enumeration."""
-        return len(self.enumeration) > 0
+        return bool(self.enumeration)
 
     @property
-    def is_multiple(self) -> bool:
-        """Whether a cell may hold multiple values (cardinality ``multiple``)."""
+    def is_multivalued(self) -> bool:
+        """Whether a cell may hold multiple values (cardinality ``multiple``).
+
+        Named after the LinkML property this maps to (``multivalued``).
+        """
         return self.cardinality == "multiple"
 
 
@@ -150,11 +176,25 @@ class DataDictionary:
         "age" in dd             # is there an element with this id?
         dd["age"]               # element by id (KeyError if absent)
         dd.get("age")           # element by id (None if absent)
+
+    **Membership is by id**: ``x in dd`` accepts an id string or a
+    :class:`DataElement` (tested via its id), so ``element in dd`` holds for
+    every element that iteration yields.
     """
 
     def __init__(self, elements: Sequence[DataElement]):
+        """Build a dictionary from elements directly.
+
+        Ids must be unique — a duplicate raises :class:`ValueError` (the
+        normal constructors, :meth:`load` and :meth:`from_rows`, already
+        guarantee this).
+        """
         self._elements = tuple(elements)
-        self._by_id = {element.id: element for element in self._elements}
+        self._by_id: dict[str, DataElement] = {}
+        for element in self._elements:
+            if element.id in self._by_id:
+                raise ValueError(f"duplicate data element id {element.id!r}")
+            self._by_id[element.id] = element
 
     # --- construction -------------------------------------------------------
 
@@ -177,14 +217,45 @@ class DataDictionary:
         return cls.from_rows(read_data_dictionary(source, allow_duplicates=allow_duplicates))
 
     @classmethod
-    def from_rows(cls, rows: Sequence[Row]) -> DataDictionary:
-        """Build a dictionary from already-read :class:`Row` objects.
+    def from_rows(cls, rows: Sequence[Row | Mapping[str, str]]) -> DataDictionary:
+        """Build a dictionary from rows read some other way.
 
-        Useful with :func:`~dd_converter.reverse.schema_to_rows` to build the
-        model from a generated LinkML schema. Same fail-fast parsing and
+        Each row may be a :class:`~dd_converter.reader.Row` (as
+        :func:`~dd_converter.read_data_dictionary` returns) or a plain mapping
+        of column name to cell text (as
+        :func:`~dd_converter.schema_to_rows` returns for a generated LinkML
+        schema). A mapping is given the line number its row would have in a
+        CSV file (the first data row is line 2). Same fail-fast parsing and
         errors as :meth:`load`.
         """
-        return cls([_element_from_row(row) for row in rows])
+        normalised = [
+            row if isinstance(row, Row) else Row(cells=dict(row), line=index + 2)
+            for index, row in enumerate(rows)
+        ]
+        return cls([_element_from_row(row) for row in normalised])
+
+    @classmethod
+    def from_linkml(cls, source: str | Path | TextIO | dict) -> DataDictionary:
+        """Load a dictionary from a LinkML schema.
+
+        ``source`` may be a path to the schema YAML, an open text file, or an
+        already-parsed schema (a ``dict``). This inverts what
+        :meth:`to_linkml` / ``dd-to-linkml`` produce, and also accepts the
+        common hand-authored shapes: fields as class ``attributes:`` or as a
+        ``slots:`` list with ``slot_usage:`` refinements, and enumerations as
+        named enums (via ``any_of`` or directly as the ``range:``) or inline
+        ``enum_range:``. Only information the schema carries can come back:
+        without the converter's annotations, an enumerated field's underlying
+        datatype defaults to ``"string"`` and units are not recovered. Same
+        fail-fast parsing and errors as :meth:`load`.
+        """
+        if isinstance(source, dict):
+            schema = source
+        elif isinstance(source, (str, Path)):
+            schema = yaml.safe_load(Path(source).read_text(encoding="utf-8"))
+        else:
+            schema = yaml.safe_load(source.read())
+        return cls.from_rows(schema_to_rows(schema))
 
     # --- collection protocol -------------------------------------------------
 
@@ -194,8 +265,11 @@ class DataDictionary:
     def __iter__(self) -> Iterator[DataElement]:
         return iter(self._elements)
 
-    def __contains__(self, element_id: str) -> bool:
-        return element_id in self._by_id
+    def __contains__(self, key: object) -> bool:
+        """Membership by id: accepts an id string or a :class:`DataElement`."""
+        if isinstance(key, DataElement):
+            key = key.id
+        return key in self._by_id
 
     def __getitem__(self, element_id: str) -> DataElement:
         try:
@@ -229,11 +303,10 @@ class DataDictionary:
         Elements without a section are not represented here; fetch them with
         ``elements_in_section(None)``.
         """
-        seen: dict[str, None] = {}  # a dict preserves insertion order
-        for element in self._elements:
-            if element.section is not None:
-                seen.setdefault(element.section, None)
-        return tuple(seen)
+        distinct_in_order = dict.fromkeys(
+            element.section for element in self._elements if element.section is not None
+        )
+        return tuple(distinct_in_order)
 
     def elements_in_section(self, section: str | None) -> tuple[DataElement, ...]:
         """The elements of one section, in file order.
@@ -242,7 +315,22 @@ class DataDictionary:
         """
         return tuple(e for e in self._elements if e.section == section)
 
-    # --- conversion ----------------------------------------------------------
+    # --- serialisation --------------------------------------------------------
+
+    def to_csv(self) -> str:
+        """Serialise this dictionary as data dictionary CSV text.
+
+        Cells are written in **canonical form**: columns in the
+        specification's order, enumerations as ``"value"=[label](iri)`` with
+        single spaces around ``|``, terms joined with single spaces, and
+        cardinality always explicit (``single``/``multiple``). Loading a CSV
+        and writing it back therefore preserves the information but not the
+        original file's incidental formatting. Works for hand-built elements
+        too — no underlying rows are needed.
+        """
+        buffer = io.StringIO()
+        write_csv([_element_to_cells(element) for element in self._elements], buffer)
+        return buffer.getvalue()
 
     def to_linkml(self, options: EmitOptions | None = None) -> str:
         """Render this dictionary as a LinkML schema (YAML text).
@@ -261,6 +349,42 @@ class DataDictionary:
         return emit_schema(rows, options)
 
 
+# --- element -> cells serialisation --------------------------------------------
+
+def _enum_items_to_cell(items: Sequence[EnumItem]) -> str:
+    """Serialise enumeration items back to the ``"value"=[label](iri)`` cell
+    notation (canonical spacing, matching the converter's round-trip form)."""
+    parts = []
+    for item in items:
+        text = f'"{item.value}"=[{item.label}]'
+        if item.iri:
+            text += f"({item.iri})"
+        parts.append(text)
+    return " | ".join(parts)
+
+
+def _element_to_cells(element: DataElement) -> dict[str, str]:
+    """Serialise one element to a dict of column name -> cell text."""
+    cells = dict.fromkeys(KNOWN_COLUMNS, "")
+    cells["Id"] = element.id
+    cells["Aliases"] = "|".join(element.aliases)
+    cells["Label"] = element.label
+    cells["Description"] = element.description or ""
+    cells["Section"] = element.section or ""
+    cells["Cardinality"] = element.cardinality
+    cells["Terms"] = " ".join(element.terms)
+    cells["Datatype"] = element.datatype
+    cells["Pattern"] = element.pattern or ""
+    cells["Unit"] = element.unit or ""
+    cells["Enumeration"] = _enum_items_to_cell(element.enumeration)
+    cells["MissingValueCodes"] = _enum_items_to_cell(element.missing_value_codes)
+    cells["Examples"] = "|".join(element.examples)
+    cells["Notes"] = element.notes or ""
+    cells["Provenance"] = element.provenance or ""
+    cells["SeeAlso"] = element.see_also or ""
+    return cells
+
+
 # --- row -> element parsing ---------------------------------------------------
 
 def _blank_to_none(cell: str) -> str | None:
@@ -274,7 +398,7 @@ def _split_pipe(cell: str) -> tuple[str, ...]:
     return tuple(item.strip() for item in cell.split("|") if item.strip())
 
 
-def _parse_cardinality(cell: str, line: int) -> str:
+def _parse_cardinality(cell: str, line: int) -> Literal["single", "multiple"]:
     """Normalise a ``Cardinality`` cell to ``"single"`` or ``"multiple"``.
 
     Blank means ``single`` (the specification's default). Case is forgiven
@@ -318,7 +442,7 @@ def _element_from_row(row: Row) -> DataElement:
         terms=tuple(parse_terms(row.get("Terms"))),
         pattern=_blank_to_none(row.get("Pattern")),
         unit=unit,
-        unit_of_measure=lookup_unit(unit) if unit else None,
+        resolved_unit=lookup_unit(unit) if unit else None,
         enumeration=enumeration,
         missing_value_codes=missing_value_codes,
         examples=_split_pipe(row.get("Examples")),

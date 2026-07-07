@@ -36,9 +36,9 @@ one-folder-per-tool layout (`converter/`, `printer/`, `validator/`). This
 keeps the converter focused on converting; the API is its own deliverable
 with its own README and plan. It depends on `dd_converter` (the same
 direct-git dependency pattern the printer and validator use) for the parsing
-it is built on, and re-exports every type a caller touches
-(`DataDictionary`, `DataElement`, `EnumItem`, `UnitOfMeasure`, `ReadError`,
-`EmitOptions`) so `dd_api` is the only import a consumer needs.
+it is built on, and re-exports every type the model hands back or raises
+(`DataDictionary`, `DataElement`, `EnumItem`, `UnitOfMeasure`, `Row`,
+`ReadError`, `EmitOptions`) so day-to-day use needs only `dd_api`.
 
 ## The model
 
@@ -60,18 +60,18 @@ One row of the dictionary, fully parsed. Field-by-field:
 | `datatype` | `str` | `Datatype` (required); the name is checked with `resolve_datatype` |
 | `pattern` | `str \| None` | `Pattern`; `None` when blank (not compiled — it is an XSD regex) |
 | `unit` | `str \| None` | `Unit`, the raw text; `None` when blank |
-| `unit_of_measure` | `UnitOfMeasure \| None` | the structured unit when `unit` is in the built-in table |
+| `resolved_unit` | `UnitOfMeasure \| None` | the structured unit when `unit` is in the built-in table |
 | `enumeration` | `tuple[EnumItem, ...]` | `Enumeration`, via `grammar.parse_enumeration` |
 | `missing_value_codes` | `tuple[EnumItem, ...]` | `MissingValueCodes`, via `grammar.parse_missing_value_codes` |
 | `examples` | `tuple[str, ...]` | `Examples`, pipe-delimited |
 | `notes` | `str \| None` | `Notes`; `None` when blank |
 | `provenance` | `str \| None` | `Provenance`; `None` when blank |
 | `see_also` | `str \| None` | `SeeAlso`; `None` when blank |
-| `line` | `int` | 1-based line in the source CSV |
+| `line` | `int \| None` | 1-based line in the source CSV; `None` for a hand-built element; not part of equality |
 | `row` | `Row` | the underlying raw row (escape hatch for extra columns; excluded from `repr`) |
 
-Convenience: `is_enumerated` (has enumeration choices), `is_multiple`
-(cardinality is `"multiple"`).
+Convenience: `is_enumerated` (has enumeration choices), `is_multivalued`
+(cardinality is `"multiple"`; named after the LinkML property it maps to).
 
 Reused types, not new ones: `EnumItem` (value/label/iri) from the grammar and
 `UnitOfMeasure` (descriptive_name/symbol/ucum_code) from `units` are already
@@ -84,9 +84,21 @@ An ordered, id-indexed collection of `DataElement`s:
 - `DataDictionary.load(source, *, allow_duplicates=False)` — from a CSV path
   or open file (delegates to `read_data_dictionary`, so all its guarantees
   hold: RFC 4180, BOM handling, header validation, duplicate detection).
-- `DataDictionary.from_rows(rows)` — from already-read `Row`s.
-- `len(dd)`, `iter(dd)` (file order), `"age" in dd`, `dd["age"]` (`KeyError`
-  if absent), `dd.get("age")` (`None` if absent).
+- `DataDictionary.from_linkml(source)` — from a LinkML schema (path, open
+  file, or parsed dict). Read through LinkML's own `SchemaView`, so the
+  representation variety is normalised: `attributes:` or `slots:` +
+  `slot_usage:` (including `is_a`/`mixins` inheritance and imports), and
+  enumerations as named enums (via `any_of` or directly as the `range:`) or
+  inline `enum_range:`. Without the converter's annotations, an enumerated
+  field's datatype defaults to `string` and units are not recovered.
+- `DataDictionary.from_rows(rows)` — from already-read `Row`s or plain
+  column-name → cell mappings (what `schema_to_rows` returns).
+- `dd.to_csv()` — canonical data dictionary CSV text (spec column order,
+  canonical enumeration spacing, explicit `single` cardinality); works for
+  hand-built elements too.
+- `len(dd)`, `iter(dd)` (file order), `x in dd` (an id string or an element,
+  tested by id), `dd["age"]` (`KeyError` if absent), `dd.get("age")` (`None`
+  if absent). The constructor itself rejects duplicate ids (`ValueError`).
 - `dd.elements` — the elements as a tuple.
 - `dd.ids` — the ids, in order.
 - `dd.sections` — unique section names, in order of first appearance
@@ -122,17 +134,26 @@ wrong for an API whose purpose is comprehension.
 - A "Python API" section in `converter/README.md` with the same example.
 - A pointer from the top-level README.
 
+## Adoption by the other tools
+
+- **Printer** — refactored onto this model: its loader maps `DataElement`s
+  onto the presentation model (`Record`/`Section`), and both input kinds (CSV
+  and LinkML) come through `dd_api`. Rendered output verified byte-identical
+  on the worked examples (JSON differs only in stripped trailing whitespace).
+- **Converter** — *not* refactored: it is the layer this model is built on;
+  depending on `dd_api` from `dd_converter` would be circular.
+- **Validator** — *not* refactored, deliberately: it must accept invalid
+  dictionaries that this fail-fast model refuses to represent. Its whole
+  purpose is the inputs `DataDictionary.load` rejects; it shares the same
+  underlying `dd_converter` parsers instead.
+
 ## Non-goals (v1)
 
-- Loading from a LinkML schema (use `schema_to_rows` + `from_rows` if needed;
-  auto-detection stays in the printer).
-- Lookup by alias, mutation/round-tripping, or a datafile-validation API.
-- Refactoring the printer's loader onto this model — sensible follow-up,
-  separate PR.
+- Lookup by alias, mutation of loaded elements, or a datafile-validation API.
 
 ## Tests
 
-`converter/tests/test_model.py`: attribute parsing for every field (blank →
+`api/tests/test_model.py`: attribute parsing for every field (blank →
 `None`/empty-tuple conventions), cardinality default/multiple/invalid,
 eager errors carry line numbers and chain the cause, collection protocol
 (`len`/`iter`/`in`/`[]`/`get`), section ordering and filtering,
