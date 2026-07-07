@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dd-api"
+version = "0.0.1"
+description = "A high-level Python API for working with data dictionaries"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "BSD-2-Clause" }
+dependencies = [
+    # The parsing this model is built on (reader, datatype names, in-cell
+    # grammars, LinkML conversion) comes from the sibling converter package.
+    # It is not on PyPI, so depend on it directly from this repository; this
+    # lets `pip install <api>` pull the converter in one step.
+    "dd-converter @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter",
+    "pyyaml",  # from_linkml reads schema YAML
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dd_api*"]
+
+[tool.pytest.ini_options]
+# Docstring examples are executable: --doctest-modules runs every `>>>`
+# example in dd_api as a test, so the documentation cannot drift.
+testpaths = ["tests", "dd_api"]
+addopts = "--doctest-modules"
+doctest_optionflags = "ELLIPSIS NORMALIZE_WHITESPACE"

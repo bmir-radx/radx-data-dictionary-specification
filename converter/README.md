@@ -193,6 +193,10 @@ rows = read_data_dictionary("my_dictionary.csv")
 print(emit_schema(rows, EmitOptions(schema_name="my_data", class_name="Record")))
 ```
 
+These are the low-level pieces (raw rows of cell strings). For typed, parsed
+objects — elements with their enumerations, units, and terms already
+decomposed — use the high-level [Python API](../api/) built on top of them.
+
 ## Design and development
 
 The design decisions behind the mapping are recorded in
