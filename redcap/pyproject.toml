@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dd-redcap"
+version = "0.0.1"
+description = "Convert a REDCap data dictionary to the data dictionary specification's format"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "BSD-2-Clause" }
+dependencies = [
+    # The converted dictionary is built as dd_api model objects, so output is
+    # canonical by construction. Not on PyPI; depend directly on this repo.
+    "dd-api @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=api",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+redcap-to-dd = "dd_redcap.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dd_redcap*"]
+
+[tool.pytest.ini_options]
+# Docstring examples run as doctests, as in the api package.
+testpaths = ["tests", "dd_redcap"]
+addopts = "--doctest-modules"
+doctest_optionflags = "ELLIPSIS NORMALIZE_WHITESPACE"

@@ -26,6 +26,7 @@ renderings and tooling built on top of it.
 | [`printer/`](printer/) | A Python tool that renders a data dictionary to a human-readable HTML page (or JSON). |
 | [`validator/`](validator/) | A Python tool that checks a data dictionary against the specification and reports violations. |
 | [`api/`](api/) | A high-level Python API: load a data dictionary and work with typed, parsed objects. |
+| [`redcap/`](redcap/) | A Python tool that converts a REDCap data dictionary export into this format. |
 | [`linkml/`](linkml/) | Hand-written [LinkML](https://linkml.io) renderings of the specification. |
 
 ## Converter
@@ -117,6 +118,21 @@ for choice in age.enumeration:
 See the [API README](api/README.md) for the conventions and the full surface,
 and the [Cookbook](api/COOKBOOK.md) for ten pasteable recipes with their
 output.
+
+## REDCap converter
+
+[`redcap/`](redcap/) converts a **REDCap data dictionary export** into this
+specification's format — field names, labels, sections, choices, datatypes,
+and generated prose descriptions (including plain-English explanations of
+REDCap branching logic). The result works with every tool above.
+
+```sh
+pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=redcap"
+
+redcap-to-dd redcap_export.csv -o my_dictionary.csv
+```
+
+See the [REDCap README](redcap/README.md) for the full mapping.
 
 ## Hand-written LinkML schemas
 
