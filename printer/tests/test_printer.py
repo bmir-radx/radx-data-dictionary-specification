@@ -159,8 +159,9 @@ def test_visual_navigation_and_badges():
     assert '<nav class="toc">' in html
     assert '<a href="#section-1">One</a><span class="toc__count">1</span>' in html
     assert '<span class="section__count">1 element</span>' in html
-    # Default 'single' cardinality is noise and is hidden; 'multiple' shows.
-    assert html.count("Cardinality") == 1 and ">multiple</span>" in html
+    # Cardinality is always shown explicitly, single included.
+    assert html.count("Cardinality") == 2
+    assert ">single</span>" in html and ">multiple</span>" in html
     # Required gets its own badge class; back-to-top and anchors exist.
     assert 'class="badge record__required"' in html
     assert 'class="back-to-top"' in html
