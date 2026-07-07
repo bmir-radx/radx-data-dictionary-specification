@@ -69,6 +69,8 @@ them:
 | [`tech.dd.csv`](converter/examples/tech.dd.csv) | [`tech.yaml`](converter/examples/tech.yaml) |
 | [`up.dd.csv`](converter/examples/up.dd.csv) | [`up.yaml`](converter/examples/up.yaml) |
 
+The `up` example shows the complete REDCap pipeline: [`up.redcap.csv`](converter/examples/up.redcap.csv) (the raw REDCap export) → `redcap-to-dd` → [`up.dd.csv`](converter/examples/up.dd.csv) → `dd-to-linkml` → [`up.yaml`](converter/examples/up.yaml), whose 50 class `rules` come from the export's branching logic via the `Precondition` field.
+
 ## Printer
 
 [`printer/`](printer/) renders a data dictionary into a human-readable,
