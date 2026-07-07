@@ -3,7 +3,6 @@
 import io
 import json
 
-
 from dd_printer.load import load_dictionary
 from dd_printer.markdown import render_description
 from dd_printer.render_html import render_html

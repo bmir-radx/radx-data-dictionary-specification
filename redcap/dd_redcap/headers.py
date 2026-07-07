@@ -43,6 +43,7 @@ CHOICES = "Choices, Calculations, OR Slider Labels"
 FIELD_NOTE = "Field Note"
 TEXT_VALIDATION = "Text Validation Type OR Show Slider Number"
 BRANCHING_LOGIC = "Branching Logic (Show field only if...)"
+REQUIRED_FIELD = "Required Field?"
 FIELD_ANNOTATION = "Field Annotation"
 
 

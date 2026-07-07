@@ -34,6 +34,8 @@ class Record:
     cardinality: str = ""  # "single" / "multiple"
     unit: str = ""
     pattern: str = ""
+    precondition: str = ""  # when the field applies (spec Precondition grammar)
+    required: bool = False
     terms: list[str] = field(default_factory=list)
     choices: list[Choice] = field(default_factory=list)  # the enumeration, if any
     notes: str = ""

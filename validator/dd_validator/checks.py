@@ -23,15 +23,20 @@ from urllib.parse import urlsplit
 from dd_converter import (
     BUILTIN_RANGES,
     CUSTOM_TYPES,
+    ORDERED_DATATYPES,
     REQUIRED_COLUMNS,
     UnknownDatatypeError,
     resolve_datatype,
 )
 from dd_converter.grammar import (
+    Comparison,
+    Contains,
     ParseError,
     parse_enumeration,
     parse_missing_value_codes,
+    parse_precondition,
 )
+from dd_converter.grammar import atoms as precondition_atoms
 
 from .model import Finding, Level
 from .rows import RawRow
@@ -227,6 +232,77 @@ def check_see_also(rows: Iterable[RawRow], columns_present: set[str]) -> Iterabl
                 "SeeAlso is not an absolute URL",
                 line=row.line, column="SeeAlso", value=url,
             )
+
+
+def check_required(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Finding]:
+    if "Required" not in columns_present:
+        return
+    for row in rows:
+        value = row.get("Required").strip()
+        if value and value.lower() != "y":
+            yield Finding(
+                Level.ERROR, "invalid-required",
+                f"invalid Required {value!r} (expected 'y' or blank)",
+                line=row.line, column="Required", value=value,
+            )
+
+
+def check_preconditions(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """Check every Precondition cell: grammar, references, and predicate typing.
+
+    Per the specification: referenced fields must exist in this dictionary;
+    ordering predicates (< <= > >=) are only valid on fields with an ordered
+    Datatype; `contains` is only valid on fields with Cardinality `multiple`.
+    """
+    if "Precondition" not in columns_present:
+        return
+    rows = list(rows)
+    fields = {
+        row.get("Id").strip(): row for row in rows if row.get("Id").strip()
+    }
+    for row in rows:
+        cell = row.get("Precondition")
+        if cell.strip() == "":
+            continue
+        try:
+            condition = parse_precondition(cell)
+        except ParseError as exc:
+            yield Finding(
+                Level.ERROR, "malformed-precondition",
+                f"precondition is malformed: {exc}",
+                line=row.line, column="Precondition", value=cell,
+            )
+            continue
+        for atom in precondition_atoms(condition):
+            referenced = fields.get(atom.field)
+            if referenced is None:
+                yield Finding(
+                    Level.ERROR, "unknown-precondition-field",
+                    f"precondition refers to {atom.field!r}, which is not a "
+                    "field in this dictionary",
+                    line=row.line, column="Precondition", value=atom.field,
+                )
+                continue
+            if isinstance(atom, Comparison) and atom.op in ("<", "<=", ">", ">="):
+                datatype = referenced.get("Datatype").strip()
+                if datatype and datatype not in ORDERED_DATATYPES:
+                    yield Finding(
+                        Level.ERROR, "invalid-precondition-comparison",
+                        f"precondition compares {atom.field!r} with "
+                        f"{atom.op!r}, but its datatype {datatype!r} is not ordered",
+                        line=row.line, column="Precondition", value=atom.field,
+                    )
+            if isinstance(atom, Contains):
+                cardinality = referenced.get("Cardinality").strip().lower()
+                if cardinality != "multiple":
+                    yield Finding(
+                        Level.ERROR, "invalid-precondition-contains",
+                        f"precondition uses 'contains' on {atom.field!r}, "
+                        "which is not a multivalued field",
+                        line=row.line, column="Precondition", value=atom.field,
+                    )
 
 
 def check_duplicate_ids(

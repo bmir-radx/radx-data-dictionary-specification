@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from dd_converter import (
     CustomType,
     UnknownDatatypeError,

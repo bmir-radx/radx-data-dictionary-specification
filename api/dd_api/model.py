@@ -69,6 +69,7 @@ from dd_converter.grammar import (
     EnumItem,
     parse_enumeration,
     parse_missing_value_codes,
+    parse_precondition,
     parse_terms,
 )
 from dd_converter.reverse import write_csv
@@ -174,6 +175,19 @@ class DataElement:
     same item shape as :attr:`enumeration`. E.g. a ``"-9096"=[Refused]``
     cell becomes one item with value ``"-9096"`` and label ``"Refused"``."""
 
+    precondition: str | None = None
+    """The condition under which this field holds a value, e.g.
+    ``'smoker = "1" and age >= 18'`` — or ``None`` when the field always
+    applies. Checked against the precondition grammar at load time; use
+    :attr:`parsed_precondition` for the expression tree. When the
+    precondition is false for a datafile record, the field's cell is
+    expected blank, and that blank means *not applicable*."""
+
+    required: bool = False
+    """Whether the field must hold a value (the ``Required`` column,
+    ``y``/blank). Composes with :attr:`precondition`: a required field's
+    cell must be non-blank exactly when its precondition holds."""
+
     examples: tuple[str, ...] = ()
     """Example values for the field, e.g. ``("42", "7")``. Written
     pipe-delimited in the CSV; empty tuple when none are given."""
@@ -207,6 +221,16 @@ class DataElement:
         readable way to ask.
         """
         return bool(self.enumeration)
+
+    @property
+    def parsed_precondition(self):
+        """The :attr:`precondition` as an expression tree, or ``None``.
+
+        Nodes are the grammar's types (``Comparison``, ``InSet``,
+        ``Contains``, ``And``, ``Or`` — from ``dd_converter.grammar``).
+        Always parses cleanly: the text was validated at load time.
+        """
+        return parse_precondition(self.precondition or "")
 
     @property
     def is_multivalued(self) -> bool:
@@ -493,7 +517,7 @@ class DataDictionary:
             ...     {"Id": "age", "Label": "Age", "Datatype": "integer"},
             ... ])
             >>> dd.to_csv().splitlines()[1]
-            'age,,Age,,,single,,integer,,,,,,,,'
+            'age,,Age,,,single,,integer,,,,,,,,,,'
 
         Cells are written in **canonical form**: columns in the
         specification's order, enumerations as ``"value"=[label](iri)`` with
@@ -523,16 +547,17 @@ class DataDictionary:
             True
 
         ``options`` (an :class:`~dd_converter.EmitOptions`) controls the
-        schema's name, id, and root class name. Only available for
-        dictionaries built by the loaders (:meth:`load`, :meth:`from_linkml`,
-        :meth:`from_rows`), which is how they are normally made.
+        schema's name, id, and root class name. Elements loaded from a file
+        contribute their original rows verbatim; hand-built elements (no
+        underlying row) are serialised from their typed fields first, so any
+        dictionary can be rendered.
         """
-        rows = [element.row for element in self._elements]
-        if any(row is None for row in rows):
-            raise ValueError(
-                "to_linkml() needs the underlying rows; this dictionary contains "
-                "hand-built DataElements with no row."
-            )
+        rows = [
+            element.row
+            if element.row is not None
+            else Row(cells=_element_to_cells(element), line=element.line or index + 2)
+            for index, element in enumerate(self._elements)
+        ]
         return emit_schema(rows, options)
 
 
@@ -567,6 +592,16 @@ def _parse_cardinality(cell: str, line: int) -> Literal["single", "multiple"]:
     )
 
 
+def _parse_required(cell: str, line: int) -> bool:
+    """Normalise a ``Required`` cell: ``y`` (any case) or blank, per the spec."""
+    value = cell.strip().lower()
+    if value == "":
+        return False
+    if value == "y":
+        return True
+    raise ReadError(f"Line {line}: invalid Required {cell.strip()!r} (expected 'y' or blank).")
+
+
 def _element_from_row(row: Row) -> DataElement:
     """Parse one raw row into a :class:`DataElement`.
 
@@ -578,6 +613,7 @@ def _element_from_row(row: Row) -> DataElement:
         resolve_datatype(datatype)  # unknown names raise; result not needed here
         enumeration = tuple(parse_enumeration(row.get("Enumeration")))
         missing_value_codes = tuple(parse_missing_value_codes(row.get("MissingValueCodes")))
+        parse_precondition(row.get("Precondition"))  # malformed raises; tree not kept
     except ValueError as exc:  # UnknownDatatypeError and ParseError
         raise ReadError(f"Line {row.line}: {exc}") from exc
 
@@ -596,6 +632,8 @@ def _element_from_row(row: Row) -> DataElement:
         resolved_unit=lookup_unit(unit) if unit else None,
         enumeration=enumeration,
         missing_value_codes=missing_value_codes,
+        precondition=_blank_to_none(row.get("Precondition")),
+        required=_parse_required(row.get("Required"), row.line),
         examples=_split_pipe(row.get("Examples")),
         notes=_blank_to_none(row.get("Notes")),
         provenance=_blank_to_none(row.get("Provenance")),
@@ -638,6 +676,8 @@ def _element_to_cells(element: DataElement) -> dict[str, str]:
     cells["Unit"] = element.unit or ""
     cells["Enumeration"] = _enum_items_to_cell(element.enumeration)
     cells["MissingValueCodes"] = _enum_items_to_cell(element.missing_value_codes)
+    cells["Precondition"] = element.precondition or ""
+    cells["Required"] = "y" if element.required else ""
     cells["Examples"] = "|".join(element.examples)
     cells["Notes"] = element.notes or ""
     cells["Provenance"] = element.provenance or ""

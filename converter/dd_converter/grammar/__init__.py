@@ -6,6 +6,18 @@ from .parse import (
     parse_enumeration,
     parse_missing_value_codes,
 )
+from .precondition import (
+    And,
+    Comparison,
+    Contains,
+    InSet,
+    Or,
+    Precondition,
+    atoms,
+    parse_precondition,
+    referenced_fields,
+    serialise_precondition,
+)
 from .terms import parse_terms
 
 __all__ = [
@@ -14,4 +26,14 @@ __all__ = [
     "parse_enumeration",
     "parse_missing_value_codes",
     "parse_terms",
+    "Precondition",
+    "Comparison",
+    "InSet",
+    "Contains",
+    "And",
+    "Or",
+    "parse_precondition",
+    "serialise_precondition",
+    "referenced_fields",
+    "atoms",
 ]

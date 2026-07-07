@@ -35,6 +35,12 @@
           {% if record.pattern %}
           <tr><th>Pattern</th><td><code>{{ record.pattern }}</code></td></tr>
           {% endif %}
+          {% if record.required %}
+          <tr><th>Required</th><td><span class="badge record__facet">required</span></td></tr>
+          {% endif %}
+          {% if record.precondition %}
+          <tr><th>Precondition</th><td><code>{{ record.precondition }}</code></td></tr>
+          {% endif %}
           {% if record.terms %}
           <tr><th>Terms</th><td>
             {% for term in record.terms %}<span class="badge term">{{ term }}</span> {% endfor %}

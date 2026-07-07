@@ -12,7 +12,6 @@ import io
 from pathlib import Path
 
 import yaml
-
 from dd_api import DataDictionary, DataElement
 
 from .model import Choice, Dictionary, Record, Section
@@ -65,6 +64,8 @@ def _record_from_element(element: DataElement, number: int) -> Record:
         cardinality=element.cardinality,
         unit=element.unit or "",
         pattern=element.pattern or "",
+        precondition=element.precondition or "",
+        required=element.required,
         terms=list(element.terms),
         choices=choices,
         notes=element.notes or "",

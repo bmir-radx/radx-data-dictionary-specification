@@ -49,6 +49,8 @@ def _run_all_checks(
     findings.extend(checks.check_pattern(rows, columns_present))
     findings.extend(checks.check_enumeration(rows, columns_present))
     findings.extend(checks.check_missing_value_codes(rows, columns_present))
+    findings.extend(checks.check_preconditions(rows, columns_present))
+    findings.extend(checks.check_required(rows, columns_present))
     findings.extend(checks.check_see_also(rows, columns_present))
     if check_duplicate_ids:
         findings.extend(checks.check_duplicate_ids(rows, columns_present))

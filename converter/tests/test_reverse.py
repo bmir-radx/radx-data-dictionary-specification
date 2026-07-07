@@ -4,7 +4,6 @@ import io
 from pathlib import Path
 
 import pytest
-
 from dd_converter import (
     EmitOptions,
     emit_schema,

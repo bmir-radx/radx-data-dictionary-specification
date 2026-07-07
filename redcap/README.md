@@ -19,6 +19,8 @@ Python through the [API](../api/).
 | Choices (`1, Yes \| 2, No`) | `Enumeration` (`"1"=[Yes] \| "2"=[No]`) |
 | Text Validation Type (`integer`, `number_2dp`, `date_mdy`, …) | `Datatype` (`integer`, `decimal`, `date_mdy`, …; unrecognised formats become `string`) |
 | Field Annotation | `Notes` |
+| Branching Logic | `Precondition` (when it fits the spec grammar) + prose in `Description` |
+| Required Field? | `Required` |
 | — (`--provenance` flag) | `Provenance` |
 
 Rows with Field Type `descriptive` are display text, not fields, and are

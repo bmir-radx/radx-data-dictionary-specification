@@ -1,0 +1,38 @@
+// The Precondition cell grammar (see "Field: Precondition" in the spec).
+//
+// A boolean expression over other fields' values: predicates joined by
+// and/or, with parentheses for grouping. `and` binds more tightly than `or`.
+// Keywords are case-insensitive and reserved (a field id cannot be named
+// "and", "or", "in" or "contains").
+
+?start: or_expression
+
+?or_expression: and_expression (_OR and_expression)*
+?and_expression: clause (_AND clause)*
+?clause: predicate
+       | "(" or_expression ")"
+
+predicate: comparison
+         | in_set
+         | contains
+
+comparison: FIELD_ID COMPARATOR literal
+in_set: FIELD_ID _IN "{" literal ("," literal)* "}"
+contains: FIELD_ID _CONTAINS literal
+
+literal: STRING | NUMBER
+
+// Keyword terminals outrank FIELD_ID so `and`/`or`/`in`/`contains` never
+// lex as field ids.
+_OR.2: "or"i
+_AND.2: "and"i
+_IN.2: "in"i
+_CONTAINS.2: "contains"i
+
+COMPARATOR: "<=" | ">=" | "<>" | "=" | "<" | ">"
+FIELD_ID: /[A-Za-z_][A-Za-z0-9_]*/
+STRING: /"[^"]*"/
+NUMBER: /-?[0-9]+(\.[0-9]+)?/
+
+%import common.WS
+%ignore WS

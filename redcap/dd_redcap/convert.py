@@ -9,15 +9,17 @@ works on it directly.
 
 from __future__ import annotations
 
+import dataclasses
 import logging
 import re
 from pathlib import Path
 from typing import TextIO
 
 from dd_api import DataDictionary, DataElement, EnumItem
+from dd_converter.grammar import parse_precondition, referenced_fields
 
 from . import headers
-from .branching import explain_branching_logic
+from .branching import branching_to_precondition, explain_branching_logic
 from .choices import parse_choices
 from .datatypes import extract_datatype
 from .headers import RedCapSheet, read_sheet
@@ -53,7 +55,30 @@ def convert_redcap(source: str | Path | TextIO, *, provenance: str = "") -> Data
             logger.warning("Skipping a row with no Variable / Field Name value.")
             continue
         elements.append(_element_from_row(sheet, row, field_id, current_section, provenance))
-    return DataDictionary(elements)
+    return DataDictionary(_drop_dangling_preconditions(elements))
+
+
+def _drop_dangling_preconditions(elements: list[DataElement]) -> list[DataElement]:
+    """Remove preconditions that refer to fields not in the dictionary.
+
+    Branching logic can reference a field that did not convert (or was
+    mistyped in the export); the prose explanation in the description still
+    covers such conditions, but a machine-readable precondition must not
+    dangle — the spec requires its references to exist.
+    """
+    ids = {element.id for element in elements}
+    cleaned = []
+    for element in elements:
+        if element.precondition is not None:
+            condition = parse_precondition(element.precondition)
+            if not referenced_fields(condition) <= ids:
+                logger.warning(
+                    "Dropping precondition of %r: it references fields not in "
+                    "the dictionary.", element.id,
+                )
+                element = dataclasses.replace(element, precondition=None)
+        cleaned.append(element)
+    return cleaned
 
 
 def _element_from_row(
@@ -72,6 +97,8 @@ def _element_from_row(
         enumeration=tuple(
             EnumItem(value=value, label=choice_label) for value, choice_label in choices.items()
         ),
+        precondition=branching_to_precondition(sheet, row),
+        required=sheet.get(row, headers.REQUIRED_FIELD).strip().lower() == "y",
         notes=_notes_from_annotations(sheet, row) or None,
         provenance=provenance or None,
     )

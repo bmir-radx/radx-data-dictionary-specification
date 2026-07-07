@@ -110,6 +110,8 @@ column maps to a LinkML feature of the slot:
 | `Provenance` / `SeeAlso` | slot `source` / `see_also` |
 | `Section` | a LinkML `subset`, referenced from the slot via `in_subset` |
 | `MissingValueCodes` | folded into the enum union (see below) |
+| `Precondition` | class `rules` (absent-when-false, present-when-required), plus a `precondition` annotation preserving the raw cell for the round-trip |
+| `Required` | slot `required: true` (unconditional) or folded into the rules (conditional on a precondition) |
 
 ### Enumerations and missing-value codes
 

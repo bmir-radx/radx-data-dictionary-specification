@@ -11,10 +11,10 @@ from __future__ import annotations
 
 import csv
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TextIO
-from collections.abc import Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,8 @@ KNOWN_COLUMNS: Sequence[str] = (
     "Unit",
     "Enumeration",
     "MissingValueCodes",
+    "Precondition",
+    "Required",
     "Examples",
     "Notes",
     "Provenance",

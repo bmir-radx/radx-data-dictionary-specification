@@ -18,8 +18,10 @@ import jsonasobj2
 import yaml
 from linkml_runtime.dumpers import json_dumper
 from linkml_runtime.linkml_model.meta import (
+    AnonymousClassExpression,
     AnonymousSlotExpression,
     ClassDefinition,
+    ClassRule,
     EnumDefinition,
     Example,
     PermissibleValue,
@@ -27,11 +29,23 @@ from linkml_runtime.linkml_model.meta import (
     SlotDefinition,
     SubsetDefinition,
     TypeDefinition,
+)
+from linkml_runtime.linkml_model.meta import (
     UnitOfMeasure as LinkMLUnitOfMeasure,
 )
 
 from .datatypes import CustomType, resolve_datatype
-from .grammar import EnumItem, parse_enumeration, parse_missing_value_codes, parse_terms
+from .grammar import (
+    And,
+    Contains,
+    EnumItem,
+    InSet,
+    Or,
+    parse_enumeration,
+    parse_missing_value_codes,
+    parse_precondition,
+    parse_terms,
+)
 from .missing_values import (
     STANDARD_ENUM_NAME,
     STANDARD_MISSING_VALUE_CODES,
@@ -268,6 +282,104 @@ class Emitter:
             )
         schema.enums[STANDARD_ENUM_NAME] = enum
 
+    # -- precondition / required --------------------------------------------
+
+    def _apply_precondition_and_required(
+        self, cls: ClassDefinition, slot: SlotDefinition, row: Row
+    ) -> None:
+        """Map the ``Precondition`` and ``Required`` columns onto the class.
+
+        A precondition becomes machine-usable class ``rules`` (see the
+        mapping table in the plan): when the condition does NOT hold the
+        field must be absent, and — if the field is also required — when it
+        holds the field must be present. The raw cell is additionally kept as
+        a ``precondition`` annotation so the reverse conversion is lossless
+        (rules are for validators, the annotation is for the round-trip).
+
+        ``Required`` with no precondition is plain LinkML ``required: true``;
+        with one, requiredness is conditional and lives in the rules, with a
+        ``required`` annotation preserving the column for the round-trip.
+        """
+        required = row.get("Required").strip().lower() == "y"
+        condition = parse_precondition(row.get("Precondition"))
+
+        if condition is None:
+            if required:
+                slot.required = True
+            return
+
+        slot.annotations["precondition"] = row.get("Precondition").strip()
+        condition_expr = self._condition_expression(condition)
+        cls.rules.append(
+            ClassRule(
+                description=f"{slot.name} does not apply when its precondition is false",
+                preconditions=AnonymousClassExpression(none_of=[condition_expr]),
+                postconditions=AnonymousClassExpression(
+                    slot_conditions={slot.name: SlotDefinition(slot.name, value_presence="ABSENT")}
+                ),
+            )
+        )
+        if required:
+            slot.annotations["required"] = "y"
+            cls.rules.append(
+                ClassRule(
+                    description=f"{slot.name} is required when its precondition holds",
+                    preconditions=condition_expr,
+                    postconditions=AnonymousClassExpression(
+                        slot_conditions={
+                            slot.name: SlotDefinition(slot.name, value_presence="PRESENT")
+                        }
+                    ),
+                )
+            )
+
+    def _condition_expression(self, node) -> AnonymousClassExpression:
+        """A precondition expression tree as a LinkML class expression."""
+        if isinstance(node, And):
+            return AnonymousClassExpression(
+                all_of=[self._condition_expression(clause) for clause in node.clauses]
+            )
+        if isinstance(node, Or):
+            return AnonymousClassExpression(
+                any_of=[self._condition_expression(clause) for clause in node.clauses]
+            )
+        field = _sanitize(node.field)
+        return AnonymousClassExpression(
+            slot_conditions={field: self._atom_condition(field, node)}
+        )
+
+    @staticmethod
+    def _atom_condition(field: str, atom) -> SlotDefinition:
+        """One atomic predicate as a slot condition.
+
+        Strict bounds have no direct LinkML slot (minimum/maximum_value are
+        inclusive), so ``<`` and ``>`` combine the inclusive bound with a
+        ``none_of`` equality — exact in any totally ordered value space.
+        """
+        condition = SlotDefinition(field)
+        if isinstance(atom, Contains):
+            condition.has_member = AnonymousSlotExpression(equals_string=atom.value)
+            return condition
+        if isinstance(atom, InSet):
+            condition.any_of = [AnonymousSlotExpression(equals_string=v) for v in atom.values]
+            return condition
+        # Comparison.
+        if atom.op == "=":
+            condition.equals_string = atom.value
+        elif atom.op == "<>" and atom.value == "":
+            condition.value_presence = "PRESENT"
+        elif atom.op == "<>":
+            condition.none_of = [AnonymousSlotExpression(equals_string=atom.value)]
+        else:
+            number = float(atom.value)
+            if atom.op in (">", ">="):
+                condition.minimum_value = number
+            else:
+                condition.maximum_value = number
+            if atom.op in (">", "<"):
+                condition.none_of = [AnonymousSlotExpression(equals_string=atom.value)]
+        return condition
+
     # -- per-row slot ------------------------------------------------------
 
     def _build_slot(self, schema: SchemaDefinition, row: Row) -> SlotDefinition:
@@ -406,6 +518,7 @@ class Emitter:
         for row in rows:
             slot = self._build_slot(schema, row)
             cls.attributes[slot.name] = slot
+            self._apply_precondition_and_required(cls, slot, row)
         schema.classes[cls.name] = cls
 
         # Register any prefixes discovered while building slots.
