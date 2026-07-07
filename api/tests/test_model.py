@@ -4,7 +4,6 @@ import io
 
 import pytest
 import yaml
-
 from dd_api import DataDictionary, DataElement, ReadError
 from dd_converter import UnknownDatatypeError, emit_schema, read_data_dictionary
 from dd_converter.grammar import ParseError
