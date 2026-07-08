@@ -20,6 +20,29 @@ _CSS = files("dd_printer.static").joinpath("dictionary.css").read_text(encoding=
 _env = Environment(autoescape=select_autoescape(default=True))
 
 
+def _toc_entries(dictionary: Dictionary) -> list[dict]:
+    """One contents entry per section, with the nesting depth of its path.
+
+    Sections use a ``Parent/Child`` path convention (seen in real
+    dictionaries); the contents indents a child under its parent by splitting
+    on ``/``. ``depth`` is the number of path separators, ``name`` the last
+    segment (the parent context is conveyed by indentation), and ``index``
+    the 1-based section position matching the ``#section-N`` anchor.
+    """
+    entries = []
+    for index, section in enumerate(dictionary.sections, start=1):
+        path = section.name.split("/")
+        entries.append(
+            {
+                "index": index,
+                "depth": len(path) - 1,
+                "name": path[-1].strip() or section.name,
+                "count": len(section.records),
+            }
+        )
+    return entries
+
+
 def render_html(dictionary: Dictionary) -> str:
     """Render the dictionary to a single self-contained HTML document."""
     template = _env.from_string(_TEMPLATE)
@@ -30,4 +53,6 @@ def render_html(dictionary: Dictionary) -> str:
         )
         record.notes_html = render_description(record.notes, record, dictionary)
         record.precondition_html = render_precondition(record.precondition, dictionary)
-    return template.render(dictionary=dictionary, css=_CSS)
+    return template.render(
+        dictionary=dictionary, css=_CSS, toc_entries=_toc_entries(dictionary)
+    )

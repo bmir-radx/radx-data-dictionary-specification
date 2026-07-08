@@ -82,16 +82,18 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
-  columns: 14rem;
-  column-gap: 2rem;
 }
-.toc__list li {
+.toc__item {
   display: flex;
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.15rem 0;
-  break-inside: avoid;
 }
+/* Sections use a Parent/Child path convention; indent each level so the
+   contents mirrors the hierarchy. The name shown is the last path segment. */
+.toc__item--depth-1 > a { padding-left: 1.25rem; }
+.toc__item--depth-2 > a { padding-left: 2.5rem; }
+.toc__item--depth-3 > a { padding-left: 3.75rem; }
 .toc__list a { color: var(--ink); text-decoration: none; }
 .toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
 .toc__count {
@@ -275,33 +277,33 @@ code {
     <h2 class="toc__title">Sections</h2>
     <ul class="toc__list">
     
-      <li><a href="#section-1">Identity</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-1">Identity</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-2">Race</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-2">Race</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-3">Ethnicity</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-3">Ethnicity</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-4">Age</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-4">Age</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-5">Sex</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-5">Sex</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-6">Education Level</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-6">Education Level</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-7">Education Years</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-7">Education Years</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-8">Domicile</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-8">Domicile</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-9">Employment</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-9">Employment</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-10">Insurance Status</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-10">Insurance Status</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-11">Disability Status</a><span class="toc__count">7</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-11">Disability Status</a><span class="toc__count">7</span></li>
     
-      <li><a href="#section-12">Medical History</a><span class="toc__count">84</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-12">Medical History</a><span class="toc__count">84</span></li>
     
-      <li><a href="#section-13">Symptoms</a><span class="toc__count">27</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-13">Symptoms</a><span class="toc__count">27</span></li>
     
-      <li><a href="#section-14">Health Status</a><span class="toc__count">5</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-14">Health Status</a><span class="toc__count">5</span></li>
     
     </ul>
   </nav>

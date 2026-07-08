@@ -82,16 +82,18 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
-  columns: 14rem;
-  column-gap: 2rem;
 }
-.toc__list li {
+.toc__item {
   display: flex;
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.15rem 0;
-  break-inside: avoid;
 }
+/* Sections use a Parent/Child path convention; indent each level so the
+   contents mirrors the hierarchy. The name shown is the last path segment. */
+.toc__item--depth-1 > a { padding-left: 1.25rem; }
+.toc__item--depth-2 > a { padding-left: 2.5rem; }
+.toc__item--depth-3 > a { padding-left: 3.75rem; }
 .toc__list a { color: var(--ink); text-decoration: none; }
 .toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
 .toc__count {

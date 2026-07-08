@@ -158,7 +158,8 @@ def test_visual_navigation_and_badges():
     # TOC with per-section counts; sections carry ids and counts.
     assert '<nav class="toc">' in html
     assert '<h2 class="toc__title">Sections</h2>' in html
-    assert '<a href="#section-1">One</a><span class="toc__count">1</span>' in html
+    assert '<a href="#section-1">One</a>' in html
+    assert '<span class="toc__count">1</span>' in html
     assert '<span class="section__count">1 element</span>' in html
     # Cardinality is always shown explicitly, single included.
     assert html.count("Cardinality") == 2
@@ -167,3 +168,22 @@ def test_visual_navigation_and_badges():
     assert 'class="badge record__required"' in html
     assert 'class="back-to-top"' in html
     assert 'class="record__anchor" href="#a"' in html
+
+
+def test_section_paths_indent_in_toc():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    text = (
+        "Id,Label,Datatype,Section\n"
+        "a,A,string,Technology Metadata\n"
+        "b,B,string,Technology Metadata/Aptamer\n"
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    # Parent at depth 0, child at depth 1 showing only the last path segment.
+    assert 'toc__item--depth-0"><a href="#section-1">Technology Metadata</a>' in html
+    assert 'toc__item--depth-1"><a href="#section-2">Aptamer</a>' in html
+    # The card heading keeps the full path (unchanged, presentational split only).
+    assert ">Technology Metadata/Aptamer<" in html

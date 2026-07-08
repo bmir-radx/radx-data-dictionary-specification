@@ -82,16 +82,18 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
-  columns: 14rem;
-  column-gap: 2rem;
 }
-.toc__list li {
+.toc__item {
   display: flex;
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.15rem 0;
-  break-inside: avoid;
 }
+/* Sections use a Parent/Child path convention; indent each level so the
+   contents mirrors the hierarchy. The name shown is the last path segment. */
+.toc__item--depth-1 > a { padding-left: 1.25rem; }
+.toc__item--depth-2 > a { padding-left: 2.5rem; }
+.toc__item--depth-3 > a { padding-left: 3.75rem; }
 .toc__list a { color: var(--ink); text-decoration: none; }
 .toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
 .toc__count {
@@ -275,113 +277,113 @@ code {
     <h2 class="toc__title">Sections</h2>
     <ul class="toc__list">
     
-      <li><a href="#section-1">Identity</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-1">Identity</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-2">Race</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-2">Race</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-3">Ethnicity</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-3">Ethnicity</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-4">Age</a><span class="toc__count">3</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-4">Age</a><span class="toc__count">3</span></li>
     
-      <li><a href="#section-5">Sex</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-5">Sex</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-6">Education</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-6">Education</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-7">Domicile</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-7">Domicile</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-8">Employment</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-8">Employment</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-9">Insurance Status</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-9">Insurance Status</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-10">Disability Status</a><span class="toc__count">6</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-10">Disability Status</a><span class="toc__count">6</span></li>
     
-      <li><a href="#section-11">Medical History</a><span class="toc__count">16</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-11">Medical History</a><span class="toc__count">16</span></li>
     
-      <li><a href="#section-12">Symptoms</a><span class="toc__count">13</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-12">Symptoms</a><span class="toc__count">13</span></li>
     
-      <li><a href="#section-13">Health Status</a><span class="toc__count">4</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-13">Health Status</a><span class="toc__count">4</span></li>
     
-      <li><a href="#section-14">Technology Metadata</a><span class="toc__count">11</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-14">Technology Metadata</a><span class="toc__count">11</span></li>
     
-      <li><a href="#section-15">Technology Metadata/Immobilization</a><span class="toc__count">7</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-15">Immobilization</a><span class="toc__count">7</span></li>
     
-      <li><a href="#section-16">Technology Metadata/Electrochemical</a><span class="toc__count">7</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-16">Electrochemical</a><span class="toc__count">7</span></li>
     
-      <li><a href="#section-17">Technology Metadata/Aptamer</a><span class="toc__count">102</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-17">Aptamer</a><span class="toc__count">102</span></li>
     
-      <li><a href="#section-18">Technology Metadata/Antigen</a><span class="toc__count">12</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-18">Antigen</a><span class="toc__count">12</span></li>
     
-      <li><a href="#section-19">Technology Metadata/Antibody</a><span class="toc__count">69</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-19">Antibody</a><span class="toc__count">69</span></li>
     
-      <li><a href="#section-20">Technology Metadata/Nanobody</a><span class="toc__count">19</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-20">Nanobody</a><span class="toc__count">19</span></li>
     
-      <li><a href="#section-21">Technology Metadata/Receptor</a><span class="toc__count">17</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-21">Receptor</a><span class="toc__count">17</span></li>
     
-      <li><a href="#section-22">Technology Metadata/Oligonucleotide</a><span class="toc__count">8</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-22">Oligonucleotide</a><span class="toc__count">8</span></li>
     
-      <li><a href="#section-23">Technology Metadata/Hybridization</a><span class="toc__count">7</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-23">Hybridization</a><span class="toc__count">7</span></li>
     
-      <li><a href="#section-24">Technology Metadata/LAMP</a><span class="toc__count">18</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-24">LAMP</a><span class="toc__count">18</span></li>
     
-      <li><a href="#section-25">Technology Metadata/Reporter</a><span class="toc__count">16</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-25">Reporter</a><span class="toc__count">16</span></li>
     
-      <li><a href="#section-26">Technology Metadata/Substrate</a><span class="toc__count">12</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-26">Substrate</a><span class="toc__count">12</span></li>
     
-      <li><a href="#section-27">Technology Metadata/Nanoparticle</a><span class="toc__count">2</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-27">Nanoparticle</a><span class="toc__count">2</span></li>
     
-      <li><a href="#section-28">Technology Metadata/Machine Learning</a><span class="toc__count">2</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-28">Machine Learning</a><span class="toc__count">2</span></li>
     
-      <li><a href="#section-29">Technology Metadata/SERS</a><span class="toc__count">18</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-29">SERS</a><span class="toc__count">18</span></li>
     
-      <li><a href="#section-30">Technology Metadata/GCMS</a><span class="toc__count">100</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-30">GCMS</a><span class="toc__count">100</span></li>
     
-      <li><a href="#section-31">Technology Metadata/Olfactory perception</a><span class="toc__count">3</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-31">Olfactory perception</a><span class="toc__count">3</span></li>
     
-      <li><a href="#section-32">Technology Metadata/Mechanical detection</a><span class="toc__count">15</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-32">Mechanical detection</a><span class="toc__count">15</span></li>
     
-      <li><a href="#section-33">PCR metadata</a><span class="toc__count">39</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-33">PCR metadata</a><span class="toc__count">39</span></li>
     
-      <li><a href="#section-34">PCR</a><span class="toc__count">11</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-34">PCR</a><span class="toc__count">11</span></li>
     
-      <li><a href="#section-35">Sample</a><span class="toc__count">41</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-35">Sample</a><span class="toc__count">41</span></li>
     
-      <li><a href="#section-36">Target</a><span class="toc__count">9</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-36">Target</a><span class="toc__count">9</span></li>
     
-      <li><a href="#section-37">Sample/Antigen</a><span class="toc__count">13</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-37">Antigen</a><span class="toc__count">13</span></li>
     
-      <li><a href="#section-38">Sampe/Antigen</a><span class="toc__count">1</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-38">Antigen</a><span class="toc__count">1</span></li>
     
-      <li><a href="#section-39">Sample/VQA panel</a><span class="toc__count">19</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-39">VQA panel</a><span class="toc__count">19</span></li>
     
-      <li><a href="#section-40">Sample/Antibody</a><span class="toc__count">28</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-40">Antibody</a><span class="toc__count">28</span></li>
     
-      <li><a href="#section-41">Clinical</a><span class="toc__count">7</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-41">Clinical</a><span class="toc__count">7</span></li>
     
-      <li><a href="#section-42">Vaccine Acceptance</a><span class="toc__count">3</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-42">Vaccine Acceptance</a><span class="toc__count">3</span></li>
     
-      <li><a href="#section-43">Covid Testing</a><span class="toc__count">14</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-43">Covid Testing</a><span class="toc__count">14</span></li>
     
-      <li><a href="#section-44">Collection Site</a><span class="toc__count">7</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-44">Collection Site</a><span class="toc__count">7</span></li>
     
-      <li><a href="#section-45">WWTP</a><span class="toc__count">7</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-45">WWTP</a><span class="toc__count">7</span></li>
     
-      <li><a href="#section-46">Collection Method</a><span class="toc__count">7</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-46">Collection Method</a><span class="toc__count">7</span></li>
     
-      <li><a href="#section-47">Processing Method</a><span class="toc__count">13</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-47">Processing Method</a><span class="toc__count">13</span></li>
     
-      <li><a href="#section-48">SARSCoV2 Quantification Method</a><span class="toc__count">32</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-48">SARSCoV2 Quantification Method</a><span class="toc__count">32</span></li>
     
-      <li><a href="#section-49">Assay Results</a><span class="toc__count">8</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-49">Assay Results</a><span class="toc__count">8</span></li>
     
-      <li><a href="#section-50">Results/VOC</a><span class="toc__count">29</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-50">VOC</a><span class="toc__count">29</span></li>
     
-      <li><a href="#section-51">Results/GCMS/LCMS</a><span class="toc__count">4</span></li>
+      <li class="toc__item toc__item--depth-2"><a href="#section-51">LCMS</a><span class="toc__count">4</span></li>
     
-      <li><a href="#section-52">Analytical Performance</a><span class="toc__count">48</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-52">Analytical Performance</a><span class="toc__count">48</span></li>
     
-      <li><a href="#section-53">Analytical/Clinical Performance</a><span class="toc__count">21</span></li>
+      <li class="toc__item toc__item--depth-1"><a href="#section-53">Clinical Performance</a><span class="toc__count">21</span></li>
     
-      <li><a href="#section-54">Clinical Performance</a><span class="toc__count">32</span></li>
+      <li class="toc__item toc__item--depth-0"><a href="#section-54">Clinical Performance</a><span class="toc__count">32</span></li>
     
     </ul>
   </nav>
