@@ -30,6 +30,7 @@ from .reader import (
     read_data_dictionary,
 )
 from .reverse import schema_to_csv, schema_to_rows
+from .terms_lookup import LookupError_, lookup_labels
 from .units import UnitOfMeasure, lookup_unit
 
 __all__ = [
@@ -50,6 +51,8 @@ __all__ = [
     "parse_missing_value_codes_file",
     "UnitOfMeasure",
     "lookup_unit",
+    "lookup_labels",
+    "LookupError_",
     "KNOWN_COLUMNS",
     "REQUIRED_COLUMNS",
     "ReadError",

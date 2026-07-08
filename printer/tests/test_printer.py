@@ -231,3 +231,25 @@ def test_orphaned_child_not_falsely_nested():
     # is defined in the stylesheet, so check for its use on an <li>, not the
     # bare string.)
     assert 'toc__item toc__item--depth-1"' not in html
+
+
+def test_term_labels_render_beside_badges():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    text = (
+        "Id,Label,Datatype,Terms,Enumeration\n"
+        'sex,Sex,integer,GSSO:002199,"""0""=[Female](NCIT:C16576)"\n'
+    )
+    dd = load_dictionary(io.StringIO(text))
+    # term_identifiers gathers both Terms and choice meanings.
+    assert dd.term_identifiers() == {"GSSO:002199", "NCIT:C16576"}
+    # With labels supplied, they render beside the badges.
+    html = render_html(dd, term_labels={"GSSO:002199": "race", "NCIT:C16576": "Female"})
+    badge = '<span class="badge term">GSSO:002199</span>'
+    assert badge + ' <span class="term__label">race</span>' in html
+    assert '<span class="term__label">Female</span>' in html
+    # Without labels, terms stay bare (default; no network, deterministic).
+    assert '<span class="term__label">' not in render_html(dd)

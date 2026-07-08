@@ -86,8 +86,14 @@ def _toc_entries(dictionary: Dictionary) -> list[dict]:
     return entries
 
 
-def render_html(dictionary: Dictionary) -> str:
-    """Render the dictionary to a single self-contained HTML document."""
+def render_html(dictionary: Dictionary, *, term_labels: dict[str, str] | None = None) -> str:
+    """Render the dictionary to a single self-contained HTML document.
+
+    ``term_labels`` maps ontology term identifiers to human-readable names;
+    when given, each term/meaning badge shows its label beside it. The CLI's
+    ``--annotate-terms`` resolves this map; without it, terms render as bare
+    identifiers (the default, so rendering stays offline and deterministic).
+    """
     template = _env.from_string(_TEMPLATE)
     # Attach rendered description/notes HTML to each record for the template.
     for record in dictionary.records:
@@ -97,5 +103,8 @@ def render_html(dictionary: Dictionary) -> str:
         record.notes_html = render_description(record.notes, record, dictionary)
         record.precondition_html = render_precondition(record.precondition, dictionary)
     return template.render(
-        dictionary=dictionary, css=_CSS, toc_entries=_toc_entries(dictionary)
+        dictionary=dictionary,
+        css=_CSS,
+        toc_entries=_toc_entries(dictionary),
+        term_labels=term_labels or {},
     )

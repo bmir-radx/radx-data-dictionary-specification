@@ -54,7 +54,7 @@
           {% endif %}
           {% if record.terms %}
           <tr><th>Terms</th><td>
-            {% for term in record.terms %}<span class="badge term">{{ term }}</span> {% endfor %}
+            {% for term in record.terms %}<span class="badge term">{{ term }}</span>{% if term_labels.get(term) %} <span class="term__label">{{ term_labels[term] }}</span>{% endif %} {% endfor %}
           </td></tr>
           {% endif %}
           {% if record.description_html %}
@@ -68,7 +68,7 @@
                 <tr>
                   <td><span class="badge choice__value{% if choice.is_missing_value_code %} choice__value--missing-value-code{% endif %}">{{ choice.value }}</span></td>
                   <td class="choice__label">{{ choice.label }}</td>
-                  {% if choice.meaning %}<td><span class="badge term">{{ choice.meaning }}</span></td>{% endif %}
+                  {% if choice.meaning %}<td><span class="badge term">{{ choice.meaning }}</span>{% if term_labels.get(choice.meaning) %} <span class="term__label">{{ term_labels[choice.meaning] }}</span>{% endif %}</td>{% endif %}
                 </tr>
               {% endfor %}
               </tbody>

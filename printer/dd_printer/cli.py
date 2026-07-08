@@ -10,6 +10,8 @@ import argparse
 import sys
 from pathlib import Path
 
+from dd_converter import LookupError_, lookup_labels
+
 from .load import load_dictionary
 from .render_html import render_html
 from .render_json import render_json
@@ -32,6 +34,19 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Output format (default: inferred from -o extension, else html).",
     )
     parser.add_argument("--title", default=None, help="Document title (default: filename).")
+    parser.add_argument(
+        "--annotate-terms", action="store_true",
+        help="Resolve ontology term identifiers to names and show them (HTML only; "
+        "requires network access).",
+    )
+    parser.add_argument(
+        "--resolver", choices=("ols4", "bioportal"), default="ols4",
+        help="Term-name resolver for --annotate-terms (default: ols4).",
+    )
+    parser.add_argument(
+        "--bioportal-apikey", default=None,
+        help="BioPortal API key (or set BIOPORTAL_API_KEY); needed for --resolver bioportal.",
+    )
     return parser
 
 
@@ -51,7 +66,26 @@ def main(argv=None) -> int:
 
     dictionary = load_dictionary(args.input, title=args.title)
     output_format = _resolve_format(args)
-    rendered = render_json(dictionary) if output_format == "json" else render_html(dictionary)
+
+    term_labels: dict[str, str] = {}
+    if args.annotate_terms and output_format == "html":
+        import os
+
+        try:
+            term_labels = lookup_labels(
+                dictionary.term_identifiers(),
+                resolver=args.resolver,
+                apikey=args.bioportal_apikey or os.environ.get("BIOPORTAL_API_KEY"),
+            )
+        except LookupError_ as error:
+            print(f"error: {error}", file=sys.stderr)
+            return 2
+
+    rendered = (
+        render_json(dictionary)
+        if output_format == "json"
+        else render_html(dictionary, term_labels=term_labels)
+    )
 
     if args.output is None:
         sys.stdout.write(rendered)
