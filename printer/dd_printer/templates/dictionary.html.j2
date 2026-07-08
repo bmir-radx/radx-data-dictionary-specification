@@ -23,7 +23,7 @@
 
   {% for section in dictionary.sections %}
   <section class="section" id="section-{{ loop.index }}">
-    <h2 class="section__name">{{ section.name }}<span class="section__count">{{ section.records | length }} element{{ "s" if section.records | length != 1 }}</span></h2>
+    <h2 class="section__name">{{ section.name }}<span class="section__count">{{ section.records | length }} data element{{ "s" if section.records | length != 1 }}</span></h2>
 
     {% for record in section.records %}
     <article class="record" id="{{ record.id }}">

@@ -160,7 +160,7 @@ def test_visual_navigation_and_badges():
     assert '<h2 class="toc__title">Sections</h2>' in html
     assert '<a href="#section-1">One</a>' in html
     assert '<span class="toc__count">1</span>' in html
-    assert '<span class="section__count">1 element</span>' in html
+    assert '<span class="section__count">1 data element</span>' in html
     # Cardinality is always shown explicitly, single included.
     assert html.count("Cardinality") == 2
     assert ">single</span>" in html and ">multiple</span>" in html
