@@ -189,24 +189,45 @@ def test_section_paths_indent_in_toc():
     assert ">Technology Metadata/Aptamer<" in html
 
 
-def test_ambiguous_leaf_sections_show_parent_context():
+def test_nested_child_shows_parent_context():
     import io
 
     from dd_printer.load import load_dictionary
     from dd_printer.render_html import render_html
 
-    # Two 'Antigen' leaves under different (one misspelled) parents, plus an
-    # orphaned child whose parent is not the entry directly above.
+    # A parent immediately followed by its children: they nest and carry the
+    # parent as muted context, distinguishing the two 'Antigen' leaves.
+    text = (
+        "Id,Label,Datatype,Section\n"
+        "a,A,string,Sample\n"
+        "b,B,string,Sample/Antigen\n"
+        "c,C,string,Sampe/Antigen\n"
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    nested = 'toc__item--depth-1"><a href="#section-2">'
+    assert nested + '<span class="toc__parent">Sample › </span>Antigen' in html
+    # 'Sampe/Antigen' is orphaned (its parent 'Sampe' never appeared): it
+    # renders flush-left with its full path, not falsely nested under Sample.
+    assert 'toc__item--depth-0"><a href="#section-3">Sampe/Antigen' in html
+
+
+def test_orphaned_child_not_falsely_nested():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    # Sample's child is separated from it by an unrelated 'Target' section, so
+    # it must NOT indent under Target — it renders flush-left with full path.
     text = (
         "Id,Label,Datatype,Section\n"
         "a,A,string,Sample\n"
         "t,T,string,Target\n"
         "b,B,string,Sample/Antigen\n"
-        "c,C,string,Sampe/Antigen\n"
     )
     html = render_html(load_dictionary(io.StringIO(text)))
-    # Both ambiguous leaves carry their parent as muted context.
-    assert '<span class="toc__parent">Sample › </span>Antigen' in html
-    assert '<span class="toc__parent">Sampe › </span>Antigen' in html
-    # The unambiguous top-level 'Sample' entry itself carries no parent context.
-    assert '#section-1">Sample<' in html
+    assert 'toc__item--depth-0"><a href="#section-3">Sample/Antigen</a>' in html
+    # Nothing is nested: no item element carries the depth-1 class. (The class
+    # is defined in the stylesheet, so check for its use on an <li>, not the
+    # bare string.)
+    assert 'toc__item toc__item--depth-1"' not in html

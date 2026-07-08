@@ -24,52 +24,65 @@ def _toc_entries(dictionary: Dictionary) -> list[dict]:
     """One contents entry per section, reflecting the ``Parent/Child`` paths.
 
     Sections use a ``Parent/Child`` path convention (seen in real
-    dictionaries); the contents indents a child under its parent. Each entry
-    has: ``index`` (1-based, matching the ``#section-N`` anchor), ``depth``
-    (indent level), ``name`` (the leaf segment), and ``parent`` — the parent
-    path shown as muted context *only when it is needed to disambiguate*:
-    when the same leaf name occurs under more than one parent (so the two
-    ``Antigen``s under ``Sample`` and the misspelled ``Sampe`` are
-    distinguishable), or when the parent section is not the entry directly
-    above (so an orphaned child is not silently filed under an unrelated
-    preceding section).
+    dictionaries), but the sheet's row order need not agree with that tree —
+    a parent's children may be split apart by unrelated sections. The
+    contents indents a child **only when it genuinely continues its parent's
+    group** (the parent, or a deeper descendant of it, is the section
+    immediately above). An *orphaned* child — one whose parent is not open in
+    the run directly above it — is rendered flush-left with its full path as
+    its name, so indentation never implies a parent the ordering contradicts.
 
-    Indentation follows the *path*, not mere position: a child's depth is the
-    number of ``/`` separators in its name, independent of what precedes it.
+    Each entry has: ``index`` (1-based, matching the ``#section-N`` anchor),
+    ``depth`` (indent level; 0 for a top-level or orphaned entry), ``name``
+    (the leaf for a nested entry, the full path for an orphaned one), and
+    ``parent`` (the ancestor path shown as muted context on a genuinely
+    nested child, distinguishing same-leaf siblings such as the two
+    ``Antigen``s under ``Sample`` and the misspelled ``Sampe``).
     """
+    # How many sections share each leaf name — a leaf appearing under more
+    # than one parent is ambiguous and needs its parent shown for context.
     leaf_counts: dict[str, int] = {}
     for section in dictionary.sections:
         leaf = section.name.split("/")[-1].strip() or section.name
         leaf_counts[leaf] = leaf_counts.get(leaf, 0) + 1
 
-    # Track the path prefixes currently "open" (the chain of ancestors of the
-    # previous entry), so a run of siblings is recognised as properly nested
-    # even though only the first directly follows the parent.
+    # The ancestor path prefixes left open by the previous entry's chain. A
+    # child is "nested" only if its parent path is among these — i.e. it
+    # directly continues a run under that parent.
     open_prefixes: set[str] = {""}
     entries = []
     for index, section in enumerate(dictionary.sections, start=1):
         segments = section.name.split("/")
-        leaf = segments[-1].strip() or section.name
         parent_path = "/".join(segments[:-1])
-        # Show the parent as muted context when the leaf name is ambiguous
-        # (occurs under more than one parent), or when this child is orphaned
-        # — its parent path was never seen as an entry above it.
-        ambiguous = leaf_counts[leaf] > 1
-        orphaned = bool(parent_path) and parent_path not in open_prefixes
-        entries.append(
-            {
+        leaf = segments[-1].strip() or section.name
+        nested = bool(parent_path) and parent_path in open_prefixes
+        if nested:
+            entry = {
                 "index": index,
                 "depth": len(segments) - 1,
                 "name": leaf,
                 "count": len(section.records),
-                "parent": parent_path.replace("/", " › ") if (ambiguous or orphaned) else "",
+                # Show the parent only to disambiguate a repeated leaf name.
+                "parent": parent_path.replace("/", " › ") if leaf_counts[leaf] > 1 else "",
             }
-        )
-        # This section and all its ancestor prefixes are now open; anything at
-        # a shallower-or-equal path supersedes deeper prefixes opened before.
-        open_prefixes = {""}
-        for depth in range(len(segments)):
-            open_prefixes.add("/".join(segments[: depth + 1]))
+            # Extend the open run with this child and its ancestors.
+            for depth in range(len(segments)):
+                open_prefixes.add("/".join(segments[: depth + 1]))
+        else:
+            # Top-level or orphaned: render flush-left with the full path.
+            entry = {
+                "index": index,
+                "depth": 0,
+                "name": section.name,
+                "count": len(section.records),
+                "parent": "",
+            }
+            # A top-level section (no path) opens itself as a nestable parent.
+            # An orphaned Parent/Child does NOT resurrect its absent parent —
+            # otherwise a following same-path sibling would nest under it,
+            # rendering an orphan run raggedly (some flush-left, some indented).
+            open_prefixes = {"", section.name} if not parent_path else {""}
+        entries.append(entry)
     return entries
 
 
