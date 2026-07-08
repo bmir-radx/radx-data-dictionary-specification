@@ -127,6 +127,9 @@ body {
 
 /* Resolved ontology term name shown beside a term/meaning badge. */
 .term__label { color: var(--muted); font-size: 0.9em; }
+/* One term (badge + label) per line, so multiple terms are easy to scan. */
+.term__row { padding: 0.1rem 0; }
+.term__row + .term__row { margin-top: 0.1rem; }
 
 .section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
 .section__name {
@@ -405,7 +408,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:002199</span> <span class="term__label">race</span> 
+            <div class="term__row"><span class="badge term">GSSO:002199</span> <span class="term__label">race</span></div>
           </td></tr>
           
           
@@ -520,7 +523,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C16564</span> <span class="term__label">Ethnic Group</span> 
+            <div class="term__row"><span class="badge term">NCIT:C16564</span> <span class="term__label">Ethnic Group</span></div>
           </td></tr>
           
           
@@ -608,7 +611,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000011</span> <span class="term__label">age</span> 
+            <div class="term__row"><span class="badge term">PATO:0000011</span> <span class="term__label">age</span></div>
           </td></tr>
           
           
@@ -655,7 +658,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000047</span> <span class="term__label">biological sex</span> 
+            <div class="term__row"><span class="badge term">PATO:0000047</span> <span class="term__label">biological sex</span></div>
           </td></tr>
           
           
@@ -747,7 +750,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C17953</span> <span class="term__label">Education Level</span> 
+            <div class="term__row"><span class="badge term">NCIT:C17953</span> <span class="term__label">Education Level</span></div>
           </td></tr>
           
           
@@ -858,7 +861,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C122393</span> <span class="term__label">Number of Years of Education</span> 
+            <div class="term__row"><span class="badge term">NCIT:C122393</span> <span class="term__label">Number of Years of Education</span></div>
           </td></tr>
           
           
@@ -898,7 +901,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C25720</span> <span class="term__label">Zip Code</span> <span class="badge term">NCIT:C25621</span> <span class="term__label">Postal Code</span> 
+            <div class="term__row"><span class="badge term">NCIT:C25720</span> <span class="term__label">Zip Code</span></div><div class="term__row"><span class="badge term">NCIT:C25621</span> <span class="term__label">Postal Code</span></div>
           </td></tr>
           
           
@@ -945,7 +948,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C179143</span> <span class="term__label">Employment Status</span> <span class="badge term">NCIT:C25172</span> <span class="term__label">employment</span> 
+            <div class="term__row"><span class="badge term">NCIT:C179143</span> <span class="term__label">Employment Status</span></div><div class="term__row"><span class="badge term">NCIT:C25172</span> <span class="term__label">employment</span></div>
           </td></tr>
           
           
@@ -1055,7 +1058,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C157356</span> <span class="term__label">Health Insurance</span> 
+            <div class="term__row"><span class="badge term">NCIT:C157356</span> <span class="term__label">Health Insurance</span></div>
           </td></tr>
           
           
@@ -1147,7 +1150,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:001811</span> <span class="term__label">physical disability</span> <span class="badge term">GSSO:001810</span> <span class="term__label">mental disability</span> 
+            <div class="term__row"><span class="badge term">GSSO:001811</span> <span class="term__label">physical disability</span></div><div class="term__row"><span class="badge term">GSSO:001810</span> <span class="term__label">mental disability</span></div>
           </td></tr>
           
           
@@ -1226,7 +1229,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000019</span> <span class="term__label">deafness</span> <span class="badge term">HP:0000364</span> <span class="term__label">Hearing abnormality</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000019</span> <span class="term__label">deafness</span></div><div class="term__row"><span class="badge term">HP:0000364</span> <span class="term__label">Hearing abnormality</span></div>
           </td></tr>
           
           
@@ -1306,7 +1309,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0001941</span> <span class="term__label">blindness (disorder)</span> 
+            <div class="term__row"><span class="badge term">MONDO:0001941</span> <span class="term__label">blindness (disorder)</span></div>
           </td></tr>
           
           
@@ -1386,7 +1389,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000719</span> <span class="term__label">memory impairment</span> <span class="badge term">SYMP:0000543</span> <span class="term__label">memory loss</span> <span class="badge term">SYMP:0020029</span> <span class="term__label">concentration difficulty</span> <span class="badge term">SYMP:0000817</span> <span class="term__label">inability to concentrate</span> <span class="badge term">SYMP:0000233</span> <span class="term__label">inability to think clearly</span> <span class="badge term">MONDO:0002039</span> <span class="term__label">cognitive disorder</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000719</span> <span class="term__label">memory impairment</span></div><div class="term__row"><span class="badge term">SYMP:0000543</span> <span class="term__label">memory loss</span></div><div class="term__row"><span class="badge term">SYMP:0020029</span> <span class="term__label">concentration difficulty</span></div><div class="term__row"><span class="badge term">SYMP:0000817</span> <span class="term__label">inability to concentrate</span></div><div class="term__row"><span class="badge term">SYMP:0000233</span> <span class="term__label">inability to think clearly</span></div><div class="term__row"><span class="badge term">MONDO:0002039</span> <span class="term__label">cognitive disorder</span></div>
           </td></tr>
           
           
@@ -1466,7 +1469,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C111629</span> <span class="term__label">Have Trouble Walking Question</span> <span class="badge term">NCIT:C175910</span> <span class="term__label">Have Trouble Using Stairs Question</span> 
+            <div class="term__row"><span class="badge term">NCIT:C111629</span> <span class="term__label">Have Trouble Walking Question</span></div><div class="term__row"><span class="badge term">NCIT:C175910</span> <span class="term__label">Have Trouble Using Stairs Question</span></div>
           </td></tr>
           
           
@@ -1546,7 +1549,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C95544</span> <span class="term__label">dressing</span> <span class="badge term">NCIT:C131923</span> <span class="term__label">Dressing Ability Question</span> 
+            <div class="term__row"><span class="badge term">NCIT:C95544</span> <span class="term__label">dressing</span></div><div class="term__row"><span class="badge term">NCIT:C131923</span> <span class="term__label">Dressing Ability Question</span></div>
           </td></tr>
           
           
@@ -1626,7 +1629,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C121690</span> <span class="term__label">Ability to Run Errands and Shop Question</span> <span class="badge term">NCIT:C95549</span> <span class="term__label">Run Errand</span> 
+            <div class="term__row"><span class="badge term">NCIT:C121690</span> <span class="term__label">Ability to Run Errands and Shop Question</span></div><div class="term__row"><span class="badge term">NCIT:C95549</span> <span class="term__label">Run Errand</span></div>
           </td></tr>
           
           
@@ -1712,7 +1715,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C173621</span> <span class="term__label">Vaping</span> <span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span> 
+            <div class="term__row"><span class="badge term">NCIT:C173621</span> <span class="term__label">Vaping</span></div><div class="term__row"><span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span></div>
           </td></tr>
           
           
@@ -1790,7 +1793,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C691</span> <span class="term__label">Nicotine</span> <span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span> <span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span> 
+            <div class="term__row"><span class="badge term">NCIT:C691</span> <span class="term__label">Nicotine</span></div><div class="term__row"><span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span></div><div class="term__row"><span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span></div>
           </td></tr>
           
           
@@ -1868,7 +1871,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C173621</span> <span class="term__label">Vaping</span> <span class="badge term">NCIT:C120482</span> <span class="term__label">Electronic Cigarette</span> <span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span> <span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span> 
+            <div class="term__row"><span class="badge term">NCIT:C173621</span> <span class="term__label">Vaping</span></div><div class="term__row"><span class="badge term">NCIT:C120482</span> <span class="term__label">Electronic Cigarette</span></div><div class="term__row"><span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span></div><div class="term__row"><span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span></div>
           </td></tr>
           
           
@@ -1951,7 +1954,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C19796</span> <span class="term__label">Smoking Status</span> <span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span> <span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span> 
+            <div class="term__row"><span class="badge term">NCIT:C19796</span> <span class="term__label">Smoking Status</span></div><div class="term__row"><span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span></div><div class="term__row"><span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span></div>
           </td></tr>
           
           
@@ -2034,7 +2037,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NBO:0045002</span> <span class="term__label">tobacco smoking behavior</span> <span class="badge term">NCIT:C17934</span> <span class="term__label">Tobacco Smoking</span> 
+            <div class="term__row"><span class="badge term">NBO:0045002</span> <span class="term__label">tobacco smoking behavior</span></div><div class="term__row"><span class="badge term">NCIT:C17934</span> <span class="term__label">Tobacco Smoking</span></div>
           </td></tr>
           
           
@@ -2106,7 +2109,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NBO:0015005</span> <span class="term__label">smoking behavior</span> 
+            <div class="term__row"><span class="badge term">NBO:0015005</span> <span class="term__label">smoking behavior</span></div>
           </td></tr>
           
           
@@ -2178,7 +2181,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NBO:0045002</span> <span class="term__label">tobacco smoking behavior</span> <span class="badge term">NCIT:C154329</span> <span class="term__label">Smoking</span> 
+            <div class="term__row"><span class="badge term">NBO:0045002</span> <span class="term__label">tobacco smoking behavior</span></div><div class="term__row"><span class="badge term">NCIT:C154329</span> <span class="term__label">Smoking</span></div>
           </td></tr>
           
           
@@ -2250,7 +2253,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span> <span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span> <span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span> <span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span> 
+            <div class="term__row"><span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span></div><div class="term__row"><span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span></div><div class="term__row"><span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span></div><div class="term__row"><span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span></div>
           </td></tr>
           
           
@@ -2328,7 +2331,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span> <span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span> <span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span> <span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span> 
+            <div class="term__row"><span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span></div><div class="term__row"><span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span></div><div class="term__row"><span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span></div><div class="term__row"><span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span></div>
           </td></tr>
           
           
@@ -2400,7 +2403,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span> <span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span> <span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span> <span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span> 
+            <div class="term__row"><span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span></div><div class="term__row"><span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span></div><div class="term__row"><span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span></div><div class="term__row"><span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span></div>
           </td></tr>
           
           
@@ -2484,7 +2487,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span> <span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span> <span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span> <span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span> 
+            <div class="term__row"><span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span></div><div class="term__row"><span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span></div><div class="term__row"><span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span></div><div class="term__row"><span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span></div>
           </td></tr>
           
           
@@ -2568,7 +2571,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004979</span> <span class="term__label">asthma</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004979</span> <span class="term__label">asthma</span></div>
           </td></tr>
           
           
@@ -2647,7 +2650,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span> <span class="badge term">NCIT:C9305</span> <span class="term__label">malignant neoplasm</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span></div><div class="term__row"><span class="badge term">NCIT:C9305</span> <span class="term__label">malignant neoplasm</span></div>
           </td></tr>
           
           
@@ -2724,7 +2727,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span> <span class="badge term">NCIT:C9305</span> <span class="term__label">malignant neoplasm</span> <span class="badge term">NCIT:C19700</span> <span class="term__label">Cancer Patient</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span></div><div class="term__row"><span class="badge term">NCIT:C9305</span> <span class="term__label">malignant neoplasm</span></div><div class="term__row"><span class="badge term">NCIT:C19700</span> <span class="term__label">Cancer Patient</span></div>
           </td></tr>
           
           
@@ -2796,7 +2799,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span></div>
           </td></tr>
           
           
@@ -2868,7 +2871,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004995</span> <span class="term__label">cardiovascular disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004995</span> <span class="term__label">cardiovascular disorder</span></div>
           </td></tr>
           
           
@@ -2947,7 +2950,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005300</span> <span class="term__label">chronic kidney disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005300</span> <span class="term__label">chronic kidney disease</span></div>
           </td></tr>
           
           
@@ -3026,7 +3029,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005300</span> <span class="term__label">chronic kidney disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005300</span> <span class="term__label">chronic kidney disease</span></div>
           </td></tr>
           
           
@@ -3098,7 +3101,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005275</span> <span class="term__label">lung disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005275</span> <span class="term__label">lung disorder</span></div>
           </td></tr>
           
           
@@ -3176,7 +3179,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005015</span> <span class="term__label">diabetes mellitus (disease)</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005015</span> <span class="term__label">diabetes mellitus (disease)</span></div>
           </td></tr>
           
           
@@ -3255,7 +3258,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005044</span> <span class="term__label">hypertensive disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005044</span> <span class="term__label">hypertensive disorder</span></div>
           </td></tr>
           
           
@@ -3334,7 +3337,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C178942</span> <span class="term__label">Immunosuppressive Disorder</span> 
+            <div class="term__row"><span class="badge term">NCIT:C178942</span> <span class="term__label">Immunosuppressive Disorder</span></div>
           </td></tr>
           
           
@@ -3412,7 +3415,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005084</span> <span class="term__label">mental disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005084</span> <span class="term__label">mental disorder</span></div>
           </td></tr>
           
           
@@ -3484,7 +3487,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005084</span> <span class="term__label">mental disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005084</span> <span class="term__label">mental disorder</span></div>
           </td></tr>
           
           
@@ -3562,7 +3565,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0011382</span> <span class="term__label">sickle cell disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0011382</span> <span class="term__label">sickle cell disease</span></div>
           </td></tr>
           
           
@@ -3641,7 +3644,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C69218</span> <span class="term__label">Pregnancy Status</span> 
+            <div class="term__row"><span class="badge term">NCIT:C69218</span> <span class="term__label">Pregnancy Status</span></div>
           </td></tr>
           
           
@@ -3713,7 +3716,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C14139</span> <span class="term__label">Immunocompromised</span> 
+            <div class="term__row"><span class="badge term">NCIT:C14139</span> <span class="term__label">Immunocompromised</span></div>
           </td></tr>
           
           
@@ -3791,7 +3794,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0007179</span> <span class="term__label">autoimmune disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0007179</span> <span class="term__label">autoimmune disease</span></div>
           </td></tr>
           
           
@@ -3869,7 +3872,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005002</span> <span class="term__label">chronic obstructive pulmonary disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005002</span> <span class="term__label">chronic obstructive pulmonary disease</span></div>
           </td></tr>
           
           
@@ -3947,7 +3950,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005275</span> <span class="term__label">lung disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005275</span> <span class="term__label">lung disorder</span></div>
           </td></tr>
           
           
@@ -4019,7 +4022,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0002050</span> <span class="term__label">depressive disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0002050</span> <span class="term__label">depressive disorder</span></div>
           </td></tr>
           
           
@@ -4096,7 +4099,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0002494</span> <span class="term__label">substance-related disorder</span> <span class="badge term">MONDO:0021698</span> <span class="term__label">alcohol-related disorders</span> 
+            <div class="term__row"><span class="badge term">MONDO:0002494</span> <span class="term__label">substance-related disorder</span></div><div class="term__row"><span class="badge term">MONDO:0021698</span> <span class="term__label">alcohol-related disorders</span></div>
           </td></tr>
           
           
@@ -4174,7 +4177,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C84367</span> <span class="term__label">Intravenous Drug User</span> 
+            <div class="term__row"><span class="badge term">NCIT:C84367</span> <span class="term__label">Intravenous Drug User</span></div>
           </td></tr>
           
           
@@ -4252,7 +4255,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0002025</span> <span class="term__label">psychiatric disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0002025</span> <span class="term__label">psychiatric disorder</span></div>
           </td></tr>
           
           
@@ -4330,7 +4333,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C165593</span> <span class="term__label">Chronic Disease</span> 
+            <div class="term__row"><span class="badge term">NCIT:C165593</span> <span class="term__label">Chronic Disease</span></div>
           </td></tr>
           
           
@@ -4408,7 +4411,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005010</span> <span class="term__label">coronary artery disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005010</span> <span class="term__label">coronary artery disorder</span></div>
           </td></tr>
           
           
@@ -4480,7 +4483,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005010</span> <span class="term__label">coronary artery disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005010</span> <span class="term__label">coronary artery disorder</span></div>
           </td></tr>
           
           
@@ -4552,7 +4555,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005068</span> <span class="term__label">myocardial infarction</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005068</span> <span class="term__label">myocardial infarction</span></div>
           </td></tr>
           
           
@@ -4630,7 +4633,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005009</span> <span class="term__label">congestive heart failure</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005009</span> <span class="term__label">congestive heart failure</span></div>
           </td></tr>
           
           
@@ -4707,7 +4710,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005264</span> <span class="term__label">transient ischemic attack</span> <span class="badge term">MONDO:0005098</span> <span class="term__label">stroke disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005264</span> <span class="term__label">transient ischemic attack</span></div><div class="term__row"><span class="badge term">MONDO:0005098</span> <span class="term__label">stroke disorder</span></div>
           </td></tr>
           
           
@@ -4785,7 +4788,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0021094</span> <span class="term__label">immunodeficiency disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0021094</span> <span class="term__label">immunodeficiency disease</span></div>
           </td></tr>
           
           
@@ -4863,7 +4866,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005109</span> <span class="term__label">HIV infectious disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005109</span> <span class="term__label">HIV infectious disease</span></div>
           </td></tr>
           
           
@@ -4941,7 +4944,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0002280</span> <span class="term__label">anemia</span> 
+            <div class="term__row"><span class="badge term">MONDO:0002280</span> <span class="term__label">anemia</span></div>
           </td></tr>
           
           
@@ -5019,7 +5022,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:009644</span> <span class="term__label">premature birth</span> 
+            <div class="term__row"><span class="badge term">GSSO:009644</span> <span class="term__label">premature birth</span></div>
           </td></tr>
           
           
@@ -5097,7 +5100,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0001493</span> <span class="term__label">chronic pulmonary heart disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0001493</span> <span class="term__label">chronic pulmonary heart disease</span></div>
           </td></tr>
           
           
@@ -5175,7 +5178,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0009061</span> <span class="term__label">cystic fibrosis</span> 
+            <div class="term__row"><span class="badge term">MONDO:0009061</span> <span class="term__label">cystic fibrosis</span></div>
           </td></tr>
           
           
@@ -5247,7 +5250,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0019091</span> <span class="term__label">bronchopulmonary dysplasia</span> 
+            <div class="term__row"><span class="badge term">MONDO:0019091</span> <span class="term__label">bronchopulmonary dysplasia</span></div>
           </td></tr>
           
           
@@ -5319,7 +5322,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005002</span> <span class="term__label">chronic obstructive pulmonary disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005002</span> <span class="term__label">chronic obstructive pulmonary disease</span></div>
           </td></tr>
           
           
@@ -5397,7 +5400,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004975</span> <span class="term__label">Alzheimer disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004975</span> <span class="term__label">Alzheimer disease</span></div>
           </td></tr>
           
           
@@ -5469,7 +5472,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0011918</span> <span class="term__label">anxiety</span> 
+            <div class="term__row"><span class="badge term">MONDO:0011918</span> <span class="term__label">anxiety</span></div>
           </td></tr>
           
           
@@ -5541,7 +5544,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000287</span> <span class="term__label">arrhythmia</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000287</span> <span class="term__label">arrhythmia</span></div>
           </td></tr>
           
           
@@ -5613,7 +5616,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0008383</span> <span class="term__label">rheumatoid arthritis</span> 
+            <div class="term__row"><span class="badge term">MONDO:0008383</span> <span class="term__label">rheumatoid arthritis</span></div>
           </td></tr>
           
           
@@ -5685,7 +5688,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004981</span> <span class="term__label">atrial fibrillation</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004981</span> <span class="term__label">atrial fibrillation</span></div>
           </td></tr>
           
           
@@ -5757,7 +5760,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C26940</span> <span class="term__label">Chronic Pain</span> 
+            <div class="term__row"><span class="badge term">NCIT:C26940</span> <span class="term__label">Chronic Pain</span></div>
           </td></tr>
           
           
@@ -5829,7 +5832,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005546</span> <span class="term__label">fibromyalgia</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005546</span> <span class="term__label">fibromyalgia</span></div>
           </td></tr>
           
           
@@ -5901,7 +5904,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0007186</span> <span class="term__label">gastroesophageal reflux disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0007186</span> <span class="term__label">gastroesophageal reflux disease</span></div>
           </td></tr>
           
           
@@ -5973,7 +5976,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005406</span> <span class="term__label">gestational diabetes</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005406</span> <span class="term__label">gestational diabetes</span></div>
           </td></tr>
           
           
@@ -6045,7 +6048,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C37967</span> <span class="term__label">Hypercholesterolemia</span> 
+            <div class="term__row"><span class="badge term">NCIT:C37967</span> <span class="term__label">Hypercholesterolemia</span></div>
           </td></tr>
           
           
@@ -6117,7 +6120,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005420</span> <span class="term__label">hypothyroidism</span> <span class="badge term">MONDO:0004425</span> <span class="term__label">hyperthyroidism</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005420</span> <span class="term__label">hypothyroidism</span></div><div class="term__row"><span class="badge term">MONDO:0004425</span> <span class="term__label">hyperthyroidism</span></div>
           </td></tr>
           
           
@@ -6189,7 +6192,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C14139</span> <span class="term__label">Immunocompromised</span> <span class="badge term">NCIT:C130200</span> <span class="term__label">Solid Organ Transplant Recipient</span> 
+            <div class="term__row"><span class="badge term">NCIT:C14139</span> <span class="term__label">Immunocompromised</span></div><div class="term__row"><span class="badge term">NCIT:C130200</span> <span class="term__label">Solid Organ Transplant Recipient</span></div>
           </td></tr>
           
           
@@ -6261,7 +6264,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005265</span> <span class="term__label">inflammatory bowel disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005265</span> <span class="term__label">inflammatory bowel disease</span></div>
           </td></tr>
           
           
@@ -6333,7 +6336,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0013600</span> <span class="term__label">insomnia</span> 
+            <div class="term__row"><span class="badge term">MONDO:0013600</span> <span class="term__label">insomnia</span></div>
           </td></tr>
           
           
@@ -6405,7 +6408,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005052</span> <span class="term__label">irritable bowel syndrome</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005052</span> <span class="term__label">irritable bowel syndrome</span></div>
           </td></tr>
           
           
@@ -6477,7 +6480,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005154</span> <span class="term__label">liver disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005154</span> <span class="term__label">liver disorder</span></div>
           </td></tr>
           
           
@@ -6549,7 +6552,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004670</span> <span class="term__label">lupus erythematosus</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004670</span> <span class="term__label">lupus erythematosus</span></div>
           </td></tr>
           
           
@@ -6621,7 +6624,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005277</span> <span class="term__label">migraine disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005277</span> <span class="term__label">migraine disorder</span></div>
           </td></tr>
           
           
@@ -6693,7 +6696,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005301</span> <span class="term__label">multiple sclerosis</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005301</span> <span class="term__label">multiple sclerosis</span></div>
           </td></tr>
           
           
@@ -6765,7 +6768,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005559</span> <span class="term__label">neurodegenerative disease</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005559</span> <span class="term__label">neurodegenerative disease</span></div>
           </td></tr>
           
           
@@ -6837,7 +6840,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005071</span> <span class="term__label">nervous system disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005071</span> <span class="term__label">nervous system disorder</span></div>
           </td></tr>
           
           
@@ -6977,7 +6980,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0011122</span> <span class="term__label">obesity disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0011122</span> <span class="term__label">obesity disorder</span></div>
           </td></tr>
           
           
@@ -7049,7 +7052,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005298</span> <span class="term__label">osteoporosis</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005298</span> <span class="term__label">osteoporosis</span></div>
           </td></tr>
           
           
@@ -7121,7 +7124,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0008487</span> <span class="term__label">polycystic ovary syndrome</span> 
+            <div class="term__row"><span class="badge term">MONDO:0008487</span> <span class="term__label">polycystic ovary syndrome</span></div>
           </td></tr>
           
           
@@ -7193,7 +7196,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005083</span> <span class="term__label">psoriasis</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005083</span> <span class="term__label">psoriasis</span></div>
           </td></tr>
           
           
@@ -7265,7 +7268,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005240</span> <span class="term__label">kidney disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005240</span> <span class="term__label">kidney disorder</span></div>
           </td></tr>
           
           
@@ -7337,7 +7340,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005391</span> <span class="term__label">restless legs syndrome</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005391</span> <span class="term__label">restless legs syndrome</span></div>
           </td></tr>
           
           
@@ -7409,7 +7412,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0008383</span> <span class="term__label">rheumatoid arthritis</span> 
+            <div class="term__row"><span class="badge term">MONDO:0008383</span> <span class="term__label">rheumatoid arthritis</span></div>
           </td></tr>
           
           
@@ -7481,7 +7484,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005324</span> <span class="term__label">seasonal allergic rhinitis</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005324</span> <span class="term__label">seasonal allergic rhinitis</span></div>
           </td></tr>
           
           
@@ -7553,7 +7556,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005267</span> <span class="term__label">heart disorder</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005267</span> <span class="term__label">heart disorder</span></div>
           </td></tr>
           
           
@@ -7625,7 +7628,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005296</span> <span class="term__label">sleep apnea syndrome</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005296</span> <span class="term__label">sleep apnea syndrome</span></div>
           </td></tr>
           
           
@@ -7697,7 +7700,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C18272</span> <span class="term__label">Substance Abuse</span> 
+            <div class="term__row"><span class="badge term">NCIT:C18272</span> <span class="term__label">Substance Abuse</span></div>
           </td></tr>
           
           
@@ -7769,7 +7772,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0000984</span> <span class="term__label">thalassemia</span> 
+            <div class="term__row"><span class="badge term">MONDO:0000984</span> <span class="term__label">thalassemia</span></div>
           </td></tr>
           
           
@@ -7841,7 +7844,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005147</span> <span class="term__label">type 1 diabetes mellitus</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005147</span> <span class="term__label">type 1 diabetes mellitus</span></div>
           </td></tr>
           
           
@@ -7913,7 +7916,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005148</span> <span class="term__label">type 2 diabetes mellitus</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005148</span> <span class="term__label">type 2 diabetes mellitus</span></div>
           </td></tr>
           
           
@@ -7991,7 +7994,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000614</span> <span class="term__label">cough</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000614</span> <span class="term__label">cough</span></div>
           </td></tr>
           
           
@@ -8071,7 +8074,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000613</span> <span class="term__label">fever</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000613</span> <span class="term__label">fever</span></div>
           </td></tr>
           
           
@@ -8151,7 +8154,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0019153</span> <span class="term__label">dyspnea</span> 
+            <div class="term__row"><span class="badge term">SYMP:0019153</span> <span class="term__label">dyspnea</span></div>
           </td></tr>
           
           
@@ -8231,7 +8234,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000504</span> <span class="term__label">headache</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000504</span> <span class="term__label">headache</span></div>
           </td></tr>
           
           
@@ -8310,7 +8313,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000626</span> <span class="term__label">obsolete myalgia</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000626</span> <span class="term__label">obsolete myalgia</span></div>
           </td></tr>
           
           
@@ -8390,7 +8393,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0020004</span> <span class="term__label">ageusia</span> 
+            <div class="term__row"><span class="badge term">SYMP:0020004</span> <span class="term__label">ageusia</span></div>
           </td></tr>
           
           
@@ -8470,7 +8473,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000280</span> <span class="term__label">extreme fatigue</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000280</span> <span class="term__label">extreme fatigue</span></div>
           </td></tr>
           
           
@@ -8549,7 +8552,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000458</span> <span class="term__label">nausea</span> <span class="badge term">SYMP:0019145</span> <span class="term__label">vomiting</span> <span class="badge term">SYMP:0000570</span> <span class="term__label">diarrhea</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000458</span> <span class="term__label">nausea</span></div><div class="term__row"><span class="badge term">SYMP:0019145</span> <span class="term__label">vomiting</span></div><div class="term__row"><span class="badge term">SYMP:0000570</span> <span class="term__label">diarrhea</span></div>
           </td></tr>
           
           
@@ -8629,7 +8632,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000457</span> <span class="term__label">abdominal pain</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000457</span> <span class="term__label">abdominal pain</span></div>
           </td></tr>
           
           
@@ -8708,7 +8711,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000487</span> <span class="term__label">rash</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000487</span> <span class="term__label">rash</span></div>
           </td></tr>
           
           
@@ -8787,7 +8790,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0003799</span> <span class="term__label">conjunctivitis</span> 
+            <div class="term__row"><span class="badge term">MONDO:0003799</span> <span class="term__label">conjunctivitis</span></div>
           </td></tr>
           
           
@@ -8865,7 +8868,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000505</span> <span class="term__label">throat pain</span> <span class="badge term">SYMP:0000237</span> <span class="term__label">congestion</span> <span class="badge term">SYMP:0000372</span> <span class="term__label">rhinorrhea</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000505</span> <span class="term__label">throat pain</span></div><div class="term__row"><span class="badge term">SYMP:0000237</span> <span class="term__label">congestion</span></div><div class="term__row"><span class="badge term">SYMP:0000372</span> <span class="term__label">rhinorrhea</span></div>
           </td></tr>
           
           
@@ -8943,7 +8946,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000446</span> <span class="term__label">bloodshot eye</span> <span class="badge term">SYMP:0000828</span> <span class="term__label">sore eyes</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000446</span> <span class="term__label">bloodshot eye</span></div><div class="term__row"><span class="badge term">SYMP:0000828</span> <span class="term__label">sore eyes</span></div>
           </td></tr>
           
           
@@ -9021,7 +9024,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000613</span> <span class="term__label">fever</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000613</span> <span class="term__label">fever</span></div>
           </td></tr>
           
           
@@ -9099,7 +9102,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000462</span> <span class="term__label">symptom</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000462</span> <span class="term__label">symptom</span></div>
           </td></tr>
           
           
@@ -9251,7 +9254,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000604</span> <span class="term__label">wheezing</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000604</span> <span class="term__label">wheezing</span></div>
           </td></tr>
           
           
@@ -9323,7 +9326,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000537</span> <span class="term__label">cyanosis</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000537</span> <span class="term__label">cyanosis</span></div>
           </td></tr>
           
           
@@ -9395,7 +9398,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000318</span> <span class="term__label">loss of balance</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000318</span> <span class="term__label">loss of balance</span></div>
           </td></tr>
           
           
@@ -9467,7 +9470,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000342</span> <span class="term__label">slurred speech</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000342</span> <span class="term__label">slurred speech</span></div>
           </td></tr>
           
           
@@ -9539,7 +9542,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000016</span> <span class="term__label">confusion</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000016</span> <span class="term__label">confusion</span></div>
           </td></tr>
           
           
@@ -9611,7 +9614,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000662</span> <span class="term__label">shakes</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000662</span> <span class="term__label">shakes</span></div>
           </td></tr>
           
           
@@ -9683,7 +9686,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000834</span> <span class="term__label">hypoesthesia</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000834</span> <span class="term__label">hypoesthesia</span></div>
           </td></tr>
           
           
@@ -9755,7 +9758,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0019152</span> <span class="term__label">diaphoresis</span> 
+            <div class="term__row"><span class="badge term">SYMP:0019152</span> <span class="term__label">diaphoresis</span></div>
           </td></tr>
           
           
@@ -9827,7 +9830,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000124</span> <span class="term__label">seizure</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000124</span> <span class="term__label">seizure</span></div>
           </td></tr>
           
           
@@ -9899,7 +9902,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000487</span> <span class="term__label">rash</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000487</span> <span class="term__label">rash</span></div>
           </td></tr>
           
           
@@ -9971,7 +9974,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000309</span> <span class="term__label">loss of appetite</span> <span class="badge term">SYMP:0000245</span> <span class="term__label">decreased appetite</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000309</span> <span class="term__label">loss of appetite</span></div><div class="term__row"><span class="badge term">SYMP:0000245</span> <span class="term__label">decreased appetite</span></div>
           </td></tr>
           
           
@@ -10136,7 +10139,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000119</span> <span class="term__label">height (quality)</span> 
+            <div class="term__row"><span class="badge term">PATO:0000119</span> <span class="term__label">height (quality)</span></div>
           </td></tr>
           
           
@@ -10178,7 +10181,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000125</span> <span class="term__label">mass (quality)</span> 
+            <div class="term__row"><span class="badge term">PATO:0000125</span> <span class="term__label">mass (quality)</span></div>
           </td></tr>
           
           
@@ -10218,7 +10221,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000119</span> <span class="term__label">height (quality)</span> 
+            <div class="term__row"><span class="badge term">PATO:0000119</span> <span class="term__label">height (quality)</span></div>
           </td></tr>
           
           
@@ -10278,7 +10281,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000125</span> <span class="term__label">mass (quality)</span> 
+            <div class="term__row"><span class="badge term">PATO:0000125</span> <span class="term__label">mass (quality)</span></div>
           </td></tr>
           
           

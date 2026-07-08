@@ -54,7 +54,7 @@
           {% endif %}
           {% if record.terms %}
           <tr><th>Terms</th><td>
-            {% for term in record.terms %}<span class="badge term">{{ term }}</span>{% if term_labels.get(term) %} <span class="term__label">{{ term_labels[term] }}</span>{% endif %} {% endfor %}
+            {% for term in record.terms %}<div class="term__row"><span class="badge term">{{ term }}</span>{% if term_labels.get(term) %} <span class="term__label">{{ term_labels[term] }}</span>{% endif %}</div>{% endfor %}
           </td></tr>
           {% endif %}
           {% if record.description_html %}

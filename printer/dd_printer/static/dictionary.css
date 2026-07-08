@@ -121,6 +121,9 @@ body {
 
 /* Resolved ontology term name shown beside a term/meaning badge. */
 .term__label { color: var(--muted); font-size: 0.9em; }
+/* One term (badge + label) per line, so multiple terms are easy to scan. */
+.term__row { padding: 0.1rem 0; }
+.term__row + .term__row { margin-top: 0.1rem; }
 
 .section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
 .section__name {
