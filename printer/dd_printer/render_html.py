@@ -21,25 +21,47 @@ _env = Environment(autoescape=select_autoescape(default=True))
 
 
 def _toc_entries(dictionary: Dictionary) -> list[dict]:
-    """One contents entry per section, with the nesting depth of its path.
+    """One contents entry per section, reflecting the ``Parent/Child`` paths.
 
     Sections use a ``Parent/Child`` path convention (seen in real
-    dictionaries); the contents indents a child under its parent by splitting
-    on ``/``. ``depth`` is the number of path separators, ``name`` the last
-    segment (the parent context is conveyed by indentation), and ``index``
-    the 1-based section position matching the ``#section-N`` anchor.
+    dictionaries); the contents indents a child under its parent. Each entry
+    has: ``index`` (1-based, matching the ``#section-N`` anchor), ``depth``
+    (indent level), ``name`` (the leaf segment), and ``parent`` — the parent
+    path shown as muted context *only when it is needed to disambiguate*:
+    when the same leaf name occurs under more than one parent (so the two
+    ``Antigen``s under ``Sample`` and the misspelled ``Sampe`` are
+    distinguishable), or when the parent section is not the entry directly
+    above (so an orphaned child is not silently filed under an unrelated
+    preceding section).
+
+    Indentation follows the *path*, not mere position: a child's depth is the
+    number of ``/`` separators in its name, independent of what precedes it.
     """
+    leaf_counts: dict[str, int] = {}
+    for section in dictionary.sections:
+        leaf = section.name.split("/")[-1].strip() or section.name
+        leaf_counts[leaf] = leaf_counts.get(leaf, 0) + 1
+
     entries = []
+    previous_path = ""
     for index, section in enumerate(dictionary.sections, start=1):
-        path = section.name.split("/")
+        segments = section.name.split("/")
+        leaf = segments[-1].strip() or section.name
+        parent_path = "/".join(segments[:-1])
+        # Show the parent as context when the leaf is ambiguous, or when this
+        # child does not sit directly under its parent in the listing.
+        ambiguous = leaf_counts[leaf] > 1
+        orphaned = bool(parent_path) and previous_path != parent_path
         entries.append(
             {
                 "index": index,
-                "depth": len(path) - 1,
-                "name": path[-1].strip() or section.name,
+                "depth": len(segments) - 1,
+                "name": leaf,
                 "count": len(section.records),
+                "parent": parent_path.replace("/", " › ") if (ambiguous or orphaned) else "",
             }
         )
+        previous_path = section.name
     return entries
 
 

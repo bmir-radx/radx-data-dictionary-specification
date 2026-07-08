@@ -187,3 +187,26 @@ def test_section_paths_indent_in_toc():
     assert 'toc__item--depth-1"><a href="#section-2">Aptamer</a>' in html
     # The card heading keeps the full path (unchanged, presentational split only).
     assert ">Technology Metadata/Aptamer<" in html
+
+
+def test_ambiguous_leaf_sections_show_parent_context():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    # Two 'Antigen' leaves under different (one misspelled) parents, plus an
+    # orphaned child whose parent is not the entry directly above.
+    text = (
+        "Id,Label,Datatype,Section\n"
+        "a,A,string,Sample\n"
+        "t,T,string,Target\n"
+        "b,B,string,Sample/Antigen\n"
+        "c,C,string,Sampe/Antigen\n"
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    # Both ambiguous leaves carry their parent as muted context.
+    assert '<span class="toc__parent">Sample › </span>Antigen' in html
+    assert '<span class="toc__parent">Sampe › </span>Antigen' in html
+    # The unambiguous top-level 'Sample' entry itself carries no parent context.
+    assert '#section-1">Sample<' in html

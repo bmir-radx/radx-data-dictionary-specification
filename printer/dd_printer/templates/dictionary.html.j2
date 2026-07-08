@@ -15,7 +15,7 @@
     <h2 class="toc__title">Sections</h2>
     <ul class="toc__list">
     {% for entry in toc_entries %}
-      <li class="toc__item toc__item--depth-{{ entry.depth }}"><a href="#section-{{ entry.index }}">{{ entry.name or "(no section)" }}</a><span class="toc__count">{{ entry.count }}</span></li>
+      <li class="toc__item toc__item--depth-{{ entry.depth }}"><a href="#section-{{ entry.index }}">{% if entry.parent %}<span class="toc__parent">{{ entry.parent }} › </span>{% endif %}{{ entry.name or "(no section)" }}</a><span class="toc__count">{{ entry.count }}</span></li>
     {% endfor %}
     </ul>
   </nav>
