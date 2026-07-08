@@ -161,14 +161,17 @@ body {
 .record__table > tbody > tr:last-child { border-bottom: none; }
 .record__table th {
   text-align: left;
-  vertical-align: top;
+  /* Baseline-align the label with its value: a value cell often holds a
+     badge (taller box, padded) whose text would otherwise sit below the
+     plain label if the cell tops were aligned. */
+  vertical-align: baseline;
   width: 9rem;
   padding: 0.55rem 0.75rem 0.55rem 0;
   color: var(--muted);
   font-weight: 600;
   font-size: 0.9rem;
 }
-.record__table td { padding: 0.55rem 0; vertical-align: top; }
+.record__table td { padding: 0.55rem 0; vertical-align: baseline; }
 
 .record__number {
   color: var(--data-element);
