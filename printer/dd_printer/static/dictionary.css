@@ -84,10 +84,14 @@ body {
   padding: 0.15rem 0;
 }
 /* Sections use a Parent/Child path convention; indent each level so the
-   contents mirrors the hierarchy. The name shown is the last path segment. */
-.toc__item--depth-1 > a { padding-left: 1.25rem; }
-.toc__item--depth-2 > a { padding-left: 2.5rem; }
-.toc__item--depth-3 > a { padding-left: 3.75rem; }
+   contents mirrors the hierarchy. The name shown is the last path segment;
+   a guide line down the indent makes the nesting easy to follow. */
+.toc__item--depth-1 > a { padding-left: 2rem; border-left: 2px solid var(--line); margin-left: 0.5rem; }
+.toc__item--depth-2 > a { padding-left: 2rem; border-left: 2px solid var(--line); margin-left: 2rem; }
+.toc__item--depth-3 > a { padding-left: 2rem; border-left: 2px solid var(--line); margin-left: 3.5rem; }
+.toc__item--depth-1 > a:hover,
+.toc__item--depth-2 > a:hover,
+.toc__item--depth-3 > a:hover { border-left-color: var(--data-element); }
 .toc__list a { color: var(--ink); text-decoration: none; }
 .toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
 .toc__count {
