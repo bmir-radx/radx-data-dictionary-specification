@@ -896,9 +896,9 @@ def _render(as_dict: dict) -> str:
             )
             body = _transform_attributes_blocks(
                 body,
-                lambda block: _number_entries_at(
+                lambda block, total=slot_total: _number_entries_at(
                     _space_entries_at(block, indent=_SLOT_INDENT),
-                    indent=_SLOT_INDENT, total=slot_total, label="data elements",
+                    indent=_SLOT_INDENT, total=total, label="data elements",
                 ),
             )
             # Number the class(es) themselves at the section indent.

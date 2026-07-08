@@ -39,7 +39,9 @@ VALIDATION_DATATYPES: dict[str, str] = {
 _DEFAULT = "string"
 
 
-def extract_datatype(sheet: RedCapSheet, row: list[str]) -> str:
+def extract_datatype(
+    sheet: RedCapSheet, row: list[str], choices: dict[str, str] | None = None
+) -> str:
     """The spec datatype name for one REDCap row.
 
     A field with choices is typed by its choice values: ``integer`` when the
@@ -48,8 +50,13 @@ def extract_datatype(sheet: RedCapSheet, row: list[str]) -> str:
     idiosyncrasy honoured: validation ``text`` plus a ``MM/DD/YYYY`` field
     note means a US-format date (``date_mdy``). Everything unrecognised is
     ``string``.
+
+    ``choices`` may be passed by the caller when it has already decided which
+    cells count as a real choice list (e.g. excluding ``calc``/``sql`` formula
+    cells); when omitted it is parsed from the Choices cell.
     """
-    choices = parse_choices(sheet.get(row, headers.CHOICES))
+    if choices is None:
+        choices = parse_choices(sheet.get(row, headers.CHOICES))
     if choices:
         first_value = next(iter(choices))
         return "integer" if first_value.isdigit() else "string"

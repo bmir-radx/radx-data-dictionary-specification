@@ -87,3 +87,43 @@ def test_missing_value_codes_uses_same_grammar():
         EnumItem("-9999", "Reason Unknown"),
         EnumItem("-9980", "Not Sent to Data Hub"),
     ]
+
+
+# --- escaping (delimiter characters in values / labels) -----------------------
+
+def test_escaped_brackets_in_label():
+    from dd_converter.grammar import parse_enumeration
+    items = parse_enumeration(r'"1"=[20 mg/day \[low dose\]] | "2"=[More]')
+    assert items[0].value == "1"
+    assert items[0].label == "20 mg/day [low dose]"
+    assert items[1].label == "More"
+
+
+def test_escaped_quote_in_value():
+    from dd_converter.grammar import parse_enumeration
+    (item,) = parse_enumeration(r'"a\"b"=[Label]')
+    assert item.value == 'a"b'
+
+
+def test_escaped_backslash():
+    from dd_converter.grammar import parse_enumeration
+    (item,) = parse_enumeration(r'"x"=[a\\b]')
+    assert item.label == r"a\b"
+
+
+def test_serialize_escapes_round_trip():
+    import io
+
+    from dd_api import DataDictionary, DataElement, EnumItem
+
+    dd = DataDictionary([
+        DataElement(
+            id="dose", label="Dose", datatype="integer",
+            enumeration=(
+                EnumItem(value="1", label="20 mg/day [low dose]"),
+                EnumItem(value='q"x', label="A|B"),
+            ),
+        )
+    ])
+    reloaded = DataDictionary.load(io.StringIO(dd.to_csv()))
+    assert reloaded["dose"].enumeration == dd["dose"].enumeration

@@ -77,18 +77,30 @@ def _annotation(slot, key: str) -> str:
     return ""
 
 
+def _escape_value(text: str) -> str:
+    r"""Escape a value for the ``"..."`` slot: backslash and double quote."""
+    return text.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def _escape_label(text: str) -> str:
+    r"""Escape a label for the ``[...]`` slot: backslash and both brackets, so
+    a label containing the grammar's delimiters round-trips."""
+    return text.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
+
+
 def _enum_to_cell(enum) -> str:
     """Re-serialise an enum's permissible values as an Enumeration cell.
 
     Produces ``"value"=[label](iri) | ...`` — the grammar the forward parser
     consumes. Uses single spaces around ``|`` and ``=`` (canonical form; the
-    original cell's incidental spacing is not recoverable).
+    original cell's incidental spacing is not recoverable). Delimiter
+    characters in a value or label are backslash-escaped.
     """
     parts = []
     for value, pv in _items(_get(enum, "permissible_values", {})):
         label = _get(pv, "title", "") or _get(pv, "description", "") or ""
         meaning = _get(pv, "meaning", "")
-        item = f'"{value}"=[{label}]'
+        item = f'"{_escape_value(str(value))}"=[{_escape_label(str(label))}]'
         if meaning:
             item += f"({meaning})"
         parts.append(item)

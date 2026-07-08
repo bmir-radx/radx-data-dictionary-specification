@@ -47,10 +47,29 @@ class EnumItem:
     iri: str | None = None
 
 
+def _unescape(text: str) -> str:
+    """Resolve backslash escapes: ``\\x`` -> ``x`` for any character ``x``."""
+    if "\\" not in text:
+        return text
+    out: list[str] = []
+    escaped = False
+    for char in text:
+        if escaped:
+            out.append(char)
+            escaped = False
+        elif char == "\\":
+            escaped = True
+        else:
+            out.append(char)
+    if escaped:  # a trailing lone backslash (grammar shouldn't allow it)
+        out.append("\\")
+    return "".join(out)
+
+
 def _strip_delims(token: str, open_ch: str, close_ch: str) -> str:
-    """Remove the surrounding delimiter characters from a terminal's text."""
+    """Remove the surrounding delimiters and resolve escapes in a terminal."""
     assert token.startswith(open_ch) and token.endswith(close_ch), token
-    return token[len(open_ch) : len(token) - len(close_ch)]
+    return _unescape(token[len(open_ch) : len(token) - len(close_ch)])
 
 
 def _tree_to_items(tree: Tree) -> list[EnumItem]:
@@ -69,7 +88,8 @@ def _tree_to_items(tree: Tree) -> list[EnumItem]:
             elif child.data == "label":
                 label_text = _strip_delims(text, "[", "]")
             elif child.data == "bracketed_iri":
-                iri_text = _strip_delims(text, "(", ")").strip()
+                # IRIs have no escaping (the grammar matches any non-')' run).
+                iri_text = text[1:-1].strip()
         items.append(EnumItem(value=value_text, label=label_text, iri=iri_text))
     return items
 

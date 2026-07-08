@@ -13,6 +13,12 @@
 // discarded via the %ignore directive below. White space *inside* a quoted
 // value or boxed label is significant and is preserved (those terminals match
 // their delimiters explicitly).
+//
+// A backslash escapes the delimiter of the enclosing token so it can appear
+// literally: inside a value, \" is a double quote; inside a label, \] and \[
+// are brackets; in both, \\ is a backslash. The parser unescapes these; the
+// serialiser re-escapes them, so a label like "20 mg/day [low dose]" round-
+// trips through the cell as "...=[20 mg/day \[low dose\]]".
 
 enumeration: pair ("|" pair)*
 
@@ -22,12 +28,13 @@ value: QUOTED
 label: BOXED
 bracketed_iri: PARENED
 
-// A double-quoted string. The value between the quotes is any run of
-// characters that is not a double quote.
-QUOTED: "\"" /[^"]*/ "\""
+// A double-quoted string: any run of non-quote, non-backslash characters and
+// backslash escapes (\" \\ ...), between double quotes.
+QUOTED: "\"" /(?:[^"\\]|\\.)*/ "\""
 
-// A square-bracketed label. Any run of characters that is not a ']'.
-BOXED: "[" /[^\]]*/ "]"
+// A square-bracketed label: any run of non-']', non-backslash characters and
+// backslash escapes (\] \[ \\ ...), between square brackets.
+BOXED: "[" /(?:[^\]\\]|\\.)*/ "]"
 
 // A round-bracketed IRI or OBO id. Any run of characters that is not a ')'.
 PARENED: "(" /[^)]*/ ")"

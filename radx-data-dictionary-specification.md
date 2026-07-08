@@ -255,11 +255,13 @@ fullIri = ? an IRI as defined in [RFC3987] ?
 
 oboId = ? a compact OBO Identifier for terms that come from OBO Foundry ontologies ?
 
-boxedString = ? A finite sequence of characters, which may include letters, numbers, spaces and punctuation, surrounded by [ and ] ; the sequence MUST NOT contain an unescaped ] character ?
+boxedString = ? A finite sequence of characters, which may include letters, numbers, spaces and punctuation, surrounded by [ and ] ; the sequence MUST NOT contain an unescaped [ or ] character (see Escaping below) ?
 
-quotedString = ? A finite sequence of characters, which may include letters, numbers, signs (for example a leading -) and punctuation, surrounded by double quotation marks " ; the sequence MUST NOT contain an unescaped " character ?
+quotedString = ? A finite sequence of characters, which may include letters, numbers, signs (for example a leading -) and punctuation, surrounded by double quotation marks " ; the sequence MUST NOT contain an unescaped " character (see Escaping below) ?
 
 ```
+
+__Escaping__: within a `quotedString` or `boxedString`, a backslash (`\`) escapes the character that follows it, allowing the delimiter characters to appear literally in a value or label. In a value, `\"` denotes a literal `"`; in a label, `\[` and `\]` denote literal brackets; in either, `\\` denotes a literal backslash. For example, the label _"20 mg/day [low dose]"_ is written `[20 mg/day \[low dose\]]`, and the pair as `"1"=[20 mg/day \[low dose\]]`.
 
 #### Converting from REDCap Choices format
 

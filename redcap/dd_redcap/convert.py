@@ -96,13 +96,19 @@ def _drop_dangling_preconditions(elements: list[DataElement]) -> list[DataElemen
 def _element_from_row(
     sheet: RedCapSheet, row: list[str], field_id: str, section: str, provenance: str
 ) -> DataElement:
-    label = _build_label(sheet, row)
-    choices = parse_choices(sheet.get(row, headers.CHOICES))
-    datatype = extract_datatype(sheet, row)
+    field_type = sheet.get(row, headers.FIELD_TYPE)
+    label = _build_label(sheet, row) or field_id  # blank Field Label -> the id
+    # For `calc` and `sql` fields the "Choices" cell holds a calculation or a
+    # SQL query, not a list of permissible values — it must not be read as an
+    # enumeration. Every other field type's Choices cell is a real choice list.
+    choices = (
+        {} if field_type in ("calc", "sql")
+        else parse_choices(sheet.get(row, headers.CHOICES))
+    )
+    datatype = extract_datatype(sheet, row, choices)
     # A cell may hold several chosen values for `checkbox` (standard REDCap)
     # and for `list` (a RADx-rad extension type, e.g. biorecognition_type);
     # every other field type is single-valued.
-    field_type = sheet.get(row, headers.FIELD_TYPE)
     return DataElement(
         id=field_id,
         label=label,

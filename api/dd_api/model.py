@@ -645,16 +645,30 @@ def _element_from_row(row: Row) -> DataElement:
 
 # --- element -> cells serialisation --------------------------------------------
 
+def _escape_value(text: str) -> str:
+    r"""Escape a value for the ``"..."`` slot: backslash and double quote."""
+    return text.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def _escape_label(text: str) -> str:
+    r"""Escape a label for the ``[...]`` slot: backslash and both brackets.
+
+    Lets a label contain the grammar's own delimiters — e.g.
+    ``20 mg/day [low dose]`` becomes ``20 mg/day \[low dose\]`` in the cell and
+    parses back to the original text."""
+    return text.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
+
+
 def _enum_items_to_cell(items: Sequence[EnumItem]) -> str:
     """Serialise enumeration items back to the ``"value"=[label](iri)`` cell
     notation (canonical spacing, matching the converter's round-trip form).
 
-    Values are written as-is, without escaping: a hand-built value containing
-    a double quote would not re-parse (parsed values never contain one).
+    Delimiter characters within a value or label are backslash-escaped so any
+    text round-trips through the cell grammar.
     """
     parts = []
     for item in items:
-        text = f'"{item.value}"=[{item.label}]'
+        text = f'"{_escape_value(item.value)}"=[{_escape_label(item.label)}]'
         if item.iri:
             text += f"({item.iri})"
         parts.append(text)

@@ -216,3 +216,27 @@ def test_list_field_type_is_multivalued():
     assert element.is_multivalued
     assert [c.value for c in element.enumeration] == ["aptamer", "antibody", "enzyme"]
     assert element.datatype == "string"
+
+
+def test_calc_field_choices_not_treated_as_enumeration():
+    # A calc field's "Choices" cell holds a formula, not choices; it must not
+    # become an enumeration (which would be malformed).
+    dd = _convert(['bmi,form1,,calc,BMI,"[weight]/([height]*[height])",,,,,,,,,,,,'])
+    element = dd["bmi"]
+    assert not element.is_enumerated
+    assert element.datatype == "string"
+    # The result must be a valid dictionary (round-trips).
+    from dd_api import DataDictionary
+    DataDictionary.load(io.StringIO(dd.to_csv()))
+
+
+def test_sql_field_choices_not_treated_as_enumeration():
+    dd = _convert(['q,form1,,sql,Q,"SELECT record FROM redcap_data",,,,,,,,,,,,'])
+    assert not dd["q"].is_enumerated
+
+
+def test_blank_label_falls_back_to_id():
+    dd = _convert(["sua_0_0,form1,,text,,,,,,,,,,,,,,"])
+    assert dd["sua_0_0"].label == "sua_0_0"
+    from dd_api import DataDictionary
+    DataDictionary.load(io.StringIO(dd.to_csv()))  # spec-valid
