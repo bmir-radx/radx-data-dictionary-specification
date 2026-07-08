@@ -72,3 +72,11 @@ class Dictionary:
 
     def ids(self) -> set[str]:
         return {r.id for r in self.records}
+
+    def term_identifiers(self) -> set[str]:
+        """Every distinct ontology term used, across Terms and choice meanings."""
+        terms: set[str] = set()
+        for record in self.records:
+            terms.update(record.terms)
+            terms.update(c.meaning for c in record.choices if c.meaning)
+        return terms

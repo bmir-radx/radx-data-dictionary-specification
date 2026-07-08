@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>gcb data dictionary</title>
+<title>Global Code Book Data Dictionary</title>
 <style>:root {
   /* Badge colours, from the original Java template. */
   --data-element: #68b622;
@@ -12,18 +12,37 @@
   --choice: #59aaf8;
   --missing: #86878a;
   --term: #9d7bdb;
+  --required: #d64550;
   /* Card/layout neutrals. */
   --ink: #1f2933;
   --muted: #6b7280;
   --line: #e5e7eb;
   --card: #ffffff;
   --page: #f4f6f8;
+  --stripe: #f6f8fa;
+  --code-bg: #eef1f4;
+  --precondition-tint: #fdf6ec;
+}
+
+/* Dark palette: neutrals flip; the badge colours already read well on dark. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --line: #374151;
+    --card: #1f2933;
+    --page: #111827;
+    --stripe: #242f3d;
+    --code-bg: #2a3442;
+    --precondition-tint: #2e2a20;
+  }
 }
 
 * { box-sizing: border-box; }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Liberation Sans", sans-serif;
   color: var(--ink);
   line-height: 1.55;
   margin: 0;
@@ -43,7 +62,76 @@ body {
   margin: 0 0 1.5rem;
 }
 
-.section { margin-top: 2.5rem; }
+/* Table of contents: section names with element counts. */
+.toc {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem 1rem;
+  margin-bottom: 2rem;
+}
+.toc__title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0.25rem 0 0.6rem;
+}
+.toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.15rem 0;
+}
+/* The link takes the available width so the count trails just after the name
+   (a hair of dotted leader), keeping counts near their labels at every
+   indent rather than flung to a ragged right edge. */
+.toc__list a { flex: 0 1 auto; }
+.toc__item::after {
+  content: "";
+  flex: 1 1 auto;
+  border-bottom: 1px dotted var(--line);
+  transform: translateY(-0.2em);
+  min-width: 1rem;
+}
+/* Sections use a Parent/Child path convention; nested entries step in by one
+   level each, with a guide rail immediately to their left. The rail sits on
+   the item (a left border with matching padding), so consecutive siblings'
+   rails join into one continuous line and the line hugs the label rather
+   than floating in a gap. */
+.toc__item--depth-1,
+.toc__item--depth-2,
+.toc__item--depth-3 {
+  border-left: 2px solid var(--line);
+  padding-left: 0.85rem;
+}
+.toc__item--depth-1 { margin-left: 0.6rem; }
+.toc__item--depth-2 { margin-left: 1.7rem; }
+.toc__item--depth-3 { margin-left: 2.8rem; }
+.toc__item:hover { border-left-color: var(--data-element); }
+.toc__list a { color: var(--ink); text-decoration: none; }
+.toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
+.toc__count {
+  color: var(--muted);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+/* Parent path shown as muted context to disambiguate same-leaf siblings. */
+.toc__parent { color: var(--muted); }
+
+/* Resolved ontology term name shown beside a term/meaning badge. */
+.term__label { color: var(--muted); font-size: 0.9em; }
+/* One term (badge + label) per line, so multiple terms are easy to scan. */
+.term__row { padding: 0.1rem 0; }
+.term__row + .term__row { margin-top: 0.1rem; }
+
+.section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
 .section__name {
   font-size: 1.15rem;
   font-weight: 700;
@@ -53,6 +141,14 @@ body {
   margin: 0 0 1rem;
   padding-bottom: 0.4rem;
   border-bottom: 2px solid var(--line);
+}
+.section__count {
+  float: right;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
 }
 
 /* Each data element is a card. */
@@ -71,21 +167,39 @@ body {
 .record__table > tbody > tr:last-child { border-bottom: none; }
 .record__table th {
   text-align: left;
-  vertical-align: top;
+  /* Baseline-align the label with its value: a value cell often holds a
+     badge (taller box, padded) whose text would otherwise sit below the
+     plain label if the cell tops were aligned. */
+  vertical-align: baseline;
   width: 9rem;
   padding: 0.55rem 0.75rem 0.55rem 0;
   color: var(--muted);
   font-weight: 600;
   font-size: 0.9rem;
 }
-.record__table td { padding: 0.55rem 0; vertical-align: top; }
+.record__table td { padding: 0.55rem 0; vertical-align: baseline; }
 
 .record__number {
   color: var(--data-element);
   font-weight: 700;
   font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
 }
 .record__label { font-size: 1.05rem; }
+
+/* Per-card deep link. Always present but quiet (a faint link, not
+   decoration); it strengthens on hover/focus. A hover-only reveal was tried
+   but is invisible to touch users and reads as a stray glyph when it does
+   surface, so the mark stays visible. */
+.record__anchor {
+  color: var(--line);
+  text-decoration: none;
+  margin-left: 0.15rem;
+  transition: color 0.15s;
+}
+.record:hover .record__anchor { color: var(--muted); }
+.record__anchor:hover,
+.record__anchor:focus { color: var(--data-element-dark); }
 
 .badge {
   display: inline-block;
@@ -107,6 +221,16 @@ body {
 }
 a.record__id:hover { background: var(--data-element-dark); }
 .record__facet { background: var(--facet); color: #fff; }
+.record__required { background: var(--required); color: #fff; }
+
+/* The precondition is logic, not a static fact: a tinted chip marks it out. */
+.record__precondition {
+  display: inline-block;
+  background: var(--precondition-tint);
+  border-left: 3px solid var(--facet);
+  border-radius: 0 6px 6px 0;
+  padding: 0.35rem 0.6rem;
+}
 .term {
   background: var(--term);
   color: #fff;
@@ -122,16 +246,37 @@ a.record__id:hover { background: var(--data-element-dark); }
 .choice__value--missing-value-code { background: var(--missing); }
 
 code {
-  background: #eef1f4;
+  background: var(--code-bg);
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 0.9em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* Enumeration: value badge + label per row. */
-.enumeration { border-collapse: collapse; }
-.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0; vertical-align: middle; }
+/* Floating back-to-top control. */
+.back-to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.12);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.back-to-top:hover { color: var(--data-element-dark); border-color: var(--data-element); }
+
+/* Enumeration: value badge + label per row, striped for long lists. */
+.enumeration { border-collapse: collapse; width: 100%; }
+.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0.25rem; vertical-align: middle; }
+.enumeration > tbody > tr:nth-child(even) { background: var(--stripe); }
 .choice__label { color: var(--ink); }
 
 .record__description, .record__notes { max-width: 62ch; }
@@ -151,16 +296,54 @@ code {
     border-color: #d0d5dd;
   }
   .badge { border: none; }
+  .back-to-top, .record__anchor { display: none; }
 }
 </style>
 </head>
-<body>
+<body id="top">
 <div class="container">
-  <h1 class="title">gcb data dictionary</h1>
+  <h1 class="title">Global Code Book Data Dictionary</h1>
 
   
-  <section class="section">
-    <h2 class="section__name">Identity</h2>
+  <nav class="toc">
+    <h2 class="toc__title">Sections</h2>
+    <ul class="toc__list">
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-1">Identity</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-2">Race</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-3">Ethnicity</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-4">Age</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-5">Sex</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-6">Education Level</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-7">Education Years</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-8">Domicile</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-9">Employment</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-10">Insurance Status</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-11">Disability Status</a><span class="toc__count">7</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-12">Medical History</a><span class="toc__count">84</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-13">Symptoms</a><span class="toc__count">27</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-14">Health Status</a><span class="toc__count">5</span></li>
+    
+    </ul>
+  </nav>
+  
+
+  
+  <section class="section" id="section-1">
+    <h2 class="section__name">Identity<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_record_id">
@@ -168,7 +351,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">1)</th>
-            <td><span class="badge record__id">nih_record_id</span></td>
+            <td><span class="badge record__id">nih_record_id</span> <a class="record__anchor" href="#nih_record_id" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">User ID</strong></td></tr>
           
@@ -201,8 +384,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Race</h2>
+  <section class="section" id="section-2">
+    <h2 class="section__name">Race<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_race">
@@ -210,7 +393,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">2)</th>
-            <td><span class="badge record__id">nih_race</span></td>
+            <td><span class="badge record__id">nih_race</span> <a class="record__anchor" href="#nih_race" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your race?</strong></td></tr>
           
@@ -225,7 +408,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:002199</span> 
+            <div class="term__row"><span class="badge term">GSSO:002199</span> <span class="term__label">race</span></div>
           </td></tr>
           
           
@@ -316,8 +499,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Ethnicity</h2>
+  <section class="section" id="section-3">
+    <h2 class="section__name">Ethnicity<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_ethnicity">
@@ -325,7 +508,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">3)</th>
-            <td><span class="badge record__id">nih_ethnicity</span></td>
+            <td><span class="badge record__id">nih_ethnicity</span> <a class="record__anchor" href="#nih_ethnicity" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you of Hispanic or Latino origin? May include Spanish origin.</strong></td></tr>
           
@@ -340,7 +523,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C16564</span> 
+            <div class="term__row"><span class="badge term">NCIT:C16564</span> <span class="term__label">Ethnic Group</span></div>
           </td></tr>
           
           
@@ -402,8 +585,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Age</h2>
+  <section class="section" id="section-4">
+    <h2 class="section__name">Age<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_age">
@@ -411,7 +594,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">4)</th>
-            <td><span class="badge record__id">nih_age</span></td>
+            <td><span class="badge record__id">nih_age</span> <a class="record__anchor" href="#nih_age" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your age?</strong></td></tr>
           
@@ -428,7 +611,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000011</span> 
+            <div class="term__row"><span class="badge term">PATO:0000011</span> <span class="term__label">age</span></div>
           </td></tr>
           
           
@@ -451,8 +634,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Sex</h2>
+  <section class="section" id="section-5">
+    <h2 class="section__name">Sex<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_sex">
@@ -460,7 +643,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">5)</th>
-            <td><span class="badge record__id">nih_sex</span></td>
+            <td><span class="badge record__id">nih_sex</span> <a class="record__anchor" href="#nih_sex" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your biological sex assigned at birth?</strong></td></tr>
           
@@ -475,7 +658,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000047</span> 
+            <div class="term__row"><span class="badge term">PATO:0000047</span> <span class="term__label">biological sex</span></div>
           </td></tr>
           
           
@@ -543,8 +726,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Education Level</h2>
+  <section class="section" id="section-6">
+    <h2 class="section__name">Education Level<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_education">
@@ -552,7 +735,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">6)</th>
-            <td><span class="badge record__id">nih_education</span></td>
+            <td><span class="badge record__id">nih_education</span> <a class="record__anchor" href="#nih_education" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is the highest level of education you have achieved outside or in the United States?</strong></td></tr>
           
@@ -567,7 +750,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C17953</span> 
+            <div class="term__row"><span class="badge term">NCIT:C17953</span> <span class="term__label">Education Level</span></div>
           </td></tr>
           
           
@@ -652,8 +835,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Education Years</h2>
+  <section class="section" id="section-7">
+    <h2 class="section__name">Education Years<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_education_yrs">
@@ -661,7 +844,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">7)</th>
-            <td><span class="badge record__id">nih_education_yrs</span></td>
+            <td><span class="badge record__id">nih_education_yrs</span> <a class="record__anchor" href="#nih_education_yrs" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How many years of education have you completed?</strong></td></tr>
           
@@ -678,7 +861,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C122393</span> 
+            <div class="term__row"><span class="badge term">NCIT:C122393</span> <span class="term__label">Number of Years of Education</span></div>
           </td></tr>
           
           
@@ -694,8 +877,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Domicile</h2>
+  <section class="section" id="section-8">
+    <h2 class="section__name">Domicile<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_zip">
@@ -703,7 +886,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">8)</th>
-            <td><span class="badge record__id">nih_zip</span></td>
+            <td><span class="badge record__id">nih_zip</span> <a class="record__anchor" href="#nih_zip" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your zip code?</strong></td></tr>
           
@@ -718,7 +901,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C25720</span> <span class="badge term">NCIT:C25621</span> 
+            <div class="term__row"><span class="badge term">NCIT:C25720</span> <span class="term__label">Zip Code</span></div><div class="term__row"><span class="badge term">NCIT:C25621</span> <span class="term__label">Postal Code</span></div>
           </td></tr>
           
           
@@ -741,8 +924,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Employment</h2>
+  <section class="section" id="section-9">
+    <h2 class="section__name">Employment<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_employment">
@@ -750,7 +933,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">9)</th>
-            <td><span class="badge record__id">nih_employment</span></td>
+            <td><span class="badge record__id">nih_employment</span> <a class="record__anchor" href="#nih_employment" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Please specify your employment status.</strong></td></tr>
           
@@ -765,7 +948,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C179143</span> <span class="badge term">NCIT:C25172</span> 
+            <div class="term__row"><span class="badge term">NCIT:C179143</span> <span class="term__label">Employment Status</span></div><div class="term__row"><span class="badge term">NCIT:C25172</span> <span class="term__label">employment</span></div>
           </td></tr>
           
           
@@ -851,8 +1034,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Insurance Status</h2>
+  <section class="section" id="section-10">
+    <h2 class="section__name">Insurance Status<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="nih_insurance">
@@ -860,7 +1043,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">10)</th>
-            <td><span class="badge record__id">nih_insurance</span></td>
+            <td><span class="badge record__id">nih_insurance</span> <a class="record__anchor" href="#nih_insurance" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What kind of health insurance do you have?</strong></td></tr>
           
@@ -875,7 +1058,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C157356</span> 
+            <div class="term__row"><span class="badge term">NCIT:C157356</span> <span class="term__label">Health Insurance</span></div>
           </td></tr>
           
           
@@ -943,8 +1126,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Disability Status</h2>
+  <section class="section" id="section-11">
+    <h2 class="section__name">Disability Status<span class="section__count">7 data elements</span></h2>
 
     
     <article class="record" id="nih_disability">
@@ -952,7 +1135,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">11)</th>
-            <td><span class="badge record__id">nih_disability</span></td>
+            <td><span class="badge record__id">nih_disability</span> <a class="record__anchor" href="#nih_disability" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have a disability, including serious physical or mental conditions, that interfere with your ability to carry out daily activities?</strong></td></tr>
           
@@ -967,7 +1150,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:001811</span> <span class="badge term">GSSO:001810</span> 
+            <div class="term__row"><span class="badge term">GSSO:001811</span> <span class="term__label">physical disability</span></div><div class="term__row"><span class="badge term">GSSO:001810</span> <span class="term__label">mental disability</span></div>
           </td></tr>
           
           
@@ -1031,7 +1214,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">12)</th>
-            <td><span class="badge record__id">nih_deaf</span></td>
+            <td><span class="badge record__id">nih_deaf</span> <a class="record__anchor" href="#nih_deaf" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you deaf or do you have serious difficulty hearing?</strong></td></tr>
           
@@ -1046,7 +1229,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000019</span> <span class="badge term">HP:0000364</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000019</span> <span class="term__label">deafness</span></div><div class="term__row"><span class="badge term">HP:0000364</span> <span class="term__label">Hearing abnormality</span></div>
           </td></tr>
           
           
@@ -1111,7 +1294,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">13)</th>
-            <td><span class="badge record__id">nih_blind</span></td>
+            <td><span class="badge record__id">nih_blind</span> <a class="record__anchor" href="#nih_blind" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you blind or do you have serious difficulty seeing, even when wearing glasses?</strong></td></tr>
           
@@ -1126,7 +1309,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0001941</span> 
+            <div class="term__row"><span class="badge term">MONDO:0001941</span> <span class="term__label">blindness (disorder)</span></div>
           </td></tr>
           
           
@@ -1191,7 +1374,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">14)</th>
-            <td><span class="badge record__id">nih_memory</span></td>
+            <td><span class="badge record__id">nih_memory</span> <a class="record__anchor" href="#nih_memory" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?</strong></td></tr>
           
@@ -1206,7 +1389,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000719</span> <span class="badge term">SYMP:0000543</span> <span class="badge term">SYMP:0020029</span> <span class="badge term">SYMP:0000817</span> <span class="badge term">SYMP:0000233</span> <span class="badge term">MONDO:0002039</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000719</span> <span class="term__label">memory impairment</span></div><div class="term__row"><span class="badge term">SYMP:0000543</span> <span class="term__label">memory loss</span></div><div class="term__row"><span class="badge term">SYMP:0020029</span> <span class="term__label">concentration difficulty</span></div><div class="term__row"><span class="badge term">SYMP:0000817</span> <span class="term__label">inability to concentrate</span></div><div class="term__row"><span class="badge term">SYMP:0000233</span> <span class="term__label">inability to think clearly</span></div><div class="term__row"><span class="badge term">MONDO:0002039</span> <span class="term__label">cognitive disorder</span></div>
           </td></tr>
           
           
@@ -1271,7 +1454,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">15)</th>
-            <td><span class="badge record__id">nih_walk_climb</span></td>
+            <td><span class="badge record__id">nih_walk_climb</span> <a class="record__anchor" href="#nih_walk_climb" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have serious difficulty walking or climbing stairs?</strong></td></tr>
           
@@ -1286,7 +1469,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C111629</span> <span class="badge term">NCIT:C175910</span> 
+            <div class="term__row"><span class="badge term">NCIT:C111629</span> <span class="term__label">Have Trouble Walking Question</span></div><div class="term__row"><span class="badge term">NCIT:C175910</span> <span class="term__label">Have Trouble Using Stairs Question</span></div>
           </td></tr>
           
           
@@ -1351,7 +1534,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">16)</th>
-            <td><span class="badge record__id">nih_dress_bathe</span></td>
+            <td><span class="badge record__id">nih_dress_bathe</span> <a class="record__anchor" href="#nih_dress_bathe" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have difficulty dressing or bathing?</strong></td></tr>
           
@@ -1366,7 +1549,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C95544</span> <span class="badge term">NCIT:C131923</span> 
+            <div class="term__row"><span class="badge term">NCIT:C95544</span> <span class="term__label">dressing</span></div><div class="term__row"><span class="badge term">NCIT:C131923</span> <span class="term__label">Dressing Ability Question</span></div>
           </td></tr>
           
           
@@ -1431,7 +1614,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">17)</th>
-            <td><span class="badge record__id">nih_errand</span></td>
+            <td><span class="badge record__id">nih_errand</span> <a class="record__anchor" href="#nih_errand" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor&#39;s office or shopping?</strong></td></tr>
           
@@ -1446,7 +1629,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C121690</span> <span class="badge term">NCIT:C95549</span> 
+            <div class="term__row"><span class="badge term">NCIT:C121690</span> <span class="term__label">Ability to Run Errands and Shop Question</span></div><div class="term__row"><span class="badge term">NCIT:C95549</span> <span class="term__label">Run Errand</span></div>
           </td></tr>
           
           
@@ -1508,8 +1691,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Medical History</h2>
+  <section class="section" id="section-12">
+    <h2 class="section__name">Medical History<span class="section__count">84 data elements</span></h2>
 
     
     <article class="record" id="nih_vaping_yn">
@@ -1517,7 +1700,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">18)</th>
-            <td><span class="badge record__id">nih_vaping_yn</span></td>
+            <td><span class="badge record__id">nih_vaping_yn</span> <a class="record__anchor" href="#nih_vaping_yn" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Vaping use (Yes or No)</strong></td></tr>
           
@@ -1532,7 +1715,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C173621</span> <span class="badge term">NCIT:C68751</span> 
+            <div class="term__row"><span class="badge term">NCIT:C173621</span> <span class="term__label">Vaping</span></div><div class="term__row"><span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span></div>
           </td></tr>
           
           
@@ -1595,7 +1778,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">19)</th>
-            <td><span class="badge record__id">nih_nicotine_yn</span></td>
+            <td><span class="badge record__id">nih_nicotine_yn</span> <a class="record__anchor" href="#nih_nicotine_yn" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Nicotine use (Yes or No)</strong></td></tr>
           
@@ -1610,7 +1793,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C691</span> <span class="badge term">NCIT:C68751</span> <span class="badge term">NCIT:C173060</span> 
+            <div class="term__row"><span class="badge term">NCIT:C691</span> <span class="term__label">Nicotine</span></div><div class="term__row"><span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span></div><div class="term__row"><span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span></div>
           </td></tr>
           
           
@@ -1673,7 +1856,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">20)</th>
-            <td><span class="badge record__id">nih_vape_freq</span></td>
+            <td><span class="badge record__id">nih_vape_freq</span> <a class="record__anchor" href="#nih_vape_freq" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Vaping Frequency: Do you now use electronic cigarettes every day, some days, rarely, or not at all?</strong></td></tr>
           
@@ -1688,7 +1871,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C173621</span> <span class="badge term">NCIT:C120482</span> <span class="badge term">NCIT:C68751</span> <span class="badge term">NCIT:C173060</span> 
+            <div class="term__row"><span class="badge term">NCIT:C173621</span> <span class="term__label">Vaping</span></div><div class="term__row"><span class="badge term">NCIT:C120482</span> <span class="term__label">Electronic Cigarette</span></div><div class="term__row"><span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span></div><div class="term__row"><span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span></div>
           </td></tr>
           
           
@@ -1756,7 +1939,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">21)</th>
-            <td><span class="badge record__id">nih_cig_smoke_freq</span></td>
+            <td><span class="badge record__id">nih_cig_smoke_freq</span> <a class="record__anchor" href="#nih_cig_smoke_freq" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Nicotine Frequency: Do you now smoke cigarettes?</strong></td></tr>
           
@@ -1771,7 +1954,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C19796</span> <span class="badge term">NCIT:C68751</span> <span class="badge term">NCIT:C173060</span> 
+            <div class="term__row"><span class="badge term">NCIT:C19796</span> <span class="term__label">Smoking Status</span></div><div class="term__row"><span class="badge term">NCIT:C68751</span> <span class="term__label">Smoker</span></div><div class="term__row"><span class="badge term">NCIT:C173060</span> <span class="term__label">Smoking Question</span></div>
           </td></tr>
           
           
@@ -1839,7 +2022,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">22)</th>
-            <td><span class="badge record__id">nih_smoking_yn</span></td>
+            <td><span class="badge record__id">nih_smoking_yn</span> <a class="record__anchor" href="#nih_smoking_yn" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?</strong></td></tr>
           
@@ -1854,7 +2037,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NBO:0045002</span> <span class="badge term">NCIT:C17934</span> 
+            <div class="term__row"><span class="badge term">NBO:0045002</span> <span class="term__label">tobacco smoking behavior</span></div><div class="term__row"><span class="badge term">NCIT:C17934</span> <span class="term__label">Tobacco Smoking</span></div>
           </td></tr>
           
           
@@ -1911,7 +2094,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">23)</th>
-            <td><span class="badge record__id">nih_history_smoking</span></td>
+            <td><span class="badge record__id">nih_history_smoking</span> <a class="record__anchor" href="#nih_history_smoking" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">History of Smoking</strong></td></tr>
           
@@ -1926,7 +2109,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NBO:0015005</span> 
+            <div class="term__row"><span class="badge term">NBO:0015005</span> <span class="term__label">smoking behavior</span></div>
           </td></tr>
           
           
@@ -1983,7 +2166,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">24)</th>
-            <td><span class="badge record__id">nih_tobacco</span></td>
+            <td><span class="badge record__id">nih_tobacco</span> <a class="record__anchor" href="#nih_tobacco" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Tobacco Use</strong></td></tr>
           
@@ -1998,7 +2181,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NBO:0045002</span> <span class="badge term">NCIT:C154329</span> 
+            <div class="term__row"><span class="badge term">NBO:0045002</span> <span class="term__label">tobacco smoking behavior</span></div><div class="term__row"><span class="badge term">NCIT:C154329</span> <span class="term__label">Smoking</span></div>
           </td></tr>
           
           
@@ -2055,7 +2238,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">25)</th>
-            <td><span class="badge record__id">nih_alcohol_yn</span></td>
+            <td><span class="badge record__id">nih_alcohol_yn</span> <a class="record__anchor" href="#nih_alcohol_yn" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Alcohol use (Yes or No)</strong></td></tr>
           
@@ -2070,7 +2253,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:006602</span> <span class="badge term">NCIT:C81229</span> <span class="badge term">NCIT:C16273</span> <span class="badge term">NBO:0000131</span> 
+            <div class="term__row"><span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span></div><div class="term__row"><span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span></div><div class="term__row"><span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span></div><div class="term__row"><span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span></div>
           </td></tr>
           
           
@@ -2133,7 +2316,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">26)</th>
-            <td><span class="badge record__id">nih_lifetime_use_alcohol</span></td>
+            <td><span class="badge record__id">nih_lifetime_use_alcohol</span> <a class="record__anchor" href="#nih_lifetime_use_alcohol" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">In your entire life, have you had at least 1 drink of any kind of alcohol, not counting small tastes or sips? (Yes or No)</strong></td></tr>
           
@@ -2148,7 +2331,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:006602</span> <span class="badge term">NCIT:C81229</span> <span class="badge term">NCIT:C16273</span> <span class="badge term">NBO:0000131</span> 
+            <div class="term__row"><span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span></div><div class="term__row"><span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span></div><div class="term__row"><span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span></div><div class="term__row"><span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span></div>
           </td></tr>
           
           
@@ -2205,7 +2388,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">27)</th>
-            <td><span class="badge record__id">nih_alcohol_yrs</span></td>
+            <td><span class="badge record__id">nih_alcohol_yrs</span> <a class="record__anchor" href="#nih_alcohol_yrs" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How often did you have a drink containing alcohol in the past year?</strong></td></tr>
           
@@ -2220,7 +2403,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:006602</span> <span class="badge term">NCIT:C81229</span> <span class="badge term">NCIT:C16273</span> <span class="badge term">NBO:0000131</span> 
+            <div class="term__row"><span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span></div><div class="term__row"><span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span></div><div class="term__row"><span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span></div><div class="term__row"><span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span></div>
           </td></tr>
           
           
@@ -2289,7 +2472,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">28)</th>
-            <td><span class="badge record__id">nih_alcohol_frequency</span></td>
+            <td><span class="badge record__id">nih_alcohol_frequency</span> <a class="record__anchor" href="#nih_alcohol_frequency" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How often did you have a drink containing alcohol ?</strong></td></tr>
           
@@ -2304,7 +2487,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:006602</span> <span class="badge term">NCIT:C81229</span> <span class="badge term">NCIT:C16273</span> <span class="badge term">NBO:0000131</span> 
+            <div class="term__row"><span class="badge term">GSSO:006602</span> <span class="term__label">alcohol use</span></div><div class="term__row"><span class="badge term">NCIT:C81229</span> <span class="term__label">Alcohol Use History</span></div><div class="term__row"><span class="badge term">NCIT:C16273</span> <span class="term__label">Alcohol Consumption</span></div><div class="term__row"><span class="badge term">NBO:0000131</span> <span class="term__label">alcohol consumption</span></div>
           </td></tr>
           
           
@@ -2373,7 +2556,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">29)</th>
-            <td><span class="badge record__id">nih_asthma</span></td>
+            <td><span class="badge record__id">nih_asthma</span> <a class="record__anchor" href="#nih_asthma" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Asthma</strong></td></tr>
           
@@ -2388,7 +2571,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004979</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004979</span> <span class="term__label">asthma</span></div>
           </td></tr>
           
           
@@ -2452,7 +2635,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">30)</th>
-            <td><span class="badge record__id">nih_cancer</span></td>
+            <td><span class="badge record__id">nih_cancer</span> <a class="record__anchor" href="#nih_cancer" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cancer</strong></td></tr>
           
@@ -2467,7 +2650,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004992</span> <span class="badge term">NCIT:C9305</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span></div><div class="term__row"><span class="badge term">NCIT:C9305</span> <span class="term__label">malignant neoplasm</span></div>
           </td></tr>
           
           
@@ -2529,7 +2712,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">31)</th>
-            <td><span class="badge record__id">nih_cancer_active_treatment</span></td>
+            <td><span class="badge record__id">nih_cancer_active_treatment</span> <a class="record__anchor" href="#nih_cancer_active_treatment" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cancer (including leukemia or lymphoma) undergoing active treatment?</strong></td></tr>
           
@@ -2544,7 +2727,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004992</span> <span class="badge term">NCIT:C9305</span> <span class="badge term">NCIT:C19700</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span></div><div class="term__row"><span class="badge term">NCIT:C9305</span> <span class="term__label">malignant neoplasm</span></div><div class="term__row"><span class="badge term">NCIT:C19700</span> <span class="term__label">Cancer Patient</span></div>
           </td></tr>
           
           
@@ -2601,7 +2784,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">32)</th>
-            <td><span class="badge record__id">nih_cancer_past_yr</span></td>
+            <td><span class="badge record__id">nih_cancer_past_yr</span> <a class="record__anchor" href="#nih_cancer_past_yr" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cancer diagnosis and/or treatment within the past 12 months</strong></td></tr>
           
@@ -2616,7 +2799,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004992</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004992</span> <span class="term__label">cancer</span></div>
           </td></tr>
           
           
@@ -2673,7 +2856,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">33)</th>
-            <td><span class="badge record__id">nih_cardiovascular_disease</span></td>
+            <td><span class="badge record__id">nih_cardiovascular_disease</span> <a class="record__anchor" href="#nih_cardiovascular_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cardiovascular disease</strong></td></tr>
           
@@ -2688,7 +2871,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004995</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004995</span> <span class="term__label">cardiovascular disorder</span></div>
           </td></tr>
           
           
@@ -2752,7 +2935,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">34)</th>
-            <td><span class="badge record__id">nih_chronic_kidney_disease</span></td>
+            <td><span class="badge record__id">nih_chronic_kidney_disease</span> <a class="record__anchor" href="#nih_chronic_kidney_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic kidney disease</strong></td></tr>
           
@@ -2767,7 +2950,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005300</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005300</span> <span class="term__label">chronic kidney disease</span></div>
           </td></tr>
           
           
@@ -2831,7 +3014,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">35)</th>
-            <td><span class="badge record__id">nih_chronic_kidney_disease_treatment</span></td>
+            <td><span class="badge record__id">nih_chronic_kidney_disease_treatment</span> <a class="record__anchor" href="#nih_chronic_kidney_disease_treatment" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic kidney disease treatment</strong></td></tr>
           
@@ -2846,7 +3029,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005300</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005300</span> <span class="term__label">chronic kidney disease</span></div>
           </td></tr>
           
           
@@ -2903,7 +3086,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">36)</th>
-            <td><span class="badge record__id">nih_chronic_lung_disease</span></td>
+            <td><span class="badge record__id">nih_chronic_lung_disease</span> <a class="record__anchor" href="#nih_chronic_lung_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic lung disease</strong></td></tr>
           
@@ -2918,7 +3101,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005275</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005275</span> <span class="term__label">lung disorder</span></div>
           </td></tr>
           
           
@@ -2981,7 +3164,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">37)</th>
-            <td><span class="badge record__id">nih_diabetes</span></td>
+            <td><span class="badge record__id">nih_diabetes</span> <a class="record__anchor" href="#nih_diabetes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Diabetes</strong></td></tr>
           
@@ -2996,7 +3179,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005015</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005015</span> <span class="term__label">diabetes mellitus (disease)</span></div>
           </td></tr>
           
           
@@ -3060,7 +3243,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">38)</th>
-            <td><span class="badge record__id">nih_hypertension</span></td>
+            <td><span class="badge record__id">nih_hypertension</span> <a class="record__anchor" href="#nih_hypertension" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Hypertension</strong></td></tr>
           
@@ -3075,7 +3258,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005044</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005044</span> <span class="term__label">hypertensive disorder</span></div>
           </td></tr>
           
           
@@ -3139,7 +3322,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">39)</th>
-            <td><span class="badge record__id">nih_immunosuppressive_condition</span></td>
+            <td><span class="badge record__id">nih_immunosuppressive_condition</span> <a class="record__anchor" href="#nih_immunosuppressive_condition" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Immunosuppressive condition</strong></td></tr>
           
@@ -3154,7 +3337,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C178942</span> 
+            <div class="term__row"><span class="badge term">NCIT:C178942</span> <span class="term__label">Immunosuppressive Disorder</span></div>
           </td></tr>
           
           
@@ -3217,7 +3400,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">40)</th>
-            <td><span class="badge record__id">nih_serious_mental_illness</span></td>
+            <td><span class="badge record__id">nih_serious_mental_illness</span> <a class="record__anchor" href="#nih_serious_mental_illness" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Serious mental illness</strong></td></tr>
           
@@ -3232,7 +3415,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005084</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005084</span> <span class="term__label">mental disorder</span></div>
           </td></tr>
           
           
@@ -3289,7 +3472,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">41)</th>
-            <td><span class="badge record__id">nih_mental_health_disorder</span></td>
+            <td><span class="badge record__id">nih_mental_health_disorder</span> <a class="record__anchor" href="#nih_mental_health_disorder" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Mental health disorder</strong></td></tr>
           
@@ -3304,7 +3487,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005084</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005084</span> <span class="term__label">mental disorder</span></div>
           </td></tr>
           
           
@@ -3367,7 +3550,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">42)</th>
-            <td><span class="badge record__id">nih_sickle_cell_disease</span></td>
+            <td><span class="badge record__id">nih_sickle_cell_disease</span> <a class="record__anchor" href="#nih_sickle_cell_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Sickle cell disease</strong></td></tr>
           
@@ -3382,7 +3565,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0011382</span> 
+            <div class="term__row"><span class="badge term">MONDO:0011382</span> <span class="term__label">sickle cell disease</span></div>
           </td></tr>
           
           
@@ -3446,7 +3629,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">43)</th>
-            <td><span class="badge record__id">nih_pregnancy</span></td>
+            <td><span class="badge record__id">nih_pregnancy</span> <a class="record__anchor" href="#nih_pregnancy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Pregnancy status</strong></td></tr>
           
@@ -3461,7 +3644,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C69218</span> 
+            <div class="term__row"><span class="badge term">NCIT:C69218</span> <span class="term__label">Pregnancy Status</span></div>
           </td></tr>
           
           
@@ -3518,7 +3701,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">44)</th>
-            <td><span class="badge record__id">nih_immunocompromised</span></td>
+            <td><span class="badge record__id">nih_immunocompromised</span> <a class="record__anchor" href="#nih_immunocompromised" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Immunocompromised condition</strong></td></tr>
           
@@ -3533,7 +3716,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C14139</span> 
+            <div class="term__row"><span class="badge term">NCIT:C14139</span> <span class="term__label">Immunocompromised</span></div>
           </td></tr>
           
           
@@ -3596,7 +3779,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">45)</th>
-            <td><span class="badge record__id">nih_autoimm</span></td>
+            <td><span class="badge record__id">nih_autoimm</span> <a class="record__anchor" href="#nih_autoimm" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Autoimmune disease</strong></td></tr>
           
@@ -3611,7 +3794,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0007179</span> 
+            <div class="term__row"><span class="badge term">MONDO:0007179</span> <span class="term__label">autoimmune disease</span></div>
           </td></tr>
           
           
@@ -3674,7 +3857,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">46)</th>
-            <td><span class="badge record__id">nih_copd</span></td>
+            <td><span class="badge record__id">nih_copd</span> <a class="record__anchor" href="#nih_copd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic obstructive pulmonary disease (COPD)</strong></td></tr>
           
@@ -3689,7 +3872,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005002</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005002</span> <span class="term__label">chronic obstructive pulmonary disease</span></div>
           </td></tr>
           
           
@@ -3752,7 +3935,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">47)</th>
-            <td><span class="badge record__id">nih_chronic_lung</span></td>
+            <td><span class="badge record__id">nih_chronic_lung</span> <a class="record__anchor" href="#nih_chronic_lung" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other chronic lung disease</strong></td></tr>
           
@@ -3767,7 +3950,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005275</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005275</span> <span class="term__label">lung disorder</span></div>
           </td></tr>
           
           
@@ -3824,7 +4007,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">48)</th>
-            <td><span class="badge record__id">nih_depression</span></td>
+            <td><span class="badge record__id">nih_depression</span> <a class="record__anchor" href="#nih_depression" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Depression</strong></td></tr>
           
@@ -3839,7 +4022,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0002050</span> 
+            <div class="term__row"><span class="badge term">MONDO:0002050</span> <span class="term__label">depressive disorder</span></div>
           </td></tr>
           
           
@@ -3901,7 +4084,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">49)</th>
-            <td><span class="badge record__id">nih_alc_sub_abuse</span></td>
+            <td><span class="badge record__id">nih_alc_sub_abuse</span> <a class="record__anchor" href="#nih_alc_sub_abuse" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Alcohol or substance use disorder</strong></td></tr>
           
@@ -3916,7 +4099,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0002494</span> <span class="badge term">MONDO:0021698</span> 
+            <div class="term__row"><span class="badge term">MONDO:0002494</span> <span class="term__label">substance-related disorder</span></div><div class="term__row"><span class="badge term">MONDO:0021698</span> <span class="term__label">alcohol-related disorders</span></div>
           </td></tr>
           
           
@@ -3979,7 +4162,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">50)</th>
-            <td><span class="badge record__id">nih_iv_drug_use</span></td>
+            <td><span class="badge record__id">nih_iv_drug_use</span> <a class="record__anchor" href="#nih_iv_drug_use" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Intravenous drug use</strong></td></tr>
           
@@ -3994,7 +4177,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C84367</span> 
+            <div class="term__row"><span class="badge term">NCIT:C84367</span> <span class="term__label">Intravenous Drug User</span></div>
           </td></tr>
           
           
@@ -4057,7 +4240,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">51)</th>
-            <td><span class="badge record__id">nih_othermh</span></td>
+            <td><span class="badge record__id">nih_othermh</span> <a class="record__anchor" href="#nih_othermh" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other mental health disorder</strong></td></tr>
           
@@ -4072,7 +4255,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0002025</span> 
+            <div class="term__row"><span class="badge term">MONDO:0002025</span> <span class="term__label">psychiatric disorder</span></div>
           </td></tr>
           
           
@@ -4135,7 +4318,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">52)</th>
-            <td><span class="badge record__id">nih_other_chronic_cond</span></td>
+            <td><span class="badge record__id">nih_other_chronic_cond</span> <a class="record__anchor" href="#nih_other_chronic_cond" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other chronic condition</strong></td></tr>
           
@@ -4150,7 +4333,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C165593</span> 
+            <div class="term__row"><span class="badge term">NCIT:C165593</span> <span class="term__label">Chronic Disease</span></div>
           </td></tr>
           
           
@@ -4213,7 +4396,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">53)</th>
-            <td><span class="badge record__id">nih_coronary_artery_disease</span></td>
+            <td><span class="badge record__id">nih_coronary_artery_disease</span> <a class="record__anchor" href="#nih_coronary_artery_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Coronary artery disease</strong></td></tr>
           
@@ -4228,7 +4411,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005010</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005010</span> <span class="term__label">coronary artery disorder</span></div>
           </td></tr>
           
           
@@ -4285,7 +4468,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">54)</th>
-            <td><span class="badge record__id">nih_coronary_artery_disease_angina</span></td>
+            <td><span class="badge record__id">nih_coronary_artery_disease_angina</span> <a class="record__anchor" href="#nih_coronary_artery_disease_angina" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?</strong></td></tr>
           
@@ -4300,7 +4483,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005010</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005010</span> <span class="term__label">coronary artery disorder</span></div>
           </td></tr>
           
           
@@ -4357,7 +4540,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">55)</th>
-            <td><span class="badge record__id">nih_heart_attack</span></td>
+            <td><span class="badge record__id">nih_heart_attack</span> <a class="record__anchor" href="#nih_heart_attack" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">A heart attack (myocardial infarction)?</strong></td></tr>
           
@@ -4372,7 +4555,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005068</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005068</span> <span class="term__label">myocardial infarction</span></div>
           </td></tr>
           
           
@@ -4435,7 +4618,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">56)</th>
-            <td><span class="badge record__id">nih_chf</span></td>
+            <td><span class="badge record__id">nih_chf</span> <a class="record__anchor" href="#nih_chf" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Congestive Heart failure (CHF, Heart Failure)?</strong></td></tr>
           
@@ -4450,7 +4633,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005009</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005009</span> <span class="term__label">congestive heart failure</span></div>
           </td></tr>
           
           
@@ -4512,7 +4695,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">57)</th>
-            <td><span class="badge record__id">nih_stroke</span></td>
+            <td><span class="badge record__id">nih_stroke</span> <a class="record__anchor" href="#nih_stroke" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?</strong></td></tr>
           
@@ -4527,7 +4710,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005264</span> <span class="badge term">MONDO:0005098</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005264</span> <span class="term__label">transient ischemic attack</span></div><div class="term__row"><span class="badge term">MONDO:0005098</span> <span class="term__label">stroke disorder</span></div>
           </td></tr>
           
           
@@ -4590,7 +4773,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">58)</th>
-            <td><span class="badge record__id">nih_immunodeficiency</span></td>
+            <td><span class="badge record__id">nih_immunodeficiency</span> <a class="record__anchor" href="#nih_immunodeficiency" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Immunodeficiency (NOT including HIV)?</strong></td></tr>
           
@@ -4605,7 +4788,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0021094</span> 
+            <div class="term__row"><span class="badge term">MONDO:0021094</span> <span class="term__label">immunodeficiency disease</span></div>
           </td></tr>
           
           
@@ -4668,7 +4851,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">59)</th>
-            <td><span class="badge record__id">nih_hiv</span></td>
+            <td><span class="badge record__id">nih_hiv</span> <a class="record__anchor" href="#nih_hiv" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic HIV infection?</strong></td></tr>
           
@@ -4683,7 +4866,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005109</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005109</span> <span class="term__label">HIV infectious disease</span></div>
           </td></tr>
           
           
@@ -4746,7 +4929,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">60)</th>
-            <td><span class="badge record__id">nih_anemia</span></td>
+            <td><span class="badge record__id">nih_anemia</span> <a class="record__anchor" href="#nih_anemia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Anemia or other blood disorder (do not include leukemia or lymphoma)?</strong></td></tr>
           
@@ -4761,7 +4944,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0002280</span> 
+            <div class="term__row"><span class="badge term">MONDO:0002280</span> <span class="term__label">anemia</span></div>
           </td></tr>
           
           
@@ -4824,7 +5007,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">61)</th>
-            <td><span class="badge record__id">nih_premature_birth</span></td>
+            <td><span class="badge record__id">nih_premature_birth</span> <a class="record__anchor" href="#nih_premature_birth" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">History of premature birth (being born before 37 weeks of pregnancy)</strong></td></tr>
           
@@ -4839,7 +5022,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">GSSO:009644</span> 
+            <div class="term__row"><span class="badge term">GSSO:009644</span> <span class="term__label">premature birth</span></div>
           </td></tr>
           
           
@@ -4902,7 +5085,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">62)</th>
-            <td><span class="badge record__id">nih_chd</span></td>
+            <td><span class="badge record__id">nih_chd</span> <a class="record__anchor" href="#nih_chd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic Heart Disease</strong></td></tr>
           
@@ -4917,7 +5100,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0001493</span> 
+            <div class="term__row"><span class="badge term">MONDO:0001493</span> <span class="term__label">chronic pulmonary heart disease</span></div>
           </td></tr>
           
           
@@ -4980,7 +5163,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">63)</th>
-            <td><span class="badge record__id">nih_cf</span></td>
+            <td><span class="badge record__id">nih_cf</span> <a class="record__anchor" href="#nih_cf" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cystic Fibrosis</strong></td></tr>
           
@@ -4995,7 +5178,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0009061</span> 
+            <div class="term__row"><span class="badge term">MONDO:0009061</span> <span class="term__label">cystic fibrosis</span></div>
           </td></tr>
           
           
@@ -5052,7 +5235,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">64)</th>
-            <td><span class="badge record__id">nih_cld_bpd</span></td>
+            <td><span class="badge record__id">nih_cld_bpd</span> <a class="record__anchor" href="#nih_cld_bpd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">CLD BPD (Chronic Lung Disease Bronchopulmonary Dysplasia)</strong></td></tr>
           
@@ -5067,7 +5250,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0019091</span> 
+            <div class="term__row"><span class="badge term">MONDO:0019091</span> <span class="term__label">bronchopulmonary dysplasia</span></div>
           </td></tr>
           
           
@@ -5124,7 +5307,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">65)</th>
-            <td><span class="badge record__id">nih_copd_plus</span></td>
+            <td><span class="badge record__id">nih_copd_plus</span> <a class="record__anchor" href="#nih_copd_plus" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic obstructive pulmonary disease (COPD) including emphysema, chronic bronchitis, obstructive pulmonary disease?</strong></td></tr>
           
@@ -5139,7 +5322,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005002</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005002</span> <span class="term__label">chronic obstructive pulmonary disease</span></div>
           </td></tr>
           
           
@@ -5202,7 +5385,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">66)</th>
-            <td><span class="badge record__id">nih_alz</span></td>
+            <td><span class="badge record__id">nih_alz</span> <a class="record__anchor" href="#nih_alz" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Alzheimers</strong></td></tr>
           
@@ -5217,7 +5400,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004975</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004975</span> <span class="term__label">Alzheimer disease</span></div>
           </td></tr>
           
           
@@ -5274,7 +5457,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">67)</th>
-            <td><span class="badge record__id">nih_anxiety</span></td>
+            <td><span class="badge record__id">nih_anxiety</span> <a class="record__anchor" href="#nih_anxiety" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Anxiety</strong></td></tr>
           
@@ -5289,7 +5472,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0011918</span> 
+            <div class="term__row"><span class="badge term">MONDO:0011918</span> <span class="term__label">anxiety</span></div>
           </td></tr>
           
           
@@ -5346,7 +5529,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">68)</th>
-            <td><span class="badge record__id">nih_arrhythmia</span></td>
+            <td><span class="badge record__id">nih_arrhythmia</span> <a class="record__anchor" href="#nih_arrhythmia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Arrhythmia</strong></td></tr>
           
@@ -5361,7 +5544,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000287</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000287</span> <span class="term__label">arrhythmia</span></div>
           </td></tr>
           
           
@@ -5418,7 +5601,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">69)</th>
-            <td><span class="badge record__id">nih_arthritis</span></td>
+            <td><span class="badge record__id">nih_arthritis</span> <a class="record__anchor" href="#nih_arthritis" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Arthritis</strong></td></tr>
           
@@ -5433,7 +5616,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0008383</span> 
+            <div class="term__row"><span class="badge term">MONDO:0008383</span> <span class="term__label">rheumatoid arthritis</span></div>
           </td></tr>
           
           
@@ -5490,7 +5673,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">70)</th>
-            <td><span class="badge record__id">nih_af</span></td>
+            <td><span class="badge record__id">nih_af</span> <a class="record__anchor" href="#nih_af" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Atrial Fibrillation</strong></td></tr>
           
@@ -5505,7 +5688,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004981</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004981</span> <span class="term__label">atrial fibrillation</span></div>
           </td></tr>
           
           
@@ -5562,7 +5745,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">71)</th>
-            <td><span class="badge record__id">nih_chronic_pain</span></td>
+            <td><span class="badge record__id">nih_chronic_pain</span> <a class="record__anchor" href="#nih_chronic_pain" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic Pain</strong></td></tr>
           
@@ -5577,7 +5760,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C26940</span> 
+            <div class="term__row"><span class="badge term">NCIT:C26940</span> <span class="term__label">Chronic Pain</span></div>
           </td></tr>
           
           
@@ -5634,7 +5817,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">72)</th>
-            <td><span class="badge record__id">nih_fibromyalgia</span></td>
+            <td><span class="badge record__id">nih_fibromyalgia</span> <a class="record__anchor" href="#nih_fibromyalgia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Fibromyalgia</strong></td></tr>
           
@@ -5649,7 +5832,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005546</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005546</span> <span class="term__label">fibromyalgia</span></div>
           </td></tr>
           
           
@@ -5706,7 +5889,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">73)</th>
-            <td><span class="badge record__id">nih_gerd</span></td>
+            <td><span class="badge record__id">nih_gerd</span> <a class="record__anchor" href="#nih_gerd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Gastroesophageal reflux disease</strong></td></tr>
           
@@ -5721,7 +5904,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0007186</span> 
+            <div class="term__row"><span class="badge term">MONDO:0007186</span> <span class="term__label">gastroesophageal reflux disease</span></div>
           </td></tr>
           
           
@@ -5778,7 +5961,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">74)</th>
-            <td><span class="badge record__id">nih_gestational_diabetes</span></td>
+            <td><span class="badge record__id">nih_gestational_diabetes</span> <a class="record__anchor" href="#nih_gestational_diabetes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Gestational Diabetes</strong></td></tr>
           
@@ -5793,7 +5976,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005406</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005406</span> <span class="term__label">gestational diabetes</span></div>
           </td></tr>
           
           
@@ -5850,7 +6033,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">75)</th>
-            <td><span class="badge record__id">nih_cholesterol</span></td>
+            <td><span class="badge record__id">nih_cholesterol</span> <a class="record__anchor" href="#nih_cholesterol" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">High Cholesterol</strong></td></tr>
           
@@ -5865,7 +6048,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C37967</span> 
+            <div class="term__row"><span class="badge term">NCIT:C37967</span> <span class="term__label">Hypercholesterolemia</span></div>
           </td></tr>
           
           
@@ -5922,7 +6105,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">76)</th>
-            <td><span class="badge record__id">nih_thyroid</span></td>
+            <td><span class="badge record__id">nih_thyroid</span> <a class="record__anchor" href="#nih_thyroid" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Hypo/Hyper Thyroidism</strong></td></tr>
           
@@ -5937,7 +6120,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005420</span> <span class="badge term">MONDO:0004425</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005420</span> <span class="term__label">hypothyroidism</span></div><div class="term__row"><span class="badge term">MONDO:0004425</span> <span class="term__label">hyperthyroidism</span></div>
           </td></tr>
           
           
@@ -5994,7 +6177,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">77)</th>
-            <td><span class="badge record__id">nih_immuno_compromised_solid_organ</span></td>
+            <td><span class="badge record__id">nih_immuno_compromised_solid_organ</span> <a class="record__anchor" href="#nih_immuno_compromised_solid_organ" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">immunocompromised from solid organ transplant</strong></td></tr>
           
@@ -6009,7 +6192,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C14139</span> <span class="badge term">NCIT:C130200</span> 
+            <div class="term__row"><span class="badge term">NCIT:C14139</span> <span class="term__label">Immunocompromised</span></div><div class="term__row"><span class="badge term">NCIT:C130200</span> <span class="term__label">Solid Organ Transplant Recipient</span></div>
           </td></tr>
           
           
@@ -6066,7 +6249,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">78)</th>
-            <td><span class="badge record__id">nih_ibd</span></td>
+            <td><span class="badge record__id">nih_ibd</span> <a class="record__anchor" href="#nih_ibd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Inflammatory Bowel Disease</strong></td></tr>
           
@@ -6081,7 +6264,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005265</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005265</span> <span class="term__label">inflammatory bowel disease</span></div>
           </td></tr>
           
           
@@ -6138,7 +6321,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">79)</th>
-            <td><span class="badge record__id">nih_insomnia</span></td>
+            <td><span class="badge record__id">nih_insomnia</span> <a class="record__anchor" href="#nih_insomnia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Insomnia</strong></td></tr>
           
@@ -6153,7 +6336,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0013600</span> 
+            <div class="term__row"><span class="badge term">MONDO:0013600</span> <span class="term__label">insomnia</span></div>
           </td></tr>
           
           
@@ -6210,7 +6393,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">80)</th>
-            <td><span class="badge record__id">nih_ibs</span></td>
+            <td><span class="badge record__id">nih_ibs</span> <a class="record__anchor" href="#nih_ibs" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Irritable bowel syndrome</strong></td></tr>
           
@@ -6225,7 +6408,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005052</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005052</span> <span class="term__label">irritable bowel syndrome</span></div>
           </td></tr>
           
           
@@ -6282,7 +6465,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">81)</th>
-            <td><span class="badge record__id">nih_liver_disease</span></td>
+            <td><span class="badge record__id">nih_liver_disease</span> <a class="record__anchor" href="#nih_liver_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Liver disease (cirrhosis, hepB, hepC)</strong></td></tr>
           
@@ -6297,7 +6480,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005154</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005154</span> <span class="term__label">liver disorder</span></div>
           </td></tr>
           
           
@@ -6354,7 +6537,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">82)</th>
-            <td><span class="badge record__id">nih_lupus</span></td>
+            <td><span class="badge record__id">nih_lupus</span> <a class="record__anchor" href="#nih_lupus" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Lupus</strong></td></tr>
           
@@ -6369,7 +6552,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0004670</span> 
+            <div class="term__row"><span class="badge term">MONDO:0004670</span> <span class="term__label">lupus erythematosus</span></div>
           </td></tr>
           
           
@@ -6426,7 +6609,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">83)</th>
-            <td><span class="badge record__id">nih_migraines</span></td>
+            <td><span class="badge record__id">nih_migraines</span> <a class="record__anchor" href="#nih_migraines" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Migraines</strong></td></tr>
           
@@ -6441,7 +6624,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005277</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005277</span> <span class="term__label">migraine disorder</span></div>
           </td></tr>
           
           
@@ -6498,7 +6681,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">84)</th>
-            <td><span class="badge record__id">nih_ms</span></td>
+            <td><span class="badge record__id">nih_ms</span> <a class="record__anchor" href="#nih_ms" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Multiple Sclerosis</strong></td></tr>
           
@@ -6513,7 +6696,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005301</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005301</span> <span class="term__label">multiple sclerosis</span></div>
           </td></tr>
           
           
@@ -6570,7 +6753,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">85)</th>
-            <td><span class="badge record__id">nih_neurodegenerative</span></td>
+            <td><span class="badge record__id">nih_neurodegenerative</span> <a class="record__anchor" href="#nih_neurodegenerative" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Neurodegenerative disease</strong></td></tr>
           
@@ -6585,7 +6768,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005559</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005559</span> <span class="term__label">neurodegenerative disease</span></div>
           </td></tr>
           
           
@@ -6642,7 +6825,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">86)</th>
-            <td><span class="badge record__id">nih_neurological_condition</span></td>
+            <td><span class="badge record__id">nih_neurological_condition</span> <a class="record__anchor" href="#nih_neurological_condition" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Neurological Condition</strong></td></tr>
           
@@ -6657,7 +6840,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005071</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005071</span> <span class="term__label">nervous system disorder</span></div>
           </td></tr>
           
           
@@ -6714,7 +6897,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">87)</th>
-            <td><span class="badge record__id">nih_no_chronic_condition</span></td>
+            <td><span class="badge record__id">nih_no_chronic_condition</span> <a class="record__anchor" href="#nih_no_chronic_condition" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">No chronic condition</strong></td></tr>
           
@@ -6782,7 +6965,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">88)</th>
-            <td><span class="badge record__id">nih_obesity</span></td>
+            <td><span class="badge record__id">nih_obesity</span> <a class="record__anchor" href="#nih_obesity" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Obesity (BMI &gt;= 30)</strong></td></tr>
           
@@ -6797,7 +6980,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0011122</span> 
+            <div class="term__row"><span class="badge term">MONDO:0011122</span> <span class="term__label">obesity disorder</span></div>
           </td></tr>
           
           
@@ -6854,7 +7037,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">89)</th>
-            <td><span class="badge record__id">nih_osteoporosis</span></td>
+            <td><span class="badge record__id">nih_osteoporosis</span> <a class="record__anchor" href="#nih_osteoporosis" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Osteoporosis</strong></td></tr>
           
@@ -6869,7 +7052,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005298</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005298</span> <span class="term__label">osteoporosis</span></div>
           </td></tr>
           
           
@@ -6926,7 +7109,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">90)</th>
-            <td><span class="badge record__id">nih_pcos</span></td>
+            <td><span class="badge record__id">nih_pcos</span> <a class="record__anchor" href="#nih_pcos" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Polycystic ovary syndrome</strong></td></tr>
           
@@ -6941,7 +7124,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0008487</span> 
+            <div class="term__row"><span class="badge term">MONDO:0008487</span> <span class="term__label">polycystic ovary syndrome</span></div>
           </td></tr>
           
           
@@ -6998,7 +7181,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">91)</th>
-            <td><span class="badge record__id">nih_psoriasis</span></td>
+            <td><span class="badge record__id">nih_psoriasis</span> <a class="record__anchor" href="#nih_psoriasis" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Psoriasis</strong></td></tr>
           
@@ -7013,7 +7196,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005083</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005083</span> <span class="term__label">psoriasis</span></div>
           </td></tr>
           
           
@@ -7070,7 +7253,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">92)</th>
-            <td><span class="badge record__id">nih_renal</span></td>
+            <td><span class="badge record__id">nih_renal</span> <a class="record__anchor" href="#nih_renal" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Renal disease</strong></td></tr>
           
@@ -7085,7 +7268,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005240</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005240</span> <span class="term__label">kidney disorder</span></div>
           </td></tr>
           
           
@@ -7142,7 +7325,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">93)</th>
-            <td><span class="badge record__id">nih_rls</span></td>
+            <td><span class="badge record__id">nih_rls</span> <a class="record__anchor" href="#nih_rls" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Restless leg</strong></td></tr>
           
@@ -7157,7 +7340,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005391</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005391</span> <span class="term__label">restless legs syndrome</span></div>
           </td></tr>
           
           
@@ -7214,7 +7397,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">94)</th>
-            <td><span class="badge record__id">nih_ra</span></td>
+            <td><span class="badge record__id">nih_ra</span> <a class="record__anchor" href="#nih_ra" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Rheumatoid Arthritis</strong></td></tr>
           
@@ -7229,7 +7412,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0008383</span> 
+            <div class="term__row"><span class="badge term">MONDO:0008383</span> <span class="term__label">rheumatoid arthritis</span></div>
           </td></tr>
           
           
@@ -7286,7 +7469,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">95)</th>
-            <td><span class="badge record__id">nih_seasonal_allergies</span></td>
+            <td><span class="badge record__id">nih_seasonal_allergies</span> <a class="record__anchor" href="#nih_seasonal_allergies" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Seasonal Allergies</strong></td></tr>
           
@@ -7301,7 +7484,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005324</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005324</span> <span class="term__label">seasonal allergic rhinitis</span></div>
           </td></tr>
           
           
@@ -7358,7 +7541,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">96)</th>
-            <td><span class="badge record__id">nih_heart_condition</span></td>
+            <td><span class="badge record__id">nih_heart_condition</span> <a class="record__anchor" href="#nih_heart_condition" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Serious heart condition (heart failure, CAD, cardiomyopathies)</strong></td></tr>
           
@@ -7373,7 +7556,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005267</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005267</span> <span class="term__label">heart disorder</span></div>
           </td></tr>
           
           
@@ -7430,7 +7613,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">97)</th>
-            <td><span class="badge record__id">nih_sleep_apnea</span></td>
+            <td><span class="badge record__id">nih_sleep_apnea</span> <a class="record__anchor" href="#nih_sleep_apnea" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Sleep Apnea</strong></td></tr>
           
@@ -7445,7 +7628,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005296</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005296</span> <span class="term__label">sleep apnea syndrome</span></div>
           </td></tr>
           
           
@@ -7502,7 +7685,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">98)</th>
-            <td><span class="badge record__id">nih_substance_use</span></td>
+            <td><span class="badge record__id">nih_substance_use</span> <a class="record__anchor" href="#nih_substance_use" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Substance use</strong></td></tr>
           
@@ -7517,7 +7700,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">NCIT:C18272</span> 
+            <div class="term__row"><span class="badge term">NCIT:C18272</span> <span class="term__label">Substance Abuse</span></div>
           </td></tr>
           
           
@@ -7574,7 +7757,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">99)</th>
-            <td><span class="badge record__id">nih_thalassemia</span></td>
+            <td><span class="badge record__id">nih_thalassemia</span> <a class="record__anchor" href="#nih_thalassemia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Thalassemia</strong></td></tr>
           
@@ -7589,7 +7772,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0000984</span> 
+            <div class="term__row"><span class="badge term">MONDO:0000984</span> <span class="term__label">thalassemia</span></div>
           </td></tr>
           
           
@@ -7646,7 +7829,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">100)</th>
-            <td><span class="badge record__id">nih_t1d</span></td>
+            <td><span class="badge record__id">nih_t1d</span> <a class="record__anchor" href="#nih_t1d" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Type 1 Diabetes</strong></td></tr>
           
@@ -7661,7 +7844,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005147</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005147</span> <span class="term__label">type 1 diabetes mellitus</span></div>
           </td></tr>
           
           
@@ -7718,7 +7901,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">101)</th>
-            <td><span class="badge record__id">nih_t2dm</span></td>
+            <td><span class="badge record__id">nih_t2dm</span> <a class="record__anchor" href="#nih_t2dm" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Type 2 Diabetes</strong></td></tr>
           
@@ -7733,7 +7916,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0005148</span> 
+            <div class="term__row"><span class="badge term">MONDO:0005148</span> <span class="term__label">type 2 diabetes mellitus</span></div>
           </td></tr>
           
           
@@ -7787,8 +7970,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Symptoms</h2>
+  <section class="section" id="section-13">
+    <h2 class="section__name">Symptoms<span class="section__count">27 data elements</span></h2>
 
     
     <article class="record" id="nih_cough">
@@ -7796,7 +7979,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">102)</th>
-            <td><span class="badge record__id">nih_cough</span></td>
+            <td><span class="badge record__id">nih_cough</span> <a class="record__anchor" href="#nih_cough" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cough</strong></td></tr>
           
@@ -7811,7 +7994,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000614</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000614</span> <span class="term__label">cough</span></div>
           </td></tr>
           
           
@@ -7876,7 +8059,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">103)</th>
-            <td><span class="badge record__id">nih_fever_chills</span></td>
+            <td><span class="badge record__id">nih_fever_chills</span> <a class="record__anchor" href="#nih_fever_chills" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Fever or Chills</strong></td></tr>
           
@@ -7891,7 +8074,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000613</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000613</span> <span class="term__label">fever</span></div>
           </td></tr>
           
           
@@ -7956,7 +8139,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">104)</th>
-            <td><span class="badge record__id">nih_diff_breath</span></td>
+            <td><span class="badge record__id">nih_diff_breath</span> <a class="record__anchor" href="#nih_diff_breath" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Shortness of breath or difficulty breathing</strong></td></tr>
           
@@ -7971,7 +8154,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0019153</span> 
+            <div class="term__row"><span class="badge term">SYMP:0019153</span> <span class="term__label">dyspnea</span></div>
           </td></tr>
           
           
@@ -8036,7 +8219,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">105)</th>
-            <td><span class="badge record__id">nih_headache</span></td>
+            <td><span class="badge record__id">nih_headache</span> <a class="record__anchor" href="#nih_headache" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Headache</strong></td></tr>
           
@@ -8051,7 +8234,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000504</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000504</span> <span class="term__label">headache</span></div>
           </td></tr>
           
           
@@ -8115,7 +8298,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">106)</th>
-            <td><span class="badge record__id">nih_muscle_ache</span></td>
+            <td><span class="badge record__id">nih_muscle_ache</span> <a class="record__anchor" href="#nih_muscle_ache" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Muscle ache</strong></td></tr>
           
@@ -8130,7 +8313,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000626</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000626</span> <span class="term__label">obsolete myalgia</span></div>
           </td></tr>
           
           
@@ -8195,7 +8378,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">107)</th>
-            <td><span class="badge record__id">nih_olfactory</span></td>
+            <td><span class="badge record__id">nih_olfactory</span> <a class="record__anchor" href="#nih_olfactory" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">New loss of taste or smell</strong></td></tr>
           
@@ -8210,7 +8393,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0020004</span> 
+            <div class="term__row"><span class="badge term">SYMP:0020004</span> <span class="term__label">ageusia</span></div>
           </td></tr>
           
           
@@ -8275,7 +8458,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">108)</th>
-            <td><span class="badge record__id">nih_fatigue</span></td>
+            <td><span class="badge record__id">nih_fatigue</span> <a class="record__anchor" href="#nih_fatigue" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Excessive fatigue</strong></td></tr>
           
@@ -8290,7 +8473,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000280</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000280</span> <span class="term__label">extreme fatigue</span></div>
           </td></tr>
           
           
@@ -8354,7 +8537,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">109)</th>
-            <td><span class="badge record__id">nih_nausea_vomiting_diarrhea</span></td>
+            <td><span class="badge record__id">nih_nausea_vomiting_diarrhea</span> <a class="record__anchor" href="#nih_nausea_vomiting_diarrhea" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Nausea, vomiting, or diarrhea</strong></td></tr>
           
@@ -8369,7 +8552,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000458</span> <span class="badge term">SYMP:0019145</span> <span class="badge term">SYMP:0000570</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000458</span> <span class="term__label">nausea</span></div><div class="term__row"><span class="badge term">SYMP:0019145</span> <span class="term__label">vomiting</span></div><div class="term__row"><span class="badge term">SYMP:0000570</span> <span class="term__label">diarrhea</span></div>
           </td></tr>
           
           
@@ -8434,7 +8617,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">110)</th>
-            <td><span class="badge record__id">nih_abdom_pain</span></td>
+            <td><span class="badge record__id">nih_abdom_pain</span> <a class="record__anchor" href="#nih_abdom_pain" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Abdominal pain</strong></td></tr>
           
@@ -8449,7 +8632,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000457</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000457</span> <span class="term__label">abdominal pain</span></div>
           </td></tr>
           
           
@@ -8513,7 +8696,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">111)</th>
-            <td><span class="badge record__id">nih_skin_rash</span></td>
+            <td><span class="badge record__id">nih_skin_rash</span> <a class="record__anchor" href="#nih_skin_rash" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Skin rash</strong></td></tr>
           
@@ -8528,7 +8711,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000487</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000487</span> <span class="term__label">rash</span></div>
           </td></tr>
           
           
@@ -8592,7 +8775,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">112)</th>
-            <td><span class="badge record__id">nih_conjunctivitis</span></td>
+            <td><span class="badge record__id">nih_conjunctivitis</span> <a class="record__anchor" href="#nih_conjunctivitis" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Conjunctivitis</strong></td></tr>
           
@@ -8607,7 +8790,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">MONDO:0003799</span> 
+            <div class="term__row"><span class="badge term">MONDO:0003799</span> <span class="term__label">conjunctivitis</span></div>
           </td></tr>
           
           
@@ -8670,7 +8853,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">113)</th>
-            <td><span class="badge record__id">nih_throat_congestion_nose</span></td>
+            <td><span class="badge record__id">nih_throat_congestion_nose</span> <a class="record__anchor" href="#nih_throat_congestion_nose" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Sore throat, congestion or runny nose</strong></td></tr>
           
@@ -8685,7 +8868,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000505</span> <span class="badge term">SYMP:0000237</span> <span class="badge term">SYMP:0000372</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000505</span> <span class="term__label">throat pain</span></div><div class="term__row"><span class="badge term">SYMP:0000237</span> <span class="term__label">congestion</span></div><div class="term__row"><span class="badge term">SYMP:0000372</span> <span class="term__label">rhinorrhea</span></div>
           </td></tr>
           
           
@@ -8748,7 +8931,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">114)</th>
-            <td><span class="badge record__id">nih_red_eyes</span></td>
+            <td><span class="badge record__id">nih_red_eyes</span> <a class="record__anchor" href="#nih_red_eyes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Red or painful eyes</strong></td></tr>
           
@@ -8763,7 +8946,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000446</span> <span class="badge term">SYMP:0000828</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000446</span> <span class="term__label">bloodshot eye</span></div><div class="term__row"><span class="badge term">SYMP:0000828</span> <span class="term__label">sore eyes</span></div>
           </td></tr>
           
           
@@ -8826,7 +9009,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">115)</th>
-            <td><span class="badge record__id">nih_high_temp</span></td>
+            <td><span class="badge record__id">nih_high_temp</span> <a class="record__anchor" href="#nih_high_temp" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">A temperature greater than 100.4 °F</strong></td></tr>
           
@@ -8841,7 +9024,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000613</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000613</span> <span class="term__label">fever</span></div>
           </td></tr>
           
           
@@ -8904,7 +9087,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">116)</th>
-            <td><span class="badge record__id">nih_other_symp</span></td>
+            <td><span class="badge record__id">nih_other_symp</span> <a class="record__anchor" href="#nih_other_symp" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other</strong></td></tr>
           
@@ -8919,7 +9102,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000462</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000462</span> <span class="term__label">symptom</span></div>
           </td></tr>
           
           
@@ -8982,7 +9165,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">117)</th>
-            <td><span class="badge record__id">nih_no_sympt</span></td>
+            <td><span class="badge record__id">nih_no_sympt</span> <a class="record__anchor" href="#nih_no_sympt" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">None of the above</strong></td></tr>
           
@@ -9056,7 +9239,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">118)</th>
-            <td><span class="badge record__id">nih_wheezing</span></td>
+            <td><span class="badge record__id">nih_wheezing</span> <a class="record__anchor" href="#nih_wheezing" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Wheezing</strong></td></tr>
           
@@ -9071,7 +9254,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000604</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000604</span> <span class="term__label">wheezing</span></div>
           </td></tr>
           
           
@@ -9128,7 +9311,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">119)</th>
-            <td><span class="badge record__id">nih_blue_lips</span></td>
+            <td><span class="badge record__id">nih_blue_lips</span> <a class="record__anchor" href="#nih_blue_lips" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Bluish lips or face</strong></td></tr>
           
@@ -9143,7 +9326,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000537</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000537</span> <span class="term__label">cyanosis</span></div>
           </td></tr>
           
           
@@ -9200,7 +9383,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">120)</th>
-            <td><span class="badge record__id">nih_balance</span></td>
+            <td><span class="badge record__id">nih_balance</span> <a class="record__anchor" href="#nih_balance" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Loss of balance</strong></td></tr>
           
@@ -9215,7 +9398,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000318</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000318</span> <span class="term__label">loss of balance</span></div>
           </td></tr>
           
           
@@ -9272,7 +9455,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">121)</th>
-            <td><span class="badge record__id">nih_slurred_peech</span></td>
+            <td><span class="badge record__id">nih_slurred_peech</span> <a class="record__anchor" href="#nih_slurred_peech" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Slurred speech</strong></td></tr>
           
@@ -9287,7 +9470,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000342</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000342</span> <span class="term__label">slurred speech</span></div>
           </td></tr>
           
           
@@ -9344,7 +9527,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">122)</th>
-            <td><span class="badge record__id">nih_confusion</span></td>
+            <td><span class="badge record__id">nih_confusion</span> <a class="record__anchor" href="#nih_confusion" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">New confusion</strong></td></tr>
           
@@ -9359,7 +9542,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000016</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000016</span> <span class="term__label">confusion</span></div>
           </td></tr>
           
           
@@ -9416,7 +9599,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">123)</th>
-            <td><span class="badge record__id">nih_neuro_shakes</span></td>
+            <td><span class="badge record__id">nih_neuro_shakes</span> <a class="record__anchor" href="#nih_neuro_shakes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Unusual shivering or shaking</strong></td></tr>
           
@@ -9431,7 +9614,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000662</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000662</span> <span class="term__label">shakes</span></div>
           </td></tr>
           
           
@@ -9488,7 +9671,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">124)</th>
-            <td><span class="badge record__id">nih_numb_extremities</span></td>
+            <td><span class="badge record__id">nih_numb_extremities</span> <a class="record__anchor" href="#nih_numb_extremities" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Tingling or numbness or swelling of hands and feet</strong></td></tr>
           
@@ -9503,7 +9686,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000834</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000834</span> <span class="term__label">hypoesthesia</span></div>
           </td></tr>
           
           
@@ -9560,7 +9743,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">125)</th>
-            <td><span class="badge record__id">nih_sweating</span></td>
+            <td><span class="badge record__id">nih_sweating</span> <a class="record__anchor" href="#nih_sweating" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Excessive sweating</strong></td></tr>
           
@@ -9575,7 +9758,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0019152</span> 
+            <div class="term__row"><span class="badge term">SYMP:0019152</span> <span class="term__label">diaphoresis</span></div>
           </td></tr>
           
           
@@ -9632,7 +9815,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">126)</th>
-            <td><span class="badge record__id">nih_seizures</span></td>
+            <td><span class="badge record__id">nih_seizures</span> <a class="record__anchor" href="#nih_seizures" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Seizures</strong></td></tr>
           
@@ -9647,7 +9830,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000124</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000124</span> <span class="term__label">seizure</span></div>
           </td></tr>
           
           
@@ -9704,7 +9887,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">127)</th>
-            <td><span class="badge record__id">nih_rash_toes</span></td>
+            <td><span class="badge record__id">nih_rash_toes</span> <a class="record__anchor" href="#nih_rash_toes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Red or purple rash or lesions on toes</strong></td></tr>
           
@@ -9719,7 +9902,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000487</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000487</span> <span class="term__label">rash</span></div>
           </td></tr>
           
           
@@ -9776,7 +9959,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">128)</th>
-            <td><span class="badge record__id">nih_appetite</span></td>
+            <td><span class="badge record__id">nih_appetite</span> <a class="record__anchor" href="#nih_appetite" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Change in or loss of appetite</strong></td></tr>
           
@@ -9791,7 +9974,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">SYMP:0000309</span> <span class="badge term">SYMP:0000245</span> 
+            <div class="term__row"><span class="badge term">SYMP:0000309</span> <span class="term__label">loss of appetite</span></div><div class="term__row"><span class="badge term">SYMP:0000245</span> <span class="term__label">decreased appetite</span></div>
           </td></tr>
           
           
@@ -9845,8 +10028,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Health Status</h2>
+  <section class="section" id="section-14">
+    <h2 class="section__name">Health Status<span class="section__count">5 data elements</span></h2>
 
     
     <article class="record" id="nih_health_status">
@@ -9854,7 +10037,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">129)</th>
-            <td><span class="badge record__id">nih_health_status</span></td>
+            <td><span class="badge record__id">nih_health_status</span> <a class="record__anchor" href="#nih_health_status" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Would you say that (your) health in general is excellent, very good, good, fair, or poor?</strong></td></tr>
           
@@ -9939,7 +10122,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">130)</th>
-            <td><span class="badge record__id">nih_height</span></td>
+            <td><span class="badge record__id">nih_height</span> <a class="record__anchor" href="#nih_height" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your height in inches?</strong></td></tr>
           
@@ -9956,7 +10139,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000119</span> 
+            <div class="term__row"><span class="badge term">PATO:0000119</span> <span class="term__label">height (quality)</span></div>
           </td></tr>
           
           
@@ -9981,7 +10164,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">131)</th>
-            <td><span class="badge record__id">nih_weight</span></td>
+            <td><span class="badge record__id">nih_weight</span> <a class="record__anchor" href="#nih_weight" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your weight in pounds?</strong></td></tr>
           
@@ -9998,7 +10181,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000125</span> 
+            <div class="term__row"><span class="badge term">PATO:0000125</span> <span class="term__label">mass (quality)</span></div>
           </td></tr>
           
           
@@ -10023,7 +10206,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">132)</th>
-            <td><span class="badge record__id">nih_height_category</span></td>
+            <td><span class="badge record__id">nih_height_category</span> <a class="record__anchor" href="#nih_height_category" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Approximately what is your height?</strong></td></tr>
           
@@ -10038,7 +10221,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000119</span> 
+            <div class="term__row"><span class="badge term">PATO:0000119</span> <span class="term__label">height (quality)</span></div>
           </td></tr>
           
           
@@ -10083,7 +10266,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">133)</th>
-            <td><span class="badge record__id">nih_weight_category</span></td>
+            <td><span class="badge record__id">nih_weight_category</span> <a class="record__anchor" href="#nih_weight_category" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Approximately what is your weight?</strong></td></tr>
           
@@ -10098,7 +10281,7 @@ code {
           
           
           <tr><th>Terms</th><td>
-            <span class="badge term">PATO:0000125</span> 
+            <div class="term__row"><span class="badge term">PATO:0000125</span> <span class="term__label">mass (quality)</span></div>
           </td></tr>
           
           
@@ -10141,5 +10324,6 @@ code {
   </section>
   
 </div>
+<a class="back-to-top" href="#top" title="Back to top">&uarr;</a>
 </body>
 </html>

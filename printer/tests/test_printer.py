@@ -141,3 +141,115 @@ def test_precondition_renders_richly():
     assert 'includes <span class="badge choice__value">3</span> <em>(Headache)</em>' in html
     # The raw grammar text survives as a tooltip.
     assert 'title="smoker = &#34;1&#34; and packs_known &lt;&gt; &#34;&#34;"' in html
+
+
+def test_visual_navigation_and_badges():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    text = (
+        "Id,Label,Datatype,Section,Cardinality,Required\n"
+        "a,A,string,One,single,y\n"
+        "b,B,integer,Two,multiple,\n"
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    # TOC with per-section counts; sections carry ids and counts.
+    assert '<nav class="toc">' in html
+    assert '<h2 class="toc__title">Sections</h2>' in html
+    assert '<a href="#section-1">One</a>' in html
+    assert '<span class="toc__count">1</span>' in html
+    assert '<span class="section__count">1 data element</span>' in html
+    # Cardinality is always shown explicitly, single included.
+    assert html.count("Cardinality") == 2
+    assert ">single</span>" in html and ">multiple</span>" in html
+    # Required gets its own badge class; back-to-top and anchors exist.
+    assert 'class="badge record__required"' in html
+    assert 'class="back-to-top"' in html
+    assert 'class="record__anchor" href="#a"' in html
+
+
+def test_section_paths_indent_in_toc():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    text = (
+        "Id,Label,Datatype,Section\n"
+        "a,A,string,Technology Metadata\n"
+        "b,B,string,Technology Metadata/Aptamer\n"
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    # Parent at depth 0, child at depth 1 showing only the last path segment.
+    assert 'toc__item--depth-0"><a href="#section-1">Technology Metadata</a>' in html
+    assert 'toc__item--depth-1"><a href="#section-2">Aptamer</a>' in html
+    # The card heading keeps the full path (unchanged, presentational split only).
+    assert ">Technology Metadata/Aptamer<" in html
+
+
+def test_nested_child_shows_parent_context():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    # A parent immediately followed by its children: they nest and carry the
+    # parent as muted context, distinguishing the two 'Antigen' leaves.
+    text = (
+        "Id,Label,Datatype,Section\n"
+        "a,A,string,Sample\n"
+        "b,B,string,Sample/Antigen\n"
+        "c,C,string,Sampe/Antigen\n"
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    nested = 'toc__item--depth-1"><a href="#section-2">'
+    assert nested + '<span class="toc__parent">Sample › </span>Antigen' in html
+    # 'Sampe/Antigen' is orphaned (its parent 'Sampe' never appeared): it
+    # renders flush-left with its full path, not falsely nested under Sample.
+    assert 'toc__item--depth-0"><a href="#section-3">Sampe/Antigen' in html
+
+
+def test_orphaned_child_not_falsely_nested():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    # Sample's child is separated from it by an unrelated 'Target' section, so
+    # it must NOT indent under Target — it renders flush-left with full path.
+    text = (
+        "Id,Label,Datatype,Section\n"
+        "a,A,string,Sample\n"
+        "t,T,string,Target\n"
+        "b,B,string,Sample/Antigen\n"
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    assert 'toc__item--depth-0"><a href="#section-3">Sample/Antigen</a>' in html
+    # Nothing is nested: no item element carries the depth-1 class. (The class
+    # is defined in the stylesheet, so check for its use on an <li>, not the
+    # bare string.)
+    assert 'toc__item toc__item--depth-1"' not in html
+
+
+def test_term_labels_render_beside_badges():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    text = (
+        "Id,Label,Datatype,Terms,Enumeration\n"
+        'sex,Sex,integer,GSSO:002199,"""0""=[Female](NCIT:C16576)"\n'
+    )
+    dd = load_dictionary(io.StringIO(text))
+    # term_identifiers gathers both Terms and choice meanings.
+    assert dd.term_identifiers() == {"GSSO:002199", "NCIT:C16576"}
+    # With labels supplied, they render beside the badges.
+    html = render_html(dd, term_labels={"GSSO:002199": "race", "NCIT:C16576": "Female"})
+    badge = '<span class="badge term">GSSO:002199</span>'
+    assert badge + ' <span class="term__label">race</span>' in html
+    assert '<span class="term__label">Female</span>' in html
+    # Without labels, terms stay bare (default; no network, deterministic).
+    assert '<span class="term__label">' not in render_html(dd)

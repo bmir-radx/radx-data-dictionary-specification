@@ -99,13 +99,17 @@ def _element_from_row(
     label = _build_label(sheet, row)
     choices = parse_choices(sheet.get(row, headers.CHOICES))
     datatype = extract_datatype(sheet, row)
+    # A cell may hold several chosen values for `checkbox` (standard REDCap)
+    # and for `list` (a RADx-rad extension type, e.g. biorecognition_type);
+    # every other field type is single-valued.
+    field_type = sheet.get(row, headers.FIELD_TYPE)
     return DataElement(
         id=field_id,
         label=label,
         datatype=datatype,
         description=_build_description(sheet, row, field_id, label, choices, datatype),
         section=section or None,
-        cardinality="multiple" if sheet.get(row, headers.FIELD_TYPE) == "checkbox" else "single",
+        cardinality="multiple" if field_type in ("checkbox", "list") else "single",
         enumeration=tuple(
             EnumItem(value=value, label=choice_label) for value, choice_label in choices.items()
         ),

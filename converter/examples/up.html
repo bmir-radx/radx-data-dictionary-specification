@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>up data dictionary</title>
+<title>RADx-UP Data Dictionary</title>
 <style>:root {
   /* Badge colours, from the original Java template. */
   --data-element: #68b622;
@@ -12,18 +12,37 @@
   --choice: #59aaf8;
   --missing: #86878a;
   --term: #9d7bdb;
+  --required: #d64550;
   /* Card/layout neutrals. */
   --ink: #1f2933;
   --muted: #6b7280;
   --line: #e5e7eb;
   --card: #ffffff;
   --page: #f4f6f8;
+  --stripe: #f6f8fa;
+  --code-bg: #eef1f4;
+  --precondition-tint: #fdf6ec;
+}
+
+/* Dark palette: neutrals flip; the badge colours already read well on dark. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --line: #374151;
+    --card: #1f2933;
+    --page: #111827;
+    --stripe: #242f3d;
+    --code-bg: #2a3442;
+    --precondition-tint: #2e2a20;
+  }
 }
 
 * { box-sizing: border-box; }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Liberation Sans", sans-serif;
   color: var(--ink);
   line-height: 1.55;
   margin: 0;
@@ -43,7 +62,73 @@ body {
   margin: 0 0 1.5rem;
 }
 
-.section { margin-top: 2.5rem; }
+/* Table of contents: section names with element counts. */
+.toc {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem 1rem;
+  margin-bottom: 2rem;
+}
+.toc__title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0.25rem 0 0.6rem;
+}
+.toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.15rem 0;
+}
+/* The link takes the available width so the count trails just after the name
+   (a hair of dotted leader), keeping counts near their labels at every
+   indent rather than flung to a ragged right edge. */
+.toc__list a { flex: 0 1 auto; }
+.toc__item::after {
+  content: "";
+  flex: 1 1 auto;
+  border-bottom: 1px dotted var(--line);
+  transform: translateY(-0.2em);
+  min-width: 1rem;
+}
+/* Sections use a Parent/Child path convention; nested entries step in by one
+   level each, with a guide rail immediately to their left. The rail sits on
+   the item (a left border with matching padding), so consecutive siblings'
+   rails join into one continuous line and the line hugs the label rather
+   than floating in a gap. */
+.toc__item--depth-1,
+.toc__item--depth-2,
+.toc__item--depth-3 {
+  border-left: 2px solid var(--line);
+  padding-left: 0.85rem;
+}
+.toc__item--depth-1 { margin-left: 0.6rem; }
+.toc__item--depth-2 { margin-left: 1.7rem; }
+.toc__item--depth-3 { margin-left: 2.8rem; }
+.toc__item:hover { border-left-color: var(--data-element); }
+.toc__list a { color: var(--ink); text-decoration: none; }
+.toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
+.toc__count {
+  color: var(--muted);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+/* Parent path shown as muted context to disambiguate same-leaf siblings. */
+.toc__parent { color: var(--muted); }
+
+/* Resolved ontology term name shown beside a term/meaning badge. */
+.term__label { color: var(--muted); font-size: 0.9em; }
+
+.section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
 .section__name {
   font-size: 1.15rem;
   font-weight: 700;
@@ -53,6 +138,14 @@ body {
   margin: 0 0 1rem;
   padding-bottom: 0.4rem;
   border-bottom: 2px solid var(--line);
+}
+.section__count {
+  float: right;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
 }
 
 /* Each data element is a card. */
@@ -71,21 +164,39 @@ body {
 .record__table > tbody > tr:last-child { border-bottom: none; }
 .record__table th {
   text-align: left;
-  vertical-align: top;
+  /* Baseline-align the label with its value: a value cell often holds a
+     badge (taller box, padded) whose text would otherwise sit below the
+     plain label if the cell tops were aligned. */
+  vertical-align: baseline;
   width: 9rem;
   padding: 0.55rem 0.75rem 0.55rem 0;
   color: var(--muted);
   font-weight: 600;
   font-size: 0.9rem;
 }
-.record__table td { padding: 0.55rem 0; vertical-align: top; }
+.record__table td { padding: 0.55rem 0; vertical-align: baseline; }
 
 .record__number {
   color: var(--data-element);
   font-weight: 700;
   font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
 }
 .record__label { font-size: 1.05rem; }
+
+/* Per-card deep link. Always present but quiet (a faint link, not
+   decoration); it strengthens on hover/focus. A hover-only reveal was tried
+   but is invisible to touch users and reads as a stray glyph when it does
+   surface, so the mark stays visible. */
+.record__anchor {
+  color: var(--line);
+  text-decoration: none;
+  margin-left: 0.15rem;
+  transition: color 0.15s;
+}
+.record:hover .record__anchor { color: var(--muted); }
+.record__anchor:hover,
+.record__anchor:focus { color: var(--data-element-dark); }
 
 .badge {
   display: inline-block;
@@ -107,6 +218,16 @@ body {
 }
 a.record__id:hover { background: var(--data-element-dark); }
 .record__facet { background: var(--facet); color: #fff; }
+.record__required { background: var(--required); color: #fff; }
+
+/* The precondition is logic, not a static fact: a tinted chip marks it out. */
+.record__precondition {
+  display: inline-block;
+  background: var(--precondition-tint);
+  border-left: 3px solid var(--facet);
+  border-radius: 0 6px 6px 0;
+  padding: 0.35rem 0.6rem;
+}
 .term {
   background: var(--term);
   color: #fff;
@@ -122,16 +243,37 @@ a.record__id:hover { background: var(--data-element-dark); }
 .choice__value--missing-value-code { background: var(--missing); }
 
 code {
-  background: #eef1f4;
+  background: var(--code-bg);
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 0.9em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* Enumeration: value badge + label per row. */
-.enumeration { border-collapse: collapse; }
-.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0; vertical-align: middle; }
+/* Floating back-to-top control. */
+.back-to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.12);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.back-to-top:hover { color: var(--data-element-dark); border-color: var(--data-element); }
+
+/* Enumeration: value badge + label per row, striped for long lists. */
+.enumeration { border-collapse: collapse; width: 100%; }
+.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0.25rem; vertical-align: middle; }
+.enumeration > tbody > tr:nth-child(even) { background: var(--stripe); }
 .choice__label { color: var(--ink); }
 
 .record__description, .record__notes { max-width: 62ch; }
@@ -151,16 +293,64 @@ code {
     border-color: #d0d5dd;
   }
   .badge { border: none; }
+  .back-to-top, .record__anchor { display: none; }
 }
 </style>
 </head>
-<body>
+<body id="top">
 <div class="container">
-  <h1 class="title">up data dictionary</h1>
+  <h1 class="title">RADx-UP Data Dictionary</h1>
 
   
-  <section class="section">
-    <h2 class="section__name"></h2>
+  <nav class="toc">
+    <h2 class="toc__title">Sections</h2>
+    <ul class="toc__list">
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-1">(no section)</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-2">Consent</a><span class="toc__count">8</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-3">Demographics</a><span class="toc__count">13</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-4">Housing</a><span class="toc__count">5</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-5">Employment</a><span class="toc__count">13</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-6">Spoken Language</a><span class="toc__count">4</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-7">Family Income</a><span class="toc__count">5</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-8">Medical History</a><span class="toc__count">18</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-9">Height</a><span class="toc__count">5</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-10">Weight</a><span class="toc__count">3</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-11">Self-reported Health</a><span class="toc__count">10</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-12">Vaccination</a><span class="toc__count">3</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-13">Reasons for Getting/Not Getting a COVID 19 Vaccine</a><span class="toc__count">5</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-14">Tested previously for COVID-19</a><span class="toc__count">1</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-15">Tested positive for COVID-19</a><span class="toc__count">7</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-16">Accessibility to testing</a><span class="toc__count">25</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-17">This is for projects that are doing acute testing. To collect as part of the testing procedure by the study team.</a><span class="toc__count">14</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-18">Alcohol and Tobacco/Nicotine Use</a><span class="toc__count">5</span></li>
+    
+      <li class="toc__item toc__item--depth-0"><a href="#section-19">About you</a><span class="toc__count">14</span></li>
+    
+    </ul>
+  </nav>
+  
+
+  
+  <section class="section" id="section-1">
+    <h2 class="section__name"><span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="record_id">
@@ -168,7 +358,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">1)</th>
-            <td><span class="badge record__id">record_id</span></td>
+            <td><span class="badge record__id">record_id</span> <a class="record__anchor" href="#record_id" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Record ID</strong></td></tr>
           
@@ -194,8 +384,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Consent</h2>
+  <section class="section" id="section-2">
+    <h2 class="section__name">Consent<span class="section__count">8 data elements</span></h2>
 
     
     <article class="record" id="consent_given">
@@ -203,7 +393,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">2)</th>
-            <td><span class="badge record__id">consent_given</span></td>
+            <td><span class="badge record__id">consent_given</span> <a class="record__anchor" href="#consent_given" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Is consent required for this study?</strong></td></tr>
           
@@ -256,7 +446,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">3)</th>
-            <td><span class="badge record__id">consentdt_mdy</span></td>
+            <td><span class="badge record__id">consentdt_mdy</span> <a class="record__anchor" href="#consentdt_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Consent (MM/DD/YYYY)</strong></td></tr>
           
@@ -291,7 +481,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">4)</th>
-            <td><span class="badge record__id">consent_ident</span></td>
+            <td><span class="badge record__id">consent_ident</span> <a class="record__anchor" href="#consent_ident" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">I agree to let the Duke Clinical Research Institute collect the following identifiable information: name, address, contact information, and date of birth. (This is to enable linkage of deidentified data.)</strong></td></tr>
           
@@ -347,7 +537,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">5)</th>
-            <td><span class="badge record__id">consent_zip_2</span></td>
+            <td><span class="badge record__id">consent_zip_2</span> <a class="record__anchor" href="#consent_zip_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">I agree to let the Duke Clinical Research Institute collect my zip code.</strong></td></tr>
           
@@ -403,7 +593,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">6)</th>
-            <td><span class="badge record__id">consent_recontact</span></td>
+            <td><span class="badge record__id">consent_recontact</span> <a class="record__anchor" href="#consent_recontact" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">I agree to be contacted for future research.</strong></td></tr>
           
@@ -459,7 +649,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">7)</th>
-            <td><span class="badge record__id">current_county</span></td>
+            <td><span class="badge record__id">current_county</span> <a class="record__anchor" href="#current_county" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">County</strong></td></tr>
           
@@ -491,7 +681,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">8)</th>
-            <td><span class="badge record__id">zip_code</span></td>
+            <td><span class="badge record__id">zip_code</span> <a class="record__anchor" href="#zip_code" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Zip Code</strong></td></tr>
           
@@ -523,7 +713,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">9)</th>
-            <td><span class="badge record__id">sociodem_date_mdy</span></td>
+            <td><span class="badge record__id">sociodem_date_mdy</span> <a class="record__anchor" href="#sociodem_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Sociodemographic Data Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -552,8 +742,8 @@ code {
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Demographics</h2>
+  <section class="section" id="section-3">
+    <h2 class="section__name">Demographics<span class="section__count">13 data elements</span></h2>
 
     
     <article class="record" id="race_ethn_race">
@@ -561,7 +751,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">10)</th>
-            <td><span class="badge record__id">race_ethn_race</span></td>
+            <td><span class="badge record__id">race_ethn_race</span> <a class="record__anchor" href="#race_ethn_race" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your race?
 
@@ -649,7 +839,7 @@ Mark one or more boxes. (Check all that apply)</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">11)</th>
-            <td><span class="badge record__id">race_ethn_asian_detail_3</span></td>
+            <td><span class="badge record__id">race_ethn_asian_detail_3</span> <a class="record__anchor" href="#race_ethn_asian_detail_3" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">(Check all that apply)</strong></td></tr>
           
@@ -831,7 +1021,7 @@ Mark one or more boxes. (Check all that apply)</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">12)</th>
-            <td><span class="badge record__id">race_ethn_islander_detail_2</span></td>
+            <td><span class="badge record__id">race_ethn_islander_detail_2</span> <a class="record__anchor" href="#race_ethn_islander_detail_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">(Check all that apply)</strong></td></tr>
           
@@ -965,7 +1155,7 @@ Mark one or more boxes. (Check all that apply)</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">13)</th>
-            <td><span class="badge record__id">race_ethn_orig_other</span></td>
+            <td><span class="badge record__id">race_ethn_orig_other</span> <a class="record__anchor" href="#race_ethn_orig_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Specify other origin.</strong></td></tr>
           
@@ -1002,7 +1192,7 @@ Mark one or more boxes. (Check all that apply)</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">14)</th>
-            <td><span class="badge record__id">race_ethn_hispanic</span></td>
+            <td><span class="badge record__id">race_ethn_hispanic</span> <a class="record__anchor" href="#race_ethn_hispanic" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you of Hispanic, Latino, or Spanish origin?</strong></td></tr>
           
@@ -1064,7 +1254,7 @@ Mark one or more boxes. (Check all that apply)</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">15)</th>
-            <td><span class="badge record__id">race_ethn_hispanic_detail_2</span></td>
+            <td><span class="badge record__id">race_ethn_hispanic_detail_2</span> <a class="record__anchor" href="#race_ethn_hispanic_detail_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Please specify your origin</strong></td></tr>
           
@@ -1156,7 +1346,7 @@ Mark one or more boxes. (Check all that apply)</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">16)</th>
-            <td><span class="badge record__id">race_ethn_hispanic_other</span></td>
+            <td><span class="badge record__id">race_ethn_hispanic_other</span> <a class="record__anchor" href="#race_ethn_hispanic_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Please specify other Hispanic, Latino, or Spanish origin. For example, Salvadoran, Dominican, Colombian, Guatemalan, Spaniard, Ecuadorian, etc.</strong></td></tr>
           
@@ -1191,7 +1381,7 @@ Mark one or more boxes. (Check all that apply)</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">17)</th>
-            <td><span class="badge record__id">age_yrs</span></td>
+            <td><span class="badge record__id">age_yrs</span> <a class="record__anchor" href="#age_yrs" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Age
 
@@ -1228,7 +1418,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">18)</th>
-            <td><span class="badge record__id">bio_sex_birth_2</span></td>
+            <td><span class="badge record__id">bio_sex_birth_2</span> <a class="record__anchor" href="#bio_sex_birth_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What was your sex assigned at birth on your birth certificate?</strong></td></tr>
           
@@ -1302,7 +1492,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">19)</th>
-            <td><span class="badge record__id">gender_identity_term_2</span></td>
+            <td><span class="badge record__id">gender_identity_term_2</span> <a class="record__anchor" href="#gender_identity_term_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What terms best express how you describe your gender identity?</strong></td></tr>
           
@@ -1403,7 +1593,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">20)</th>
-            <td><span class="badge record__id">pregnancy_status</span></td>
+            <td><span class="badge record__id">pregnancy_status</span> <a class="record__anchor" href="#pregnancy_status" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you currently pregnant?</strong></td></tr>
           
@@ -1472,7 +1662,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">21)</th>
-            <td><span class="badge record__id">sex_orient_id</span></td>
+            <td><span class="badge record__id">sex_orient_id</span> <a class="record__anchor" href="#sex_orient_id" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Which of the following best represents how you think of yourself at this time?</strong></td></tr>
           
@@ -1549,7 +1739,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">22)</th>
-            <td><span class="badge record__id">edu_years_of_school</span></td>
+            <td><span class="badge record__id">edu_years_of_school</span> <a class="record__anchor" href="#edu_years_of_school" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is the highest level of education you have achieved outside or in the United States?  Grades roughly equivalent to years of school.</strong></td></tr>
           
@@ -1647,8 +1837,8 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Housing</h2>
+  <section class="section" id="section-4">
+    <h2 class="section__name">Housing<span class="section__count">5 data elements</span></h2>
 
     
     <article class="record" id="housing_date_mdy">
@@ -1656,7 +1846,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">23)</th>
-            <td><span class="badge record__id">housing_date_mdy</span></td>
+            <td><span class="badge record__id">housing_date_mdy</span> <a class="record__anchor" href="#housing_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Housing, Employment and Insurance Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -1688,7 +1878,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">24)</th>
-            <td><span class="badge record__id">household_famgen_3</span></td>
+            <td><span class="badge record__id">household_famgen_3</span> <a class="record__anchor" href="#household_famgen_3" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What best describes the people at your home:</strong></td></tr>
           
@@ -1777,7 +1967,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">25)</th>
-            <td><span class="badge record__id">household_homeless</span></td>
+            <td><span class="badge record__id">household_homeless</span> <a class="record__anchor" href="#household_homeless" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you currently living in transitional housing, staying in a shelter, or experiencing homelessness?</strong></td></tr>
           
@@ -1845,7 +2035,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">26)</th>
-            <td><span class="badge record__id">household_congregate_3</span></td>
+            <td><span class="badge record__id">household_congregate_3</span> <a class="record__anchor" href="#household_congregate_3" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you live in any of these?</strong></td></tr>
           
@@ -1961,7 +2151,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">27)</th>
-            <td><span class="badge record__id">household_other</span></td>
+            <td><span class="badge record__id">household_other</span> <a class="record__anchor" href="#household_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Where do you stay/live?</strong></td></tr>
           
@@ -1990,8 +2180,8 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Employment</h2>
+  <section class="section" id="section-5">
+    <h2 class="section__name">Employment<span class="section__count">13 data elements</span></h2>
 
     
     <article class="record" id="jobloss_covid19_2">
@@ -1999,7 +2189,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">28)</th>
-            <td><span class="badge record__id">jobloss_covid19_2</span></td>
+            <td><span class="badge record__id">jobloss_covid19_2</span> <a class="record__anchor" href="#jobloss_covid19_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Have you, or has anyone in your household, experienced a loss of employment income since the start of the COVID-19 pandemic (March 2020)?</strong></td></tr>
           
@@ -2058,7 +2248,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">29)</th>
-            <td><span class="badge record__id">current_employment_status</span></td>
+            <td><span class="badge record__id">current_employment_status</span> <a class="record__anchor" href="#current_employment_status" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">We would like to know about what you do -- are you working now, looking for work, retired, keeping house, a student, or something else?</strong></td></tr>
           
@@ -2162,7 +2352,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">30)</th>
-            <td><span class="badge record__id">cur_employ_stat_specify</span></td>
+            <td><span class="badge record__id">cur_employ_stat_specify</span> <a class="record__anchor" href="#cur_employ_stat_specify" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Current employment status, Other - specify</strong></td></tr>
           
@@ -2199,7 +2389,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">31)</th>
-            <td><span class="badge record__id">employed_ew</span></td>
+            <td><span class="badge record__id">employed_ew</span> <a class="record__anchor" href="#employed_ew" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you considered an essential worker? An essential worker is someone who was required to go to work even when stay at home orders were in place</strong></td></tr>
           
@@ -2270,7 +2460,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">32)</th>
-            <td><span class="badge record__id">employed_healthcare_2</span></td>
+            <td><span class="badge record__id">employed_healthcare_2</span> <a class="record__anchor" href="#employed_healthcare_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Would any of these describe where you work? If you work multiple jobs, select the closest match to your main job.</strong></td></tr>
           
@@ -2387,7 +2577,7 @@ For babies less than 1 year old, do not write the age in months. Write 0 as the 
         <tbody>
           <tr>
             <th class="record__number">33)</th>
-            <td><span class="badge record__id">hi_coverage_type</span></td>
+            <td><span class="badge record__id">hi_coverage_type</span> <a class="record__anchor" href="#hi_coverage_type" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is the primary kind of health insurance or health care plan that you have now? (Exclude plans that pay for only one type of 
 Service (such as, nursing home care, accidents, 
@@ -2464,7 +2654,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">34)</th>
-            <td><span class="badge record__id">hi_loss_covid</span></td>
+            <td><span class="badge record__id">hi_loss_covid</span> <a class="record__anchor" href="#hi_loss_covid" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Did you lose health coverage because of the COVID-19 pandemic?</strong></td></tr>
           
@@ -2526,7 +2716,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">35)</th>
-            <td><span class="badge record__id">cov_pan_chal_hlth_2</span></td>
+            <td><span class="badge record__id">cov_pan_chal_hlth_2</span> <a class="record__anchor" href="#cov_pan_chal_hlth_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Getting the health care I need (including for mental health)</strong></td></tr>
           
@@ -2592,7 +2782,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">36)</th>
-            <td><span class="badge record__id">covid_pandemic_challenges_abod_2</span></td>
+            <td><span class="badge record__id">covid_pandemic_challenges_abod_2</span> <a class="record__anchor" href="#covid_pandemic_challenges_abod_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Having a place to stay/live</strong></td></tr>
           
@@ -2658,7 +2848,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">37)</th>
-            <td><span class="badge record__id">covid_pandemic_challenges_food_2</span></td>
+            <td><span class="badge record__id">covid_pandemic_challenges_food_2</span> <a class="record__anchor" href="#covid_pandemic_challenges_food_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Getting enough food to eat</strong></td></tr>
           
@@ -2724,7 +2914,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">38)</th>
-            <td><span class="badge record__id">covid_pandemic_challenges_wate_2</span></td>
+            <td><span class="badge record__id">covid_pandemic_challenges_wate_2</span> <a class="record__anchor" href="#covid_pandemic_challenges_wate_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Having clean water to drink</strong></td></tr>
           
@@ -2790,7 +2980,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">39)</th>
-            <td><span class="badge record__id">cov_pan_chal_med_2</span></td>
+            <td><span class="badge record__id">cov_pan_chal_med_2</span> <a class="record__anchor" href="#cov_pan_chal_med_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Getting the medicine I need</strong></td></tr>
           
@@ -2856,7 +3046,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">40)</th>
-            <td><span class="badge record__id">cov_pan_chlng_trans_2</span></td>
+            <td><span class="badge record__id">cov_pan_chlng_trans_2</span> <a class="record__anchor" href="#cov_pan_chlng_trans_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Getting to where I need to go</strong></td></tr>
           
@@ -2919,8 +3109,8 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Spoken Language</h2>
+  <section class="section" id="section-6">
+    <h2 class="section__name">Spoken Language<span class="section__count">4 data elements</span></h2>
 
     
     <article class="record" id="language_home">
@@ -2928,7 +3118,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">41)</th>
-            <td><span class="badge record__id">language_home</span></td>
+            <td><span class="badge record__id">language_home</span> <a class="record__anchor" href="#language_home" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What languages do you read, understand, or speak at home?</strong></td></tr>
           
@@ -3257,7 +3447,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">42)</th>
-            <td><span class="badge record__id">language_home_other</span></td>
+            <td><span class="badge record__id">language_home_other</span> <a class="record__anchor" href="#language_home_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Specify other languages read, understood or spoken at home.</strong></td></tr>
           
@@ -3292,7 +3482,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">43)</th>
-            <td><span class="badge record__id">language_pref</span></td>
+            <td><span class="badge record__id">language_pref</span> <a class="record__anchor" href="#language_pref" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is your preferred language at home?</strong></td></tr>
           
@@ -3621,7 +3811,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">44)</th>
-            <td><span class="badge record__id">language_pref_other</span></td>
+            <td><span class="badge record__id">language_pref_other</span> <a class="record__anchor" href="#language_pref_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Specify other preferred language.</strong></td></tr>
           
@@ -3653,8 +3843,8 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Family Income</h2>
+  <section class="section" id="section-7">
+    <h2 class="section__name">Family Income<span class="section__count">5 data elements</span></h2>
 
     
     <article class="record" id="family_income">
@@ -3662,7 +3852,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">45)</th>
-            <td><span class="badge record__id">family_income</span></td>
+            <td><span class="badge record__id">family_income</span> <a class="record__anchor" href="#family_income" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">In 2019, what was your total household income before taxes?</strong></td></tr>
           
@@ -3761,7 +3951,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">46)</th>
-            <td><span class="badge record__id">work_ppe_date_mdy</span></td>
+            <td><span class="badge record__id">work_ppe_date_mdy</span> <a class="record__anchor" href="#work_ppe_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Work PPE and Distancing Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -3796,7 +3986,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">47)</th>
-            <td><span class="badge record__id">work_wash_2</span></td>
+            <td><span class="badge record__id">work_wash_2</span> <a class="record__anchor" href="#work_wash_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">In your workplace, do you have access to necessary facilities to wash?</strong></td></tr>
           
@@ -3873,7 +4063,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">48)</th>
-            <td><span class="badge record__id">work_closecont_2</span></td>
+            <td><span class="badge record__id">work_closecont_2</span> <a class="record__anchor" href="#work_closecont_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Does your work require you to be in close contact (i.e. within 6 ft) with others?</strong></td></tr>
           
@@ -3953,7 +4143,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">49)</th>
-            <td><span class="badge record__id">work_ppe_2</span></td>
+            <td><span class="badge record__id">work_ppe_2</span> <a class="record__anchor" href="#work_ppe_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">In your workplace, do you have access to necessary personal protective equipment (PPE)?</strong></td></tr>
           
@@ -4036,8 +4226,8 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Medical History</h2>
+  <section class="section" id="section-8">
+    <h2 class="section__name">Medical History<span class="section__count">18 data elements</span></h2>
 
     
     <article class="record" id="med_hx_date_mdy">
@@ -4045,7 +4235,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">50)</th>
-            <td><span class="badge record__id">med_hx_date_mdy</span></td>
+            <td><span class="badge record__id">med_hx_date_mdy</span> <a class="record__anchor" href="#med_hx_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Medical History Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -4077,7 +4267,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">51)</th>
-            <td><span class="badge record__id">cc_imm_2</span></td>
+            <td><span class="badge record__id">cc_imm_2</span> <a class="record__anchor" href="#cc_imm_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Immunocompromised condition</strong></td></tr>
           
@@ -4138,7 +4328,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">52)</th>
-            <td><span class="badge record__id">cc_autoimm_2</span></td>
+            <td><span class="badge record__id">cc_autoimm_2</span> <a class="record__anchor" href="#cc_autoimm_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Autoimmune disease</strong></td></tr>
           
@@ -4197,7 +4387,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">53)</th>
-            <td><span class="badge record__id">cc_hypertension_2</span></td>
+            <td><span class="badge record__id">cc_hypertension_2</span> <a class="record__anchor" href="#cc_hypertension_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Hypertension (HTN, high blood pressure)</strong></td></tr>
           
@@ -4258,7 +4448,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">54)</th>
-            <td><span class="badge record__id">cc_diabetes_2</span></td>
+            <td><span class="badge record__id">cc_diabetes_2</span> <a class="record__anchor" href="#cc_diabetes_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Diabetes</strong></td></tr>
           
@@ -4319,7 +4509,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">55)</th>
-            <td><span class="badge record__id">cc_chronickd_2</span></td>
+            <td><span class="badge record__id">cc_chronickd_2</span> <a class="record__anchor" href="#cc_chronickd_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic kidney disease (CKD)</strong></td></tr>
           
@@ -4380,7 +4570,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">56)</th>
-            <td><span class="badge record__id">cc_cancer_2</span></td>
+            <td><span class="badge record__id">cc_cancer_2</span> <a class="record__anchor" href="#cc_cancer_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cancer diagnosis and/or treatment within the past 12 months</strong></td></tr>
           
@@ -4441,7 +4631,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">57)</th>
-            <td><span class="badge record__id">cc_cvd_2</span></td>
+            <td><span class="badge record__id">cc_cvd_2</span> <a class="record__anchor" href="#cc_cvd_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cardiovascular disease (CVD or heart disease)</strong></td></tr>
           
@@ -4502,7 +4692,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">58)</th>
-            <td><span class="badge record__id">cc_asthma_2</span></td>
+            <td><span class="badge record__id">cc_asthma_2</span> <a class="record__anchor" href="#cc_asthma_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Asthma</strong></td></tr>
           
@@ -4563,7 +4753,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">59)</th>
-            <td><span class="badge record__id">cc_copd_2</span></td>
+            <td><span class="badge record__id">cc_copd_2</span> <a class="record__anchor" href="#cc_copd_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic obstructive pulmonary disease (COPD)</strong></td></tr>
           
@@ -4624,7 +4814,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">60)</th>
-            <td><span class="badge record__id">cc_clung_2</span></td>
+            <td><span class="badge record__id">cc_clung_2</span> <a class="record__anchor" href="#cc_clung_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other chronic lung disease</strong></td></tr>
           
@@ -4685,7 +4875,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">61)</th>
-            <td><span class="badge record__id">cc_sickle_2</span></td>
+            <td><span class="badge record__id">cc_sickle_2</span> <a class="record__anchor" href="#cc_sickle_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Sickle Cell Anemia</strong></td></tr>
           
@@ -4746,7 +4936,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">62)</th>
-            <td><span class="badge record__id">cc_depression_2</span></td>
+            <td><span class="badge record__id">cc_depression_2</span> <a class="record__anchor" href="#cc_depression_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Depression</strong></td></tr>
           
@@ -4807,7 +4997,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">63)</th>
-            <td><span class="badge record__id">cc_asud_2</span></td>
+            <td><span class="badge record__id">cc_asud_2</span> <a class="record__anchor" href="#cc_asud_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Alcohol or substance use disorder</strong></td></tr>
           
@@ -4868,7 +5058,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">64)</th>
-            <td><span class="badge record__id">cc_intrav_2</span></td>
+            <td><span class="badge record__id">cc_intrav_2</span> <a class="record__anchor" href="#cc_intrav_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Intravenous drug use</strong></td></tr>
           
@@ -4927,7 +5117,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">65)</th>
-            <td><span class="badge record__id">cc_othermh_2</span></td>
+            <td><span class="badge record__id">cc_othermh_2</span> <a class="record__anchor" href="#cc_othermh_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other mental health disorder</strong></td></tr>
           
@@ -4988,7 +5178,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">66)</th>
-            <td><span class="badge record__id">cc_otherchroniccond_2</span></td>
+            <td><span class="badge record__id">cc_otherchroniccond_2</span> <a class="record__anchor" href="#cc_otherchroniccond_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other chronic condition</strong></td></tr>
           
@@ -5049,7 +5239,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">67)</th>
-            <td><span class="badge record__id">hlthstat_date_mdy</span></td>
+            <td><span class="badge record__id">hlthstat_date_mdy</span> <a class="record__anchor" href="#hlthstat_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Health Status Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -5078,8 +5268,8 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Height</h2>
+  <section class="section" id="section-9">
+    <h2 class="section__name">Height<span class="section__count">5 data elements</span></h2>
 
     
     <article class="record" id="self_reported_height_coded">
@@ -5087,7 +5277,7 @@ only provide extra cash when hospitalized.)&quot;</em>.</p>
         <tbody>
           <tr>
             <th class="record__number">68)</th>
-            <td><span class="badge record__id">self_reported_height_coded</span></td>
+            <td><span class="badge record__id">self_reported_height_coded</span> <a class="record__anchor" href="#self_reported_height_coded" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How tall are you without shoes? 
 
@@ -5157,7 +5347,7 @@ Please choose the units you would like to use for height</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">69)</th>
-            <td><span class="badge record__id">self_reported_height_feet</span></td>
+            <td><span class="badge record__id">self_reported_height_feet</span> <a class="record__anchor" href="#self_reported_height_feet" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Feet</strong></td></tr>
           
@@ -5194,7 +5384,7 @@ Please choose the units you would like to use for height</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">70)</th>
-            <td><span class="badge record__id">self_reported_height_inches</span></td>
+            <td><span class="badge record__id">self_reported_height_inches</span> <a class="record__anchor" href="#self_reported_height_inches" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Inches</strong></td></tr>
           
@@ -5231,7 +5421,7 @@ Please choose the units you would like to use for height</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">71)</th>
-            <td><span class="badge record__id">self_reported_height_meters</span></td>
+            <td><span class="badge record__id">self_reported_height_meters</span> <a class="record__anchor" href="#self_reported_height_meters" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Meters</strong></td></tr>
           
@@ -5268,7 +5458,7 @@ Please choose the units you would like to use for height</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">72)</th>
-            <td><span class="badge record__id">self_reported_height_centimeters</span></td>
+            <td><span class="badge record__id">self_reported_height_centimeters</span> <a class="record__anchor" href="#self_reported_height_centimeters" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Centimeters</strong></td></tr>
           
@@ -5302,8 +5492,8 @@ Please choose the units you would like to use for height</strong></td></tr>
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Weight</h2>
+  <section class="section" id="section-10">
+    <h2 class="section__name">Weight<span class="section__count">3 data elements</span></h2>
 
     
     <article class="record" id="self_reported_weight_units_2">
@@ -5311,7 +5501,7 @@ Please choose the units you would like to use for height</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">73)</th>
-            <td><span class="badge record__id">self_reported_weight_units_2</span></td>
+            <td><span class="badge record__id">self_reported_weight_units_2</span> <a class="record__anchor" href="#self_reported_weight_units_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Please choose the units you would like to use for weight</strong></td></tr>
           
@@ -5372,7 +5562,7 @@ Please choose the units you would like to use for height</strong></td></tr>
         <tbody>
           <tr>
             <th class="record__number">74)</th>
-            <td><span class="badge record__id">self_reported_weight_kgs</span></td>
+            <td><span class="badge record__id">self_reported_weight_kgs</span> <a class="record__anchor" href="#self_reported_weight_kgs" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How much do you weigh without clothes or shoes? 
 
@@ -5412,7 +5602,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">75)</th>
-            <td><span class="badge record__id">self_reported_weight_lbs</span></td>
+            <td><span class="badge record__id">self_reported_weight_lbs</span> <a class="record__anchor" href="#self_reported_weight_lbs" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How much do you weigh without clothes or shoes? 
 
@@ -5449,8 +5639,8 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Self-reported Health</h2>
+  <section class="section" id="section-11">
+    <h2 class="section__name">Self-reported Health<span class="section__count">10 data elements</span></h2>
 
     
     <article class="record" id="self_rpt_hlth_stat_asses">
@@ -5458,7 +5648,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">76)</th>
-            <td><span class="badge record__id">self_rpt_hlth_stat_asses</span></td>
+            <td><span class="badge record__id">self_rpt_hlth_stat_asses</span> <a class="record__anchor" href="#self_rpt_hlth_stat_asses" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Would you say your health in general is excellent, very good, good, fair, or poor?</strong></td></tr>
           
@@ -5541,7 +5731,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">77)</th>
-            <td><span class="badge record__id">disability_date_mdy</span></td>
+            <td><span class="badge record__id">disability_date_mdy</span> <a class="record__anchor" href="#disability_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Disability Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -5573,7 +5763,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">78)</th>
-            <td><span class="badge record__id">self_reported_disability</span></td>
+            <td><span class="badge record__id">self_reported_disability</span> <a class="record__anchor" href="#self_reported_disability" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have a disability that interferes with your ability to carry out daily activities? Examples of daily activities include walking, climbing stairs, shopping, balancing a checkbook,  bathing or dressing.</strong></td></tr>
           
@@ -5629,7 +5819,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">79)</th>
-            <td><span class="badge record__id">disability_deaf_2</span></td>
+            <td><span class="badge record__id">disability_deaf_2</span> <a class="record__anchor" href="#disability_deaf_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you deaf, or do you have serious difficulty hearing?</strong></td></tr>
           
@@ -5689,7 +5879,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">80)</th>
-            <td><span class="badge record__id">disability_blind_2</span></td>
+            <td><span class="badge record__id">disability_blind_2</span> <a class="record__anchor" href="#disability_blind_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you blind, or do you have serious difficulty seeing, even when wearing glasses?</strong></td></tr>
           
@@ -5749,7 +5939,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">81)</th>
-            <td><span class="badge record__id">disability_decisions_2</span></td>
+            <td><span class="badge record__id">disability_decisions_2</span> <a class="record__anchor" href="#disability_decisions_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? 
 
@@ -5815,7 +6005,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">82)</th>
-            <td><span class="badge record__id">disability_walking_2</span></td>
+            <td><span class="badge record__id">disability_walking_2</span> <a class="record__anchor" href="#disability_walking_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have serious difficulty walking or climbing stairs? 
 
@@ -5881,7 +6071,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">83)</th>
-            <td><span class="badge record__id">disability_dress_2</span></td>
+            <td><span class="badge record__id">disability_dress_2</span> <a class="record__anchor" href="#disability_dress_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have difficulty dressing or bathing?
 
@@ -5947,7 +6137,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">84)</th>
-            <td><span class="badge record__id">disability_errands_2</span></td>
+            <td><span class="badge record__id">disability_errands_2</span> <a class="record__anchor" href="#disability_errands_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor&#39;s office or shopping? 
 
@@ -6013,7 +6203,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">85)</th>
-            <td><span class="badge record__id">vacc_date_mdy</span></td>
+            <td><span class="badge record__id">vacc_date_mdy</span> <a class="record__anchor" href="#vacc_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Vaccine Acceptance Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -6042,8 +6232,8 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Vaccination</h2>
+  <section class="section" id="section-12">
+    <h2 class="section__name">Vaccination<span class="section__count">3 data elements</span></h2>
 
     
     <article class="record" id="flu_vaccinehistind_2">
@@ -6051,7 +6241,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">86)</th>
-            <td><span class="badge record__id">flu_vaccinehistind_2</span></td>
+            <td><span class="badge record__id">flu_vaccinehistind_2</span> <a class="record__anchor" href="#flu_vaccinehistind_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Have you ever received a flu vaccination?</strong></td></tr>
           
@@ -6116,7 +6306,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">87)</th>
-            <td><span class="badge record__id">flu_vaccine_season_3</span></td>
+            <td><span class="badge record__id">flu_vaccine_season_3</span> <a class="record__anchor" href="#flu_vaccine_season_3" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Have you received a flu vaccine in the last 12 months?</strong></td></tr>
           
@@ -6184,7 +6374,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">88)</th>
-            <td><span class="badge record__id">covid_vaccine</span></td>
+            <td><span class="badge record__id">covid_vaccine</span> <a class="record__anchor" href="#covid_vaccine" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Have you received a COVID-19 vaccine?</strong></td></tr>
           
@@ -6243,8 +6433,8 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Reasons for Getting/Not Getting a COVID 19 Vaccine</h2>
+  <section class="section" id="section-13">
+    <h2 class="section__name">Reasons for Getting/Not Getting a COVID 19 Vaccine<span class="section__count">5 data elements</span></h2>
 
     
     <article class="record" id="vaccine_reasons_3">
@@ -6252,7 +6442,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">89)</th>
-            <td><span class="badge record__id">vaccine_reasons_3</span></td>
+            <td><span class="badge record__id">vaccine_reasons_3</span> <a class="record__anchor" href="#vaccine_reasons_3" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Why would/did you get a COVID-19 vaccine? (Check all that apply)</strong></td></tr>
           
@@ -6371,7 +6561,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">90)</th>
-            <td><span class="badge record__id">vaccine_concerns_3</span></td>
+            <td><span class="badge record__id">vaccine_concerns_3</span> <a class="record__anchor" href="#vaccine_concerns_3" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Why would you/did you NOT get a COVID-19 vaccine? (Check all that apply)</strong></td></tr>
           
@@ -6484,7 +6674,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">91)</th>
-            <td><span class="badge record__id">test_date_mdy</span></td>
+            <td><span class="badge record__id">test_date_mdy</span> <a class="record__anchor" href="#test_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Testing Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -6516,7 +6706,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">92)</th>
-            <td><span class="badge record__id">isolate_maintain_job</span></td>
+            <td><span class="badge record__id">isolate_maintain_job</span> <a class="record__anchor" href="#isolate_maintain_job" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">If you were to test positive for COVID-19, would you be able to isolate without losing your job?</strong></td></tr>
           
@@ -6578,7 +6768,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">93)</th>
-            <td><span class="badge record__id">quarantine_maintain_job</span></td>
+            <td><span class="badge record__id">quarantine_maintain_job</span> <a class="record__anchor" href="#quarantine_maintain_job" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">If you would be exposed to someone with COVID-19, would you be able to quarantine without losing your job?</strong></td></tr>
           
@@ -6637,8 +6827,8 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Tested previously for COVID-19</h2>
+  <section class="section" id="section-14">
+    <h2 class="section__name">Tested previously for COVID-19<span class="section__count">1 data element</span></h2>
 
     
     <article class="record" id="tested_for_covid">
@@ -6646,7 +6836,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">94)</th>
-            <td><span class="badge record__id">tested_for_covid</span></td>
+            <td><span class="badge record__id">tested_for_covid</span> <a class="record__anchor" href="#tested_for_covid" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Have you ever been tested for COVID-19?</strong></td></tr>
           
@@ -6708,8 +6898,8 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Tested positive for COVID-19</h2>
+  <section class="section" id="section-15">
+    <h2 class="section__name">Tested positive for COVID-19<span class="section__count">7 data elements</span></h2>
 
     
     <article class="record" id="tested_positive_for_covid">
@@ -6717,7 +6907,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">95)</th>
-            <td><span class="badge record__id">tested_positive_for_covid</span></td>
+            <td><span class="badge record__id">tested_positive_for_covid</span> <a class="record__anchor" href="#tested_positive_for_covid" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Have you ever tested positive for COVID-19?</strong></td></tr>
           
@@ -6782,7 +6972,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">96)</th>
-            <td><span class="badge record__id">positivemonth_covidtest_2</span></td>
+            <td><span class="badge record__id">positivemonth_covidtest_2</span> <a class="record__anchor" href="#positivemonth_covidtest_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What month did you first test positive for COVID-19?</strong></td></tr>
           
@@ -6904,7 +7094,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">97)</th>
-            <td><span class="badge record__id">positiveyear_covidtest_3</span></td>
+            <td><span class="badge record__id">positiveyear_covidtest_3</span> <a class="record__anchor" href="#positiveyear_covidtest_3" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What year did you first test positive for COVID-19?</strong></td></tr>
           
@@ -6978,7 +7168,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">98)</th>
-            <td><span class="badge record__id">recentmonth_covidtest_2</span></td>
+            <td><span class="badge record__id">recentmonth_covidtest_2</span> <a class="record__anchor" href="#recentmonth_covidtest_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What month did you have your most recent COVID-19 test?</strong></td></tr>
           
@@ -7100,7 +7290,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">99)</th>
-            <td><span class="badge record__id">recentyear_covidtest_3</span></td>
+            <td><span class="badge record__id">recentyear_covidtest_3</span> <a class="record__anchor" href="#recentyear_covidtest_3" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What year did you have your most recent COVID-19 test?</strong></td></tr>
           
@@ -7174,7 +7364,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">100)</th>
-            <td><span class="badge record__id">recentresult_covidtest</span></td>
+            <td><span class="badge record__id">recentresult_covidtest</span> <a class="record__anchor" href="#recentresult_covidtest" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What was the result of your most recent COVID-19 test?</strong></td></tr>
           
@@ -7254,7 +7444,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">101)</th>
-            <td><span class="badge record__id">cov_tst_mthd_2</span></td>
+            <td><span class="badge record__id">cov_tst_mthd_2</span> <a class="record__anchor" href="#cov_tst_mthd_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How were you tested for your most recent test?</strong></td></tr>
           
@@ -7322,8 +7512,8 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Accessibility to testing</h2>
+  <section class="section" id="section-16">
+    <h2 class="section__name">Accessibility to testing<span class="section__count">25 data elements</span></h2>
 
     
     <article class="record" id="test_accesswhere_2">
@@ -7331,7 +7521,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">102)</th>
-            <td><span class="badge record__id">test_accesswhere_2</span></td>
+            <td><span class="badge record__id">test_accesswhere_2</span> <a class="record__anchor" href="#test_accesswhere_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">I know where I can get COVID-19 testing in my community.</strong></td></tr>
           
@@ -7408,7 +7598,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">103)</th>
-            <td><span class="badge record__id">test_accesseasy_2</span></td>
+            <td><span class="badge record__id">test_accesseasy_2</span> <a class="record__anchor" href="#test_accesseasy_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">It is easy to get tested for COVID-19.</strong></td></tr>
           
@@ -7485,7 +7675,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">104)</th>
-            <td><span class="badge record__id">covid_test_date_mdy</span></td>
+            <td><span class="badge record__id">covid_test_date_mdy</span> <a class="record__anchor" href="#covid_test_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of COVID Test Information Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -7517,7 +7707,7 @@ If you are currently pregnant, how much did you weigh before your pregnancy?</st
         <tbody>
           <tr>
             <th class="record__number">105)</th>
-            <td><span class="badge record__id">covid_test_tar_dis_stat_2</span></td>
+            <td><span class="badge record__id">covid_test_tar_dis_stat_2</span> <a class="record__anchor" href="#covid_test_tar_dis_stat_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Participant Testing Disease Status</strong></td></tr>
           
@@ -7601,7 +7791,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">106)</th>
-            <td><span class="badge record__id">covid_test_approval</span></td>
+            <td><span class="badge record__id">covid_test_approval</span> <a class="record__anchor" href="#covid_test_approval" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Quality and Regulatory</strong></td></tr>
           
@@ -7678,7 +7868,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">107)</th>
-            <td><span class="badge record__id">covid_test_approval_other</span></td>
+            <td><span class="badge record__id">covid_test_approval_other</span> <a class="record__anchor" href="#covid_test_approval_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other approval</strong></td></tr>
           
@@ -7713,7 +7903,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">108)</th>
-            <td><span class="badge record__id">covid_test_collection_setting</span></td>
+            <td><span class="badge record__id">covid_test_collection_setting</span> <a class="record__anchor" href="#covid_test_collection_setting" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Test Collection Setting</strong></td></tr>
           
@@ -7802,7 +7992,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">109)</th>
-            <td><span class="badge record__id">cov_tst_col_set_oth</span></td>
+            <td><span class="badge record__id">cov_tst_col_set_oth</span> <a class="record__anchor" href="#cov_tst_col_set_oth" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other setting</strong></td></tr>
           
@@ -7837,7 +8027,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">110)</th>
-            <td><span class="badge record__id">covid_test_performed_location</span></td>
+            <td><span class="badge record__id">covid_test_performed_location</span> <a class="record__anchor" href="#covid_test_performed_location" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Test Performed Location</strong></td></tr>
           
@@ -7926,7 +8116,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">111)</th>
-            <td><span class="badge record__id">cov_tst_perf_loc_oth</span></td>
+            <td><span class="badge record__id">cov_tst_perf_loc_oth</span> <a class="record__anchor" href="#cov_tst_perf_loc_oth" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other performed location</strong></td></tr>
           
@@ -7961,7 +8151,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">112)</th>
-            <td><span class="badge record__id">covid_test_study_setting</span></td>
+            <td><span class="badge record__id">covid_test_study_setting</span> <a class="record__anchor" href="#covid_test_study_setting" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Study Setting</strong></td></tr>
           
@@ -8056,7 +8246,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">113)</th>
-            <td><span class="badge record__id">covid_test_study_setting_other</span></td>
+            <td><span class="badge record__id">covid_test_study_setting_other</span> <a class="record__anchor" href="#covid_test_study_setting_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other study setting</strong></td></tr>
           
@@ -8091,7 +8281,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">114)</th>
-            <td><span class="badge record__id">covid_test_type</span></td>
+            <td><span class="badge record__id">covid_test_type</span> <a class="record__anchor" href="#covid_test_type" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Test Method Target</strong></td></tr>
           
@@ -8174,7 +8364,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">115)</th>
-            <td><span class="badge record__id">covid_test_type_other</span></td>
+            <td><span class="badge record__id">covid_test_type_other</span> <a class="record__anchor" href="#covid_test_type_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other method target</strong></td></tr>
           
@@ -8209,7 +8399,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">116)</th>
-            <td><span class="badge record__id">covid_test_name</span></td>
+            <td><span class="badge record__id">covid_test_name</span> <a class="record__anchor" href="#covid_test_name" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Test manufacturer (or LDT) and test name</strong></td></tr>
           
@@ -8241,7 +8431,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">117)</th>
-            <td><span class="badge record__id">covid_test_specimen_type</span></td>
+            <td><span class="badge record__id">covid_test_specimen_type</span> <a class="record__anchor" href="#covid_test_specimen_type" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Specimen Type</strong></td></tr>
           
@@ -8336,7 +8526,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">118)</th>
-            <td><span class="badge record__id">covid_test_specimen_type_other</span></td>
+            <td><span class="badge record__id">covid_test_specimen_type_other</span> <a class="record__anchor" href="#covid_test_specimen_type_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other specimen type</strong></td></tr>
           
@@ -8371,7 +8561,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">119)</th>
-            <td><span class="badge record__id">covid_test_specimen_collector</span></td>
+            <td><span class="badge record__id">covid_test_specimen_collector</span> <a class="record__anchor" href="#covid_test_specimen_collector" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Specimen Collector</strong></td></tr>
           
@@ -8430,7 +8620,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">120)</th>
-            <td><span class="badge record__id">cov_tst_spec_col_oth</span></td>
+            <td><span class="badge record__id">cov_tst_spec_col_oth</span> <a class="record__anchor" href="#cov_tst_spec_col_oth" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other specimen collector</strong></td></tr>
           
@@ -8465,7 +8655,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">121)</th>
-            <td><span class="badge record__id">covid_test_collect_datetime</span></td>
+            <td><span class="badge record__id">covid_test_collect_datetime</span> <a class="record__anchor" href="#covid_test_collect_datetime" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date and time specimen collected</strong></td></tr>
           
@@ -8497,7 +8687,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">122)</th>
-            <td><span class="badge record__id">covid_test_result_datetime</span></td>
+            <td><span class="badge record__id">covid_test_result_datetime</span> <a class="record__anchor" href="#covid_test_result_datetime" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date and time result received</strong></td></tr>
           
@@ -8529,7 +8719,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">123)</th>
-            <td><span class="badge record__id">covid_test_result_sent_datetime</span></td>
+            <td><span class="badge record__id">covid_test_result_sent_datetime</span> <a class="record__anchor" href="#covid_test_result_sent_datetime" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date and time result sent to participant</strong></td></tr>
           
@@ -8561,7 +8751,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">124)</th>
-            <td><span class="badge record__id">covid_test_result_raw</span></td>
+            <td><span class="badge record__id">covid_test_result_raw</span> <a class="record__anchor" href="#covid_test_result_raw" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Raw test result (if not a Positive/Negative/Failed report)</strong></td></tr>
           
@@ -8593,7 +8783,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">125)</th>
-            <td><span class="badge record__id">covid_test_result</span></td>
+            <td><span class="badge record__id">covid_test_result</span> <a class="record__anchor" href="#covid_test_result" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Test result</strong></td></tr>
           
@@ -8664,7 +8854,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">126)</th>
-            <td><span class="badge record__id">covid_test_result_other</span></td>
+            <td><span class="badge record__id">covid_test_result_other</span> <a class="record__anchor" href="#covid_test_result_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other test result</strong></td></tr>
           
@@ -8693,8 +8883,8 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">This is for projects that are doing acute testing. To collect as part of the testing procedure by the study team.</h2>
+  <section class="section" id="section-17">
+    <h2 class="section__name">This is for projects that are doing acute testing. To collect as part of the testing procedure by the study team.<span class="section__count">14 data elements</span></h2>
 
     
     <article class="record" id="sym_date_mdy">
@@ -8702,7 +8892,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">127)</th>
-            <td><span class="badge record__id">sym_date_mdy</span></td>
+            <td><span class="badge record__id">sym_date_mdy</span> <a class="record__anchor" href="#sym_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Symptom Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -8734,7 +8924,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">128)</th>
-            <td><span class="badge record__id">covid_fever_2</span></td>
+            <td><span class="badge record__id">covid_fever_2</span> <a class="record__anchor" href="#covid_fever_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Fever or chills</strong></td></tr>
           
@@ -8800,7 +8990,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">129)</th>
-            <td><span class="badge record__id">covid_cough_2</span></td>
+            <td><span class="badge record__id">covid_cough_2</span> <a class="record__anchor" href="#covid_cough_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cough</strong></td></tr>
           
@@ -8866,7 +9056,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">130)</th>
-            <td><span class="badge record__id">covid_diffbreath_2</span></td>
+            <td><span class="badge record__id">covid_diffbreath_2</span> <a class="record__anchor" href="#covid_diffbreath_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Shortness of breath or difficulty breathing</strong></td></tr>
           
@@ -8932,7 +9122,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">131)</th>
-            <td><span class="badge record__id">covid_fatigue_2</span></td>
+            <td><span class="badge record__id">covid_fatigue_2</span> <a class="record__anchor" href="#covid_fatigue_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Lack of energy or general tired feeling</strong></td></tr>
           
@@ -8999,7 +9189,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">132)</th>
-            <td><span class="badge record__id">covid_myalgia_2</span></td>
+            <td><span class="badge record__id">covid_myalgia_2</span> <a class="record__anchor" href="#covid_myalgia_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Muscle or body aches</strong></td></tr>
           
@@ -9065,7 +9255,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">133)</th>
-            <td><span class="badge record__id">covid_headache_2</span></td>
+            <td><span class="badge record__id">covid_headache_2</span> <a class="record__anchor" href="#covid_headache_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Headache</strong></td></tr>
           
@@ -9131,7 +9321,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">134)</th>
-            <td><span class="badge record__id">covid_olfactory_2</span></td>
+            <td><span class="badge record__id">covid_olfactory_2</span> <a class="record__anchor" href="#covid_olfactory_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">New loss of taste or smell</strong></td></tr>
           
@@ -9197,7 +9387,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">135)</th>
-            <td><span class="badge record__id">covid_runnynose_2</span></td>
+            <td><span class="badge record__id">covid_runnynose_2</span> <a class="record__anchor" href="#covid_runnynose_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Sore throat, congestion or runny nose</strong></td></tr>
           
@@ -9263,7 +9453,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">136)</th>
-            <td><span class="badge record__id">covid_nausea_2</span></td>
+            <td><span class="badge record__id">covid_nausea_2</span> <a class="record__anchor" href="#covid_nausea_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Feeling sick to your stomach or vomiting, diarrhea</strong></td></tr>
           
@@ -9330,7 +9520,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">137)</th>
-            <td><span class="badge record__id">covid_abpain_2</span></td>
+            <td><span class="badge record__id">covid_abpain_2</span> <a class="record__anchor" href="#covid_abpain_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Abdominal Pain</strong></td></tr>
           
@@ -9395,7 +9585,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">138)</th>
-            <td><span class="badge record__id">covid_skinrash_2</span></td>
+            <td><span class="badge record__id">covid_skinrash_2</span> <a class="record__anchor" href="#covid_skinrash_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Skin Rash</strong></td></tr>
           
@@ -9460,7 +9650,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">139)</th>
-            <td><span class="badge record__id">covid_other_2</span></td>
+            <td><span class="badge record__id">covid_other_2</span> <a class="record__anchor" href="#covid_other_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other</strong></td></tr>
           
@@ -9526,7 +9716,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">140)</th>
-            <td><span class="badge record__id">alcohol_date_mdy</span></td>
+            <td><span class="badge record__id">alcohol_date_mdy</span> <a class="record__anchor" href="#alcohol_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Alcohol/Tobacco Use Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -9555,8 +9745,8 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">Alcohol and Tobacco/Nicotine Use</h2>
+  <section class="section" id="section-18">
+    <h2 class="section__name">Alcohol and Tobacco/Nicotine Use<span class="section__count">5 data elements</span></h2>
 
     
     <article class="record" id="lifetime_use_alcohol">
@@ -9564,7 +9754,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">141)</th>
-            <td><span class="badge record__id">lifetime_use_alcohol</span></td>
+            <td><span class="badge record__id">lifetime_use_alcohol</span> <a class="record__anchor" href="#lifetime_use_alcohol" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">In your entire life, have you had at least 1 drink of any kind of alcohol, not counting small tastes or sips?</strong></td></tr>
           
@@ -9625,7 +9815,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">142)</th>
-            <td><span class="badge record__id">alcohol_daysperweek</span></td>
+            <td><span class="badge record__id">alcohol_daysperweek</span> <a class="record__anchor" href="#alcohol_daysperweek" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How often do you have a drink containing alcohol?</strong></td></tr>
           
@@ -9706,7 +9896,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">143)</th>
-            <td><span class="badge record__id">smoker_cur_stat_2</span></td>
+            <td><span class="badge record__id">smoker_cur_stat_2</span> <a class="record__anchor" href="#smoker_cur_stat_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you now smoke cigarettes?</strong></td></tr>
           
@@ -9785,7 +9975,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">144)</th>
-            <td><span class="badge record__id">smoker_number</span></td>
+            <td><span class="badge record__id">smoker_number</span> <a class="record__anchor" href="#smoker_number" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">If you smoke every day, on average, how many cigarettes per day do you smoke?</strong></td></tr>
           
@@ -9822,7 +10012,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">145)</th>
-            <td><span class="badge record__id">vaper_cur_stat</span></td>
+            <td><span class="badge record__id">vaper_cur_stat</span> <a class="record__anchor" href="#vaper_cur_stat" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you now use electronic cigarettes every day, some days, rarely, or not at all?</strong></td></tr>
           
@@ -9896,8 +10086,8 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
     
   </section>
   
-  <section class="section">
-    <h2 class="section__name">About you</h2>
+  <section class="section" id="section-19">
+    <h2 class="section__name">About you<span class="section__count">14 data elements</span></h2>
 
     
     <article class="record" id="iden_date_mdy">
@@ -9905,7 +10095,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">146)</th>
-            <td><span class="badge record__id">iden_date_mdy</span></td>
+            <td><span class="badge record__id">iden_date_mdy</span> <a class="record__anchor" href="#iden_date_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Identity Collection (MM/DD/YYYY)</strong></td></tr>
           
@@ -9937,7 +10127,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">147)</th>
-            <td><span class="badge record__id">first_name</span></td>
+            <td><span class="badge record__id">first_name</span> <a class="record__anchor" href="#first_name" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">First Name</strong></td></tr>
           
@@ -9969,7 +10159,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">148)</th>
-            <td><span class="badge record__id">last_name</span></td>
+            <td><span class="badge record__id">last_name</span> <a class="record__anchor" href="#last_name" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Last Name</strong></td></tr>
           
@@ -10001,7 +10191,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">149)</th>
-            <td><span class="badge record__id">current_street</span></td>
+            <td><span class="badge record__id">current_street</span> <a class="record__anchor" href="#current_street" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Street Address</strong></td></tr>
           
@@ -10033,7 +10223,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">150)</th>
-            <td><span class="badge record__id">current_street2</span></td>
+            <td><span class="badge record__id">current_street2</span> <a class="record__anchor" href="#current_street2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Street Address 2</strong></td></tr>
           
@@ -10062,7 +10252,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">151)</th>
-            <td><span class="badge record__id">current_city</span></td>
+            <td><span class="badge record__id">current_city</span> <a class="record__anchor" href="#current_city" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">City</strong></td></tr>
           
@@ -10094,7 +10284,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">152)</th>
-            <td><span class="badge record__id">current_state</span></td>
+            <td><span class="badge record__id">current_state</span> <a class="record__anchor" href="#current_state" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">State or Territory</strong></td></tr>
           
@@ -10471,7 +10661,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">153)</th>
-            <td><span class="badge record__id">mobile_phone</span></td>
+            <td><span class="badge record__id">mobile_phone</span> <a class="record__anchor" href="#mobile_phone" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Mobile Phone</strong></td></tr>
           
@@ -10500,7 +10690,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">154)</th>
-            <td><span class="badge record__id">home_phone</span></td>
+            <td><span class="badge record__id">home_phone</span> <a class="record__anchor" href="#home_phone" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Home Phone</strong></td></tr>
           
@@ -10529,7 +10719,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">155)</th>
-            <td><span class="badge record__id">other_phone</span></td>
+            <td><span class="badge record__id">other_phone</span> <a class="record__anchor" href="#other_phone" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other Phone</strong></td></tr>
           
@@ -10558,7 +10748,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">156)</th>
-            <td><span class="badge record__id">personal_email</span></td>
+            <td><span class="badge record__id">personal_email</span> <a class="record__anchor" href="#personal_email" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Personal Email</strong></td></tr>
           
@@ -10587,7 +10777,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">157)</th>
-            <td><span class="badge record__id">other_email</span></td>
+            <td><span class="badge record__id">other_email</span> <a class="record__anchor" href="#other_email" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other Email</strong></td></tr>
           
@@ -10616,7 +10806,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">158)</th>
-            <td><span class="badge record__id">preferred_contact_method_2</span></td>
+            <td><span class="badge record__id">preferred_contact_method_2</span> <a class="record__anchor" href="#preferred_contact_method_2" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Preferred Method of Contact</strong></td></tr>
           
@@ -10690,7 +10880,7 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
         <tbody>
           <tr>
             <th class="record__number">159)</th>
-            <td><span class="badge record__id">dob_mdy</span></td>
+            <td><span class="badge record__id">dob_mdy</span> <a class="record__anchor" href="#dob_mdy" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Date of Birth (MM/DD/YYYY)</strong></td></tr>
           
@@ -10720,5 +10910,6 @@ Exposed = Was in contact with COVID positive person but is themselves asymptomat
   </section>
   
 </div>
+<a class="back-to-top" href="#top" title="Back to top">&uarr;</a>
 </body>
 </html>

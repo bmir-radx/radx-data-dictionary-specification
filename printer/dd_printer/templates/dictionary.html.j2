@@ -6,13 +6,24 @@
 <title>{{ dictionary.title }}</title>
 <style>{{ css | safe }}</style>
 </head>
-<body>
+<body id="top">
 <div class="container">
   <h1 class="title">{{ dictionary.title }}</h1>
 
+  {% if dictionary.sections | length > 1 %}
+  <nav class="toc">
+    <h2 class="toc__title">Sections</h2>
+    <ul class="toc__list">
+    {% for entry in toc_entries %}
+      <li class="toc__item toc__item--depth-{{ entry.depth }}"><a href="#section-{{ entry.index }}">{% if entry.parent %}<span class="toc__parent">{{ entry.parent }} › </span>{% endif %}{{ entry.name or "(no section)" }}</a><span class="toc__count">{{ entry.count }}</span></li>
+    {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
+
   {% for section in dictionary.sections %}
-  <section class="section">
-    <h2 class="section__name">{{ section.name }}</h2>
+  <section class="section" id="section-{{ loop.index }}">
+    <h2 class="section__name">{{ section.name }}<span class="section__count">{{ section.records | length }} data element{{ "s" if section.records | length != 1 }}</span></h2>
 
     {% for record in section.records %}
     <article class="record" id="{{ record.id }}">
@@ -20,7 +31,7 @@
         <tbody>
           <tr>
             <th class="record__number">{{ record.number }})</th>
-            <td><span class="badge record__id">{{ record.id }}</span></td>
+            <td><span class="badge record__id">{{ record.id }}</span> <a class="record__anchor" href="#{{ record.id }}" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">{{ record.label }}</strong></td></tr>
           {% if record.datatype %}
@@ -36,14 +47,14 @@
           <tr><th>Pattern</th><td><code>{{ record.pattern }}</code></td></tr>
           {% endif %}
           {% if record.required %}
-          <tr><th>Required</th><td><span class="badge record__facet">required</span></td></tr>
+          <tr><th>Required</th><td><span class="badge record__required">required</span></td></tr>
           {% endif %}
           {% if record.precondition %}
           <tr><th>Precondition</th><td>{{ record.precondition_html | safe }}</td></tr>
           {% endif %}
           {% if record.terms %}
           <tr><th>Terms</th><td>
-            {% for term in record.terms %}<span class="badge term">{{ term }}</span> {% endfor %}
+            {% for term in record.terms %}<div class="term__row"><span class="badge term">{{ term }}</span>{% if term_labels.get(term) %} <span class="term__label">{{ term_labels[term] }}</span>{% endif %}</div>{% endfor %}
           </td></tr>
           {% endif %}
           {% if record.description_html %}
@@ -57,7 +68,7 @@
                 <tr>
                   <td><span class="badge choice__value{% if choice.is_missing_value_code %} choice__value--missing-value-code{% endif %}">{{ choice.value }}</span></td>
                   <td class="choice__label">{{ choice.label }}</td>
-                  {% if choice.meaning %}<td><span class="badge term">{{ choice.meaning }}</span></td>{% endif %}
+                  {% if choice.meaning %}<td><span class="badge term">{{ choice.meaning }}</span>{% if term_labels.get(choice.meaning) %} <span class="term__label">{{ term_labels[choice.meaning] }}</span>{% endif %}</td>{% endif %}
                 </tr>
               {% endfor %}
               </tbody>
@@ -74,5 +85,6 @@
   </section>
   {% endfor %}
 </div>
+<a class="back-to-top" href="#top" title="Back to top">&uarr;</a>
 </body>
 </html>

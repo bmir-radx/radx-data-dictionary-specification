@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tech data dictionary</title>
+<title>RADx Tech Data Dictionary</title>
 <style>:root {
   /* Badge colours, from the original Java template. */
   --data-element: #68b622;
@@ -12,18 +12,37 @@
   --choice: #59aaf8;
   --missing: #86878a;
   --term: #9d7bdb;
+  --required: #d64550;
   /* Card/layout neutrals. */
   --ink: #1f2933;
   --muted: #6b7280;
   --line: #e5e7eb;
   --card: #ffffff;
   --page: #f4f6f8;
+  --stripe: #f6f8fa;
+  --code-bg: #eef1f4;
+  --precondition-tint: #fdf6ec;
+}
+
+/* Dark palette: neutrals flip; the badge colours already read well on dark. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --line: #374151;
+    --card: #1f2933;
+    --page: #111827;
+    --stripe: #242f3d;
+    --code-bg: #2a3442;
+    --precondition-tint: #2e2a20;
+  }
 }
 
 * { box-sizing: border-box; }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Liberation Sans", sans-serif;
   color: var(--ink);
   line-height: 1.55;
   margin: 0;
@@ -43,7 +62,73 @@ body {
   margin: 0 0 1.5rem;
 }
 
-.section { margin-top: 2.5rem; }
+/* Table of contents: section names with element counts. */
+.toc {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem 1rem;
+  margin-bottom: 2rem;
+}
+.toc__title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0.25rem 0 0.6rem;
+}
+.toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.15rem 0;
+}
+/* The link takes the available width so the count trails just after the name
+   (a hair of dotted leader), keeping counts near their labels at every
+   indent rather than flung to a ragged right edge. */
+.toc__list a { flex: 0 1 auto; }
+.toc__item::after {
+  content: "";
+  flex: 1 1 auto;
+  border-bottom: 1px dotted var(--line);
+  transform: translateY(-0.2em);
+  min-width: 1rem;
+}
+/* Sections use a Parent/Child path convention; nested entries step in by one
+   level each, with a guide rail immediately to their left. The rail sits on
+   the item (a left border with matching padding), so consecutive siblings'
+   rails join into one continuous line and the line hugs the label rather
+   than floating in a gap. */
+.toc__item--depth-1,
+.toc__item--depth-2,
+.toc__item--depth-3 {
+  border-left: 2px solid var(--line);
+  padding-left: 0.85rem;
+}
+.toc__item--depth-1 { margin-left: 0.6rem; }
+.toc__item--depth-2 { margin-left: 1.7rem; }
+.toc__item--depth-3 { margin-left: 2.8rem; }
+.toc__item:hover { border-left-color: var(--data-element); }
+.toc__list a { color: var(--ink); text-decoration: none; }
+.toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
+.toc__count {
+  color: var(--muted);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+/* Parent path shown as muted context to disambiguate same-leaf siblings. */
+.toc__parent { color: var(--muted); }
+
+/* Resolved ontology term name shown beside a term/meaning badge. */
+.term__label { color: var(--muted); font-size: 0.9em; }
+
+.section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
 .section__name {
   font-size: 1.15rem;
   font-weight: 700;
@@ -53,6 +138,14 @@ body {
   margin: 0 0 1rem;
   padding-bottom: 0.4rem;
   border-bottom: 2px solid var(--line);
+}
+.section__count {
+  float: right;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
 }
 
 /* Each data element is a card. */
@@ -71,21 +164,39 @@ body {
 .record__table > tbody > tr:last-child { border-bottom: none; }
 .record__table th {
   text-align: left;
-  vertical-align: top;
+  /* Baseline-align the label with its value: a value cell often holds a
+     badge (taller box, padded) whose text would otherwise sit below the
+     plain label if the cell tops were aligned. */
+  vertical-align: baseline;
   width: 9rem;
   padding: 0.55rem 0.75rem 0.55rem 0;
   color: var(--muted);
   font-weight: 600;
   font-size: 0.9rem;
 }
-.record__table td { padding: 0.55rem 0; vertical-align: top; }
+.record__table td { padding: 0.55rem 0; vertical-align: baseline; }
 
 .record__number {
   color: var(--data-element);
   font-weight: 700;
   font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
 }
 .record__label { font-size: 1.05rem; }
+
+/* Per-card deep link. Always present but quiet (a faint link, not
+   decoration); it strengthens on hover/focus. A hover-only reveal was tried
+   but is invisible to touch users and reads as a stray glyph when it does
+   surface, so the mark stays visible. */
+.record__anchor {
+  color: var(--line);
+  text-decoration: none;
+  margin-left: 0.15rem;
+  transition: color 0.15s;
+}
+.record:hover .record__anchor { color: var(--muted); }
+.record__anchor:hover,
+.record__anchor:focus { color: var(--data-element-dark); }
 
 .badge {
   display: inline-block;
@@ -107,6 +218,16 @@ body {
 }
 a.record__id:hover { background: var(--data-element-dark); }
 .record__facet { background: var(--facet); color: #fff; }
+.record__required { background: var(--required); color: #fff; }
+
+/* The precondition is logic, not a static fact: a tinted chip marks it out. */
+.record__precondition {
+  display: inline-block;
+  background: var(--precondition-tint);
+  border-left: 3px solid var(--facet);
+  border-radius: 0 6px 6px 0;
+  padding: 0.35rem 0.6rem;
+}
 .term {
   background: var(--term);
   color: #fff;
@@ -122,16 +243,37 @@ a.record__id:hover { background: var(--data-element-dark); }
 .choice__value--missing-value-code { background: var(--missing); }
 
 code {
-  background: #eef1f4;
+  background: var(--code-bg);
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 0.9em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* Enumeration: value badge + label per row. */
-.enumeration { border-collapse: collapse; }
-.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0; vertical-align: middle; }
+/* Floating back-to-top control. */
+.back-to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.12);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.back-to-top:hover { color: var(--data-element-dark); border-color: var(--data-element); }
+
+/* Enumeration: value badge + label per row, striped for long lists. */
+.enumeration { border-collapse: collapse; width: 100%; }
+.enumeration td { padding: 0.2rem 0.75rem 0.2rem 0.25rem; vertical-align: middle; }
+.enumeration > tbody > tr:nth-child(even) { background: var(--stripe); }
 .choice__label { color: var(--ink); }
 
 .record__description, .record__notes { max-width: 62ch; }
@@ -151,16 +293,19 @@ code {
     border-color: #d0d5dd;
   }
   .badge { border: none; }
+  .back-to-top, .record__anchor { display: none; }
 }
 </style>
 </head>
-<body>
+<body id="top">
 <div class="container">
-  <h1 class="title">tech data dictionary</h1>
+  <h1 class="title">RADx Tech Data Dictionary</h1>
 
   
-  <section class="section">
-    <h2 class="section__name"></h2>
+
+  
+  <section class="section" id="section-1">
+    <h2 class="section__name"><span class="section__count">51 data elements</span></h2>
 
     
     <article class="record" id="user_id">
@@ -168,7 +313,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">1)</th>
-            <td><span class="badge record__id">user_id</span></td>
+            <td><span class="badge record__id">user_id</span> <a class="record__anchor" href="#user_id" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">User ID</strong></td></tr>
           
@@ -197,7 +342,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">2)</th>
-            <td><span class="badge record__id">race_black</span></td>
+            <td><span class="badge record__id">race_black</span> <a class="record__anchor" href="#race_black" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Black</strong></td></tr>
           
@@ -247,7 +392,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">3)</th>
-            <td><span class="badge record__id">race_white</span></td>
+            <td><span class="badge record__id">race_white</span> <a class="record__anchor" href="#race_white" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">White</strong></td></tr>
           
@@ -297,7 +442,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">4)</th>
-            <td><span class="badge record__id">race_asian</span></td>
+            <td><span class="badge record__id">race_asian</span> <a class="record__anchor" href="#race_asian" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Asian</strong></td></tr>
           
@@ -347,7 +492,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">5)</th>
-            <td><span class="badge record__id">race_pacisl</span></td>
+            <td><span class="badge record__id">race_pacisl</span> <a class="record__anchor" href="#race_pacisl" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Pacific Islander</strong></td></tr>
           
@@ -397,7 +542,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">6)</th>
-            <td><span class="badge record__id">race_amind</span></td>
+            <td><span class="badge record__id">race_amind</span> <a class="record__anchor" href="#race_amind" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">American Indian</strong></td></tr>
           
@@ -447,7 +592,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">7)</th>
-            <td><span class="badge record__id">race_other</span></td>
+            <td><span class="badge record__id">race_other</span> <a class="record__anchor" href="#race_other" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Other</strong></td></tr>
           
@@ -497,7 +642,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">8)</th>
-            <td><span class="badge record__id">race_dk</span></td>
+            <td><span class="badge record__id">race_dk</span> <a class="record__anchor" href="#race_dk" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Don&#39;t know</strong></td></tr>
           
@@ -547,7 +692,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">9)</th>
-            <td><span class="badge record__id">ethnicity</span></td>
+            <td><span class="badge record__id">ethnicity</span> <a class="record__anchor" href="#ethnicity" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you of Hispanic or Latino origin?</strong></td></tr>
           
@@ -627,7 +772,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">10)</th>
-            <td><span class="badge record__id">age_at_registration</span></td>
+            <td><span class="badge record__id">age_at_registration</span> <a class="record__anchor" href="#age_at_registration" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Age</strong></td></tr>
           
@@ -671,7 +816,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">11)</th>
-            <td><span class="badge record__id">sex</span></td>
+            <td><span class="badge record__id">sex</span> <a class="record__anchor" href="#sex" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Gender</strong></td></tr>
           
@@ -727,7 +872,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">12)</th>
-            <td><span class="badge record__id">education</span></td>
+            <td><span class="badge record__id">education</span> <a class="record__anchor" href="#education" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">What is the highest grade or level of school you have completed or the highest degree you have received?</strong></td></tr>
           
@@ -831,7 +976,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">13)</th>
-            <td><span class="badge record__id">zip</span></td>
+            <td><span class="badge record__id">zip</span> <a class="record__anchor" href="#zip" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Zipcode</strong></td></tr>
           
@@ -875,7 +1020,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">14)</th>
-            <td><span class="badge record__id">working</span></td>
+            <td><span class="badge record__id">working</span> <a class="record__anchor" href="#working" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">We would like to know about what you do-are you working now, looking for work, retired, keeping house, a student, or what?</strong></td></tr>
           
@@ -961,7 +1106,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">15)</th>
-            <td><span class="badge record__id">cond_prev_activity</span></td>
+            <td><span class="badge record__id">cond_prev_activity</span> <a class="record__anchor" href="#cond_prev_activity" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have any serious physical or mental condition(s) that limit your ability to perform daily activities?</strong></td></tr>
           
@@ -1029,7 +1174,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">16)</th>
-            <td><span class="badge record__id">hearing</span></td>
+            <td><span class="badge record__id">hearing</span> <a class="record__anchor" href="#hearing" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you deaf or do you have serious difficulty hearing?</strong></td></tr>
           
@@ -1097,7 +1242,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">17)</th>
-            <td><span class="badge record__id">vision</span></td>
+            <td><span class="badge record__id">vision</span> <a class="record__anchor" href="#vision" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Are you blind or do you have serious difficulty seeing, even when wearing glasses?</strong></td></tr>
           
@@ -1165,7 +1310,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">18)</th>
-            <td><span class="badge record__id">memory</span></td>
+            <td><span class="badge record__id">memory</span> <a class="record__anchor" href="#memory" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions? (5 years or older)</strong></td></tr>
           
@@ -1233,7 +1378,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">19)</th>
-            <td><span class="badge record__id">walk_stairs</span></td>
+            <td><span class="badge record__id">walk_stairs</span> <a class="record__anchor" href="#walk_stairs" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have serious difficulty walking or climbing stairs? (5 years or older)</strong></td></tr>
           
@@ -1301,7 +1446,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">20)</th>
-            <td><span class="badge record__id">dressing_bathing</span></td>
+            <td><span class="badge record__id">dressing_bathing</span> <a class="record__anchor" href="#dressing_bathing" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you have difficulty dressing or bathing? (5 years or older)</strong></td></tr>
           
@@ -1369,7 +1514,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">21)</th>
-            <td><span class="badge record__id">doctor_shopping</span></td>
+            <td><span class="badge record__id">doctor_shopping</span> <a class="record__anchor" href="#doctor_shopping" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor&#39;s office or shopping? (15 years old or older)</strong></td></tr>
           
@@ -1437,7 +1582,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">22)</th>
-            <td><span class="badge record__id">smoking</span></td>
+            <td><span class="badge record__id">smoking</span> <a class="record__anchor" href="#smoking" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Do you use any tobacco/nicotine products (including cigarettes, cigars, e-cigarettes, etc)?</strong></td></tr>
           
@@ -1505,7 +1650,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">23)</th>
-            <td><span class="badge record__id">alcohol</span></td>
+            <td><span class="badge record__id">alcohol</span> <a class="record__anchor" href="#alcohol" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">How often did you have a drink containing alcohol in the past year?</strong></td></tr>
           
@@ -1573,7 +1718,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">24)</th>
-            <td><span class="badge record__id">asthma</span></td>
+            <td><span class="badge record__id">asthma</span> <a class="record__anchor" href="#asthma" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Asthma, to the point that you use inhalers daily or have been to the hospital for your asthma?</strong></td></tr>
           
@@ -1641,7 +1786,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">25)</th>
-            <td><span class="badge record__id">cancer</span></td>
+            <td><span class="badge record__id">cancer</span> <a class="record__anchor" href="#cancer" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Cancer (including leukemia or lymphoma) undergoing active treatment?</strong></td></tr>
           
@@ -1709,7 +1854,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">26)</th>
-            <td><span class="badge record__id">ckd</span></td>
+            <td><span class="badge record__id">ckd</span> <a class="record__anchor" href="#ckd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Decreased kidney (renal) function or kidney (renal) failure?</strong></td></tr>
           
@@ -1777,7 +1922,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">27)</th>
-            <td><span class="badge record__id">diabetes</span></td>
+            <td><span class="badge record__id">diabetes</span> <a class="record__anchor" href="#diabetes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Diabetes? Do not include pre-diabetes.</strong></td></tr>
           
@@ -1845,7 +1990,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">28)</th>
-            <td><span class="badge record__id">hbp</span></td>
+            <td><span class="badge record__id">hbp</span> <a class="record__anchor" href="#hbp" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">High blood pressure or hypertension (except that occurred during pregnancy and did not last after pregnancy)?</strong></td></tr>
           
@@ -1913,7 +2058,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">29)</th>
-            <td><span class="badge record__id">mental_illness</span></td>
+            <td><span class="badge record__id">mental_illness</span> <a class="record__anchor" href="#mental_illness" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Have you ever been told by a physician, psychologist, or healthcare provider that you have any mental illness (for example depression, anxiety, bipolar, schizophrenia, or other)?</strong></td></tr>
           
@@ -1981,7 +2126,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">30)</th>
-            <td><span class="badge record__id">sc_anemia</span></td>
+            <td><span class="badge record__id">sc_anemia</span> <a class="record__anchor" href="#sc_anemia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Have you ever been told by a physician or healthcare provider that you have sickle cell anemia?</strong></td></tr>
           
@@ -2049,7 +2194,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">31)</th>
-            <td><span class="badge record__id">coronary_artery_disease</span></td>
+            <td><span class="badge record__id">coronary_artery_disease</span> <a class="record__anchor" href="#coronary_artery_disease" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Coronary artery disease (blockages in your heart vessels) or angina (chest pain)?</strong></td></tr>
           
@@ -2117,7 +2262,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">32)</th>
-            <td><span class="badge record__id">heart_attack</span></td>
+            <td><span class="badge record__id">heart_attack</span> <a class="record__anchor" href="#heart_attack" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">A heart attack (myocardial infarction)?</strong></td></tr>
           
@@ -2185,7 +2330,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">33)</th>
-            <td><span class="badge record__id">chf</span></td>
+            <td><span class="badge record__id">chf</span> <a class="record__anchor" href="#chf" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Congestive Heart failure (CHF, Heart Failure)?</strong></td></tr>
           
@@ -2253,7 +2398,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">34)</th>
-            <td><span class="badge record__id">stroke</span></td>
+            <td><span class="badge record__id">stroke</span> <a class="record__anchor" href="#stroke" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Stroke or TIA (Transient Ischemic Attack or Mini-Stroke)?</strong></td></tr>
           
@@ -2321,7 +2466,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">35)</th>
-            <td><span class="badge record__id">immunodeficiency</span></td>
+            <td><span class="badge record__id">immunodeficiency</span> <a class="record__anchor" href="#immunodeficiency" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Immunodeficiency (NOT including HIV)?</strong></td></tr>
           
@@ -2389,7 +2534,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">36)</th>
-            <td><span class="badge record__id">hiv</span></td>
+            <td><span class="badge record__id">hiv</span> <a class="record__anchor" href="#hiv" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Chronic HIV infection?</strong></td></tr>
           
@@ -2457,7 +2602,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">37)</th>
-            <td><span class="badge record__id">anemia</span></td>
+            <td><span class="badge record__id">anemia</span> <a class="record__anchor" href="#anemia" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Anemia or other blood disorder (do not include leukemia or lymphoma)?</strong></td></tr>
           
@@ -2525,7 +2670,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">38)</th>
-            <td><span class="badge record__id">premature</span></td>
+            <td><span class="badge record__id">premature</span> <a class="record__anchor" href="#premature" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">History of premature birth (being born before 37 weeks of pregnancy)</strong></td></tr>
           
@@ -2599,7 +2744,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">39)</th>
-            <td><span class="badge record__id">chd</span></td>
+            <td><span class="badge record__id">chd</span> <a class="record__anchor" href="#chd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">CHD</strong></td></tr>
           
@@ -2667,7 +2812,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">40)</th>
-            <td><span class="badge record__id">cf</span></td>
+            <td><span class="badge record__id">cf</span> <a class="record__anchor" href="#cf" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">CF</strong></td></tr>
           
@@ -2735,7 +2880,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">41)</th>
-            <td><span class="badge record__id">cld_bpd</span></td>
+            <td><span class="badge record__id">cld_bpd</span> <a class="record__anchor" href="#cld_bpd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">CLD BPD</strong></td></tr>
           
@@ -2803,7 +2948,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">42)</th>
-            <td><span class="badge record__id">copd</span></td>
+            <td><span class="badge record__id">copd</span> <a class="record__anchor" href="#copd" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">COPD (emphysema, chronic bronchitis, obstructive pulmonary disease)?</strong></td></tr>
           
@@ -2871,7 +3016,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">43)</th>
-            <td><span class="badge record__id">cough</span></td>
+            <td><span class="badge record__id">cough</span> <a class="record__anchor" href="#cough" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">A cough (worse than usual)</strong></td></tr>
           
@@ -2939,7 +3084,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">44)</th>
-            <td><span class="badge record__id">fever_chills</span></td>
+            <td><span class="badge record__id">fever_chills</span> <a class="record__anchor" href="#fever_chills" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Symptoms of fever or chills</strong></td></tr>
           
@@ -3007,7 +3152,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">45)</th>
-            <td><span class="badge record__id">shortness_of_breath</span></td>
+            <td><span class="badge record__id">shortness_of_breath</span> <a class="record__anchor" href="#shortness_of_breath" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Shortness of breath</strong></td></tr>
           
@@ -3075,7 +3220,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">46)</th>
-            <td><span class="badge record__id">muscle_aches</span></td>
+            <td><span class="badge record__id">muscle_aches</span> <a class="record__anchor" href="#muscle_aches" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Muscle aches (worse than usual)</strong></td></tr>
           
@@ -3143,7 +3288,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">47)</th>
-            <td><span class="badge record__id">unable_to_taste_or_smell</span></td>
+            <td><span class="badge record__id">unable_to_taste_or_smell</span> <a class="record__anchor" href="#unable_to_taste_or_smell" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Unable to taste or smell</strong></td></tr>
           
@@ -3211,7 +3356,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">48)</th>
-            <td><span class="badge record__id">nausea_vomiting_diarrhea</span></td>
+            <td><span class="badge record__id">nausea_vomiting_diarrhea</span> <a class="record__anchor" href="#nausea_vomiting_diarrhea" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Nausea, vomiting or diarrhea</strong></td></tr>
           
@@ -3279,7 +3424,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">49)</th>
-            <td><span class="badge record__id">red_eyes</span></td>
+            <td><span class="badge record__id">red_eyes</span> <a class="record__anchor" href="#red_eyes" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">Red or painful eyes</strong></td></tr>
           
@@ -3347,7 +3492,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">50)</th>
-            <td><span class="badge record__id">high_temp</span></td>
+            <td><span class="badge record__id">high_temp</span> <a class="record__anchor" href="#high_temp" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">A temperature greater than 100.4 °F</strong></td></tr>
           
@@ -3415,7 +3560,7 @@ code {
         <tbody>
           <tr>
             <th class="record__number">51)</th>
-            <td><span class="badge record__id">no_symptoms</span></td>
+            <td><span class="badge record__id">no_symptoms</span> <a class="record__anchor" href="#no_symptoms" title="Link to this data element">&para;</a></td>
           </tr>
           <tr><th>Label</th><td><strong class="record__label">None of the above</strong></td></tr>
           
@@ -3481,5 +3626,6 @@ code {
   </section>
   
 </div>
+<a class="back-to-top" href="#top" title="Back to top">&uarr;</a>
 </body>
 </html>

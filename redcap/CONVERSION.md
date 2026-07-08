@@ -33,7 +33,7 @@ This is the authoritative description of the strategy; the code in
 | `Id` | The Variable / Field Name cell, verbatim. |
 | `Label` | The Field Label; a non-blank Field Note is appended in parentheses — `Packs per day` + note `per day` → `Packs per day (per day)`. |
 | `Section` | The Section Header, **carried forward**: REDCap writes a section name only on the first row of a section, so a blank cell means "same section as the previous row". |
-| `Cardinality` | `multiple` when Field Type is `checkbox` (each choice is its own datafile column holding 0/1); otherwise `single` (radio, dropdown, text, …). |
+| `Cardinality` | `multiple` when Field Type is `checkbox` or `list` (a cell may hold several chosen values); otherwise `single` (radio, dropdown, text, …). |
 | `Enumeration` | The Choices cell, parsed per the grammar below, one `"value"=[label]` pair per choice, order preserved. |
 | `Datatype` | The decision tree below. |
 | `Description` | Generated prose — see below. |
@@ -55,6 +55,7 @@ datatype comes from. Type by type:
 | `radio` | Yes | `single` | from Choices | the choice values (`integer` if the first is all digits, else `string`) |
 | `dropdown` | Yes | `single` | from Choices | the choice values, as above |
 | `checkbox` | Yes | **`multiple`** — each choice is its own 0/1 column in the datafile | from Choices | the choice values, as above |
+| `list` | Yes | **`multiple`** — a RADx-rad extension type (e.g. `biorecognition_type`); a cell may hold several chosen values | from Choices | the choice values, as above |
 | `text` | Yes | `single` | none | the Text Validation Type, via the datatype table below (plus the `MM/DD/YYYY` field-note idiom) |
 | `notes` | Yes | `single` | none | no validation → `string` |
 | `calc` | Yes | `single` | none | no validation → `string` (the calculation expression is not interpreted) |
@@ -66,8 +67,8 @@ Three things to notice about the interplay:
 - **Choices beat validation.** When a row has a Choices cell, the datatype
   is derived from the choice *values*, and any Text Validation Type is
   ignored — an enumerated field's type is the type of its codes.
-- **Cardinality is purely a Field Type fact.** Only `checkbox` produces
-  `multiple`; a radio and a dropdown enumerate the same way but stay
+- **Cardinality is purely a Field Type fact.** Only `checkbox` and `list`
+  produce `multiple`; a radio and a dropdown enumerate the same way but stay
   `single`. Nothing else (choices, validation) affects cardinality.
 - **Only `descriptive` removes a row.** Every other type converts —
   unrecognised types deliberately degrade to a `single` `string` field

@@ -48,6 +48,7 @@ Options:
 | `-o`, `--output` | Output file (default: stdout). |
 | `-f`, `--format` | `html` or `json` (default: inferred from the `-o` extension, else `html`). |
 | `--title` | Document title (default: the input filename). |
+| `--annotate-terms` | Resolve ontology term identifiers to names (via OLS4, or `--resolver bioportal` with a key) and show them beside the term badges. HTML only; needs network access; off by default so rendering stays offline and deterministic. |
 
 ## What it produces
 

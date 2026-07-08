@@ -579,7 +579,7 @@ antigen_region_end,Sample/Antigen,integer,End residue number of region,,example:
 antigen_expression_system,Sample/Antigen,text,System used to express protein,,,,,,,,RADx-rad DCC
 antigen_formulation,Sample/Antigen,text,Formulation of antigen,,"example: Lyophilized from sterile PBS, pH 7.4.",,,,,,RADx-rad DCC
 antigen_source,Sample/Antigen,text,Supplier of antigen or publication,,example: Sino Biological,,,,,,RADx-rad DCC
-antigen_source_url,Sampe/Antigen,url,URL of supplier catalog page or publication DOI link,,example: https://www.sinobiological.com/recombinant-proteins/2019-ncov-cov-spike-40591-v08h,,,,,,RADx-rad DCC
+antigen_source_url,Sample/Antigen,url,URL of supplier catalog page or publication DOI link,,example: https://www.sinobiological.com/recombinant-proteins/2019-ncov-cov-spike-40591-v08h,,,,,,RADx-rad DCC
 antigen_concentration,Sample/Antigen,float,Protein concentration,,example: 1.0,,,,,,RADx-rad DCC
 antigen_concentration_unit,Sample/Antigen,text,Unit of protein concentration,,example: nM,,,,,,RADx-rad DCC
 virus_sample_id,Sample/VQA panel,text,"Identifier for virus sample, for VQA panels this is the QR code, for BEI the catalog number",,"examples: XXXX-XXXX-XXXX-XXXX (VQA panel),  NR-52286 (BEI Resources)",,,,,,RADx-rad DCC
