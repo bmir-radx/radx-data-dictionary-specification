@@ -42,16 +42,20 @@ def _toc_entries(dictionary: Dictionary) -> list[dict]:
         leaf = section.name.split("/")[-1].strip() or section.name
         leaf_counts[leaf] = leaf_counts.get(leaf, 0) + 1
 
+    # Track the path prefixes currently "open" (the chain of ancestors of the
+    # previous entry), so a run of siblings is recognised as properly nested
+    # even though only the first directly follows the parent.
+    open_prefixes: set[str] = {""}
     entries = []
-    previous_path = ""
     for index, section in enumerate(dictionary.sections, start=1):
         segments = section.name.split("/")
         leaf = segments[-1].strip() or section.name
         parent_path = "/".join(segments[:-1])
-        # Show the parent as context when the leaf is ambiguous, or when this
-        # child does not sit directly under its parent in the listing.
+        # Show the parent as muted context when the leaf name is ambiguous
+        # (occurs under more than one parent), or when this child is orphaned
+        # — its parent path was never seen as an entry above it.
         ambiguous = leaf_counts[leaf] > 1
-        orphaned = bool(parent_path) and previous_path != parent_path
+        orphaned = bool(parent_path) and parent_path not in open_prefixes
         entries.append(
             {
                 "index": index,
@@ -61,7 +65,11 @@ def _toc_entries(dictionary: Dictionary) -> list[dict]:
                 "parent": parent_path.replace("/", " › ") if (ambiguous or orphaned) else "",
             }
         )
-        previous_path = section.name
+        # This section and all its ancestor prefixes are now open; anything at
+        # a shallower-or-equal path supersedes deeper prefixes opened before.
+        open_prefixes = {""}
+        for depth in range(len(segments)):
+            open_prefixes.add("/".join(segments[: depth + 1]))
     return entries
 
 

@@ -79,19 +79,36 @@ body {
 }
 .toc__item {
   display: flex;
-  justify-content: space-between;
-  gap: 0.75rem;
+  align-items: baseline;
+  gap: 0.5rem;
   padding: 0.15rem 0;
 }
-/* Sections use a Parent/Child path convention; indent each level so the
-   contents mirrors the hierarchy. The name shown is the last path segment;
-   a guide line down the indent makes the nesting easy to follow. */
-.toc__item--depth-1 > a { padding-left: 2rem; border-left: 2px solid var(--line); margin-left: 0.5rem; }
-.toc__item--depth-2 > a { padding-left: 2rem; border-left: 2px solid var(--line); margin-left: 2rem; }
-.toc__item--depth-3 > a { padding-left: 2rem; border-left: 2px solid var(--line); margin-left: 3.5rem; }
-.toc__item--depth-1 > a:hover,
-.toc__item--depth-2 > a:hover,
-.toc__item--depth-3 > a:hover { border-left-color: var(--data-element); }
+/* The link takes the available width so the count trails just after the name
+   (a hair of dotted leader), keeping counts near their labels at every
+   indent rather than flung to a ragged right edge. */
+.toc__list a { flex: 0 1 auto; }
+.toc__item::after {
+  content: "";
+  flex: 1 1 auto;
+  border-bottom: 1px dotted var(--line);
+  transform: translateY(-0.2em);
+  min-width: 1rem;
+}
+/* Sections use a Parent/Child path convention; nested entries step in by one
+   level each, with a guide rail immediately to their left. The rail sits on
+   the item (a left border with matching padding), so consecutive siblings'
+   rails join into one continuous line and the line hugs the label rather
+   than floating in a gap. */
+.toc__item--depth-1,
+.toc__item--depth-2,
+.toc__item--depth-3 {
+  border-left: 2px solid var(--line);
+  padding-left: 0.85rem;
+}
+.toc__item--depth-1 { margin-left: 0.6rem; }
+.toc__item--depth-2 { margin-left: 1.7rem; }
+.toc__item--depth-3 { margin-left: 2.8rem; }
+.toc__item:hover { border-left-color: var(--data-element); }
 .toc__list a { color: var(--ink); text-decoration: none; }
 .toc__list a:hover { color: var(--data-element-dark); text-decoration: underline; }
 .toc__count {
