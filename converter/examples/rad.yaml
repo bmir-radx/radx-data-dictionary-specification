@@ -33,325 +33,319 @@ default_range: string
 
 # --- Subsets (from the data dictionary's Section column) ---
 subsets:
-  # Section 1 of 54
+  # Section 1 of 53
   # Used by 1 data element
   # study_id
   Identity:
     title: Identity
 
-  # Section 2 of 54
+  # Section 2 of 53
   # Used by 1 data element
   # race
   Race:
     title: Race
 
-  # Section 3 of 54
+  # Section 3 of 53
   # Used by 1 data element
   # ethnicity
   Ethnicity:
     title: Ethnicity
 
-  # Section 4 of 54
+  # Section 4 of 53
   # Used by 3 data elements
   # age | age_range_min | age_range_max
   Age:
     title: Age
 
-  # Section 5 of 54
+  # Section 5 of 53
   # Used by 1 data element
   # sex
   Sex:
     title: Sex
 
-  # Section 6 of 54
+  # Section 6 of 53
   # Used by 1 data element
   # education
   Education:
     title: Education
 
-  # Section 7 of 54
+  # Section 7 of 53
   # Used by 1 data element
   # zip
   Domicile:
     title: Domicile
 
-  # Section 8 of 54
+  # Section 8 of 53
   # Used by 1 data element
   # employment
   Employment:
     title: Employment
 
-  # Section 9 of 54
+  # Section 9 of 53
   # Used by 1 data element
   # insurance
   Insurance_Status:
     title: Insurance Status
 
-  # Section 10 of 54
+  # Section 10 of 53
   # Used by 6 data elements
   # deaf | blind | memory_dis | walking_climbing_dis | dress_bathe_dis | errand_dis
   Disability_Status:
     title: Disability Status
 
-  # Section 11 of 54
+  # Section 11 of 53
   # Used by 16 data elements
   # vaping | nicotine | alcohol_use | asthma | cancer | cardiovascular_disease (+10 more)
   Medical_History:
     title: Medical History
 
-  # Section 12 of 54
+  # Section 12 of 53
   # Used by 13 data elements
   # cough | fever | shortness_of_breath_or_dif | headache | muscle_ache | new_loss_of_taste_or_smell (+7 more)
   Symptoms:
     title: Symptoms
 
-  # Section 13 of 54
+  # Section 13 of 53
   # Used by 4 data elements
   # height_feet | height_inches | weight_lbs | health_status
   Health_Status:
     title: Health Status
 
-  # Section 14 of 54
+  # Section 14 of 53
   # Used by 11 data elements
   # protocol_id | technology_platform | technology_description | technology_reference | biorecognition_type | target_analyte_type (+5 more)
   Technology_Metadata:
     title: Technology Metadata
 
-  # Section 15 of 54
+  # Section 15 of 53
   # Used by 7 data elements
   # surface | immobilization_reagent_name | immobilization_reagent_id | immobilization_reagent_inchi_key | immobilization_reagent_source | immobilization_reagent_source_id (+1 more)
   Technology_Metadata_Immobilization:
     title: Technology Metadata/Immobilization
 
-  # Section 16 of 54
+  # Section 16 of 53
   # Used by 7 data elements
   # electrochemical_method_name | electrochemical_method_instrument | electrochemical_method_solution | electrochemical_method_solution_source | reference_electrode | auxiliary_electrode (+1 more)
   Technology_Metadata_Electrochemical:
     title: Technology Metadata/Electrochemical
 
-  # Section 17 of 54
+  # Section 17 of 53
   # Used by 102 data elements
   # capture_aptamer_id | capture_aptamer_sequence | capture_aptamer_modification_5prime | capture_aptamer_modification_5prime_role | capture_aptamer_modification_3prime | capture_aptamer_modification_3prime_role (+96 more)
   Technology_Metadata_Aptamer:
     title: Technology Metadata/Aptamer
 
-  # Section 18 of 54
+  # Section 18 of 53
   # Used by 12 data elements
   # capture_antigen_id | capture_antigen_name | capture_antigen_target_organism_name | capture_antigen_target_organism_taxonomy_id | capture_antigen_region | capture_antigen_region_start (+6 more)
   Technology_Metadata_Antigen:
     title: Technology Metadata/Antigen
 
-  # Section 19 of 54
+  # Section 19 of 53
   # Used by 69 data elements
   # capture_antibody_id | capture_antibody_name | capture_antibody_ig_type | capture_antibody_clonality | capture_antibody_clone | capture_antibody_modification (+63 more)
   Technology_Metadata_Antibody:
     title: Technology Metadata/Antibody
 
-  # Section 20 of 54
+  # Section 20 of 53
   # Used by 19 data elements
   # capture_nanobody_id | capture_nanobody_name | capture_nanobody_clonality | capture_nanobody_clone | capture_nanobody_modification | capture_nanobody_modification_role (+13 more)
   Technology_Metadata_Nanobody:
     title: Technology Metadata/Nanobody
 
-  # Section 21 of 54
+  # Section 21 of 53
   # Used by 17 data elements
   # capture_receptor_name | capture_receptor_sequence | capture_receptor_region | capture_receptor_region_start | capture_receptor_region_end | capture_receptor_modification (+11 more)
   Technology_Metadata_Receptor:
     title: Technology Metadata/Receptor
 
-  # Section 22 of 54
+  # Section 22 of 53
   # Used by 8 data elements
   # capture_olignucleotide_source | capture_oligonucleotide_sequence | capture_olignucleotide_source_url | detector_oligonucleotide_source | detector_oligonucleotide_sequence | detector_olignucleotide_source_url (+2 more)
   Technology_Metadata_Oligonucleotide:
     title: Technology Metadata/Oligonucleotide
 
-  # Section 23 of 54
+  # Section 23 of 53
   # Used by 7 data elements
   # primer_set_id | primer_set_source | primer_set_source_url | primer_sequence | target_analyte_region | target_analyte_sequence (+1 more)
   Technology_Metadata_Hybridization:
     title: Technology Metadata/Hybridization
 
-  # Section 24 of 54
+  # Section 24 of 53
   # Used by 18 data elements
   # forward_inner_primer_source | forward_inner_primer_sequence | forward_inner_primer_source_url | forward_outer_primer_source | forward_outer_primer_sequence | forward_outer_primer_source_url (+12 more)
   Technology_Metadata_LAMP:
     title: Technology Metadata/LAMP
 
-  # Section 25 of 54
+  # Section 25 of 53
   # Used by 16 data elements
   # reporter_id | reporter_region | reporter_organism_name | reporter_organism_taxonomy_id | reporter_region_start | reporter_region_end (+10 more)
   Technology_Metadata_Reporter:
     title: Technology Metadata/Reporter
 
-  # Section 26 of 54
+  # Section 26 of 53
   # Used by 12 data elements
   # substrate_id | substrate_name | substrate_inchi_key | substrate_molecular_weight | substrate_net_charge | substrate_sequence (+6 more)
   Technology_Metadata_Substrate:
     title: Technology Metadata/Substrate
 
-  # Section 27 of 54
+  # Section 27 of 53
   # Used by 2 data elements
   # nanoparticle_name | nanoparticle_id
   Technology_Metadata_Nanoparticle:
     title: Technology Metadata/Nanoparticle
 
-  # Section 28 of 54
+  # Section 28 of 53
   # Used by 2 data elements
   # ml_method | ml_method_description
   Technology_Metadata_Machine_Learning:
     title: Technology Metadata/Machine Learning
 
-  # Section 29 of 54
+  # Section 29 of 53
   # Used by 18 data elements
   # raman_shift_min | raman_shift_max | raman_shift_unit | laser_wavelength | laser_wavelength_unit | acquisition_time (+12 more)
   Technology_Metadata_SERS:
     title: Technology Metadata/SERS
 
-  # Section 30 of 54
+  # Section 30 of 53
   # Used by 100 data elements
   # sample_extraction_temperature_min | sample_extraction_temperature_max | sample_extraction_temperature | sample_extraction_temperature_unit | sample_extraction_flow_rate | sample_extraction_flow_rate_unit (+94 more)
   Technology_Metadata_GCMS:
     title: Technology Metadata/GCMS
 
-  # Section 31 of 54
+  # Section 31 of 53
   # Used by 3 data elements
   # odorant | odorant_test_min | odorant_test_max
   Technology_Metadata_Olfactory_perception:
     title: Technology Metadata/Olfactory perception
 
-  # Section 32 of 54
+  # Section 32 of 53
   # Used by 15 data elements
   # dna_motor_particle | dna_motor_diameter | dna_motor_diameter_unit | dna_motor_particle_aptamer_density | dna_motor_particle_aptamer_density_unit | dna_motor_incubation_time (+9 more)
   Technology_Metadata_Mechanical_detection:
     title: Technology Metadata/Mechanical detection
 
-  # Section 33 of 54
+  # Section 33 of 53
   # Used by 39 data elements
   # pcr_type | pcr_multipexed | pcr_nucleic_acid_type | pcr_target_organism_name | pcr_target_organism_taxonomy_id | pcr_target_organism_subtype (+33 more)
   PCR_metadata:
     title: PCR metadata
 
-  # Section 34 of 54
+  # Section 34 of 53
   # Used by 11 data elements
   # pcr_run_id | pcr_instrument | pcr_cycle_threshold | pcr_count | pcr_concentration | pcr_indication (+5 more)
   PCR:
     title: PCR
 
-  # Section 35 of 54
+  # Section 35 of 53
   # Used by 41 data elements
   # sample_id | sample_group | vqa_box_id | sample_media | sample_media_id | sample_media_source_name (+35 more)
   Sample:
     title: Sample
 
-  # Section 36 of 54
+  # Section 36 of 53
   # Used by 9 data elements
   # target_organism_name | target_organism_taxonomy_id | isolate_name | target_organism_subtype | gisaid_id | gisaid_clade (+3 more)
   Target:
     title: Target
 
-  # Section 37 of 54
-  # Used by 13 data elements
-  # antigen_name | antigen_id | antigen_sequence | antigen_nterminal_tag | antigen_cterminal_tag | antigen_region (+7 more)
+  # Section 37 of 53
+  # Used by 14 data elements
+  # antigen_name | antigen_id | antigen_sequence | antigen_nterminal_tag | antigen_cterminal_tag | antigen_region (+8 more)
   Sample_Antigen:
     title: Sample/Antigen
 
-  # Section 38 of 54
-  # Used by 1 data element
-  # antigen_source_url
-  Sampe_Antigen:
-    title: Sampe/Antigen
-
-  # Section 39 of 54
+  # Section 38 of 53
   # Used by 19 data elements
   # virus_sample_id | virus_shortname | virus_batch_number | virus_sample_formulation | virus_sample_source | virus_sample_source_url (+13 more)
   Sample_VQA_panel:
     title: Sample/VQA panel
 
-  # Section 40 of 54
+  # Section 39 of 53
   # Used by 28 data elements
   # neutralizing_antibody_id | neutralizing_antibody_name | neutralizing_antibody_description | neutralizing_antibody_clonality | neutralizing_antibody_clone | neutralizing_antibody_modification (+22 more)
   Sample_Antibody:
     title: Sample/Antibody
 
-  # Section 41 of 54
+  # Section 40 of 53
   # Used by 7 data elements
   # cohort_id | date_enrolled | timepoint | symptom_onset_days | days_since_first_vaccine | days_since_second_vaccine (+1 more)
   Clinical:
     title: Clinical
 
-  # Section 42 of 54
+  # Section 41 of 53
   # Used by 3 data elements
   # covid_vaccine_type | covid_vaccine | covid_vaccine_doses
   Vaccine_Acceptance:
     title: Vaccine Acceptance
 
-  # Section 43 of 54
+  # Section 42 of 53
   # Used by 14 data elements
   # covid_test_target_disease_status | covid_test_type | covid_test_type_other | covid_test_name | covid_test_specimen_type | covid_test_specimen_type_other (+8 more)
   Covid_Testing:
     title: Covid Testing
 
-  # Section 44 of 54
+  # Section 43 of 53
   # Used by 7 data elements
   # state_names | county_names | county_fips | zipcode | sample_location | sample_location_specify (+1 more)
   Collection_Site:
     title: Collection Site
 
-  # Section 45 of 54
+  # Section 44 of 53
   # Used by 7 data elements
   # epaid | wwtp_name | wwtp_jurisdiction | capacity_mgd | industrial_input | stormwater_input (+1 more)
   WWTP:
     title: WWTP
 
-  # Section 46 of 54
+  # Section 45 of 53
   # Used by 7 data elements
   # sample_type | composite_freq | sample_matrix | collection_storage_time | collection_storage_temp | pretreatment (+1 more)
   Collection_Method:
     title: Collection Method
 
-  # Section 47 of 54
+  # Section 46 of 53
   # Used by 13 data elements
   # solids_separation | concentration_method | extraction_method | pre_conc_storage_time | pre_conc_storage_temp | pre_ext_storage_time (+7 more)
   Processing_Method:
     title: Processing Method
 
-  # Section 48 of 54
+  # Section 47 of 53
   # Used by 32 data elements
   # pcr_target | pcr_target_ref | lod_ref | hum_frac_target_mic | hum_frac_target_mic_ref | hum_frac_target_chem (+26 more)
   SARSCoV2_Quantification_Method:
     title: SARSCoV2 Quantification Method
 
-  # Section 49 of 54
+  # Section 48 of 53
   # Used by 8 data elements
   # specimen_type | specimen_dilution_factor | assay_result | assay_result_other | assay_readout | assay_readout_error (+2 more)
   Assay_Results:
     title: Assay Results
 
-  # Section 50 of 54
+  # Section 49 of 53
   # Used by 29 data elements
   # voc_compound_name | voc_compound_formula | voc_compound_inchikey | voc_compound_concentration | voc_compound_concentration_unit | voc_compound_retention_time (+23 more)
   Results_VOC:
     title: Results/VOC
 
-  # Section 51 of 54
+  # Section 50 of 53
   # Used by 4 data elements
   # retention_time | retention_time_unit | identified_compound_name | identified_compound_inchikey
   Results_GCMS_LCMS:
     title: Results/GCMS/LCMS
 
-  # Section 52 of 54
+  # Section 51 of 53
   # Used by 48 data elements
   # sample_size | p_value | p_value_description | limit_of_blank | limit_of_blank_unit | limit_of_detection (+42 more)
   Analytical_Performance:
     title: Analytical Performance
 
-  # Section 53 of 54
+  # Section 52 of 53
   # Used by 21 data elements
   # area_under_the_roc_curve | roc_x_values | roc_y_values | positive_percent_agreement | negative_percent_agreement | overall_percent_agreement (+15 more)
   Analytical_Clinical_Performance:
     title: Analytical/Clinical Performance
 
-  # Section 54 of 54
+  # Section 53 of 53
   # Used by 32 data elements
   # analytical_cutoff_description | analytical_cutoff_min | analytical_cutoff_min_unit | analytical_cutoff_max | analytical_cutoff_max_unit | target_condition (+26 more)
   Clinical_Performance:
@@ -8729,7 +8723,7 @@ classes:
           of supplier catalog page or publication DOI link (example: https://www.sinobiological.com/recombinant-proteins/2019-ncov-cov-spike-40591-v08h)"_.'
         range: string
         in_subset:
-        - Sampe_Antigen
+        - Sample_Antigen
         annotations:
           provenance: RADx-rad
 
