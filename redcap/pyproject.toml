@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dd-redcap"
-version = "0.0.2"
+version = "0.0.3"
 description = "Convert a REDCap data dictionary to the data dictionary specification's format"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -12,7 +12,7 @@ license = { text = "BSD-2-Clause" }
 dependencies = [
     # The converted dictionary is built as dd_api model objects, so output is
     # canonical by construction. Not on PyPI; depend directly on this repo.
-    "dd-api @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.2#subdirectory=api",
+    "dd-api @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.3#subdirectory=api",
 ]
 
 [project.optional-dependencies]
