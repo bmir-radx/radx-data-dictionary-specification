@@ -68,11 +68,11 @@ them:
 
 | Data dictionary (input) | Generated LinkML schema (output) | Rendered page |
 | --- | --- | --- |
-| [`gcb.dd.csv`](linkml/examples/gcb.dd.csv) | [`gcb.yaml`](linkml/examples/gcb.yaml) | [`gcb.html`](linkml/examples/gcb.html) |
-| [`rad.dd.csv`](linkml/examples/rad.dd.csv) | [`rad.yaml`](linkml/examples/rad.yaml) | [`rad.html`](linkml/examples/rad.html) |
-| [`dht.dd.csv`](linkml/examples/dht.dd.csv) | [`dht.yaml`](linkml/examples/dht.yaml) | [`dht.html`](linkml/examples/dht.html) |
-| [`tech.dd.csv`](linkml/examples/tech.dd.csv) | [`tech.yaml`](linkml/examples/tech.yaml) | [`tech.html`](linkml/examples/tech.html) |
-| [`up.dd.csv`](linkml/examples/up.dd.csv) | [`up.yaml`](linkml/examples/up.yaml) | [`up.html`](linkml/examples/up.html) |
+| [`gcb.dd.csv`](linkml/examples/gcb.dd.csv) | [`gcb.yaml`](linkml/examples/gcb.yaml) | [`gcb.html`](https://htmlpreview.github.io/?https://github.com/bmir-radx/radx-data-dictionary-specification/blob/main/linkml/examples/gcb.html) |
+| [`rad.dd.csv`](linkml/examples/rad.dd.csv) | [`rad.yaml`](linkml/examples/rad.yaml) | [`rad.html`](https://htmlpreview.github.io/?https://github.com/bmir-radx/radx-data-dictionary-specification/blob/main/linkml/examples/rad.html) |
+| [`dht.dd.csv`](linkml/examples/dht.dd.csv) | [`dht.yaml`](linkml/examples/dht.yaml) | [`dht.html`](https://htmlpreview.github.io/?https://github.com/bmir-radx/radx-data-dictionary-specification/blob/main/linkml/examples/dht.html) |
+| [`tech.dd.csv`](linkml/examples/tech.dd.csv) | [`tech.yaml`](linkml/examples/tech.yaml) | [`tech.html`](https://htmlpreview.github.io/?https://github.com/bmir-radx/radx-data-dictionary-specification/blob/main/linkml/examples/tech.html) |
+| [`up.dd.csv`](linkml/examples/up.dd.csv) | [`up.yaml`](linkml/examples/up.yaml) | [`up.html`](https://htmlpreview.github.io/?https://github.com/bmir-radx/radx-data-dictionary-specification/blob/main/linkml/examples/up.html) |
 
 The `up` and `rad` examples show the complete REDCap pipeline: a raw export (`<name>.redcap.csv`) → `redcap-to-dd` → the dictionary (`<name>.dd.csv`) → `dd-to-linkml` → the schema (`<name>.yaml`), whose class `rules` come from the export's branching logic via the `Precondition` field (50 rules for `up`, 5 for `rad`).
 
