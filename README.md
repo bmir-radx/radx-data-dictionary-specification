@@ -177,8 +177,10 @@ model** (in-cell grammars decomposed into structured objects) — plus
 Every merge to `main` cuts a release: a GitHub Action bumps the shared version
 of all packages, tags it `vX.Y.Z`, and publishes a
 [GitHub release](https://github.com/bmir-radx/radx-data-dictionary-specification/releases).
-Because the version changes on each release, `pipx` can upgrade an installed
-tool to the latest:
+The bump size follows the merged PR's labels — `release:major` or
+`release:minor`, defaulting to a patch bump — and `release:skip` releases
+nothing. Because the version changes on each release, `pipx` can upgrade an
+installed tool to the latest:
 
 ```sh
 pipx upgrade dd-api        # (or dd-print, dd-validate, dd-redcap, dd-to-linkml…)
