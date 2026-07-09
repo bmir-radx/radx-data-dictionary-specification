@@ -3,7 +3,7 @@
 A specification for **data dictionaries**. A data dictionary describes the
 structure of a tabular *datafile* as an ordered list of *data elements* where each 
 data element represents a column in the data file, defining its field's identifier (variable name), 
-label, datatype, permissible values, units, ontology terms, and more. The specification defines two 
+label, datatype, permissible values, units, ontology terms, etc. The specification defines two 
 interchangeable serializations, a CSV format (the primary, human-editable one) and an equivalent
 [LinkML](https://linkml.io) YAML rendering, and the tooling here converts
 between them.
@@ -95,7 +95,7 @@ See the [printer README](printer/README.md) for options and details.
 [`validator/`](validator/) checks a data dictionary CSV against the specification
 and reports every violation it finds — missing required columns, unknown datatype
 names, malformed enumerations and patterns, invalid cardinality, duplicate ids,
-and more — each with a severity (ERROR / WARNING / INFO) and a line number. It
+etc. — each with a severity (ERROR / WARNING / INFO) and a line number. It
 does not transform the dictionary; it tells you what is wrong.
 
 ```sh
