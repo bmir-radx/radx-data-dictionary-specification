@@ -1,0 +1,70 @@
+name: Release
+
+# Every push to main (i.e. every merged PR) cuts a release: bump the shared
+# version, commit it back, tag, and publish a GitHub release. The version bump
+# is what lets `pipx upgrade` actually pull the new build — pipx only reinstalls
+# a git-installed package when its version changes.
+on:
+  push:
+    branches: [main]
+
+# Avoid an infinite loop: the version-bump commit this workflow pushes back to
+# main would otherwise re-trigger it. That commit's message ends with the
+# skip-marker checked below.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Skip the run triggered by our own bump commit.
+    if: ${{ !contains(github.event.head_commit.message, '[skip release]') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # need tags to compute the next version
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compute next version
+        id: version
+        run: |
+          latest=$(git tag --list 'v*.*.*' --sort=-v:refname | head -n1)
+          if [ -z "$latest" ]; then
+            next="0.1.0"
+          else
+            IFS=. read -r major minor patch <<< "${latest#v}"
+            next="${major}.${minor}.$((patch + 1))"
+          fi
+          echo "next=$next" >> "$GITHUB_OUTPUT"
+          echo "Next version: $next"
+
+      - name: Bump versions and pin internal dependencies
+        run: python scripts/bump_version.py "${{ steps.version.outputs.next }}"
+
+      - name: Commit, tag, and push
+        env:
+          V: ${{ steps.version.outputs.next }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add '*/pyproject.toml'
+          git commit -m "Release v${V} [skip release]"
+          git tag "v${V}"
+          git push origin HEAD:main
+          git push origin "v${V}"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ steps.version.outputs.next }}
+        run: |
+          gh release create "v${V}" \
+            --title "v${V}" \
+            --notes "Release v${V} — see the commit history since the previous tag. Install/upgrade any tool with pipx, e.g. \`pipx upgrade dd-api\`."

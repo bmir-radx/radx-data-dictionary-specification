@@ -172,6 +172,22 @@ hand-written LinkML renderings of the specification itself — one
 model** (in-cell grammars decomposed into structured objects) — plus
 [`CONVERTER_PLAN.md`](linkml/CONVERTER_PLAN.md), the converter's design record.
 
+## Releases and upgrading
+
+Every merge to `main` cuts a release: a GitHub Action bumps the shared version
+of all packages, tags it `vX.Y.Z`, and publishes a
+[GitHub release](https://github.com/bmir-radx/radx-data-dictionary-specification/releases).
+Because the version changes on each release, `pipx` can upgrade an installed
+tool to the latest:
+
+```sh
+pipx upgrade dd-api        # (or dd-print, dd-validate, dd-redcap, dd-to-linkml…)
+```
+
+The `pip`/`pipx` install commands above track `main` (always the newest
+release). To pin to a specific release instead, append the tag to the URL,
+e.g. `…radx-data-dictionary-specification.git@v0.3.0#subdirectory=api`.
+
 ## License
 
 Released under the [BSD 2-Clause License](LICENSE).
