@@ -76,6 +76,11 @@ The `format`/`version` wrapper lets the contract evolve. (This is distinct
 from the printer's JSON, which serialises the printer's *presentation* model
 for rendering, not for interchange.)
 
+A [JSON Schema](dd_api/dd-json.schema.json) (Draft 2020-12) describes the
+payload, so a REST service can validate requests and responses against it. The
+test suite checks that `to_json` output always conforms to it, so the schema
+cannot drift from the model.
+
 `from_linkml` works best with schemas this toolkit generated: those load back
 with full fidelity. Schemas written by hand load too — the schema is read
 with LinkML's own tooling, so it does not matter which of LinkML's equivalent

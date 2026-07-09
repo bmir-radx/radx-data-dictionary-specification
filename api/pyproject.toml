@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=7"]
+test = ["pytest>=7", "jsonschema>=4"]
 
 [tool.setuptools.packages.find]
 where = ["."]

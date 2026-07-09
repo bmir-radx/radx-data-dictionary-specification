@@ -421,3 +421,19 @@ def test_from_json_validates_like_from_rows():
             '{"format": "dd-json", "version": 1, '
             '"elements": [{"id": "x", "label": "X", "datatype": "Nope"}]}'
         )
+
+
+def test_to_json_conforms_to_shipped_schema():
+    # The dd-json schema must stay faithful to to_json output. This dictionary
+    # exercises every field so the schema cannot silently drift from the model.
+    import json
+    from pathlib import Path
+
+    import jsonschema
+
+    schema = json.loads(
+        (Path(__file__).resolve().parents[1] / "dd_api" / "dd-json.schema.json").read_text()
+    )
+    dd = _load(f"{HEADER}\n{FULL_ROW}\n")
+    jsonschema.validate(json.loads(dd.to_json()), schema)
+    jsonschema.Draft202012Validator.check_schema(schema)  # schema itself is valid
