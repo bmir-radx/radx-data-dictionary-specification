@@ -15,7 +15,7 @@ from __future__ import annotations
 from .grammar import EnumItem, parse_missing_value_codes
 
 # The "Standard Codes (Default value)" block from
-# radx-data-dictionary-specification.md, copied verbatim.
+# SPECIFICATION.md, copied verbatim.
 STANDARD_MISSING_VALUE_CODES_TEXT = (
     '"-9999"=[Reason Unknown] | "-9980"=[Not Sent to Data Hub] '
     '| "-9981"=[Data Transfer Agreement] '

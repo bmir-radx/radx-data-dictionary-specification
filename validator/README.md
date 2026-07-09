@@ -1,7 +1,7 @@
 # Data Dictionary Validator
 
 `dd-validate` checks a data dictionary **CSV** against the
-[specification](../radx-data-dictionary-specification.md) and reports every
+[specification](../SPECIFICATION.md) and reports every
 violation it finds. It does not transform the dictionary — it tells you what is
 wrong, at which line, and how severe it is.
 

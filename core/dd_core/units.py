@@ -23,7 +23,7 @@ class UnitOfMeasure:
     ucum_code: str | None = None
 
 
-# The "common units" table from radx-data-dictionary-specification.md.
+# The "common units" table from SPECIFICATION.md.
 # (descriptive_name, symbol, ucum_code). UCUM codes are filled where a
 # well-defined code exists; None where the free-text unit has no obvious UCUM
 # form (the emitter simply omits ucum_code in that case).

@@ -1,7 +1,7 @@
 # Data Dictionary Core
 
 `dd_core` is the shared foundation the toolkit's tools are built on. It reads a
-[data dictionary](../radx-data-dictionary-specification.md) CSV into rows and
+[data dictionary](../SPECIFICATION.md) CSV into rows and
 parses the notations hidden inside its cells, turning bespoke strings into
 Python objects. It knows nothing about LinkML — the CSV↔LinkML conversion lives
 in the sibling [`dd_linkml`](../linkml/) package, which depends on this one.

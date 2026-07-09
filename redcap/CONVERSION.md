@@ -1,7 +1,7 @@
 # The Conversion Algorithm
 
 How `redcap-to-dd` turns a REDCap data dictionary export into a data
-dictionary in [this specification's format](../radx-data-dictionary-specification.md).
+dictionary in [this specification's format](../SPECIFICATION.md).
 This is the authoritative description of the strategy; the code in
 `dd_redcap/` follows it module by module.
 

@@ -1,7 +1,7 @@
 # Data Dictionary Python API
 
 `dd_api` is an API for programmatic access to a data dictionary: load a
-[data dictionary](../radx-data-dictionary-specification.md) and work with
+[data dictionary](../SPECIFICATION.md) and work with
 **typed, parsed objects** instead of raw CSV cells.
 
 If you are new to this start with the **[Cookbook](COOKBOOK.md)** — ten pasteable recipes

@@ -15,7 +15,7 @@ between them.
 > FAIR-aligned scientific data hubs). Some default value sets reflect that
 > origin, but the format itself is general-purpose and not specific to RADx.
 
-📄 **[Read the specification →](radx-data-dictionary-specification.md)**
+📄 **[Read the specification →](SPECIFICATION.md)**
 
 The Markdown specification is the authoritative document. The packages below
 are machine-processable renderings and tooling built on top of it: a core
@@ -26,7 +26,7 @@ high-level Python API.
 
 | Path | What it is |
 | --- | --- |
-| [`radx-data-dictionary-specification.md`](radx-data-dictionary-specification.md) | The authoritative specification. |
+| [`SPECIFICATION.md`](SPECIFICATION.md) | The authoritative specification. |
 | [`core/`](core/) | The core library: reads a data dictionary CSV and parses its in-cell grammars. The foundation the other packages build on. |
 | [`linkml/`](linkml/) | Converts between a data dictionary CSV and a [LinkML](https://linkml.io) schema, in both directions; also holds hand-written LinkML renderings of the spec under `schemas/`. |
 | [`printer/`](printer/) | Renders a data dictionary to a human-readable HTML page (or JSON). |

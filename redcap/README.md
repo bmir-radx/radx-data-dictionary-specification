@@ -2,7 +2,7 @@
 
 `redcap-to-dd` converts a **REDCap data dictionary** — the CSV a REDCap
 project exports to describe its instruments — into a data dictionary in
-[this specification's format](../radx-data-dictionary-specification.md).
+[this specification's format](../SPECIFICATION.md).
 Once converted, the whole toolkit applies: render it with the
 [printer](../printer/), check it with the [validator](../validator/), turn it
 into a LinkML schema with the [converter](../converter/), or work with it in

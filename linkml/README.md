@@ -1,6 +1,6 @@
 # Data Dictionary → LinkML Converter
 
-`dd-to-linkml` converts a [data dictionary](../radx-data-dictionary-specification.md)
+`dd-to-linkml` converts a [data dictionary](../SPECIFICATION.md)
 CSV into a [LinkML](https://linkml.io) schema (and `linkml-to-dd` converts back).
 The data dictionary *describes* a datafile; the generated schema is a formal,
 machine-processable description of that datafile that you can validate data

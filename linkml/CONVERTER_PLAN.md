@@ -25,7 +25,7 @@ LinkML's bracketed `[ | ]`).
 ## Inputs and outputs
 
 - **Input:** one data dictionary CSV file (RFC 4180), with the header record and
-  columns defined in `radx-data-dictionary-specification.md`.
+  columns defined in `SPECIFICATION.md`.
 - **Output:** one LinkML schema YAML file describing the target datafile.
 - **CLI:** `dd-to-linkml INPUT.csv -o SCHEMA.yaml [--name ... --id ...]`
 
