@@ -174,7 +174,7 @@ model** (in-cell grammars decomposed into structured objects) — plus
 
 ## Releases and upgrading
 
-Every merge to `main` cuts a release: a GitHub Action bumps the shared version
+Every merge to `main` creates a release: a GitHub Action bumps the shared version
 of all packages, tags it `vX.Y.Z`, and publishes a
 [GitHub release](https://github.com/bmir-radx/radx-data-dictionary-specification/releases).
 The bump size follows the merged PR's labels — `release:major` or
