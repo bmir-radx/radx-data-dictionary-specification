@@ -372,3 +372,52 @@ def test_precondition_round_trips_via_csv_and_linkml():
     via_linkml = DataDictionary.from_linkml(io.StringIO(original.to_linkml()))
     assert via_linkml["packs"].precondition == original["packs"].precondition
     assert via_linkml["packs"].required
+
+
+# --- JSON (canonical REST representation) -------------------------------------
+
+def test_to_json_shape_and_version():
+    import json
+    dd = _load(
+        "Id,Label,Datatype,Cardinality,Enumeration,Precondition,Required\n"
+        'sex,Sex,integer,,"""0""=[Female] | ""1""=[Male]",,y\n'
+        'packs,Packs,decimal,,,"sex = ""1""",\n'
+    )
+    payload = json.loads(dd.to_json())
+    assert payload["format"] == "dd-json" and payload["version"] == 1
+    sex = payload["elements"][0]
+    assert sex["id"] == "sex" and sex["required"] is True
+    assert sex["enumeration"] == [
+        {"value": "0", "label": "Female", "iri": None},
+        {"value": "1", "label": "Male", "iri": None},
+    ]
+    assert sex["description"] is None  # blank single value -> null
+    assert payload["elements"][1]["precondition"] == 'sex = "1"'
+
+
+def test_json_round_trips_the_model():
+    dd = _load(f"{HEADER}\n{FULL_ROW}\n")
+    assert DataDictionary.from_json(dd.to_json()).elements == dd.elements
+
+
+def test_from_json_accepts_dict_and_string():
+    dd = DataDictionary.from_rows([{"Id": "a", "Label": "A", "Datatype": "string"}])
+    import json
+    assert DataDictionary.from_json(dd.to_json())["a"].label == "A"          # string
+    assert DataDictionary.from_json(json.loads(dd.to_json()))["a"].label == "A"  # dict
+
+
+def test_from_json_rejects_wrong_format_or_version():
+    import pytest
+    with pytest.raises(ValueError, match="dd-json"):
+        DataDictionary.from_json('{"format": "something-else", "elements": []}')
+    with pytest.raises(ValueError, match="version"):
+        DataDictionary.from_json('{"format": "dd-json", "version": 99, "elements": []}')
+
+
+def test_from_json_validates_like_from_rows():
+    with pytest.raises(ReadError, match="datatype"):
+        DataDictionary.from_json(
+            '{"format": "dd-json", "version": 1, '
+            '"elements": [{"id": "x", "label": "X", "datatype": "Nope"}]}'
+        )

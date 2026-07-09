@@ -20,6 +20,7 @@ cells::
     "weight" in dd                         # membership test by id
     dd.sections                            # section names, in order
     schema_yaml = dd.to_linkml()           # the LinkML rendering
+    json_text = dd.to_json()               # canonical JSON, for REST APIs
 
 The model itself lives in :mod:`dd_api.model`; the parsing it builds on comes
 from the sibling ``dd_core`` package (reading, datatype names, the in-cell

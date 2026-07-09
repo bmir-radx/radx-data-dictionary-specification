@@ -39,15 +39,42 @@ dd.elements_in_section("Demographics")
 
 ## Reading and writing
 
-A dictionary round-trips through both of the toolkit's formats:
+A dictionary round-trips through all three of the toolkit's formats:
 
 ```python
 dd = DataDictionary.load("my_dictionary.csv")      # CSV in
 dd = DataDictionary.from_linkml("my_schema.yaml")  # LinkML schema in
+dd = DataDictionary.from_json(payload)             # canonical JSON in
 
 csv_text = dd.to_csv()       # CSV out (canonical formatting)
 schema_yaml = dd.to_linkml() # LinkML out, as dd-to-linkml would emit it
+json_text = dd.to_json()     # canonical JSON out (for REST APIs)
 ```
+
+### JSON for REST APIs
+
+`to_json` / `from_json` are the canonical machine-readable representation —
+the parsed model as JSON, meant for serving and accepting dictionaries over an
+HTTP API. The payload is a versioned wrapper around a list of data-element
+objects that mirror the model (blank single values are `null`, list values are
+arrays, enumeration items are `{"value", "label", "iri"}` objects):
+
+```json
+{
+  "format": "dd-json",
+  "version": 1,
+  "elements": [
+    {"id": "sex", "label": "Sex", "datatype": "integer", "cardinality": "single",
+     "enumeration": [{"value": "0", "label": "Female", "iri": null},
+                     {"value": "1", "label": "Male", "iri": null}],
+     "required": true, "...": "..."}
+  ]
+}
+```
+
+The `format`/`version` wrapper lets the contract evolve. (This is distinct
+from the printer's JSON, which serialises the printer's *presentation* model
+for rendering, not for interchange.)
 
 `from_linkml` works best with schemas this toolkit generated: those load back
 with full fidelity. Schemas written by hand load too — the schema is read

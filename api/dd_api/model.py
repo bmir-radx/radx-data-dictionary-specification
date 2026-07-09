@@ -30,8 +30,10 @@ A dictionary reads from, and writes to, both of the toolkit's formats::
 
     dd = DataDictionary.load("my_dictionary.csv")     # CSV in
     dd = DataDictionary.from_linkml("my_schema.yaml") # LinkML schema in
+    dd = DataDictionary.from_json(payload)            # canonical JSON in
     csv_text = dd.to_csv()                            # canonical CSV out
     schema_yaml = dd.to_linkml()                      # LinkML out
+    json_text = dd.to_json()                          # canonical JSON out (REST)
 
 One design rule to know: loading is **fail-fast**. Every cell is parsed up
 front, and the first problem raises :class:`~dd_core.reader.ReadError`,
@@ -47,6 +49,7 @@ is the validator tool's job (``dd-validate``).
 from __future__ import annotations
 
 import io
+import json
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -558,6 +561,69 @@ class DataDictionary:
         ]
         return emit_schema(rows, options)
 
+    def to_json(self, *, indent: int | None = 2) -> str:
+        """Serialise this dictionary as canonical JSON, for use over an API.
+
+        The JSON mirrors the typed model: a versioned wrapper around a list of
+        data-element objects. Blank single values are ``null``; list-like
+        values are arrays; enumeration and missing-value-code items are
+        ``{"value", "label", "iri"}`` objects. Provenance (``line``/``row``)
+        is not included. :meth:`from_json` reconstructs the model from it.
+
+        ::
+
+            >>> import json
+            >>> from dd_api import DataDictionary
+            >>> dd = DataDictionary.from_rows([
+            ...     {"Id": "age", "Label": "Age", "Datatype": "integer"},
+            ... ])
+            >>> payload = json.loads(dd.to_json())
+            >>> payload["format"], payload["version"]
+            ('dd-json', 1)
+            >>> payload["elements"][0]["id"]
+            'age'
+        """
+        payload = {
+            "format": _JSON_FORMAT,
+            "version": _JSON_VERSION,
+            "elements": [_element_to_json(element) for element in self._elements],
+        }
+        return json.dumps(payload, indent=indent, ensure_ascii=False)
+
+    @classmethod
+    def from_json(cls, source: str | bytes | dict) -> DataDictionary:
+        """Reconstruct a dictionary from :meth:`to_json` output.
+
+        ``source`` may be a JSON string/bytes or an already-parsed ``dict``.
+        Element objects are turned back into typed :class:`DataElement`\\ s and
+        validated exactly as :meth:`from_rows` validates rows (unknown
+        datatype, malformed precondition, etc. raise
+        :class:`~dd_core.reader.ReadError`).
+
+        ::
+
+            >>> from dd_api import DataDictionary
+            >>> dd = DataDictionary.from_rows([
+            ...     {"Id": "age", "Label": "Age", "Datatype": "integer"},
+            ... ])
+            >>> DataDictionary.from_json(dd.to_json())["age"].label
+            'Age'
+        """
+        payload = source if isinstance(source, dict) else json.loads(source)
+        if payload.get("format") != _JSON_FORMAT:
+            raise ValueError(
+                f"not a {_JSON_FORMAT!r} document (got format={payload.get('format')!r})"
+            )
+        version = payload.get("version")
+        if version != _JSON_VERSION:
+            raise ValueError(
+                f"unsupported {_JSON_FORMAT} version {version!r} "
+                f"(this build reads version {_JSON_VERSION})"
+            )
+        return cls.from_rows(
+            [_element_cells_from_json(obj) for obj in payload.get("elements", [])]
+        )
+
 
 # --- row -> element parsing ---------------------------------------------------
 
@@ -680,4 +746,92 @@ def _element_to_cells(element: DataElement) -> dict[str, str]:
     cells["Notes"] = element.notes or ""
     cells["Provenance"] = element.provenance or ""
     cells["SeeAlso"] = element.see_also or ""
+    return cells
+
+
+# --- element <-> JSON (the canonical REST representation) ----------------------
+
+_JSON_FORMAT = "dd-json"
+_JSON_VERSION = 1
+
+
+def _enum_items_to_json(items: Sequence[EnumItem]) -> list[dict]:
+    """Enumeration / missing-value-code items as ``{value, label, iri}`` objects."""
+    return [{"value": i.value, "label": i.label, "iri": i.iri} for i in items]
+
+
+def _element_to_json(element: DataElement) -> dict:
+    """One element as a JSON object mirroring the typed model.
+
+    Single-valued optional fields are ``null`` when absent; list-valued
+    fields are arrays. Provenance (``line``/``row``) is deliberately omitted.
+    """
+    return {
+        "id": element.id,
+        "label": element.label,
+        "datatype": element.datatype,
+        "aliases": list(element.aliases),
+        "description": element.description,
+        "section": element.section,
+        "cardinality": element.cardinality,
+        "terms": list(element.terms),
+        "pattern": element.pattern,
+        "unit": element.unit,
+        "enumeration": _enum_items_to_json(element.enumeration),
+        "missing_value_codes": _enum_items_to_json(element.missing_value_codes),
+        "precondition": element.precondition,
+        "required": element.required,
+        "examples": list(element.examples),
+        "notes": element.notes,
+        "provenance": element.provenance,
+        "see_also": element.see_also,
+    }
+
+
+def _enum_json_to_cell(items: object) -> str:
+    """A JSON enumeration array back to the ``"value"=[label](iri)`` cell text."""
+    if not isinstance(items, list):
+        return ""
+    parts = []
+    for item in items:
+        if not isinstance(item, dict) or "value" not in item:
+            continue
+        parts.append(EnumItem(value=str(item["value"]), label=str(item.get("label") or ""),
+                              iri=item.get("iri") or None))
+    return _enum_items_to_cell(parts)
+
+
+def _element_cells_from_json(obj: dict) -> dict[str, str]:
+    """A JSON element object back to a cell dict that :meth:`from_rows` parses.
+
+    Routing JSON through the existing cell layer means from_json reuses all of
+    the model's parsing and validation instead of duplicating it.
+    """
+    def text(key: str) -> str:
+        value = obj.get(key)
+        return "" if value is None else str(value)
+
+    def joined(key: str, sep: str) -> str:
+        value = obj.get(key)
+        return sep.join(str(v) for v in value) if isinstance(value, list) else ""
+
+    cells = dict.fromkeys(KNOWN_COLUMNS, "")
+    cells["Id"] = text("id")
+    cells["Aliases"] = joined("aliases", "|")
+    cells["Label"] = text("label")
+    cells["Description"] = text("description")
+    cells["Section"] = text("section")
+    cells["Cardinality"] = text("cardinality")
+    cells["Terms"] = joined("terms", " ")
+    cells["Datatype"] = text("datatype")
+    cells["Pattern"] = text("pattern")
+    cells["Unit"] = text("unit")
+    cells["Enumeration"] = _enum_json_to_cell(obj.get("enumeration"))
+    cells["MissingValueCodes"] = _enum_json_to_cell(obj.get("missing_value_codes"))
+    cells["Precondition"] = text("precondition")
+    cells["Required"] = "y" if obj.get("required") else ""
+    cells["Examples"] = joined("examples", "|")
+    cells["Notes"] = text("notes")
+    cells["Provenance"] = text("provenance")
+    cells["SeeAlso"] = text("see_also")
     return cells
