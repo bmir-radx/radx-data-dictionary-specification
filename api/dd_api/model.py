@@ -761,9 +761,20 @@ _JSON_FORMAT = "dd-json"
 _JSON_VERSION = 1
 
 
-def _enum_items_to_json(items: Sequence[EnumItem]) -> list[dict]:
-    """Enumeration / missing-value-code items as ``{value, label, iri}`` objects."""
-    return [{"value": i.value, "label": i.label, "iri": i.iri} for i in items]
+def _enum_items_to_json(items: Sequence[EnumItem], *, compact: bool = False) -> list[dict]:
+    """Enumeration / missing-value-code items as ``{value, label, iri}`` objects.
+
+    Under ``compact``, an item's ``iri`` key is dropped when it is ``null``
+    (``value`` and ``label`` are always present). ``from_json`` reads a missing
+    ``iri`` as ``None``, so the round-trip is unaffected.
+    """
+    result = []
+    for item in items:
+        obj = {"value": item.value, "label": item.label, "iri": item.iri}
+        if compact and item.iri is None:
+            del obj["iri"]
+        result.append(obj)
+    return result
 
 
 # Keys always emitted, even under compact (so every element stays
@@ -790,8 +801,8 @@ def _element_to_json(element: DataElement, *, compact: bool = False) -> dict:
         "terms": list(element.terms),
         "pattern": element.pattern,
         "unit": element.unit,
-        "enumeration": _enum_items_to_json(element.enumeration),
-        "missing_value_codes": _enum_items_to_json(element.missing_value_codes),
+        "enumeration": _enum_items_to_json(element.enumeration, compact=compact),
+        "missing_value_codes": _enum_items_to_json(element.missing_value_codes, compact=compact),
         "precondition": element.precondition,
         "required": element.required,
         "examples": list(element.examples),

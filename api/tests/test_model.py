@@ -464,3 +464,19 @@ def test_compact_json_round_trips():
         DataDictionary.from_json(dd.to_json(compact=True)).elements
         == DataDictionary.from_json(dd.to_json()).elements
     )
+
+
+def test_compact_drops_null_iri_in_enum_items():
+    import json
+    dd = _load(
+        'Id,Label,Datatype,Enumeration\n'
+        'x,X,integer,"""2""=[Range] | ""3""=[Hi](UBERON:1)"\n'
+    )
+    items = json.loads(dd.to_json(compact=True))["elements"][0]["enumeration"]
+    assert items[0] == {"value": "2", "label": "Range"}          # null iri dropped
+    assert items[1] == {"value": "3", "label": "Hi", "iri": "UBERON:1"}  # kept
+    # full form still carries the null iri
+    full = json.loads(dd.to_json())["elements"][0]["enumeration"][0]
+    assert full == {"value": "2", "label": "Range", "iri": None}
+    # and the round-trip is unaffected
+    assert DataDictionary.from_json(dd.to_json(compact=True)).elements == dd.elements

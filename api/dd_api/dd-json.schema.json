@@ -24,8 +24,8 @@
   "$defs": {
     "enumItem": {
       "type": "object",
-      "description": "One permissible value: the value as it appears in the datafile, a human-readable label, and an optional ontology term IRI.",
-      "required": ["value", "label", "iri"],
+      "description": "One permissible value: the value as it appears in the datafile, a human-readable label, and an optional ontology term IRI. In the compact form a null iri may be omitted.",
+      "required": ["value", "label"],
       "additionalProperties": false,
       "properties": {
         "value": { "type": "string" },
