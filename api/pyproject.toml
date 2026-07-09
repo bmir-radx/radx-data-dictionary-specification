@@ -10,10 +10,9 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "BSD-2-Clause" }
 dependencies = [
-    # The parsing this model is built on (reader, datatype names, in-cell
-    # grammars, LinkML conversion) comes from the sibling converter package.
-    # It is not on PyPI, so depend on it directly from this repository; this
-    # lets `pip install <api>` pull the converter in one step.
+    # The reading and cell-grammar parsing come from dd_core; the LinkML
+    # conversion from dd_linkml. Neither is on PyPI, so depend on them directly
+    # from this repository; installing dd-api pulls both in one step.
     "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=core",
     "dd-linkml @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=linkml",
     "pyyaml",  # from_linkml reads schema YAML
@@ -21,6 +20,9 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest>=7", "jsonschema>=4"]
+
+[project.scripts]
+dd-json = "dd_api.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

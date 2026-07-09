@@ -81,6 +81,19 @@ payload, so a REST service can validate requests and responses against it. The
 test suite checks that `to_json` output always conforms to it, so the schema
 cannot drift from the model.
 
+### The `dd-json` command
+
+Installing `dd-api` also provides a `dd-json` command that converts a
+dictionary between formats from the shell — handy for feeding a web API or a
+build step. Input format (CSV / LinkML / dd-json) is detected automatically;
+output defaults to dd-json:
+
+```sh
+dd-json my_dictionary.csv                # -> dd-json on stdout
+dd-json my_schema.yaml -o out.json       # LinkML in, dd-json out
+dd-json data.json --format csv           # dd-json in, CSV out (also: linkml)
+```
+
 `from_linkml` works best with schemas this toolkit generated: those load back
 with full fidelity. Schemas written by hand load too — the schema is read
 with LinkML's own tooling, so it does not matter which of LinkML's equivalent

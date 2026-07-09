@@ -124,6 +124,10 @@ for choice in age.enumeration:
     print(choice.value, choice.label)
 ```
 
+It also provides a `dd-json` command that converts a dictionary between CSV,
+LinkML, and the canonical JSON from the shell (`dd-json my_dictionary.csv`) —
+useful for feeding a web API.
+
 See the [API README](api/README.md) for the conventions and the full surface,
 and the [Cookbook](api/COOKBOOK.md) for ten pasteable recipes with their
 output.
