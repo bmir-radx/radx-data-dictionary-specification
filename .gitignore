@@ -7,23 +7,23 @@ build/
 dist/
 .idea/
 
-# Converter examples: ignore the directory by default (local dictionaries may
+# Worked examples: ignore the directory by default (local dictionaries may
 # contain unpublished study metadata), but publish the cleared worked examples.
-converter/examples/*
-!converter/examples/gcb.dd.csv
-!converter/examples/gcb.yaml
-!converter/examples/rad.dd.csv
-!converter/examples/rad.yaml
-!converter/examples/dht.dd.csv
-!converter/examples/dht.yaml
-!converter/examples/tech.dd.csv
-!converter/examples/tech.yaml
-!converter/examples/up.dd.csv
-!converter/examples/up.yaml
-!converter/examples/up.redcap.csv
-!converter/examples/rad.redcap.csv
-!converter/examples/gcb.html
-!converter/examples/rad.html
-!converter/examples/dht.html
-!converter/examples/tech.html
-!converter/examples/up.html
+examples/*
+!examples/gcb.dd.csv
+!examples/gcb.yaml
+!examples/rad.dd.csv
+!examples/rad.yaml
+!examples/dht.dd.csv
+!examples/dht.yaml
+!examples/tech.dd.csv
+!examples/tech.yaml
+!examples/up.dd.csv
+!examples/up.yaml
+!examples/up.redcap.csv
+!examples/rad.redcap.csv
+!examples/gcb.html
+!examples/rad.html
+!examples/dht.html
+!examples/tech.html
+!examples/up.html

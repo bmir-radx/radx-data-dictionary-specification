@@ -185,7 +185,7 @@ character.
 
 ## Worked examples
 
-The [`examples/`](examples/) folder contains real data dictionaries and the
+The [`examples/`](../examples/) folder contains real data dictionaries and the
 schemas produced from them: `gcb`, `rad`, `dht`, `tech` and `up` — each
 `<name>.dd.csv` → `<name>.yaml`.
 
