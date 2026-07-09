@@ -112,8 +112,8 @@ It exits non-zero when any error is found, so it can gate a CI build. See the
 [`api/`](api/) is the toolkit's programmatic front door: load a data dictionary
 and work with typed, parsed objects — elements with their enumerations, units,
 ontology terms, and missing-value codes already decomposed. A dictionary reads
-from, and writes to, both of the toolkit's formats (`load`/`from_linkml` in,
-`to_csv`/`to_linkml` out).
+from, and writes to, all three of the toolkit's formats (`load` / `from_linkml`
+/ `from_json` in, `to_csv` / `to_linkml` / `to_json` out).
 
 ```python
 from dd_api import DataDictionary
@@ -124,9 +124,25 @@ for choice in age.enumeration:
     print(choice.value, choice.label)
 ```
 
-It also provides a `dd-json` command that converts a dictionary between CSV,
-LinkML, and the canonical JSON from the shell (`dd-json my_dictionary.csv`) —
-useful for feeding a web API.
+### The `dd-json` command
+
+Installing the API package also provides `dd-json`, a command that converts a
+dictionary between CSV, LinkML, and the canonical JSON from the shell — useful
+for feeding a web API. For a command-line tool,
+[`pipx`](https://pipx.pypa.io) installs it into its own isolated environment
+and puts it on your `PATH`:
+
+```sh
+pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=api"
+
+dd-json my_dictionary.csv                # -> canonical JSON on stdout
+dd-json my_schema.yaml -o out.json       # LinkML in, JSON out
+dd-json data.json --format csv           # JSON in, CSV out (also: linkml)
+```
+
+The input format (CSV / LinkML / dd-json) is detected automatically; `--format`
+chooses the output (default `json`). Use `pip` in place of `pipx` to install
+into an existing environment.
 
 See the [API README](api/README.md) for the conventions and the full surface,
 and the [Cookbook](api/COOKBOOK.md) for ten pasteable recipes with their
