@@ -1,9 +1,12 @@
 # Data Dictionary Specification
 
-A specification for CSV **data dictionaries**. A data dictionary is a CSV file
-that describes the structure of another CSV file (a *datafile*): one row per
-field, giving each field's identifier, label, datatype, permissible values,
-units, ontology terms, and more.
+A specification for **data dictionaries**. A data dictionary describes the
+structure of a tabular *datafile*: one record per field, giving each field's
+identifier, label, datatype, permissible values, units, ontology terms, and
+more. The specification defines two interchangeable serializations — a CSV
+format (the primary, human-editable one) and an equivalent
+[LinkML](https://linkml.io) YAML rendering — and the tooling here converts
+between them.
 
 > **Origin:** This specification and toolkit were originally developed for the
 > [RADx](https://github.com/canopy-datahub) data hub (which has since evolved
