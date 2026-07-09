@@ -10,6 +10,7 @@ dist/
 # Worked examples: ignore the directory by default (local dictionaries may
 # contain unpublished study metadata), but publish the cleared worked examples.
 examples/*
+!examples/README.md
 !examples/gcb.dd.csv
 !examples/gcb.yaml
 !examples/rad.dd.csv
