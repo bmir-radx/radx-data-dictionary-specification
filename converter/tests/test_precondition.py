@@ -155,7 +155,6 @@ def test_emitted_yaml_with_many_rules_is_valid_yaml():
     import io
 
     import yaml
-
     from dd_converter import emit_schema, read_data_dictionary
 
     long_id = "self_reported_measurement_with_a_really_long_identifier"
