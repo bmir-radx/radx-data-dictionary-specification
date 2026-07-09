@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dd-api"
-version = "0.0.1"
+version = "0.0.2"
 description = "A high-level Python API for working with data dictionaries"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -13,8 +13,8 @@ dependencies = [
     # The reading and cell-grammar parsing come from dd_core; the LinkML
     # conversion from dd_linkml. Neither is on PyPI, so depend on them directly
     # from this repository; installing dd-api pulls both in one step.
-    "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=core",
-    "dd-linkml @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=linkml",
+    "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.2#subdirectory=core",
+    "dd-linkml @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.2#subdirectory=linkml",
     "pyyaml",  # from_linkml reads schema YAML
 ]
 
