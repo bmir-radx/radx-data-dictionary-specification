@@ -1,6 +1,7 @@
 # Examples
 
-Real data dictionaries run through the toolkit. Each named example (`gcb`,
+This folder contains real-life example data dictionaries from the NIH RADx Program. 
+These have been run through the toolkit. Each named example (`gcb`,
 `rad`, `dht`, `tech`, `up`) appears in several formats:
 
 | Suffix | What it is | Produced by |
