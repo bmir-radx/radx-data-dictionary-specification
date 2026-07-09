@@ -201,7 +201,7 @@ decomposed — use the high-level [Python API](../api/) built on top of them.
 ## Design and development
 
 The design decisions behind the mapping are recorded in
-[`../linkml/CONVERTER_PLAN.md`](../linkml/CONVERTER_PLAN.md). To run the tests:
+[`CONVERTER_PLAN.md`](CONVERTER_PLAN.md). To run the tests:
 
 ```
 pip install -e "./converter[test]"

@@ -26,7 +26,7 @@ The round-trip is *semantic*, not byte-exact: the forward conversion normalises
 some text (it strips trailing whitespace from descriptions and re-joins ``Terms``
 with single spaces) and re-serialises the ``Enumeration`` cell grammar, so a
 reconstructed cell may be equivalent to the original without being identical.
-See ``linkml/CONVERTER_PLAN.md``.
+See ``CONVERTER_PLAN.md``.
 """
 
 from __future__ import annotations

@@ -144,7 +144,7 @@ See the [REDCap README](redcap/README.md) for the full mapping.
 Alongside the converter, [`linkml/`](linkml/) holds two hand-written LinkML
 renderings of the specification itself — one **CSV-faithful** (every column a
 single string cell) and one **parsed object model** (in-cell grammars decomposed
-into structured objects) — plus [`CONVERTER_PLAN.md`](linkml/CONVERTER_PLAN.md),
+into structured objects) — plus [`CONVERTER_PLAN.md`](converter/CONVERTER_PLAN.md),
 the converter's design record.
 
 ## License

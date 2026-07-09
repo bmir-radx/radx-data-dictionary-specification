@@ -6,7 +6,7 @@ specification's own example table, keyed by both unit name and symbol, so the
 converter can populate a structured LinkML ``unit:`` block (``descriptive_name``,
 ``symbol``, and ``ucum_code`` where known) for a recognised unit. Unrecognised
 units fall back to ``symbol = <raw string>`` in the emitter, and the raw cell is
-always preserved as ``annotations.unit_raw`` (see ``linkml/CONVERTER_PLAN.md``).
+always preserved as ``annotations.unit_raw`` (see ``CONVERTER_PLAN.md``).
 """
 
 from __future__ import annotations

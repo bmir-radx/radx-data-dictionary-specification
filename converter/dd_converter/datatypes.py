@@ -3,7 +3,7 @@
 A ``Datatype`` value is either a LinkML built-in range (returned directly)
 or a datatype with no LinkML built-in, for which the converter must emit a
 custom ``type`` into the output schema's ``types:`` block so the schema is
-self-contained (see ``linkml/CONVERTER_PLAN.md``).
+self-contained (see ``CONVERTER_PLAN.md``).
 
 Datatype names are case-sensitive per the specification; the maps below use
 exact keys. An unknown / mis-cased name is a :class:`UnknownDatatypeError`.

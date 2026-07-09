@@ -4,7 +4,7 @@ Assembles the ``Row`` objects (from :mod:`reader`) plus the parsed cell
 grammars, datatype resolution, unit lookup and standard missing-value codes into
 a ``linkml_runtime`` :class:`SchemaDefinition`, which is then dumped to YAML.
 Building the object model (rather than templating text) means the output is
-always well-formed. See ``linkml/CONVERTER_PLAN.md`` for the mapping decisions.
+always well-formed. See ``CONVERTER_PLAN.md`` for the mapping decisions.
 """
 
 from __future__ import annotations
