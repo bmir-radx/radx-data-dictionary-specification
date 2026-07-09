@@ -34,7 +34,7 @@ dd.sections              # section names, in order of first appearance
 A top-level `api/` folder — package `dd_api` — following the repo's
 one-folder-per-tool layout (`converter/`, `printer/`, `validator/`). This
 keeps the converter focused on converting; the API is its own deliverable
-with its own README and plan. It depends on `dd_converter` (the same
+with its own README and plan. It depends on `dd_core` (the same
 direct-git dependency pattern the printer and validator use) for the parsing
 it is built on, and re-exports every type the model hands back or raises
 (`DataDictionary`, `DataElement`, `EnumItem`, `UnitOfMeasure`, `Row`,
@@ -131,7 +131,7 @@ wrong for an API whose purpose is comprehension.
 
 - Full docstrings on both classes and every method (the module docstring
   carries a worked example).
-- A "Python API" section in `converter/README.md` with the same example.
+- A "Python API" section in `converter README` with the same example.
 - A pointer from the top-level README.
 
 ## Adoption by the other tools
@@ -141,11 +141,11 @@ wrong for an API whose purpose is comprehension.
   and LinkML) come through `dd_api`. Rendered output verified byte-identical
   on the worked examples (JSON differs only in stripped trailing whitespace).
 - **Converter** — *not* refactored: it is the layer this model is built on;
-  depending on `dd_api` from `dd_converter` would be circular.
+  depending on `dd_api` from `dd_core` would be circular.
 - **Validator** — *not* refactored, deliberately: it must accept invalid
   dictionaries that this fail-fast model refuses to represent. Its whole
   purpose is the inputs `DataDictionary.load` rejects; it shares the same
-  underlying `dd_converter` parsers instead.
+  underlying `dd_core` parsers instead.
 
 ## Non-goals (v1)
 

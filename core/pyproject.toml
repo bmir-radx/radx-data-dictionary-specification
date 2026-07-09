@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dd-core"
+version = "0.0.1"
+description = "Core library for reading and parsing data dictionaries"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "BSD-2-Clause" }
+dependencies = [
+    # Only the cell-grammar parser. The heavy LinkML dependency belongs to the
+    # sibling dd-linkml package, so tools that just read dictionaries stay light.
+    "lark>=1.1",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dd_core*"]
+
+[tool.setuptools.package-data]
+dd_core = ["grammar/*.lark"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

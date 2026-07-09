@@ -4,7 +4,7 @@ A Python tool that validates a data dictionary CSV against the specification and
 **reports every problem it finds** (it does not transform). Third tool in this
 repo, sibling to `converter/` and `printer/`. Ported from the Java validator at
 `bmir-radx/radx-data-dictionary-validator`, but generic/de-branded from the
-start and reusing the `dd_converter` package for per-cell parsing.
+start and reusing the `dd_core` package for per-cell parsing.
 
 Package: `dd_validator`. Command: `dd-validate`.
 
@@ -58,7 +58,7 @@ Most of these mirror the Java tool. Where I depart from it, it's flagged
 
 ### 2a. Reuse vs. reimplement
 
-We reuse `dd_converter`'s per-cell parsers — they already encode this repo's
+We reuse `dd_core`'s per-cell parsers — they already encode this repo's
 grammar and datatype set, so the validator stays in lockstep with the converter
 and spec instead of duplicating rules:
 
@@ -69,7 +69,7 @@ and spec instead of duplicating rules:
 - **MissingValueCodes** → `grammar.parse_missing_value_codes(cell)`; catch
   `ParseError`. (In this repo these are separate functions; the Java tool shared
   one grammar. Same effect.)
-- **Column vocabulary** → `dd_converter.KNOWN_COLUMNS` and `REQUIRED_COLUMNS`
+- **Column vocabulary** → `dd_core.KNOWN_COLUMNS` and `REQUIRED_COLUMNS`
   (`Id, Label, Datatype`). This resolves the Java source's header-vocabulary
   split (its `columns.csv` used `Meaning`/`Units` while the field components used
   `Unit`/etc.) — we use the **single** canonical vocabulary from the spec.
@@ -86,7 +86,7 @@ reused as raising code.
 Port the Java "Did you mean …?" suggestion: case-insensitive exact match against
 the known names, else a small fix map (`bit→boolean, text→string,
 number→decimal, email→string, zipcode→string, phone→string`). This lives in the
-validator (no `dd_converter` equivalent). Message includes the suggestion only
+validator (no `dd_core` equivalent). Message includes the suggestion only
 when one is found.
 
 ### 2c. Pattern check
@@ -183,7 +183,7 @@ like the Java `--in`). See §6 for exit-code decision.
 
 ---
 
-## 4. Reuse summary (what comes from `dd_converter`)
+## 4. Reuse summary (what comes from `dd_core`)
 
 | Need | Source | Behavior |
 |------|--------|----------|
@@ -194,7 +194,7 @@ like the Java `--in`). See §6 for exit-code decision.
 | CSV read shape | (pattern from) `reader._read` | reimplemented as collect-all |
 
 Datatype suggestion map, pattern compile, SeeAlso URL, whitespace-in-Id, and
-cardinality checks have **no** `dd_converter` equivalent → implemented in
+cardinality checks have **no** `dd_core` equivalent → implemented in
 `checks.py`.
 
 ---
@@ -205,7 +205,7 @@ Follows the printer exactly:
 - `name = "dd-validate"`, `version = "0.0.1"`, `requires-python = ">=3.9"`,
   BSD-2-Clause.
 - Dependency on the converter via the same direct-git pattern:
-  `dd-converter @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter`.
+  `dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=core`.
 - `[project.scripts] dd-validate = "dd_validator.cli:main"`.
 - ruff config identical to the other packages (F,E,W,B,C4,UP,SIM @ 100 cols),
   `from __future__ import annotations`, modern type hints, pytest tests.

@@ -6,13 +6,13 @@ the parts with logic worth pinning down.
 """
 
 import pytest
-from dd_converter.emit import _annotate_term_lines
-from dd_converter.terms_lookup import (
+from dd_core.terms_lookup import (
     LookupError_,
     _curie_prefix,
     _to_iri,
     lookup_labels,
 )
+from dd_linkml.emit import _annotate_term_lines
 
 
 def test_to_iri_expands_obo_curie():

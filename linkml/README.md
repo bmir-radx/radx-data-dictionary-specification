@@ -1,24 +1,30 @@
 # Data Dictionary → LinkML Converter
 
 `dd-to-linkml` converts a [data dictionary](../radx-data-dictionary-specification.md)
-CSV into a [LinkML](https://linkml.io) schema. The data dictionary *describes* a
-datafile; the generated schema is a formal, machine-processable description of
-that datafile that you can validate data against, generate documentation from,
-or transform with the wider LinkML tool ecosystem.
+CSV into a [LinkML](https://linkml.io) schema (and `linkml-to-dd` converts back).
+The data dictionary *describes* a datafile; the generated schema is a formal,
+machine-processable description of that datafile that you can validate data
+against, generate documentation from, or transform with the wider LinkML tool
+ecosystem.
+
+The `dd_linkml` package does only the LinkML mapping; the reading and cell-grammar
+parsing come from the sibling [`dd_core`](../core/) package it depends on. This
+folder also holds [`schemas/`](schemas/) — hand-written LinkML renderings of the
+specification.
 
 ## Install
 
 Install directly from the repository — no clone required:
 
 ```
-pip install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter"
+pip install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=linkml"
 ```
 
 For a CLI tool, [`pipx`](https://pipx.pypa.io) installs it into its own isolated
 environment and puts the commands on your `PATH`:
 
 ```
-pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter"
+pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=linkml"
 ```
 
 On first use of pipx, its bin directory may not be on your `PATH` (pipx warns
@@ -27,7 +33,7 @@ which the commands are available everywhere.
 
 Either way this installs the `dd-to-linkml` and `linkml-to-dd`
 commands and their dependencies (`linkml`, `lark`). If you have cloned the
-repository, `pip install ./converter` from the repo root works too.
+repository, `pip install ./linkml` from the repo root works too.
 
 ## Use it
 
@@ -188,7 +194,8 @@ schemas produced from them: `gcb`, `rad`, `dht`, `tech` and `up` — each
 The pipeline is also importable:
 
 ```python
-from dd_converter import read_data_dictionary, emit_schema, EmitOptions
+from dd_core import read_data_dictionary
+from dd_linkml import emit_schema, EmitOptions
 
 rows = read_data_dictionary("my_dictionary.csv")
 print(emit_schema(rows, EmitOptions(schema_name="my_data", class_name="Record")))
@@ -204,6 +211,6 @@ The design decisions behind the mapping are recorded in
 [`CONVERTER_PLAN.md`](CONVERTER_PLAN.md). To run the tests:
 
 ```
-pip install -e "./converter[test]"
-pytest converter
+pip install -e "./linkml[test]"
+pytest linkml
 ```

@@ -14,7 +14,8 @@ dependencies = [
     # grammars, LinkML conversion) comes from the sibling converter package.
     # It is not on PyPI, so depend on it directly from this repository; this
     # lets `pip install <api>` pull the converter in one step.
-    "dd-converter @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter",
+    "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=core",
+    "dd-linkml @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=linkml",
     "pyyaml",  # from_linkml reads schema YAML
 ]
 

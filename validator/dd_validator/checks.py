@@ -3,7 +3,7 @@
 Each check inspects the header or the data rows and yields :class:`Finding`
 objects. The checks are independent and never raise on a data problem; they
 report it. The per-cell parsing rules (datatype names, the enumeration and
-missing-value-codes grammars) are reused from :mod:`dd_converter` so the
+missing-value-codes grammars) are reused from :mod:`dd_core` so the
 validator stays in lockstep with the converter and the specification.
 
 Conventions, mirrored from the reference Java validator:
@@ -20,7 +20,7 @@ import re
 from collections.abc import Iterable, Sequence
 from urllib.parse import urlsplit
 
-from dd_converter import (
+from dd_core import (
     BUILTIN_RANGES,
     CUSTOM_TYPES,
     ORDERED_DATATYPES,
@@ -28,7 +28,7 @@ from dd_converter import (
     UnknownDatatypeError,
     resolve_datatype,
 )
-from dd_converter.grammar import (
+from dd_core.grammar import (
     Comparison,
     Contains,
     ParseError,
@@ -36,7 +36,7 @@ from dd_converter.grammar import (
     parse_missing_value_codes,
     parse_precondition,
 )
-from dd_converter.grammar import atoms as precondition_atoms
+from dd_core.grammar import atoms as precondition_atoms
 
 from .model import Finding, Level
 from .rows import RawRow

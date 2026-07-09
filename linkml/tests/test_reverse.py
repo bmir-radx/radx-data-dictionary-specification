@@ -4,13 +4,9 @@ import io
 from pathlib import Path
 
 import pytest
-from dd_converter import (
-    EmitOptions,
-    emit_schema,
-    read_data_dictionary,
-    schema_to_csv,
-)
-from dd_converter.grammar import parse_enumeration, parse_terms
+from dd_core import read_data_dictionary
+from dd_core.grammar import parse_enumeration, parse_terms
+from dd_linkml import EmitOptions, emit_schema, schema_to_csv
 
 EXAMPLES = Path(__file__).resolve().parents[1] / "examples"
 
@@ -109,7 +105,7 @@ def test_datatype_with_renamed_linkml_range_roundtrips():
 # range, and inline enum_range.
 
 def test_slots_and_slot_usage_style():
-    from dd_converter import schema_to_rows
+    from dd_linkml import schema_to_rows
 
     schema = {
         "id": "https://example.org/t",
@@ -134,7 +130,7 @@ def test_slots_and_slot_usage_style():
 
 
 def test_inherited_slots_are_included():
-    from dd_converter import schema_to_rows
+    from dd_linkml import schema_to_rows
 
     schema = {
         "id": "https://example.org/t",
@@ -153,7 +149,7 @@ def test_inherited_slots_are_included():
 
 
 def test_named_enum_as_direct_range():
-    from dd_converter import schema_to_rows
+    from dd_linkml import schema_to_rows
 
     schema = {
         "id": "https://example.org/t",
@@ -177,7 +173,7 @@ def test_named_enum_as_direct_range():
 
 
 def test_inline_enum_range():
-    from dd_converter import schema_to_rows
+    from dd_linkml import schema_to_rows
 
     schema = {
         "id": "https://example.org/t",
@@ -240,7 +236,7 @@ def test_example_dictionary_roundtrips(filename, allow_dup):
     rebuilt_by_id = {r.id: r for r in rebuilt}
     assert set(orig_by_id) == set(rebuilt_by_id)
 
-    from dd_converter.reader import KNOWN_COLUMNS
+    from dd_core.reader import KNOWN_COLUMNS
 
     mismatches = []
     for row_id, orig_row in orig_by_id.items():

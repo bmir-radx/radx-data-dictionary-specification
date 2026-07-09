@@ -10,7 +10,7 @@ as *smoker is 1 (Yes)*. The raw grammar text is kept as a tooltip.
 
 from __future__ import annotations
 
-from dd_converter.grammar import And, Contains, InSet, Or, parse_precondition
+from dd_core.grammar import And, Contains, InSet, Or, parse_precondition
 from markupsafe import escape
 
 from .model import Dictionary, Record

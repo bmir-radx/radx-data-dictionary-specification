@@ -1,7 +1,7 @@
 """Tests for the Terms cell tokeniser."""
 
 import pytest
-from dd_converter.grammar import parse_terms
+from dd_core.grammar import parse_terms
 
 
 @pytest.mark.parametrize(

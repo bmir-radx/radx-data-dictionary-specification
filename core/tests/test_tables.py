@@ -1,7 +1,7 @@
 """Tests for the constant tables: standard missing-value codes and units."""
 
 import pytest
-from dd_converter import (
+from dd_core import (
     STANDARD_MISSING_VALUE_CODES,
     UnitOfMeasure,
     lookup_unit,

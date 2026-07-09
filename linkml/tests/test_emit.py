@@ -12,8 +12,8 @@ from pathlib import Path
 
 import pytest
 import yaml
-from dd_converter import read_data_dictionary
-from dd_converter.emit import EmitOptions, Emitter, emit_schema
+from dd_core import read_data_dictionary
+from dd_linkml.emit import EmitOptions, Emitter, emit_schema
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -176,7 +176,7 @@ _ENUM_CSV = 'Id,Label,Datatype,Enumeration\nq,Q,integer,"""0""=[No] | ""1""=[Yes
 
 
 def test_missing_value_codes_override():
-    from dd_converter.grammar import parse_missing_value_codes
+    from dd_core.grammar import parse_missing_value_codes
 
     custom = parse_missing_value_codes('"-1"=[Refused] | "-2"=[Unknown]')
     schema = yaml.safe_load(
@@ -202,7 +202,7 @@ def test_missing_value_codes_empty_omits_shared_enum():
 
 
 def test_parse_missing_value_codes_file(tmp_path):
-    from dd_converter import parse_missing_value_codes_file
+    from dd_core import parse_missing_value_codes_file
 
     path = tmp_path / "codes.txt"
     path.write_text('"-1"=[Refused] | "-2"=[Unknown]')
@@ -242,15 +242,15 @@ def test_pretty_rendering_preserves_content(schema_yaml):
     """The comment/blank-line pass must not alter the schema data."""
     import json
 
-    from dd_converter import read_data_dictionary
-    from dd_converter.emit import EmitOptions, _strip_type_keys
+    from dd_core import read_data_dictionary
+    from dd_linkml.emit import EmitOptions, _strip_type_keys
     from linkml_runtime.dumpers import json_dumper
 
     em = Emitter(EmitOptions(schema_id="https://example.org/s", schema_name="s",
                              class_name="Record"))
     schema = em.build(read_data_dictionary(FIXTURES / "sample.csv"))
     ref = _strip_type_keys(json.loads(json_dumper.dumps(schema)))
-    from dd_converter.emit import _render
+    from dd_linkml.emit import _render
 
     assert yaml.safe_load(_render(ref)) == ref
 
@@ -281,7 +281,7 @@ def test_multiline_description_is_block_scalar():
 
 
 def test_clean_text_strips_trailing_and_leading_blank_lines():
-    from dd_converter.emit import _clean_text
+    from dd_linkml.emit import _clean_text
 
     # trailing blank lines and per-line trailing spaces removed; internal
     # newlines and spacing preserved.
@@ -323,7 +323,7 @@ def test_field_enum_block_above_definition(schema_yaml):
 
 
 def test_number_entries_helper_resets_per_section():
-    from dd_converter.emit import _number_entries_at
+    from dd_linkml.emit import _number_entries_at
 
     body = "  A:\n    x: 1\n  B:\n    y: 2\n  C:\n    z: 3"
     out = _number_entries_at(body, indent=2, total=3, label="enums")
@@ -335,7 +335,7 @@ def test_number_entries_helper_resets_per_section():
 
 
 def test_enum_block_usage_line_and_cap():
-    from dd_converter.emit import _annotate_blocks
+    from dd_linkml.emit import _annotate_blocks
 
     users = {"E": [f"f{i}" for i in range(10)]}
     # Feed the line as _render would produce it (with the trailing counter).
@@ -347,14 +347,14 @@ def test_enum_block_usage_line_and_cap():
 
 
 def test_enum_block_singular_data_element():
-    from dd_converter.emit import _annotate_blocks
+    from dd_linkml.emit import _annotate_blocks
 
     out = _annotate_blocks("  E:  # 1 of 1 enum\n", 2, "Enum", "enums", {"E": ["only"]})
     assert "# Used by 1 data element\n" in out  # singular
 
 
 def test_data_element_one_line_block():
-    from dd_converter.emit import _annotate_blocks
+    from dd_linkml.emit import _annotate_blocks
 
     # No users map -> a one-line "# Data element n of m" block, bare key line.
     out = _annotate_blocks(
@@ -366,7 +366,7 @@ def test_data_element_one_line_block():
 
 
 def test_section_block_three_lines():
-    from dd_converter.emit import _annotate_blocks
+    from dd_linkml.emit import _annotate_blocks
 
     out = _annotate_blocks(
         "  Demographics:  # 3 of 4 sections\n",
@@ -395,7 +395,7 @@ def test_annotate_enum_values_adds_capped_comment():
 
 
 def test_enum_value_comment_is_capped():
-    from dd_converter.emit import _annotate_enum_ranges
+    from dd_linkml.emit import _annotate_enum_ranges
 
     pairs = [(str(i), f"L{i}") for i in range(10)]
     out = _annotate_enum_ranges(

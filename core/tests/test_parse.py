@@ -5,7 +5,7 @@ parser is checked against the authoritative source.
 """
 
 import pytest
-from dd_converter.grammar import (
+from dd_core.grammar import (
     EnumItem,
     ParseError,
     parse_enumeration,

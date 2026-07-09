@@ -21,10 +21,11 @@ cells::
     dd.sections                            # section names, in order
     schema_yaml = dd.to_linkml()           # the LinkML rendering
 
-The model itself lives in :mod:`dd_api.model`; the parsing it builds on
-(datatype names, the in-cell grammars, LinkML conversion) comes from the
-sibling ``dd_converter`` package. Every type the model hands back or raises
-is re-exported here, so day-to-day use needs only ``dd_api``:
+The model itself lives in :mod:`dd_api.model`; the parsing it builds on comes
+from the sibling ``dd_core`` package (reading, datatype names, the in-cell
+grammars) and the LinkML conversion from ``dd_linkml``. Every type the model
+hands back or raises is re-exported here, so day-to-day use needs only
+``dd_api``:
 
 * :class:`DataDictionary`, :class:`DataElement` — the model.
 * :class:`EnumItem` — one enumeration / missing-value-code choice.
@@ -33,12 +34,14 @@ is re-exported here, so day-to-day use needs only ``dd_api``:
 * :class:`ReadError` — what loading raises on a bad dictionary.
 * :class:`EmitOptions` — options for :meth:`DataDictionary.to_linkml`.
 
-(The lower-level functions themselves — reading raw rows, converting schemas
-— stay in ``dd_converter``; import from there when working below the model.)
+(The lower-level functions themselves — reading raw rows in ``dd_core``,
+converting schemas in ``dd_linkml`` — import from those when working below
+the model.)
 """
 
-from dd_converter import EmitOptions, ReadError, Row, UnitOfMeasure
-from dd_converter.grammar import EnumItem
+from dd_core import ReadError, Row, UnitOfMeasure
+from dd_core.grammar import EnumItem
+from dd_linkml import EmitOptions
 
 from .model import DataDictionary, DataElement
 

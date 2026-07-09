@@ -3,7 +3,7 @@
 This package reports *every* violation it finds rather than transforming the
 dictionary. It is described in ``VALIDATOR_PLAN.md``. The per-cell parsing rules
 (datatype names, the enumeration and missing-value-codes grammars) are reused
-from the sibling :mod:`dd_converter` package so the validator stays in lockstep
+from the sibling :mod:`dd_core` package so the validator stays in lockstep
 with the converter and the specification.
 """
 

@@ -16,6 +16,24 @@ from dataclasses import dataclass
 
 import jsonasobj2
 import yaml
+from dd_core.datatypes import CustomType, resolve_datatype
+from dd_core.grammar import (
+    And,
+    Contains,
+    EnumItem,
+    InSet,
+    Or,
+    parse_enumeration,
+    parse_missing_value_codes,
+    parse_precondition,
+    parse_terms,
+)
+from dd_core.missing_values import (
+    STANDARD_ENUM_NAME,
+    STANDARD_MISSING_VALUE_CODES,
+)
+from dd_core.reader import Row
+from dd_core.units import lookup_unit
 from linkml_runtime.dumpers import json_dumper
 from linkml_runtime.linkml_model.meta import (
     AnonymousClassExpression,
@@ -33,25 +51,6 @@ from linkml_runtime.linkml_model.meta import (
 from linkml_runtime.linkml_model.meta import (
     UnitOfMeasure as LinkMLUnitOfMeasure,
 )
-
-from .datatypes import CustomType, resolve_datatype
-from .grammar import (
-    And,
-    Contains,
-    EnumItem,
-    InSet,
-    Or,
-    parse_enumeration,
-    parse_missing_value_codes,
-    parse_precondition,
-    parse_terms,
-)
-from .missing_values import (
-    STANDARD_ENUM_NAME,
-    STANDARD_MISSING_VALUE_CODES,
-)
-from .reader import Row
-from .units import lookup_unit
 
 logger = logging.getLogger(__name__)
 
@@ -635,7 +634,7 @@ class Emitter:
         _annotations_last(as_dict)
         text = _render(as_dict)
         if self.opts.annotate_terms and self._terms:
-            from .terms_lookup import lookup_labels
+            from dd_core.terms_lookup import lookup_labels
 
             labels = lookup_labels(
                 self._terms,

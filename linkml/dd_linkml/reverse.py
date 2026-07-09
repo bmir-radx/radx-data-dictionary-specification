@@ -37,11 +37,10 @@ from typing import TextIO
 
 import jsonasobj2
 import yaml
+from dd_core.datatypes import BUILTIN_RANGES
+from dd_core.missing_values import STANDARD_ENUM_NAME
+from dd_core.reader import KNOWN_COLUMNS
 from linkml_runtime import SchemaView
-
-from .datatypes import BUILTIN_RANGES
-from .missing_values import STANDARD_ENUM_NAME
-from .reader import KNOWN_COLUMNS
 
 # LinkML ranges that are not themselves valid datatype names, mapped back to
 # the unique specification name that produces them (datetime -> dateTime,

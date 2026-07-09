@@ -13,31 +13,32 @@ units, ontology terms, and more.
 
 📄 **[Read the specification →](radx-data-dictionary-specification.md)**
 
-The Markdown specification is the authoritative document. The LinkML schemas and
-the tools below (a converter, a printer, and a validator) are machine-processable
-renderings and tooling built on top of it.
+The Markdown specification is the authoritative document. The packages below
+are machine-processable renderings and tooling built on top of it: a core
+library, a LinkML converter, a printer, a validator, a REDCap converter, and a
+high-level Python API.
 
 ## Repository contents
 
 | Path | What it is |
 | --- | --- |
 | [`radx-data-dictionary-specification.md`](radx-data-dictionary-specification.md) | The authoritative specification. |
-| [`converter/`](converter/) | A Python tool that converts between a data dictionary CSV and a LinkML schema, in both directions. |
-| [`printer/`](printer/) | A Python tool that renders a data dictionary to a human-readable HTML page (or JSON). |
-| [`validator/`](validator/) | A Python tool that checks a data dictionary against the specification and reports violations. |
+| [`core/`](core/) | The core library: reads a data dictionary CSV and parses its in-cell grammars. The foundation the other packages build on. |
+| [`linkml/`](linkml/) | Converts between a data dictionary CSV and a [LinkML](https://linkml.io) schema, in both directions; also holds hand-written LinkML renderings of the spec under `schemas/`. |
+| [`printer/`](printer/) | Renders a data dictionary to a human-readable HTML page (or JSON). |
+| [`validator/`](validator/) | Checks a data dictionary against the specification and reports violations. |
 | [`api/`](api/) | A high-level Python API: load a data dictionary and work with typed, parsed objects. |
-| [`redcap/`](redcap/) | A Python tool that converts a REDCap data dictionary export into this format. |
-| [`linkml/`](linkml/) | Hand-written [LinkML](https://linkml.io) renderings of the specification. |
+| [`redcap/`](redcap/) | Converts a REDCap data dictionary export into this format. |
 
-## Converter
+## LinkML converter
 
-[`converter/`](converter/) is a Python tool that translates **both directions**
+[`linkml/`](linkml/) is a Python tool that translates **both directions**
 between a data dictionary and a [LinkML](https://linkml.io) schema:
 
 Install it straight from this repository (no clone needed):
 
 ```sh
-pip install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=converter"
+pip install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=linkml"
 ```
 
 Then convert in either direction:
@@ -53,21 +54,21 @@ linkml-to-dd my_schema.yaml -o my_dictionary.csv
 The generated schema describes the *target datafile* — one slot per data
 element — so datafiles can be validated and documented with standard LinkML
 tooling. The round-trip is *semantic* (the same information is preserved), not
-byte-exact. See the [converter README](converter/README.md) for the full set of
+byte-exact. See the [LinkML converter README](linkml/README.md) for the full set of
 options and the mapping details.
 
 ### Worked examples
 
-Five real data dictionaries and the LinkML schemas the converter produces from
+Five real data dictionaries and the LinkML schemas the tool produces from
 them:
 
 | Data dictionary (input) | Generated LinkML schema (output) | Rendered page |
 | --- | --- | --- |
-| [`gcb.dd.csv`](converter/examples/gcb.dd.csv) | [`gcb.yaml`](converter/examples/gcb.yaml) | [`gcb.html`](converter/examples/gcb.html) |
-| [`rad.dd.csv`](converter/examples/rad.dd.csv) | [`rad.yaml`](converter/examples/rad.yaml) | [`rad.html`](converter/examples/rad.html) |
-| [`dht.dd.csv`](converter/examples/dht.dd.csv) | [`dht.yaml`](converter/examples/dht.yaml) | [`dht.html`](converter/examples/dht.html) |
-| [`tech.dd.csv`](converter/examples/tech.dd.csv) | [`tech.yaml`](converter/examples/tech.yaml) | [`tech.html`](converter/examples/tech.html) |
-| [`up.dd.csv`](converter/examples/up.dd.csv) | [`up.yaml`](converter/examples/up.yaml) | [`up.html`](converter/examples/up.html) |
+| [`gcb.dd.csv`](linkml/examples/gcb.dd.csv) | [`gcb.yaml`](linkml/examples/gcb.yaml) | [`gcb.html`](linkml/examples/gcb.html) |
+| [`rad.dd.csv`](linkml/examples/rad.dd.csv) | [`rad.yaml`](linkml/examples/rad.yaml) | [`rad.html`](linkml/examples/rad.html) |
+| [`dht.dd.csv`](linkml/examples/dht.dd.csv) | [`dht.yaml`](linkml/examples/dht.yaml) | [`dht.html`](linkml/examples/dht.html) |
+| [`tech.dd.csv`](linkml/examples/tech.dd.csv) | [`tech.yaml`](linkml/examples/tech.yaml) | [`tech.html`](linkml/examples/tech.html) |
+| [`up.dd.csv`](linkml/examples/up.dd.csv) | [`up.yaml`](linkml/examples/up.yaml) | [`up.html`](linkml/examples/up.html) |
 
 The `up` and `rad` examples show the complete REDCap pipeline: a raw export (`<name>.redcap.csv`) → `redcap-to-dd` → the dictionary (`<name>.dd.csv`) → `dd-to-linkml` → the schema (`<name>.yaml`), whose class `rules` come from the export's branching logic via the `Precondition` field (50 rules for `up`, 5 for `rad`).
 
@@ -141,11 +142,11 @@ See the [REDCap README](redcap/README.md) for the full mapping.
 
 ## Hand-written LinkML schemas
 
-Alongside the converter, [`linkml/`](linkml/) holds two hand-written LinkML
-renderings of the specification itself — one **CSV-faithful** (every column a
-single string cell) and one **parsed object model** (in-cell grammars decomposed
-into structured objects) — plus [`CONVERTER_PLAN.md`](converter/CONVERTER_PLAN.md),
-the converter's design record.
+Alongside the converter, [`linkml/schemas/`](linkml/schemas/) holds two
+hand-written LinkML renderings of the specification itself — one
+**CSV-faithful** (every column a single string cell) and one **parsed object
+model** (in-cell grammars decomposed into structured objects) — plus
+[`CONVERTER_PLAN.md`](linkml/CONVERTER_PLAN.md), the converter's design record.
 
 ## License
 
