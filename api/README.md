@@ -76,6 +76,11 @@ The `format`/`version` wrapper lets the contract evolve. (This is distinct
 from the printer's JSON, which serialises the printer's *presentation* model
 for rendering, not for interchange.)
 
+For a leaner payload, `to_json(compact=True)` (CLI: `--compact`) omits each
+element's `null` and empty-list fields, keeping only the always-present keys
+(`id`, `label`, `datatype`, `cardinality`, `required`). `from_json` reads
+either form, so the round-trip is unaffected.
+
 A [JSON Schema](dd_api/dd-json.schema.json) (Draft 2020-12) describes the
 payload, so a REST service can validate requests and responses against it. The
 test suite checks that `to_json` output always conforms to it, so the schema
@@ -90,6 +95,7 @@ output defaults to dd-json:
 
 ```sh
 dd-json my_dictionary.csv                # -> dd-json on stdout
+dd-json my_dictionary.csv --compact      # ...omitting null / empty-list fields
 dd-json my_schema.yaml -o out.json       # LinkML in, dd-json out
 dd-json data.json --format csv           # dd-json in, CSV out (also: linkml)
 ```

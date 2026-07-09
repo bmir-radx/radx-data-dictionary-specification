@@ -38,6 +38,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "-f", "--format", choices=("json", "csv", "linkml"), default="json",
         help="Output format (default: json — the canonical dd-json).",
     )
+    parser.add_argument(
+        "--compact", action="store_true",
+        help="For JSON output, omit null and empty-list fields (leaner payload).",
+    )
     return parser
 
 
@@ -85,7 +89,7 @@ def main(argv=None) -> int:
     elif args.format == "linkml":
         rendered = dictionary.to_linkml()
     else:
-        rendered = dictionary.to_json()
+        rendered = dictionary.to_json(compact=args.compact)
 
     if args.output is None:
         sys.stdout.write(rendered if rendered.endswith("\n") else rendered + "\n")

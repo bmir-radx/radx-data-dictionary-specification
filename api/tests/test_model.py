@@ -435,5 +435,32 @@ def test_to_json_conforms_to_shipped_schema():
         (Path(__file__).resolve().parents[1] / "dd_api" / "dd-json.schema.json").read_text()
     )
     dd = _load(f"{HEADER}\n{FULL_ROW}\n")
-    jsonschema.validate(json.loads(dd.to_json()), schema)
+    jsonschema.validate(json.loads(dd.to_json()), schema)          # full form
+    jsonschema.validate(json.loads(dd.to_json(compact=True)), schema)  # compact form
     jsonschema.Draft202012Validator.check_schema(schema)  # schema itself is valid
+
+
+def test_to_json_compact_omits_nulls_and_empty_lists():
+    import json
+    dd = _load(
+        "Id,Label,Datatype,Enumeration\n"
+        'sex,Sex,integer,"""0""=[F] | ""1""=[M]"\n'
+        "note,Note,string,\n"
+    )
+    els = {e["id"]: e for e in json.loads(dd.to_json(compact=True))["elements"]}
+    # A field with no optional data keeps only the always-present keys.
+    assert set(els["note"]) == {"id", "label", "datatype", "cardinality", "required"}
+    # A field with an enumeration keeps it, but still drops its null/empty fields.
+    assert "enumeration" in els["sex"]
+    assert "description" not in els["sex"] and "aliases" not in els["sex"]
+
+
+def test_compact_json_round_trips():
+    # Omitting fields must not lose information: compact JSON reconstructs the
+    # same model as the full form.
+    dd = _load(f"{HEADER}\n{FULL_ROW}\n")
+    assert DataDictionary.from_json(dd.to_json(compact=True)).elements == dd.elements
+    assert (
+        DataDictionary.from_json(dd.to_json(compact=True)).elements
+        == DataDictionary.from_json(dd.to_json()).elements
+    )

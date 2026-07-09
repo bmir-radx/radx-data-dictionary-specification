@@ -136,6 +136,7 @@ and puts it on your `PATH`:
 pipx install "git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=api"
 
 dd-json my_dictionary.csv                # -> canonical JSON on stdout
+dd-json my_dictionary.csv --compact      # ...omitting null / empty-list fields
 dd-json my_schema.yaml -o out.json       # LinkML in, JSON out
 dd-json data.json --format csv           # JSON in, CSV out (also: linkml)
 ```

@@ -561,7 +561,7 @@ class DataDictionary:
         ]
         return emit_schema(rows, options)
 
-    def to_json(self, *, indent: int | None = 2) -> str:
+    def to_json(self, *, indent: int | None = 2, compact: bool = False) -> str:
         """Serialise this dictionary as canonical JSON, for use over an API.
 
         The JSON mirrors the typed model: a versioned wrapper around a list of
@@ -570,6 +570,13 @@ class DataDictionary:
         ``{"value", "label", "iri"}`` objects. Provenance (``line``/``row``)
         is not included. :meth:`from_json` reconstructs the model from it.
 
+        With ``compact=True``, an element omits its ``null`` single-valued
+        fields and its empty-list fields, for a leaner payload — the always-
+        present keys (``id``, ``label``, ``datatype``, ``cardinality``,
+        ``required``) are kept so every element stays self-describing.
+        :meth:`from_json` reads both forms (a missing field is taken as
+        absent), so the round-trip is unaffected.
+
         ::
 
             >>> import json
@@ -577,16 +584,15 @@ class DataDictionary:
             >>> dd = DataDictionary.from_rows([
             ...     {"Id": "age", "Label": "Age", "Datatype": "integer"},
             ... ])
-            >>> payload = json.loads(dd.to_json())
-            >>> payload["format"], payload["version"]
-            ('dd-json', 1)
-            >>> payload["elements"][0]["id"]
-            'age'
+            >>> json.loads(dd.to_json())["elements"][0]["description"] is None
+            True
+            >>> "description" in json.loads(dd.to_json(compact=True))["elements"][0]
+            False
         """
         payload = {
             "format": _JSON_FORMAT,
             "version": _JSON_VERSION,
-            "elements": [_element_to_json(element) for element in self._elements],
+            "elements": [_element_to_json(element, compact=compact) for element in self._elements],
         }
         return json.dumps(payload, indent=indent, ensure_ascii=False)
 
@@ -760,13 +766,20 @@ def _enum_items_to_json(items: Sequence[EnumItem]) -> list[dict]:
     return [{"value": i.value, "label": i.label, "iri": i.iri} for i in items]
 
 
-def _element_to_json(element: DataElement) -> dict:
+# Keys always emitted, even under compact (so every element stays
+# self-describing): identity, plus the two fields with a meaningful default.
+_JSON_ALWAYS = frozenset({"id", "label", "datatype", "cardinality", "required"})
+
+
+def _element_to_json(element: DataElement, *, compact: bool = False) -> dict:
     """One element as a JSON object mirroring the typed model.
 
     Single-valued optional fields are ``null`` when absent; list-valued
     fields are arrays. Provenance (``line``/``row``) is deliberately omitted.
+    When ``compact``, ``null`` and empty-list fields are dropped except the
+    always-present keys (:data:`_JSON_ALWAYS`).
     """
-    return {
+    obj = {
         "id": element.id,
         "label": element.label,
         "datatype": element.datatype,
@@ -785,6 +798,13 @@ def _element_to_json(element: DataElement) -> dict:
         "notes": element.notes,
         "provenance": element.provenance,
         "see_also": element.see_also,
+    }
+    if not compact:
+        return obj
+    return {
+        key: value
+        for key, value in obj.items()
+        if key in _JSON_ALWAYS or (value is not None and value != [])
     }
 
 
