@@ -211,7 +211,7 @@ This is why Option 3 (union at the slot) is used rather than enum inheritance.
 ## Architecture
 
 ```
-dd_converter/
+dd_linkml/
   reader.py        # RFC-4180 CSV -> list[Row]; validates required headers, ordering
   grammar/
     enumeration.lark   # EBNF from spec section "Semantics of Enumeration Values"

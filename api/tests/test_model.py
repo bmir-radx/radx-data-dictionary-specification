@@ -5,8 +5,9 @@ import io
 import pytest
 import yaml
 from dd_api import DataDictionary, DataElement, ReadError
-from dd_converter import UnknownDatatypeError, emit_schema, read_data_dictionary
-from dd_converter.grammar import ParseError
+from dd_core import UnknownDatatypeError, read_data_dictionary
+from dd_core.grammar import ParseError
+from dd_linkml import emit_schema
 
 HEADER = (
     "Id,Aliases,Label,Description,Section,Cardinality,Terms,Datatype,"
@@ -239,7 +240,7 @@ def test_from_rows_accepts_plain_mappings():
 
 
 def test_from_rows_round_trips_a_generated_schema():
-    from dd_converter import schema_to_rows
+    from dd_linkml import schema_to_rows
 
     # Use an enumerated element: the emitter only represents MissingValueCodes
     # for enumerated fields (folded into the enum union), so only those
@@ -273,7 +274,7 @@ def test_from_linkml_accepts_path_stream_and_dict(tmp_path):
 
 
 def test_from_linkml_matches_from_rows_route():
-    from dd_converter import schema_to_rows
+    from dd_linkml import schema_to_rows
 
     schema = yaml.safe_load(_load(f"{HEADER}\n{FULL_ROW}\n").to_linkml())
     assert (
@@ -342,13 +343,13 @@ def test_precondition_and_required_parse():
     assert dd["packs"].precondition == 'smoker = "1"'
     assert dd["packs"].required
     assert not dd["age"].required
-    from dd_converter.grammar import Comparison
+    from dd_core.grammar import Comparison
     assert dd["packs"].parsed_precondition == Comparison("smoker", "=", "1")
     assert dd["age"].parsed_precondition is None
 
 
 def test_malformed_precondition_raises_with_line():
-    from dd_converter.grammar import ParseError
+    from dd_core.grammar import ParseError
     with pytest.raises(ReadError, match="Line 2") as excinfo:
         _load("Id,Label,Datatype,Precondition\nx,X,integer,datediff(a) > 3\n")
     assert isinstance(excinfo.value.__cause__, ParseError)

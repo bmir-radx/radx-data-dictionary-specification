@@ -4,7 +4,7 @@ Assembles the ``Row`` objects (from :mod:`reader`) plus the parsed cell
 grammars, datatype resolution, unit lookup and standard missing-value codes into
 a ``linkml_runtime`` :class:`SchemaDefinition`, which is then dumped to YAML.
 Building the object model (rather than templating text) means the output is
-always well-formed. See ``linkml/CONVERTER_PLAN.md`` for the mapping decisions.
+always well-formed. See ``CONVERTER_PLAN.md`` for the mapping decisions.
 """
 
 from __future__ import annotations
@@ -16,6 +16,24 @@ from dataclasses import dataclass
 
 import jsonasobj2
 import yaml
+from dd_core.datatypes import CustomType, resolve_datatype
+from dd_core.grammar import (
+    And,
+    Contains,
+    EnumItem,
+    InSet,
+    Or,
+    parse_enumeration,
+    parse_missing_value_codes,
+    parse_precondition,
+    parse_terms,
+)
+from dd_core.missing_values import (
+    STANDARD_ENUM_NAME,
+    STANDARD_MISSING_VALUE_CODES,
+)
+from dd_core.reader import Row
+from dd_core.units import lookup_unit
 from linkml_runtime.dumpers import json_dumper
 from linkml_runtime.linkml_model.meta import (
     AnonymousClassExpression,
@@ -33,25 +51,6 @@ from linkml_runtime.linkml_model.meta import (
 from linkml_runtime.linkml_model.meta import (
     UnitOfMeasure as LinkMLUnitOfMeasure,
 )
-
-from .datatypes import CustomType, resolve_datatype
-from .grammar import (
-    And,
-    Contains,
-    EnumItem,
-    InSet,
-    Or,
-    parse_enumeration,
-    parse_missing_value_codes,
-    parse_precondition,
-    parse_terms,
-)
-from .missing_values import (
-    STANDARD_ENUM_NAME,
-    STANDARD_MISSING_VALUE_CODES,
-)
-from .reader import Row
-from .units import lookup_unit
 
 logger = logging.getLogger(__name__)
 
@@ -635,7 +634,7 @@ class Emitter:
         _annotations_last(as_dict)
         text = _render(as_dict)
         if self.opts.annotate_terms and self._terms:
-            from .terms_lookup import lookup_labels
+            from dd_core.terms_lookup import lookup_labels
 
             labels = lookup_labels(
                 self._terms,
@@ -896,9 +895,9 @@ def _render(as_dict: dict) -> str:
             )
             body = _transform_attributes_blocks(
                 body,
-                lambda block: _number_entries_at(
+                lambda block, total=slot_total: _number_entries_at(
                     _space_entries_at(block, indent=_SLOT_INDENT),
-                    indent=_SLOT_INDENT, total=slot_total, label="data elements",
+                    indent=_SLOT_INDENT, total=total, label="data elements",
                 ),
             )
             # Number the class(es) themselves at the section indent.

@@ -34,7 +34,7 @@ A dictionary reads from, and writes to, both of the toolkit's formats::
     schema_yaml = dd.to_linkml()                      # LinkML out
 
 One design rule to know: loading is **fail-fast**. Every cell is parsed up
-front, and the first problem raises :class:`~dd_converter.reader.ReadError`,
+front, and the first problem raises :class:`~dd_core.reader.ReadError`,
 so an object you get back is known-good — attributes never surprise you
 later. The finer print: row-level problems name their line in the message;
 header-level problems (a missing or duplicated column) have no single line to
@@ -53,26 +53,24 @@ from pathlib import Path
 from typing import Literal, TextIO
 
 import yaml
-from dd_converter import (
+from dd_core import (
     KNOWN_COLUMNS,
-    EmitOptions,
     ReadError,
     Row,
     UnitOfMeasure,
-    emit_schema,
     lookup_unit,
     read_data_dictionary,
     resolve_datatype,
-    schema_to_rows,
 )
-from dd_converter.grammar import (
+from dd_core.grammar import (
     EnumItem,
     parse_enumeration,
     parse_missing_value_codes,
     parse_precondition,
     parse_terms,
 )
-from dd_converter.reverse import write_csv
+from dd_linkml import EmitOptions, emit_schema, schema_to_rows
+from dd_linkml.reverse import write_csv
 
 
 @dataclass(frozen=True)
@@ -208,7 +206,7 @@ class DataElement:
     for a hand-built element. Provenance only — not part of equality."""
 
     row: Row | None = field(default=None, repr=False, compare=False)
-    """The underlying raw :class:`~dd_converter.reader.Row` — the escape hatch
+    """The underlying raw :class:`~dd_core.reader.Row` — the escape hatch
     for anything the typed fields do not cover (e.g. non-standard columns).
     ``None`` only when a :class:`DataElement` is constructed by hand.
     Provenance only — not part of equality."""
@@ -227,7 +225,7 @@ class DataElement:
         """The :attr:`precondition` as an expression tree, or ``None``.
 
         Nodes are the grammar's types (``Comparison``, ``InSet``,
-        ``Contains``, ``And``, ``Or`` — from ``dd_converter.grammar``).
+        ``Contains``, ``And``, ``Or`` — from ``dd_core.grammar``).
         Always parses cleanly: the text was validated at load time.
         """
         return parse_precondition(self.precondition or "")
@@ -303,7 +301,7 @@ class DataDictionary:
         A file that breaks the specification's rules — a missing required
         column, a blank required cell, a duplicate ``Id``, an unknown
         datatype name, a malformed enumeration — raises
-        :class:`~dd_converter.reader.ReadError` describing the first problem
+        :class:`~dd_core.reader.ReadError` describing the first problem
         found (row-level problems name their line; header-level problems have
         no single line to name)::
 
@@ -313,7 +311,7 @@ class DataDictionary:
             ... ))
             Traceback (most recent call last):
             ...
-            dd_converter.reader.ReadError: Line 2: Unknown datatype name 'Integer'. ...
+            dd_core.reader.ReadError: Line 2: Unknown datatype name 'Integer'. ...
 
         When ``allow_duplicates`` is true, rows repeating an earlier ``Id``
         are skipped (with a logged warning) instead of raising — useful for
@@ -327,8 +325,8 @@ class DataDictionary:
 
         This is the lower-level way in, for when the rows did not come from a
         CSV file you can hand to :meth:`load`. Each row may be a
-        :class:`~dd_converter.reader.Row` (what
-        :func:`~dd_converter.read_data_dictionary` returns) or simply a dict
+        :class:`~dd_core.reader.Row` (what
+        :func:`~dd_core.read_data_dictionary` returns) or simply a dict
         of column name to cell text::
 
             >>> from dd_api import DataDictionary
@@ -546,7 +544,7 @@ class DataDictionary:
             >>> "age:" in schema_yaml
             True
 
-        ``options`` (an :class:`~dd_converter.EmitOptions`) controls the
+        ``options`` (an :class:`~dd_linkml.EmitOptions`) controls the
         schema's name, id, and root class name. Elements loaded from a file
         contribute their original rows verbatim; hand-built elements (no
         underlying row) are serialised from their typed fields first, so any

@@ -78,7 +78,7 @@ printer/
     static/dictionary.css   # extracted from template.html
   tests/
 ```
-Depends on: the local `dd_converter` package, `markdown-it-py`, and Jinja2.
+Depends on: the local `dd_api` package (which brings in `dd_core`), `markdown-it-py`, and Jinja2.
 
 ## Resolved decisions
 

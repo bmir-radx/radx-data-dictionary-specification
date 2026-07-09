@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import TextIO
 
 from dd_api import DataDictionary, DataElement, EnumItem
-from dd_converter.grammar import parse_precondition, referenced_fields
+from dd_core.grammar import parse_precondition, referenced_fields
 
 from . import headers
 from .branching import branching_to_precondition, explain_branching_logic

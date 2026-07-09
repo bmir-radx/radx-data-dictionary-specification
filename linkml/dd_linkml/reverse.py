@@ -26,7 +26,7 @@ The round-trip is *semantic*, not byte-exact: the forward conversion normalises
 some text (it strips trailing whitespace from descriptions and re-joins ``Terms``
 with single spaces) and re-serialises the ``Enumeration`` cell grammar, so a
 reconstructed cell may be equivalent to the original without being identical.
-See ``linkml/CONVERTER_PLAN.md``.
+See ``CONVERTER_PLAN.md``.
 """
 
 from __future__ import annotations
@@ -37,11 +37,10 @@ from typing import TextIO
 
 import jsonasobj2
 import yaml
+from dd_core.datatypes import BUILTIN_RANGES
+from dd_core.missing_values import STANDARD_ENUM_NAME
+from dd_core.reader import KNOWN_COLUMNS
 from linkml_runtime import SchemaView
-
-from .datatypes import BUILTIN_RANGES
-from .missing_values import STANDARD_ENUM_NAME
-from .reader import KNOWN_COLUMNS
 
 # LinkML ranges that are not themselves valid datatype names, mapped back to
 # the unique specification name that produces them (datetime -> dateTime,

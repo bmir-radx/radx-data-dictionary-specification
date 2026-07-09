@@ -1,6 +1,6 @@
 """Read a data dictionary CSV into raw rows, without validating.
 
-The converter's :func:`dd_converter.read_data_dictionary` is *fail-fast*: it
+The converter's :func:`dd_core.read_data_dictionary` is *fail-fast*: it
 raises on the first duplicate Id, blank required cell, or bad header. A
 validator must instead collect *every* problem, so it cannot use that reader as
 its front door. This module reads the CSV at the same raw level the converter's

@@ -10,7 +10,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from dd_converter import LookupError_, lookup_labels
+from dd_core import LookupError_, lookup_labels
 
 from .load import load_dictionary
 from .render_html import render_html

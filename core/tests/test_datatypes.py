@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 import yaml
-from dd_converter import (
+from dd_core import (
     CustomType,
     UnknownDatatypeError,
     resolve_datatype,
@@ -12,7 +12,7 @@ from dd_converter import (
 
 # The authoritative set of datatype names lives in the LinkML schema's
 # DatatypeEnum. Read it so this test fails if the two ever drift apart.
-_SCHEMA = Path(__file__).resolve().parents[2] / "linkml" / "data-dictionary.yaml"
+_SCHEMA = Path(__file__).resolve().parents[2] / "linkml" / "schemas" / "data-dictionary.yaml"
 
 
 def _datatype_enum_names():

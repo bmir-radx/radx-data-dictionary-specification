@@ -3,7 +3,7 @@
 Per the specification, this standard set of codes always applies to a
 ``MissingValueCodes`` field; any codes given in a field's cell *augment* it. The
 emitter renders these as a single shared ``StandardMissingValueCodes`` enum that
-enumerated slots reference (see ``linkml/CONVERTER_PLAN.md``, Option 3).
+enumerated slots reference (see ``CONVERTER_PLAN.md``, Option 3).
 
 The codes are stored here as the exact default-value string from the
 specification and parsed with the converter's own parser, so this module cannot

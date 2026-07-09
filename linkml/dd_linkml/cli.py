@@ -19,11 +19,12 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from .datatypes import UnknownDatatypeError
+from dd_core.datatypes import UnknownDatatypeError
+from dd_core.grammar import ParseError
+from dd_core.reader import ReadError, read_data_dictionary
+from dd_core.terms_lookup import LookupError_
+
 from .emit import EmitOptions, emit_schema
-from .grammar import ParseError
-from .reader import ReadError, read_data_dictionary
-from .terms_lookup import LookupError_
 
 DEFAULT_ID_BASE = "https://example.org/data-dictionary"
 
@@ -133,7 +134,7 @@ def _resolve_options(args: argparse.Namespace) -> EmitOptions:
     apikey = args.bioportal_apikey or os.environ.get("BIOPORTAL_API_KEY")
     missing_codes = None
     if args.missing_value_codes is not None:
-        from .missing_values import parse_missing_value_codes_file
+        from dd_core.missing_values import parse_missing_value_codes_file
 
         missing_codes = parse_missing_value_codes_file(args.missing_value_codes)
     return EmitOptions(

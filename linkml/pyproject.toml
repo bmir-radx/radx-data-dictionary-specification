@@ -3,30 +3,28 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dd-converter"
+name = "dd-linkml"
 version = "0.0.1"
 description = "Convert a data dictionary CSV into a LinkML schema (and back)"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "BSD-2-Clause" }
 dependencies = [
-    "lark>=1.1",
     "linkml>=1.8",
+    # The reader and cell-grammar parsing come from the sibling core package.
+    "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git#subdirectory=core",
 ]
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
 
 [project.scripts]
-dd-to-linkml = "dd_converter.cli:main"
-linkml-to-dd = "dd_converter.reverse:main"
+dd-to-linkml = "dd_linkml.cli:main"
+linkml-to-dd = "dd_linkml.reverse:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["dd_converter*"]
-
-[tool.setuptools.package-data]
-dd_converter = ["grammar/*.lark"]
+include = ["dd_linkml*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

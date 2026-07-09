@@ -1,10 +1,14 @@
-"""Converter from data dictionary CSV to a LinkML schema.
+"""Core library for reading and understanding data dictionaries.
 
-This package is described in ``linkml/CONVERTER_PLAN.md``. The ``grammar``
-subpackage is the parser layer: it turns the in-cell mini-grammars used by
-data dictionaries (enumerations, missing-value codes, ontology term lists) into
-Python objects. It is the one piece that standard LinkML tooling cannot provide,
-because the structure is hidden inside string cells in a bespoke notation.
+The shared foundation the toolkit's tools build on: it reads a data
+dictionary CSV into rows, parses the in-cell mini-grammars (enumerations,
+missing-value codes, ontology term lists, preconditions), resolves datatype
+names and units, and carries the standard missing-value codes. It knows
+nothing about LinkML — the CSV↔LinkML conversion lives in the sibling
+``dd_linkml`` package, which is built on this one.
+
+The ``grammar`` subpackage is the parser layer: it turns the bespoke string
+notations hidden inside dictionary cells into Python objects.
 """
 
 from .datatypes import (
@@ -15,7 +19,6 @@ from .datatypes import (
     UnknownDatatypeError,
     resolve_datatype,
 )
-from .emit import EmitOptions, Emitter, emit_schema
 from .missing_values import (
     STANDARD_ENUM_NAME,
     STANDARD_MISSING_VALUE_CODES,
@@ -29,7 +32,6 @@ from .reader import (
     Row,
     read_data_dictionary,
 )
-from .reverse import schema_to_csv, schema_to_rows
 from .terms_lookup import LookupError_, lookup_labels
 from .units import UnitOfMeasure, lookup_unit
 
@@ -40,11 +42,6 @@ __all__ = [
     "CustomType",
     "UnknownDatatypeError",
     "resolve_datatype",
-    "EmitOptions",
-    "Emitter",
-    "emit_schema",
-    "schema_to_csv",
-    "schema_to_rows",
     "STANDARD_ENUM_NAME",
     "STANDARD_MISSING_VALUE_CODES",
     "STANDARD_MISSING_VALUE_CODES_TEXT",

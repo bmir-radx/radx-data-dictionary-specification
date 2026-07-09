@@ -41,7 +41,8 @@ def test_cardinality_and_enumeration_parsed():
 
 def test_loads_from_linkml_schema():
     # Round-trip the sample through the converter to a schema, then load that.
-    from dd_converter import EmitOptions, emit_schema, read_data_dictionary
+    from dd_core import read_data_dictionary
+    from dd_linkml import EmitOptions, emit_schema
 
     rows = read_data_dictionary(io.StringIO(SAMPLE))
     schema_yaml = emit_schema(rows, EmitOptions(schema_name="demo", class_name="Record"))
