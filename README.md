@@ -192,7 +192,9 @@ pipx upgrade dd-api        # (or dd-print, dd-validate, dd-redcap, dd-to-linkml�
 
 The `pip`/`pipx` install commands above track `main` (always the newest
 release). To pin to a specific release instead, append the tag to the URL,
-e.g. `…radx-data-dictionary-specification.git@v0.3.0#subdirectory=api`.
+e.g. `…radx-data-dictionary-specification.git@v0.0.3#subdirectory=api`
+(see the [releases](https://github.com/bmir-radx/radx-data-dictionary-specification/releases)
+for available tags).
 
 ## License
 
