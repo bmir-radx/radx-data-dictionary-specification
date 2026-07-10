@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dd-linkml"
-version = "0.0.3"
+version = "0.0.4"
 description = "Convert a data dictionary CSV into a LinkML schema (and back)"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -12,7 +12,7 @@ license = { text = "BSD-2-Clause" }
 dependencies = [
     "linkml>=1.8",
     # The reader and cell-grammar parsing come from the sibling core package.
-    "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.3#subdirectory=core",
+    "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.4#subdirectory=core",
 ]
 
 [project.optional-dependencies]

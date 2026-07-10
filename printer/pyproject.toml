@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dd-printer"
-version = "0.0.3"
+version = "0.0.4"
 description = "Render a data dictionary to human-readable HTML or JSON"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -16,7 +16,7 @@ dependencies = [
     # It is not on PyPI, so depend on it directly from this repository; this
     # lets `pip/pipx install <printer>` pull it (and the converter it wraps)
     # in one step.
-    "dd-api @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.3#subdirectory=api",
+    "dd-api @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.4#subdirectory=api",
 ]
 
 [project.optional-dependencies]
