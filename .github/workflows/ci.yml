@@ -1,0 +1,73 @@
+name: CI
+
+# Lint and test every package on each push and pull request. This runs BEFORE
+# the release workflow can act on main, so a broken change never gets released.
+#
+# The packages depend on each other (core -> linkml/validator -> api ->
+# printer/redcap) via pinned git URLs in their pyproject.toml. CI must NOT let
+# those git URLs win, or a PR that breaks core would be tested against the last
+# *released* core instead of the code under review. So we install every sibling
+# from the local checkout, in dependency order, with --no-deps.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: check --output-format=github
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Test the floor and a current version. requires-python is >=3.9.
+        python-version: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install all packages from the local checkout (in dependency order)
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          # Install the third-party runtime + test dependencies of all packages
+          # explicitly. We must NOT install the packages with their own deps
+          # resolved, because their "dd-* @ git+...@vX.Y.Z" URLs would make pip
+          # clone released siblings from GitHub and shadow the local editable
+          # copies (two copies of dd_core on sys.path -> pytest "import file
+          # mismatch"). This is the union of every package's dependencies and
+          # [test] extras; it's small and CONTRIBUTING.md documents it.
+          pip install \
+            "lark>=1.1" "linkml>=1.8" pyyaml "jinja2>=3" "markdown-it-py[linkify]>=3" \
+            "jsonschema>=4" "pytest>=7"
+          # Now the local packages with --no-deps, in dependency order, so each
+          # dd-* is editable and importable and nothing is fetched from git.
+          for pkg in core linkml validator api printer redcap; do
+            pip install --no-deps -e "./${pkg}"
+          done
+
+      - name: Run tests for every package
+        run: |
+          set -euxo pipefail
+          # Each package's pyproject drives its own testpaths and doctest opts
+          # (api and redcap run --doctest-modules; the rest run tests/ only).
+          for pkg in core linkml validator api printer redcap; do
+            echo "::group::pytest ${pkg}"
+            ( cd "${pkg}" && pytest )
+            echo "::endgroup::"
+          done

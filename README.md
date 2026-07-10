@@ -1,5 +1,9 @@
 # Data Dictionary Specification
 
+[![CI](https://github.com/bmir-radx/radx-data-dictionary-specification/actions/workflows/ci.yml/badge.svg)](https://github.com/bmir-radx/radx-data-dictionary-specification/actions/workflows/ci.yml)
+[![License: BSD-2-Clause](https://img.shields.io/badge/License-BSD--2--Clause-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-%E2%89%A53.9-blue.svg)](https://www.python.org/)
+
 A specification for **data dictionaries**. A data dictionary describes the
 structure of a tabular *datafile* as an ordered list of *data elements* where each 
 data element represents a column in the data file, defining its field's identifier (variable name), 

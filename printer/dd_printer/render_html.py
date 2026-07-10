@@ -10,10 +10,14 @@ from .markdown import render_description
 from .model import Dictionary
 from .precondition import render_precondition
 
-_TEMPLATE = files("dd_printer.templates").joinpath("dictionary.html.j2").read_text(
-    encoding="utf-8"
+# Resolve resources relative to the dd_printer package itself, not to the
+# templates/static subdirectories: those have no __init__.py, and on Python 3.9
+# importlib.resources.files() cannot resolve such a non-package subdirectory
+# (it raises TypeError). The parent package always has a concrete location.
+_TEMPLATE = (
+    files("dd_printer").joinpath("templates", "dictionary.html.j2").read_text(encoding="utf-8")
 )
-_CSS = files("dd_printer.static").joinpath("dictionary.css").read_text(encoding="utf-8")
+_CSS = files("dd_printer").joinpath("static", "dictionary.css").read_text(encoding="utf-8")
 
 # The template injects pre-rendered HTML via `| safe`, so autoescape is on for
 # everything else (labels, ids, cell values) to prevent accidental HTML/markup.

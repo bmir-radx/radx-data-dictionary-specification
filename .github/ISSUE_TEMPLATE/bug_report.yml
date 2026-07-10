@@ -1,0 +1,45 @@
+name: Bug report
+description: Something isn't working as documented
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Which package?
+      options:
+        - dd-core (core)
+        - dd-linkml (linkml)
+        - dd-validate (validator)
+        - dd-api (api)
+        - dd-print (printer)
+        - dd-redcap (redcap)
+        - the specification itself
+        - not sure
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+      placeholder: |
+        1. Ran `dd-validate my.csv`
+        2. Expected ...
+        3. Got ...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal example
+      description: >-
+        The smallest input (a few CSV rows, a snippet) and command that
+        reproduce the problem. Paste text, not screenshots, where you can.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "Package version or commit (e.g. `pip show dd-api` / the tag you installed)."
+    validations:
+      required: true

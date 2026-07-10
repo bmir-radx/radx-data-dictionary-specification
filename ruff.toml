@@ -1,0 +1,15 @@
+# Lint/format config shared by every package in this repo. Kept at the root so
+# `ruff check` (locally and in CI) applies the same rules everywhere.
+
+line-length = 100
+target-version = "py39"
+
+[lint]
+# F  pyflakes            E/W  pycodestyle      B  flake8-bugbear
+# C4 comprehensions      UP   pyupgrade        SIM  flake8-simplify
+# I  import sorting
+select = ["F", "E", "W", "B", "C4", "UP", "SIM", "I"]
+
+[lint.per-file-ignores]
+# Test files may use assert-heavy, less-DRY patterns.
+"**/tests/**" = ["SIM"]
