@@ -75,9 +75,13 @@ jobs:
           git add '*/pyproject.toml'
           git commit -m "chore: bump version to ${V}"
           git tag "v${V}"
-          # Push branch and tag explicitly: --follow-tags only pushes annotated
-          # tags and would skip this lightweight one.
-          git push origin main "v${V}"
+          # Push branch and tag together, atomically: --follow-tags only pushes
+          # annotated tags and would skip this lightweight one, and a plain
+          # multi-ref push is NOT atomic — if the main push is rejected (e.g. by
+          # a branch ruleset) the tag can still land, orphaning a vX.Y.Z tag
+          # with no branch commit or release. --atomic makes both refs succeed
+          # or both fail.
+          git push --atomic origin main "v${V}"
 
       - name: Create GitHub release
         if: steps.level.outputs.level != 'skip'
