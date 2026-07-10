@@ -8,9 +8,12 @@ name: Release
 # The version bump is the essential part: pipx only reinstalls a git-installed
 # package when its version changes, so bumping is what makes `pipx upgrade` work.
 #
-# The bump commit is pushed with the default GITHUB_TOKEN, whose pushes do not
-# trigger workflows, so this cannot re-trigger itself; the actor guard below is
-# a belt-and-braces second line.
+# main is protected by a repository ruleset (pull_request required) whose only
+# permitted bypass actor is a deploy key. So the bump commit is pushed over SSH
+# with a deploy key (RELEASE_DEPLOY_KEY); a plain GITHUB_TOKEN push is rejected
+# with "Changes must be made through a pull request". Unlike a GITHUB_TOKEN
+# push, a deploy-key push DOES re-trigger this workflow, so loop prevention is
+# essential: the guard below skips the run when HEAD is itself a bump commit.
 
 on:
   push:
@@ -23,12 +26,17 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.actor != 'github-actions[bot]'
+    # Loop guard: the deploy-key push retriggers this workflow, so skip the run
+    # when this push is itself a version-bump commit.
+    if: "!startsWith(github.event.head_commit.message, 'chore: bump version to')"
     steps:
       - name: Check out code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Check out over SSH with the deploy key so the later push is
+          # authenticated as the deploy key (the ruleset's only bypass actor).
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
 
       - uses: actions/setup-python@v5
         with:
