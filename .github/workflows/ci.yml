@@ -45,20 +45,20 @@ jobs:
         run: |
           set -euxo pipefail
           python -m pip install --upgrade pip
-          # Two passes. First install every sibling from the local checkout with
-          # --no-deps, in dependency order: this makes each dd-* importable and,
-          # crucially, satisfies the pinned "dd-* @ git+...@vX.Y.Z" requirements
-          # so the second pass never refetches a sibling from GitHub (which would
-          # test released code, not the code under review).
+          # Install the third-party runtime + test dependencies of all packages
+          # explicitly. We must NOT install the packages with their own deps
+          # resolved, because their "dd-* @ git+...@vX.Y.Z" URLs would make pip
+          # clone released siblings from GitHub and shadow the local editable
+          # copies (two copies of dd_core on sys.path -> pytest "import file
+          # mismatch"). This is the union of every package's dependencies and
+          # [test] extras; it's small and CONTRIBUTING.md documents it.
+          pip install \
+            "lark>=1.1" "linkml>=1.8" pyyaml "jinja2>=3" "markdown-it-py[linkify]>=3" \
+            "jsonschema>=4" "pytest>=7"
+          # Now the local packages with --no-deps, in dependency order, so each
+          # dd-* is editable and importable and nothing is fetched from git.
           for pkg in core linkml validator api printer redcap; do
             pip install --no-deps -e "./${pkg}"
-          done
-          # Second pass: a normal editable install per package pulls each one's
-          # third-party runtime + test dependencies (lark, linkml, jinja2,
-          # markdown-it-py, pyyaml, jsonschema, pytest, ...) straight from its
-          # own pyproject, so this list never has to be maintained by hand.
-          for pkg in core linkml validator api printer redcap; do
-            pip install -e "./${pkg}[test]" || pip install -e "./${pkg}"
           done
 
       - name: Run tests for every package

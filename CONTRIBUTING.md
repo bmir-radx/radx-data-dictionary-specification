@@ -22,22 +22,24 @@ All six share one version number.
 
 ## Development setup
 
-Clone the repo and install the packages **from the local checkout**, in
-dependency order, into a virtual environment. Install siblings with `--no-deps`
-first so the pinned `dd-* @ git+...` URLs in each `pyproject.toml` don't pull
-released code over the code you're editing:
+Clone the repo and install the packages **from the local checkout** into a
+virtual environment. Install the third-party dependencies explicitly first, then
+the local packages with `--no-deps` — this is important: the pinned
+`dd-* @ git+...` URLs in each `pyproject.toml` would otherwise make pip clone the
+last *released* siblings from GitHub and shadow the code you're editing.
 
 ```sh
 python -m venv .venv && source .venv/bin/activate
 pip install --upgrade pip
 
-# First pass: local, importable, in dependency order (no git refetch).
+# Third-party runtime + test deps (the union across all packages).
+pip install "lark>=1.1" "linkml>=1.8" pyyaml "jinja2>=3" \
+    "markdown-it-py[linkify]>=3" "jsonschema>=4" "pytest>=7"
+
+# Local packages, editable, in dependency order, with --no-deps so no sibling
+# is fetched from git.
 for pkg in core linkml validator api printer redcap; do
     pip install --no-deps -e "./$pkg"
-done
-# Second pass: pull each package's third-party + test dependencies.
-for pkg in core linkml validator api printer redcap; do
-    pip install -e "./$pkg[test]" || pip install -e "./$pkg"
 done
 ```
 
