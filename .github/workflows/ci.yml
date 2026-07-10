@@ -1,0 +1,73 @@
+name: CI
+
+# Lint and test every package on each push and pull request. This runs BEFORE
+# the release workflow can act on main, so a broken change never gets released.
+#
+# The packages depend on each other (core -> linkml/validator -> api ->
+# printer/redcap) via pinned git URLs in their pyproject.toml. CI must NOT let
+# those git URLs win, or a PR that breaks core would be tested against the last
+# *released* core instead of the code under review. So we install every sibling
+# from the local checkout, in dependency order, with --no-deps.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: check --output-format=github
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Test the floor and a current version. requires-python is >=3.9.
+        python-version: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install all packages from the local checkout (in dependency order)
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          # Two passes. First install every sibling from the local checkout with
+          # --no-deps, in dependency order: this makes each dd-* importable and,
+          # crucially, satisfies the pinned "dd-* @ git+...@vX.Y.Z" requirements
+          # so the second pass never refetches a sibling from GitHub (which would
+          # test released code, not the code under review).
+          for pkg in core linkml validator api printer redcap; do
+            pip install --no-deps -e "./${pkg}"
+          done
+          # Second pass: a normal editable install per package pulls each one's
+          # third-party runtime + test dependencies (lark, linkml, jinja2,
+          # markdown-it-py, pyyaml, jsonschema, pytest, ...) straight from its
+          # own pyproject, so this list never has to be maintained by hand.
+          for pkg in core linkml validator api printer redcap; do
+            pip install -e "./${pkg}[test]" || pip install -e "./${pkg}"
+          done
+
+      - name: Run tests for every package
+        run: |
+          set -euxo pipefail
+          # Each package's pyproject drives its own testpaths and doctest opts
+          # (api and redcap run --doctest-modules; the rest run tests/ only).
+          for pkg in core linkml validator api printer redcap; do
+            echo "::group::pytest ${pkg}"
+            ( cd "${pkg}" && pytest )
+            echo "::endgroup::"
+          done

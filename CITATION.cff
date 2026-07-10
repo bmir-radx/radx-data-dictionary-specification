@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software or specification, please cite it as below."
+title: "Data Dictionary Specification and Toolkit"
+abstract: >-
+  A specification for data dictionaries describing the structure of tabular
+  datafiles as an ordered list of data elements, with a CSV and an equivalent
+  LinkML serialization, and a toolkit of Python packages that convert, validate,
+  render, and programmatically manipulate them.
+type: software
+authors:
+  - family-names: Horridge
+    given-names: Matthew
+    affiliation: "Stanford Center for Biomedical Informatics Research"
+repository-code: "https://github.com/bmir-radx/radx-data-dictionary-specification"
+license: BSD-2-Clause
+keywords:
+  - data dictionary
+  - metadata
+  - LinkML
+  - REDCap
+  - FAIR data
