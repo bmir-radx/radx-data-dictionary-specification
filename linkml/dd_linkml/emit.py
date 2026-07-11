@@ -172,6 +172,12 @@ class EmitOptions:
     # the built-in default set; an empty list omits the shared enum entirely; a
     # custom list replaces the default.
     missing_value_codes: list | None = None
+    # Emit the enums section after classes. YAML has one `enums` mapping, so the
+    # boilerplate StandardMissingValueCodes enum (always last within enums) can
+    # only land at the end of the document by moving the whole section there —
+    # useful for interactive previews, where a small dictionary's rendering
+    # would otherwise be dominated by the standard codes.
+    enums_last: bool = False
 
 
 class Emitter:
@@ -632,6 +638,8 @@ class Emitter:
         _drop_redundant_keys(as_dict)
         _order_slot_keys(as_dict)
         _annotations_last(as_dict)
+        if self.opts.enums_last and "enums" in as_dict:
+            as_dict["enums"] = as_dict.pop("enums")  # move to the end
         text = _render(as_dict)
         if self.opts.annotate_terms and self._terms:
             from dd_core.terms_lookup import lookup_labels

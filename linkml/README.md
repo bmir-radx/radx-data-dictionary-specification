@@ -90,6 +90,7 @@ BIOPORTAL_API_KEY=… dd-to-linkml my_dictionary.csv -o out.yaml \
 | Option | Effect |
 | --- | --- |
 | `--annotate-enum-values` | After a field enum's `range:`, add a comment listing its `value=label` pairs. |
+| `--enums-last` | Emit `enums` after `classes`, so the boilerplate `StandardMissingValueCodes` enum ends the document instead of preceding the data elements. |
 | `--allow-duplicates` | Tolerate a repeated `Id` (keep the first, skip later ones) instead of failing. |
 | `-v`, `--verbose` | Show warnings (unresolved term lookups, non-OBO prefixes, skipped duplicates). |
 
