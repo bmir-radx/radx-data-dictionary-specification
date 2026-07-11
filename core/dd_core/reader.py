@@ -92,6 +92,7 @@ def read_data_dictionary(
     source: str | Path | TextIO,
     *,
     allow_duplicates: bool = False,
+    keep_duplicates: bool = False,
 ) -> list[Row]:
     """Read a data dictionary CSV and return its rows in order.
 
@@ -100,15 +101,20 @@ def read_data_dictionary(
     Raises :class:`ReadError` on a malformed header, a blank required cell, or a
     duplicate ``Id``. When ``allow_duplicates`` is true, a duplicate ``Id`` is
     not fatal: the first occurrence is kept, later occurrences are skipped, and
-    a warning is logged for each.
+    a warning is logged for each. When ``keep_duplicates`` is true, duplicate
+    rows are kept as-is (warning logged, nothing skipped) — for editors and
+    other tools that must not lose rows the user needs to see and fix.
+    ``keep_duplicates`` wins when both flags are set.
     """
     if isinstance(source, (str, Path)):
         with open(source, encoding="utf-8-sig", newline="") as handle:
-            return _read(handle, allow_duplicates)
-    return _read(source, allow_duplicates)
+            return _read(handle, allow_duplicates, keep_duplicates)
+    return _read(source, allow_duplicates, keep_duplicates)
 
 
-def _read(handle: TextIO, allow_duplicates: bool = False) -> list[Row]:
+def _read(
+    handle: TextIO, allow_duplicates: bool = False, keep_duplicates: bool = False
+) -> list[Row]:
     reader = csv.reader(handle)  # RFC 4180 defaults: comma, double-quote
     try:
         header = next(reader)
@@ -144,7 +150,15 @@ def _read(handle: TextIO, allow_duplicates: bool = False) -> list[Row]:
 
         row_id = cells["Id"].strip()
         if row_id in seen_ids:
-            if allow_duplicates:
+            if keep_duplicates:
+                logger.warning(
+                    "Line %d: duplicate Id %r (first seen on line %d); keeping "
+                    "both occurrences.",
+                    line,
+                    row_id,
+                    seen_ids[row_id],
+                )
+            elif allow_duplicates:
                 logger.warning(
                     "Line %d: duplicate Id %r (first seen on line %d); skipping "
                     "this occurrence.",
@@ -153,11 +167,13 @@ def _read(handle: TextIO, allow_duplicates: bool = False) -> list[Row]:
                     seen_ids[row_id],
                 )
                 continue
-            raise ReadError(
-                f"Line {line}: duplicate Id {row_id!r} "
-                f"(first seen on line {seen_ids[row_id]})."
-            )
-        seen_ids[row_id] = line
+            else:
+                raise ReadError(
+                    f"Line {line}: duplicate Id {row_id!r} "
+                    f"(first seen on line {seen_ids[row_id]})."
+                )
+        else:
+            seen_ids[row_id] = line
 
         rows.append(Row(cells=cells, line=line, extra_columns=extra_columns))
 

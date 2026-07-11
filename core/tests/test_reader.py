@@ -98,6 +98,31 @@ def test_allow_duplicates_keeps_first_skips_rest():
     assert rows[0].get("Label") == "First A"
 
 
+def test_keep_duplicates_keeps_every_row():
+    rows = read_data_dictionary(
+        io.StringIO(
+            "Id,Label,Datatype\n"
+            "A,First A,string\n"
+            "B,Label B,integer\n"
+            "A,Second A,integer\n"
+        ),
+        keep_duplicates=True,
+    )
+    # Nothing skipped: editors must not lose the rows the user needs to fix.
+    assert [r.id for r in rows] == ["A", "B", "A"]
+    assert rows[2].get("Label") == "Second A"
+    assert rows[2].line == 4
+
+
+def test_keep_duplicates_wins_over_allow_duplicates():
+    rows = read_data_dictionary(
+        io.StringIO("Id,Label,Datatype\nA,x,string\nA,y,integer\n"),
+        allow_duplicates=True,
+        keep_duplicates=True,
+    )
+    assert [r.id for r in rows] == ["A", "A"]
+
+
 def test_duplicate_header_raises():
     with pytest.raises(ReadError, match="Duplicate column header"):
         _read_str("Id,Label,Datatype,Label\nA,x,string,y\n")

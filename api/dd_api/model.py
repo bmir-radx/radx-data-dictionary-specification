@@ -261,17 +261,27 @@ class DataDictionary:
     every element that iteration yields.
     """
 
-    def __init__(self, elements: Sequence[DataElement]):
+    def __init__(
+        self, elements: Sequence[DataElement], *, allow_duplicate_ids: bool = False
+    ):
         """Build a dictionary from elements directly.
 
         Ids must be unique — a duplicate raises :class:`ValueError`. (This is
         the backstop for every constructor; :meth:`load` additionally rejects
         duplicates while reading, with the line numbers in its message.)
+
+        With ``allow_duplicate_ids``, duplicates are represented instead of
+        rejected: every element stays in the sequence (iteration, ``len``,
+        serialisation see them all) and the id index maps each id to its
+        *first* occurrence. For editors and validators, which must be able to
+        hold an invalid-but-well-formed document while the user fixes it.
         """
         self._elements = tuple(elements)
         self._by_id: dict[str, DataElement] = {}
         for element in self._elements:
             if element.id in self._by_id:
+                if allow_duplicate_ids:
+                    continue  # keep the element; the index keeps the first
                 raise ValueError(f"duplicate data element id {element.id!r}")
             self._by_id[element.id] = element
 
@@ -283,6 +293,7 @@ class DataDictionary:
         source: str | Path | TextIO,
         *,
         allow_duplicates: bool = False,
+        keep_duplicates: bool = False,
     ) -> DataDictionary:
         """Load a data dictionary from a CSV file.
 
@@ -318,12 +329,28 @@ class DataDictionary:
 
         When ``allow_duplicates`` is true, rows repeating an earlier ``Id``
         are skipped (with a logged warning) instead of raising — useful for
-        exploring an imperfect dictionary you did not author.
+        exploring an imperfect dictionary you did not author. When
+        ``keep_duplicates`` is true, duplicate rows are loaded as-is (nothing
+        skipped) — for editors, where silently dropping a row the user needs
+        to see and fix would lose data. ``keep_duplicates`` wins over
+        ``allow_duplicates`` when both are set.
         """
-        return cls.from_rows(read_data_dictionary(source, allow_duplicates=allow_duplicates))
+        return cls.from_rows(
+            read_data_dictionary(
+                source,
+                allow_duplicates=allow_duplicates,
+                keep_duplicates=keep_duplicates,
+            ),
+            allow_duplicate_ids=keep_duplicates,
+        )
 
     @classmethod
-    def from_rows(cls, rows: Sequence[Row | Mapping[str, str]]) -> DataDictionary:
+    def from_rows(
+        cls,
+        rows: Sequence[Row | Mapping[str, str]],
+        *,
+        allow_duplicate_ids: bool = False,
+    ) -> DataDictionary:
         """Build a dictionary from rows you already have in memory.
 
         This is the lower-level way in, for when the rows did not come from a
@@ -350,7 +377,10 @@ class DataDictionary:
             row if isinstance(row, Row) else Row(cells=dict(row), line=index + 2)
             for index, row in enumerate(rows)
         ]
-        return cls([_element_from_row(row) for row in normalised])
+        return cls(
+            [_element_from_row(row) for row in normalised],
+            allow_duplicate_ids=allow_duplicate_ids,
+        )
 
     @classmethod
     def from_linkml(cls, source: str | Path | TextIO | dict) -> DataDictionary:
@@ -597,14 +627,17 @@ class DataDictionary:
         return json.dumps(payload, indent=indent, ensure_ascii=False)
 
     @classmethod
-    def from_json(cls, source: str | bytes | dict) -> DataDictionary:
+    def from_json(
+        cls, source: str | bytes | dict, *, allow_duplicate_ids: bool = False
+    ) -> DataDictionary:
         """Reconstruct a dictionary from :meth:`to_json` output.
 
         ``source`` may be a JSON string/bytes or an already-parsed ``dict``.
         Element objects are turned back into typed :class:`DataElement`\\ s and
         validated exactly as :meth:`from_rows` validates rows (unknown
         datatype, malformed precondition, etc. raise
-        :class:`~dd_core.reader.ReadError`).
+        :class:`~dd_core.reader.ReadError`). ``allow_duplicate_ids`` is for
+        documents held by an editor mid-fix; see :meth:`from_rows`.
 
         ::
 
@@ -627,7 +660,8 @@ class DataDictionary:
                 f"(this build reads version {_JSON_VERSION})"
             )
         return cls.from_rows(
-            [_element_cells_from_json(obj) for obj in payload.get("elements", [])]
+            [_element_cells_from_json(obj) for obj in payload.get("elements", [])],
+            allow_duplicate_ids=allow_duplicate_ids,
         )
 
 
