@@ -129,6 +129,19 @@ def test_duplicate_id_raises_unless_allowed():
     assert dd.ids == ("a",)
 
 
+def test_keep_duplicates_loads_every_row():
+    # Editor mode: an invalid-but-well-formed document loads whole, so the
+    # user can see and fix the duplicates; the id index maps to the first.
+    text = "Id,Label,Datatype\na,A,string\nb,B,integer\na,A2,integer\n"
+    dd = _load(text, keep_duplicates=True)
+    assert [e.id for e in dd.elements] == ["a", "b", "a"]
+    assert dd["a"].label == "A"  # index: first occurrence
+    # Round-trips keep all rows, and dd-json reloads with the same opt-in.
+    assert dd.to_csv().count("\na,") == 2
+    reloaded = DataDictionary.from_json(dd.to_json(), allow_duplicate_ids=True)
+    assert [e.id for e in reloaded.elements] == ["a", "b", "a"]
+
+
 # --- collection protocol -----------------------------------------------------
 
 def test_collection_protocol():
