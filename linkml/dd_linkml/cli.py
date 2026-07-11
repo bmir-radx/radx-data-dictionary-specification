@@ -113,6 +113,13 @@ def _build_parser() -> argparse.ArgumentParser:
         'enumeration cell, `"code"=[label] | ...`). An empty file omits them.',
     )
     parser.add_argument(
+        "--enums-last",
+        action="store_true",
+        help="Emit the enums section after classes, so the shared "
+        "StandardMissingValueCodes enum lands at the end of the document "
+        "instead of ahead of the data elements.",
+    )
+    parser.add_argument(
         "--allow-duplicates",
         action="store_true",
         help="Do not fail on a duplicate Id; keep the first occurrence, skip "
@@ -146,6 +153,7 @@ def _resolve_options(args: argparse.Namespace) -> EmitOptions:
         bioportal_apikey=apikey,
         annotate_enum_values=args.annotate_enum_values,
         missing_value_codes=missing_codes,
+        enums_last=args.enums_last,
     )
 
 

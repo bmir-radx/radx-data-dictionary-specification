@@ -201,6 +201,22 @@ def test_missing_value_codes_empty_omits_shared_enum():
     assert ranges == ["QEnum"]  # only the field enum, no shared missing-codes branch
 
 
+def test_enums_last_moves_enums_after_classes():
+    text = emit_schema(
+        read_data_dictionary(_csv(_ENUM_CSV)),
+        EmitOptions(schema_name="s", class_name="Record", enums_last=True),
+    )
+    assert text.index("classes:") < text.index("enums:")
+    # The shared codes enum stays last within enums — i.e. ends the document.
+    assert text.index("enums:") < text.index("StandardMissingValueCodes:")
+    assert yaml.safe_load(text)["classes"]["Record"] is not None  # still valid YAML
+
+
+def test_enums_default_order_keeps_enums_before_classes():
+    text = emit_schema(read_data_dictionary(_csv(_ENUM_CSV)))
+    assert text.index("enums:") < text.index("classes:")
+
+
 def test_parse_missing_value_codes_file(tmp_path):
     from dd_core import parse_missing_value_codes_file
 
