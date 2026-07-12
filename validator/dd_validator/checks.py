@@ -25,9 +25,13 @@ from dd_core import (
     CUSTOM_TYPES,
     ORDERED_DATATYPES,
     REQUIRED_COLUMNS,
+    STANDARD_MISSING_VALUE_CODES,
+    CustomType,
     UnknownDatatypeError,
     resolve_datatype,
     sanitize_identifier,
+    suggest_ucum,
+    ucum_unit,
 )
 from dd_core.grammar import (
     Comparison,
@@ -230,6 +234,416 @@ def check_cell_whitespace(
                 f"{column} has leading or trailing whitespace",
                 line=row.line, column=column, value=cell, suggestion=stripped,
             )
+
+
+# --- lexical spaces -----------------------------------------------------
+
+_LEXICAL = {
+    "integer": re.compile(r"[+-]?\d+"),
+    "decimal": re.compile(r"[+-]?(\d+(\.\d*)?|\.\d+)"),
+    "float": re.compile(r"[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?|NaN|[+-]?INF"),
+    "double": re.compile(r"[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?|NaN|[+-]?INF"),
+    "boolean": re.compile(r"true|false|0|1"),
+    "date": re.compile(r"-?\d{4}-\d{2}-\d{2}(Z|[+-]\d{2}:\d{2})?"),
+    "datetime": re.compile(r"-?\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?"),
+    "time": re.compile(r"\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?"),
+}
+
+
+def _fits_datatype(value: str, datatype: str) -> bool | None:
+    """Whether ``value`` fits the datatype's lexical space; None = uncheckable.
+
+    Builtin numeric/boolean/temporal ranges get hand-written lexical checks;
+    custom types are checked against their declared pattern when they have
+    one. String-like datatypes accept anything (None: nothing to check).
+    """
+    pattern = _LEXICAL.get(BUILTIN_RANGES.get(datatype, ""))
+    if pattern is not None:
+        return pattern.fullmatch(value) is not None
+    custom = CUSTOM_TYPES.get(datatype)
+    if isinstance(custom, CustomType) and custom.pattern:
+        return re.fullmatch(custom.pattern, value) is not None
+    return None
+
+
+def _parsed_enumeration(row: RawRow) -> list | None:
+    """The row's parsed enumeration items, or None (blank or malformed)."""
+    cell = row.get("Enumeration")
+    if cell.strip() == "":
+        return None
+    try:
+        return parse_enumeration(cell)
+    except ParseError:
+        return None  # malformed-enumeration reports it
+
+
+# --- aliases -----------------------------------------------------------------
+
+def check_aliases(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Finding]:
+    """Alias identity problems.
+
+    An alias exists to key an old datafile header to an element, so an alias
+    that equals any element's ``Id`` (WARNING) or is claimed by two elements
+    (WARNING) breaks that keying. Empty segments from stray pipes (``a||b``,
+    a trailing ``|``) are phantom aliases (WARNING, with the cleaned cell as
+    the suggestion).
+    """
+    if "Aliases" not in columns_present:
+        return
+    rows = list(rows)
+    ids = {row.get("Id").strip() for row in rows if row.get("Id").strip()}
+    first_claim: dict[str, int] = {}
+    for row in rows:
+        cell = row.get("Aliases")
+        if cell.strip() == "":
+            continue
+        segments = cell.split("|")
+        aliases = [segment.strip() for segment in segments if segment.strip()]
+        if len(aliases) != len(segments):
+            yield Finding(
+                Level.WARNING, "empty-list-segment",
+                "Aliases has an empty segment (a doubled or trailing pipe)",
+                line=row.line, column="Aliases", value=cell,
+                suggestion="|".join(aliases),
+            )
+        for alias in aliases:
+            if alias in ids:
+                yield Finding(
+                    Level.WARNING, "alias-id-collision",
+                    f"alias {alias!r} is also an element Id — datafile headers "
+                    "using it cannot be keyed unambiguously",
+                    line=row.line, column="Aliases", value=alias,
+                )
+            if alias in first_claim and first_claim[alias] != row.line:
+                yield Finding(
+                    Level.WARNING, "duplicate-alias",
+                    f"alias {alias!r} is claimed by more than one element "
+                    f"(first on line {first_claim[alias]})",
+                    line=row.line, column="Aliases", value=alias,
+                )
+            first_claim.setdefault(alias, row.line)
+
+
+# --- examples ----------------------------------------------------------------
+
+def check_examples(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Finding]:
+    """Examples SHOULD conform (the specification's word) — and it's checkable.
+
+    Each example is checked against the field's Enumeration membership, its
+    Pattern, and its Datatype's lexical space, whichever apply. Stray pipes
+    yield the same empty-segment warning as aliases.
+    """
+    if "Examples" not in columns_present:
+        return
+    for row in rows:
+        cell = row.get("Examples")
+        if cell.strip() == "":
+            continue
+        segments = cell.split("|")
+        examples = [segment.strip() for segment in segments if segment.strip()]
+        if len(examples) != len(segments):
+            yield Finding(
+                Level.WARNING, "empty-list-segment",
+                "Examples has an empty segment (a doubled or trailing pipe)",
+                line=row.line, column="Examples", value=cell,
+                suggestion="|".join(examples),
+            )
+        enumeration = _parsed_enumeration(row)
+        legal = {item.value for item in enumeration} if enumeration else None
+        pattern = row.get("Pattern").strip()
+        try:
+            compiled = re.compile(pattern) if pattern else None
+        except re.error:
+            compiled = None  # malformed-pattern reports it
+        datatype = row.get("Datatype").strip()
+        for example in examples:
+            if legal is not None and example not in legal:
+                yield Finding(
+                    Level.WARNING, "example-not-in-enumeration",
+                    f"example {example!r} is not one of the enumeration's values",
+                    line=row.line, column="Examples", value=example,
+                )
+            if compiled is not None and compiled.fullmatch(example) is None:
+                yield Finding(
+                    Level.WARNING, "example-pattern-mismatch",
+                    f"example {example!r} does not match the field's pattern",
+                    line=row.line, column="Examples", value=example,
+                )
+            if legal is None and _fits_datatype(example, datatype) is False:
+                yield Finding(
+                    Level.WARNING, "example-datatype-mismatch",
+                    f"example {example!r} is not a valid {datatype} value",
+                    line=row.line, column="Examples", value=example,
+                )
+
+
+# --- enumeration consistency ---------------------------------------------------
+
+_STANDARD_CODE_VALUES = {item.value for item in STANDARD_MISSING_VALUE_CODES}
+
+
+def check_enumeration_consistency(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """Contradictions within and around an Enumeration cell.
+
+    A value listed twice is meaningless (ERROR); two values sharing a label is
+    usually a copy-paste slip (INFO); a value that is also one of the field's
+    — or the standard — missing-value codes is ambiguous, since a code cannot
+    mean both an answer and "no data" (WARNING); and a value the field's own
+    Pattern rejects is a contradiction in the dictionary itself (WARNING).
+    """
+    if "Enumeration" not in columns_present:
+        return
+    for row in rows:
+        items = _parsed_enumeration(row)
+        if not items:
+            continue
+        seen_values: dict[str, int] = {}
+        seen_labels: dict[str, str] = {}
+        for item in items:
+            count = seen_values.get(item.value, 0)
+            seen_values[item.value] = count + 1
+            if count == 1:  # report once, on the second sighting
+                yield Finding(
+                    Level.ERROR, "enumeration-duplicate-value",
+                    f"enumeration lists the value {item.value!r} more than once",
+                    line=row.line, column="Enumeration", value=item.value,
+                )
+            label = (item.label or "").strip()
+            if label:
+                if label in seen_labels and seen_labels[label] != item.value:
+                    yield Finding(
+                        Level.INFO, "enumeration-duplicate-label",
+                        f"enumeration values {seen_labels[label]!r} and "
+                        f"{item.value!r} share the label {label!r}",
+                        line=row.line, column="Enumeration", value=label,
+                    )
+                seen_labels.setdefault(label, item.value)
+
+        try:
+            field_codes = {
+                item.value
+                for item in parse_missing_value_codes(row.get("MissingValueCodes"))
+            }
+        except ParseError:
+            field_codes = set()
+        for item in items:
+            if item.value in field_codes:
+                yield Finding(
+                    Level.WARNING, "enumeration-missing-code-overlap",
+                    f"enumeration value {item.value!r} is also one of the "
+                    "field's missing-value codes — it cannot mean both an "
+                    "answer and 'no data'",
+                    line=row.line, column="Enumeration", value=item.value,
+                )
+            elif item.value in _STANDARD_CODE_VALUES:
+                yield Finding(
+                    Level.WARNING, "enumeration-missing-code-overlap",
+                    f"enumeration value {item.value!r} is one of the standard "
+                    "missing-value codes — it cannot mean both an answer and "
+                    "'no data'",
+                    line=row.line, column="Enumeration", value=item.value,
+                )
+
+        pattern = row.get("Pattern").strip()
+        if pattern:
+            try:
+                compiled = re.compile(pattern)
+            except re.error:
+                continue  # malformed-pattern reports it
+            for item in items:
+                if compiled.fullmatch(item.value) is None:
+                    yield Finding(
+                        Level.WARNING, "enumeration-pattern-mismatch",
+                        f"enumeration value {item.value!r} does not match the "
+                        "field's own pattern",
+                        line=row.line, column="Enumeration", value=item.value,
+                    )
+
+
+# --- precondition values -------------------------------------------------------
+
+def check_precondition_values(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """Value-level precondition checks (the structural ones live in
+    :func:`check_preconditions`).
+
+    A compared value should belong to the referenced field's enumeration
+    (equality-style predicates), or at least fit its datatype's lexical
+    space. A blank cell means "field is blank", so the non-blank test
+    (``<> ""``) is always fine.
+    """
+    if "Precondition" not in columns_present:
+        return
+    rows = list(rows)
+    fields = {row.get("Id").strip(): row for row in rows if row.get("Id").strip()}
+    for row in rows:
+        cell = row.get("Precondition")
+        if cell.strip() == "":
+            continue
+        try:
+            condition = parse_precondition(cell)
+        except ParseError:
+            continue  # malformed-precondition reports it
+        for atom in precondition_atoms(condition):
+            referenced = fields.get(atom.field)
+            if referenced is None:
+                continue  # unknown-precondition-field reports it
+            if isinstance(atom, Comparison):
+                ordering = atom.op in ("<", "<=", ">", ">=")
+                values = [] if atom.op == "<>" and atom.value == "" else [atom.value]
+            elif isinstance(atom, Contains):
+                ordering = False
+                values = [atom.value]
+            else:  # InSet
+                ordering = False
+                values = list(atom.values)
+            enumeration = _parsed_enumeration(referenced)
+            legal = {item.value for item in enumeration} if enumeration else None
+            datatype = referenced.get("Datatype").strip()
+            for value in values:
+                if legal is not None and not ordering:
+                    if value not in legal:
+                        yield Finding(
+                            Level.WARNING, "precondition-value-not-in-enumeration",
+                            f"precondition compares {atom.field!r} with "
+                            f"{value!r}, which is not one of its enumeration's "
+                            "values",
+                            line=row.line, column="Precondition", value=value,
+                        )
+                elif _fits_datatype(value, datatype) is False:
+                    yield Finding(
+                        Level.WARNING, "precondition-value-datatype",
+                        f"precondition compares {atom.field!r} with {value!r}, "
+                        f"which is not a valid {datatype} value",
+                        line=row.line, column="Precondition", value=value,
+                    )
+
+
+# --- unit hygiene --------------------------------------------------------------
+
+_NON_QUANTITY_DATATYPES = frozenset({"boolean", "anyURI", "date", "dateTime", "time"})
+
+
+def check_unit_hygiene(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Finding]:
+    """Unit spelling and placement (both INFO).
+
+    A unit with a known UCUM equivalent gets it as the suggestion — informal
+    spellings, misprints, and word forms resolve through ``dd_core.ucum``
+    (a valid code outside the curated subset stays silent rather than
+    guessed at). A unit on a boolean/URI/temporal field is almost certainly
+    a column slip.
+    """
+    if "Unit" not in columns_present:
+        return
+    for row in rows:
+        unit = row.get("Unit").strip()
+        if unit == "":
+            continue
+        datatype = row.get("Datatype").strip()
+        if BUILTIN_RANGES.get(datatype, datatype) in _NON_QUANTITY_DATATYPES:
+            yield Finding(
+                Level.INFO, "unit-on-non-quantity",
+                f"Unit {unit!r} on a {datatype} field — units belong on "
+                "quantity fields",
+                line=row.line, column="Unit", value=unit,
+            )
+        if ucum_unit(unit) is None:
+            suggested = suggest_ucum(unit)
+            if suggested is not None:
+                yield Finding(
+                    Level.INFO, "unit-suggestion",
+                    f"Unit {unit!r} has a UCUM spelling: {suggested.code!r} "
+                    f"({suggested.name})",
+                    line=row.line, column="Unit", value=unit,
+                    suggestion=suggested.code,
+                )
+
+
+def check_boolean_enumeration(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """A boolean field with an enumeration mixes two representations (INFO)."""
+    if "Enumeration" not in columns_present or "Datatype" not in columns_present:
+        return
+    for row in rows:
+        if row.get("Enumeration").strip() == "":
+            continue
+        if BUILTIN_RANGES.get(row.get("Datatype").strip()) == "boolean":
+            yield Finding(
+                Level.INFO, "boolean-with-enumeration",
+                "boolean field also declares an enumeration — pick one "
+                "representation (boolean, or a coded integer enumeration)",
+                line=row.line, column="Datatype", value="boolean",
+            )
+
+
+# --- labels, descriptions, sections ---------------------------------------------
+
+def check_label_quality(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Finding]:
+    """Label nudges (INFO): a label that just repeats the Id, and the same
+    label on more than one element (usually a copy-paste slip)."""
+    if "Label" not in columns_present:
+        return
+    first_use: dict[str, int] = {}
+    for row in rows:
+        label = row.get("Label").strip()
+        if label == "":
+            continue
+        if label == row.get("Id").strip():
+            yield Finding(
+                Level.INFO, "label-equals-id",
+                "Label just repeats the Id — a human-readable label helps",
+                line=row.line, column="Label", value=label,
+            )
+        if label in first_use:
+            yield Finding(
+                Level.INFO, "duplicate-label",
+                f"label {label!r} is also used on line {first_use[label]}",
+                line=row.line, column="Label", value=label,
+            )
+        first_use.setdefault(label, row.line)
+
+
+def check_description_present(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """A dictionary that has a Description column should fill it (INFO)."""
+    if "Description" not in columns_present:
+        return
+    for row in rows:
+        if row.get("Description").strip() == "":
+            yield Finding(
+                Level.INFO, "description-missing",
+                "Description is blank",
+                line=row.line, column="Description",
+            )
+
+
+def check_section_runs(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Finding]:
+    """A Section that stops and later resumes is usually accidental row
+    ordering (INFO) — sections read as contiguous groups."""
+    if "Section" not in columns_present:
+        return
+    closed: set[str] = set()
+    current: str | None = None
+    for row in rows:
+        section = row.get("Section").strip()
+        if section == "" or section == current:
+            continue
+        if current is not None:
+            closed.add(current)
+        if section in closed:
+            yield Finding(
+                Level.INFO, "section-fragmented",
+                f"section {section!r} resumes after other sections — its "
+                "elements are split into non-contiguous runs",
+                line=row.line, column="Section", value=section,
+            )
+            closed.discard(section)
+        current = section
 
 
 # Datatype names with a preferred semantic equivalent: the storage-width /

@@ -34,6 +34,7 @@ from .reader import (
     read_data_dictionary,
 )
 from .terms_lookup import LookupError_, lookup_labels
+from .ucum import UCUM_UNITS, UcumUnit, suggest_ucum, ucum_unit
 from .units import UnitOfMeasure, lookup_unit
 
 __all__ = [
@@ -49,6 +50,10 @@ __all__ = [
     "parse_missing_value_codes_file",
     "UnitOfMeasure",
     "lookup_unit",
+    "UCUM_UNITS",
+    "UcumUnit",
+    "suggest_ucum",
+    "ucum_unit",
     "lookup_labels",
     "LookupError_",
     "KNOWN_COLUMNS",
