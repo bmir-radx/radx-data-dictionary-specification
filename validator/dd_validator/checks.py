@@ -27,6 +27,7 @@ from dd_core import (
     REQUIRED_COLUMNS,
     UnknownDatatypeError,
     resolve_datatype,
+    sanitize_identifier,
 )
 from dd_core.grammar import (
     Comparison,
@@ -106,10 +107,19 @@ def check_id(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Find
                 Level.ERROR, "id-leading-whitespace",
                 "Id starts with whitespace", line=row.line, column="Id", value=id_cell,
             )
-        if " " in id_cell:
+        # Spaces and special characters are legal per the specification, but
+        # they degrade the id elsewhere: schema renderings rename it (the
+        # shared sanitisation rule) and preconditions cannot reference it.
+        # Broadens the earlier id-whitespace check; the suggestion is exactly
+        # the name a schema rendering would use.
+        safe = sanitize_identifier(id_cell)
+        if safe != id_cell:
             yield Finding(
-                Level.INFO, "id-whitespace",
-                "Id contains whitespace", line=row.line, column="Id", value=id_cell,
+                Level.INFO, "id-characters",
+                f"Id contains spaces or special characters; schema renderings "
+                f"rename it to {safe!r} and preconditions cannot reference it "
+                f"as written",
+                line=row.line, column="Id", value=id_cell, suggestion=safe,
             )
 
 
@@ -196,6 +206,137 @@ def check_enumeration(rows: Iterable[RawRow], columns_present: set[str]) -> Iter
                 f"enumeration is malformed: {exc}",
                 line=row.line, column="Enumeration", value=enumeration,
             )
+
+
+def check_cell_whitespace(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """Leading/trailing whitespace in a cell (WARNING).
+
+    Padding survives serialisation and breaks exact-value matching — an
+    enumeration code ``' 1'`` is not ``'1'``. The suggestion is the stripped
+    value. ``Id`` is covered by its own checks (leading whitespace is an
+    ERROR there); wholly-blank cells are the missing-value checks' business.
+    """
+    for row in rows:
+        for column, cell in row.cells.items():
+            if column == "Id" or cell == "":
+                continue
+            stripped = cell.strip()
+            if stripped == cell or stripped == "":
+                continue
+            yield Finding(
+                Level.WARNING, "cell-whitespace",
+                f"{column} has leading or trailing whitespace",
+                line=row.line, column=column, value=cell, suggestion=stripped,
+            )
+
+
+# Datatype names with a preferred semantic equivalent: the storage-width /
+# lexical aliases of the builtins (int, short, token, …), plus the extension
+# date formats with a clear native counterpart. The g*/duration/binary custom
+# types are deliberate rendering choices and stay unflagged.
+_PREFERRED_DATATYPE: dict[str, str] = {
+    **{
+        name: range_
+        for name, range_ in BUILTIN_RANGES.items()
+        if name != range_ and range_ in ("string", "integer")
+    },
+    "date_mdy": "date",
+    "date_dmy": "date",
+    "timestamp": "dateTime",
+}
+
+
+def check_datatype_preferred(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """Advisory: prefer the semantic datatype name (INFO; the value is valid).
+
+    ``int``/``short``/``token`` name a storage width or lexical class and map
+    silently onto the semantic builtin anyway; the extension date formats
+    (``date_mdy``, ``timestamp``) render as generated custom types where the
+    native ``date``/``dateTime`` is usually meant.
+    """
+    if "Datatype" not in columns_present:
+        return
+    for row in rows:
+        name = row.get("Datatype").strip()
+        preferred = _PREFERRED_DATATYPE.get(name)
+        if preferred is None:
+            continue
+        if name in CUSTOM_TYPES:
+            message = (
+                f"datatype {name!r} renders as a generated custom type; prefer "
+                f"the native {preferred!r} unless the datafile really stores "
+                f"that format"
+            )
+        else:
+            message = (
+                f"datatype {name!r} names a storage width, not a meaning; "
+                f"the semantic type is {preferred!r}"
+            )
+        yield Finding(
+            Level.INFO, "datatype-preferred", message,
+            line=row.line, column="Datatype", value=name, suggestion=preferred,
+        )
+
+
+_NUMERIC_RANGES = frozenset({"integer", "decimal", "float", "double"})
+
+
+def check_units(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[Finding]:
+    """Advisory: a numeric, non-enumerated field with no Unit (INFO).
+
+    Counts and scores are legitimately unitless (UCUM ``1``), so this is a
+    nudge rather than a warning — and exactly why it is INFO and ignorable.
+    """
+    if "Datatype" not in columns_present:
+        return
+    for row in rows:
+        if row.get("Unit").strip() != "" or row.get("Enumeration").strip() != "":
+            continue
+        if BUILTIN_RANGES.get(row.get("Datatype").strip()) not in _NUMERIC_RANGES:
+            continue
+        yield Finding(
+            Level.INFO, "missing-unit",
+            "numeric field has no Unit — a UCUM unit (or '1' for dimensionless "
+            "counts and scores) makes values interpretable",
+            line=row.line, column="Unit",
+        )
+
+
+_INTEGER_VALUE = re.compile(r"^-?\d+$")
+
+
+def check_enumeration_datatype(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """Advisory: every enumeration value is an integer but Datatype is not.
+
+    All-integer value sets usually mean the underlying datatype should be
+    ``integer`` (INFO, with that as the suggestion).
+    """
+    if "Enumeration" not in columns_present or "Datatype" not in columns_present:
+        return
+    for row in rows:
+        cell = row.get("Enumeration")
+        if cell.strip() == "":
+            continue
+        try:
+            items = parse_enumeration(cell)
+        except ParseError:
+            continue  # malformed-enumeration reports it
+        if not items or not all(_INTEGER_VALUE.match(item.value.strip()) for item in items):
+            continue
+        datatype = row.get("Datatype").strip()
+        if BUILTIN_RANGES.get(datatype) == "integer":
+            continue
+        yield Finding(
+            Level.INFO, "enumeration-integer-datatype",
+            f"every enumeration value is an integer but Datatype is {datatype!r}",
+            line=row.line, column="Datatype", value=datatype, suggestion="integer",
+        )
 
 
 def check_missing_value_codes(

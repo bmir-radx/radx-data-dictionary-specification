@@ -39,9 +39,19 @@ class Finding:
     """One validation problem.
 
     ``check`` is a short stable identifier (e.g. ``"unknown-datatype"``).
-    ``line`` is the 1-based line in the source CSV, or ``None`` for a
-    whole-file / header finding. ``column`` and ``value`` locate the offending
-    cell when applicable.
+
+    A finding is addressed two ways. ``line`` is the 1-based line in the
+    source CSV — a *presentation* of location, meaningful only for the CSV
+    that was validated. ``element_index`` / ``element_id`` are the
+    format-independent address: the element's 0-based position in document
+    order (stable across CSV, dd-json, and LinkML renderings, which all
+    preserve element order) and its ``Id``. The index is canonical — ids may
+    legitimately be duplicated in a document under repair — and the id is the
+    human-readable companion. Both are ``None`` for whole-file findings.
+
+    ``column`` and ``value`` locate the offending cell when applicable, and
+    ``suggestion`` carries a machine-usable replacement value when the check
+    has one (e.g. the schema-safe spelling of an Id).
     """
 
     level: Level
@@ -50,6 +60,9 @@ class Finding:
     line: int | None = None
     column: str | None = None
     value: str | None = None
+    element_index: int | None = None
+    element_id: str | None = None
+    suggestion: str | None = None
 
     @property
     def sort_key(self) -> tuple[int, int, str]:

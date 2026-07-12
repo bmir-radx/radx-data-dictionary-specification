@@ -50,7 +50,7 @@ from __future__ import annotations
 
 import io
 import json
-from collections.abc import Iterator, Mapping, Sequence
+from collections.abc import Collection, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal, TextIO
@@ -590,6 +590,39 @@ class DataDictionary:
             for index, element in enumerate(self._elements)
         ]
         return emit_schema(rows, options)
+
+    def validate(self, *, ignore: Collection[str] = ()):
+        """Run the validator over this dictionary and return its findings.
+
+        The programmatic equivalent of ``dd-validate``: the dictionary is
+        serialised to its canonical CSV and every check runs against it.
+        Each returned ``dd_validator.Finding`` carries the format-independent
+        address — ``element_index`` (0-based position in document order,
+        stable across CSV, dd-json, and LinkML renderings) and
+        ``element_id`` — alongside the CSV ``line``, plus a machine-usable
+        ``suggestion`` where the check has one. ``ignore`` drops findings by
+        check name (e.g. ``{"missing-unit"}``).
+
+        Requires the sibling ``dd-validate`` package::
+
+            >>> import io
+            >>> from dd_api import DataDictionary
+            >>> dd = DataDictionary.load(io.StringIO(
+            ...     "Id,Label,Datatype\\n"
+            ...     "my field,Age,integer\\n"
+            ... ))
+            >>> finding = [f for f in dd.validate() if f.check == "id-characters"][0]
+            >>> (finding.element_index, finding.element_id, finding.suggestion)
+            (0, 'my field', 'my_field')
+        """
+        try:
+            from dd_validator.validate import validate as _validate
+        except ImportError as exc:  # pragma: no cover - environment-specific
+            raise RuntimeError(
+                "DataDictionary.validate() needs the dd-validate package "
+                "(pip install it from this repository's validator/ folder)"
+            ) from exc
+        return _validate(io.StringIO(self.to_csv()), ignore=ignore)
 
     def to_json(self, *, indent: int | None = 2, compact: bool = False) -> str:
         """Serialise this dictionary as canonical JSON, for use over an API.

@@ -4,7 +4,7 @@ Usage::
 
     dd-validate INPUT [-o OUTPUT] [--format text|csv|tsv|json]
                 [--levels ERROR WARNING INFO] [--no-duplicate-check]
-                [--exit-zero]
+                [--ignore CHECK ...] [--exit-zero]
 
 INPUT may be a single CSV file or a directory (every ``*.csv`` beneath it is
 validated). Output goes to stdout unless ``-o`` is given.
@@ -49,6 +49,11 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Do not check for duplicate Ids (matches the reference validator).",
     )
     parser.add_argument(
+        "--ignore", nargs="+", metavar="CHECK", default=(),
+        help="Drop findings by check name (e.g. --ignore missing-unit "
+        "datatype-preferred), for tuning out advisory checks.",
+    )
+    parser.add_argument(
         "--exit-zero", action="store_true",
         help="Always exit 0, even when errors are found.",
     )
@@ -74,7 +79,9 @@ def main(argv=None) -> int:
     per_file_reports: list[str] = []
     all_findings: list[Finding] = []
     for path in _input_files(args.input):
-        findings = validate(path, check_duplicate_ids=not args.no_duplicate_check)
+        findings = validate(
+            path, check_duplicate_ids=not args.no_duplicate_check, ignore=args.ignore
+        )
         if levels is not None:
             findings = [finding for finding in findings if finding.level in levels]
         all_findings.extend(findings)

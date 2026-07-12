@@ -32,6 +32,7 @@ from dd_core.missing_values import (
     STANDARD_ENUM_NAME,
     STANDARD_MISSING_VALUE_CODES,
 )
+from dd_core.naming import sanitize_identifier
 from dd_core.reader import Row
 from dd_core.units import lookup_unit
 from linkml_runtime.dumpers import json_dumper
@@ -92,19 +93,9 @@ def _represent_str(dumper: yaml.SafeDumper, data: str):
 _BlockStyleDumper.add_representer(str, _represent_str)
 
 
-def _sanitize(name: str) -> str:
-    """Turn an arbitrary Id/Section into a LinkML-safe name.
-
-    Non-word characters become underscores; a leading digit is prefixed. The
-    original value is preserved elsewhere (slot title / annotation), so this only
-    affects the schema-internal name.
-    """
-    safe = re.sub(r"\W+", "_", name.strip()).strip("_")
-    if not safe:
-        safe = "_"
-    if safe[0].isdigit():
-        safe = f"x_{safe}"
-    return safe
+# The sanitisation rule lives in dd_core (dd_core.naming) so the validator's
+# id-characters check and this emitter can never disagree about the rename.
+_sanitize = sanitize_identifier
 
 
 def _class_case(name: str) -> str:

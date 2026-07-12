@@ -6,7 +6,9 @@ from dd_validator import validate
 from dd_validator.model import Level
 from dd_validator.rows import read_rows
 
-CLEAN = "Id,Label,Datatype\nage,Age,integer\nweight,Weight,decimal\n"
+# Clean means clean under every check, the advisory ones included — the
+# numeric fields carry units, so missing-unit stays silent.
+CLEAN = "Id,Label,Datatype,Unit\nage,Age,integer,a\nweight,Weight,decimal,kg\n"
 
 
 def _validate(text, **kwargs):
@@ -52,6 +54,38 @@ def test_optional_column_absent_is_not_flagged():
     # No Cardinality/Pattern/SeeAlso columns: their checks must stay silent.
     findings = _validate(CLEAN)
     assert findings == []
+
+
+def test_findings_carry_format_independent_address():
+    text = (
+        "Id,Label,Datatype,Unit\n"
+        "age,Age,integer,a\n"
+        "bmi,,decimal,kg/m2\n"  # line 3 = element index 1: label warning
+    )
+    (finding,) = _validate(text)
+    assert finding.check == "label-missing"
+    assert finding.line == 3
+    assert (finding.element_index, finding.element_id) == (1, "bmi")
+
+
+def test_addressing_survives_blank_lines():
+    # A blank line shifts CSV line numbers but not element indexes.
+    text = "Id,Label,Datatype,Unit\nage,Age,integer,a\n\nbmi,,decimal,kg/m2\n"
+    (finding,) = _validate(text)
+    assert finding.line == 4
+    assert (finding.element_index, finding.element_id) == (1, "bmi")
+
+
+def test_whole_file_findings_have_no_element_address():
+    (finding,) = _validate("")
+    assert finding.element_index is None and finding.element_id is None
+
+
+def test_ignore_drops_findings_by_check_name():
+    text = "Id,Label,Datatype\nage,Age,integer\n"  # numeric, no Unit column
+    assert any(f.check == "missing-unit" for f in _validate(text))
+    remaining = _validate(text, ignore={"missing-unit"})
+    assert all(f.check != "missing-unit" for f in remaining)
 
 
 def test_read_rows_skips_blank_lines_and_strips_bom():
