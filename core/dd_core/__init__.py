@@ -25,6 +25,7 @@ from .missing_values import (
     STANDARD_MISSING_VALUE_CODES_TEXT,
     parse_missing_value_codes_file,
 )
+from .naming import sanitize_identifier
 from .reader import (
     KNOWN_COLUMNS,
     REQUIRED_COLUMNS,
@@ -55,4 +56,5 @@ __all__ = [
     "ReadError",
     "Row",
     "read_data_dictionary",
+    "sanitize_identifier",
 ]

@@ -18,7 +18,8 @@ Each finding has a severity:
 | Required headers | ERROR | A required column (`Id`, `Label`, `Datatype`) is missing. |
 | Id present | ERROR | An `Id` cell is blank. |
 | Id leading whitespace | ERROR | An `Id` starts with a space. |
-| Id whitespace | INFO | An `Id` contains a space. |
+| Id characters | INFO | An `Id` contains spaces or special characters — legal, but schema renderings rename it and preconditions can't reference it (suggests the schema-safe spelling). |
+| Cell whitespace | WARNING | A cell has leading or trailing whitespace (suggests the stripped value). |
 | Label present | WARNING | A `Label` cell is blank. |
 | Datatype present | ERROR | A `Datatype` cell is blank. |
 | Unknown datatype | ERROR | A `Datatype` name is not recognised (suggests a fix). |
@@ -30,6 +31,9 @@ Each finding has a severity:
 | Duplicate Id | ERROR | An `Id` appears on more than one row. |
 | Precondition | ERROR | A `Precondition` cell does not parse, references an unknown field, orders an unordered datatype, or uses `contains` on a single-valued field. |
 | Required | ERROR | A `Required` value is not `y` or blank. |
+| Preferred datatype | INFO | A `Datatype` names a storage width (`int`, `short`, `token`) or an extension date format (`date_mdy`, `timestamp`) where the semantic builtin is usually meant (suggests it). |
+| Missing unit | INFO | A numeric, non-enumerated field has no `Unit` (counts and scores are legitimately unitless — see `--ignore`). |
+| Enumeration datatype | INFO | Every enumeration value is an integer but the `Datatype` is not (suggests `integer`). |
 
 The datatype names, the enumeration grammar, and the missing-value-codes grammar
 are reused from the sibling [converter](../converter/), so the validator stays in
@@ -65,9 +69,20 @@ dd-validate ./dictionaries/
 # Only show errors, ignoring warnings and info
 dd-validate my_dictionary.csv --levels ERROR
 
+# Drop specific advisory checks a pipeline disagrees with
+dd-validate my_dictionary.csv --ignore missing-unit datatype-preferred
+
 # Machine-readable output
 dd-validate my_dictionary.csv -f json -o report.json
 ```
+
+Each finding carries a **format-independent address** alongside the CSV line
+number: `elementIndex` (the element's 0-based position in document order,
+stable across the CSV, dd-json, and LinkML renderings of the same dictionary)
+and `elementId`. Checks with a mechanical fix also carry a `suggestion` (the
+schema-safe Id spelling, the stripped cell value, the semantic datatype name).
+Programmatic access without touching CSV text goes through the API:
+`DataDictionary.validate()` in the sibling [`dd_api`](../api/) package.
 
 Options:
 

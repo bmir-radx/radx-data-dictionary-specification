@@ -77,6 +77,11 @@ def _render_json(findings: Sequence[Finding], file: str) -> str:
                 "line": finding.line,
                 "column": finding.column,
                 "value": finding.value,
+                # The format-independent address (document-order position and
+                # Id) and the machine-usable fix, when the check has one.
+                "elementIndex": finding.element_index,
+                "elementId": finding.element_id,
+                "suggestion": finding.suggestion,
             }
             for finding in findings
         ],
