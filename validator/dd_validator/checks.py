@@ -646,19 +646,14 @@ def check_section_runs(rows: Iterable[RawRow], columns_present: set[str]) -> Ite
         current = section
 
 
-# Datatype names with a preferred semantic equivalent: the storage-width /
-# lexical aliases of the builtins (int, short, token, …), plus the extension
-# date formats with a clear native counterpart. The g*/duration/binary custom
-# types are deliberate rendering choices and stay unflagged.
+# Datatype names that are pure aliases of a semantic builtin: renaming them
+# is free (same value space; the schema maps them silently anyway). The
+# g*/duration/binary custom types are deliberate rendering choices and stay
+# unflagged; the REDCap-style formats are format-harmonization's business.
 _PREFERRED_DATATYPE: dict[str, str] = {
-    **{
-        name: range_
-        for name, range_ in BUILTIN_RANGES.items()
-        if name != range_ and range_ in ("string", "integer")
-    },
-    "date_mdy": "date",
-    "date_dmy": "date",
-    "timestamp": "dateTime",
+    name: range_
+    for name, range_ in BUILTIN_RANGES.items()
+    if name != range_ and range_ in ("string", "integer")
 }
 
 
@@ -668,9 +663,8 @@ def check_datatype_preferred(
     """Advisory: prefer the semantic datatype name (INFO; the value is valid).
 
     ``int``/``short``/``token`` name a storage width or lexical class and map
-    silently onto the semantic builtin anyway; the extension date formats
-    (``date_mdy``, ``timestamp``) render as generated custom types where the
-    native ``date``/``dateTime`` is usually meant.
+    silently onto the semantic builtin anyway — the rename is free, so the
+    suggestion is safe to apply mechanically.
     """
     if "Datatype" not in columns_present:
         return
@@ -679,20 +673,49 @@ def check_datatype_preferred(
         preferred = _PREFERRED_DATATYPE.get(name)
         if preferred is None:
             continue
-        if name in CUSTOM_TYPES:
-            message = (
-                f"datatype {name!r} renders as a generated custom type; prefer "
-                f"the native {preferred!r} unless the datafile really stores "
-                f"that format"
-            )
-        else:
-            message = (
-                f"datatype {name!r} names a storage width, not a meaning; "
-                f"the semantic type is {preferred!r}"
-            )
         yield Finding(
-            Level.INFO, "datatype-preferred", message,
+            Level.INFO, "datatype-preferred",
+            f"datatype {name!r} names a storage width, not a meaning; "
+            f"the semantic type is {preferred!r}",
             line=row.line, column="Datatype", value=name, suggestion=preferred,
+        )
+
+
+# REDCap-style source formats and their harmonized targets. UNLIKE the pure
+# aliases above, these truthfully describe the datafile as it is (mm/dd/yyyy
+# strings, Unix seconds): changing the dictionary alone would make it lie.
+# The recommendation is to harmonize the DATA, then the datatype — so the
+# suggestion is for migration pipelines, not for one-click dictionary edits.
+_HARMONIZATION_TARGETS: dict[str, str] = {
+    "date_mdy": "date",
+    "date_dmy": "date",
+    "timestamp": "dateTime",
+}
+
+
+def check_format_harmonization(
+    rows: Iterable[RawRow], columns_present: set[str]
+) -> Iterable[Finding]:
+    """Advisory: REDCap-style formats have a harmonized end-state (INFO).
+
+    ``date_mdy``/``date_dmy``/``timestamp`` are valid and honest about the
+    source data; the finding records the recommended target (``date`` /
+    ``dateTime``) as the suggestion for pipelines that migrate the datafile
+    along with the dictionary.
+    """
+    if "Datatype" not in columns_present:
+        return
+    for row in rows:
+        name = row.get("Datatype").strip()
+        target = _HARMONIZATION_TARGETS.get(name)
+        if target is None:
+            continue
+        yield Finding(
+            Level.INFO, "format-harmonization",
+            f"datatype {name!r} describes REDCap-style source data — valid "
+            f"as-is; harmonizing the datafile (and then this field) to "
+            f"{target!r} is the recommended end-state",
+            line=row.line, column="Datatype", value=name, suggestion=target,
         )
 
 

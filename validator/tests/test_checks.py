@@ -8,6 +8,7 @@ from dd_validator.checks import (
     check_duplicate_ids,
     check_enumeration,
     check_enumeration_datatype,
+    check_format_harmonization,
     check_id,
     check_label,
     check_missing_value_codes,
@@ -97,17 +98,31 @@ def test_datatype_alias_prefers_semantic_name():
     assert "storage width" in finding.message
 
 
-def test_datatype_extension_format_prefers_native():
-    (finding,) = list(
-        check_datatype_preferred(_rows((2, {"Datatype": "date_mdy"})), {"Datatype"})
-    )
-    assert finding.suggestion == "date"
-    assert "custom type" in finding.message
-
-
 def test_datatype_semantic_and_deliberate_custom_names_are_silent():
-    for name in ("integer", "string", "date", "dateTime", "anyURI", "gYear", "duration"):
+    # date_mdy et al. are format-harmonization's business, not a free rename.
+    names = ("integer", "string", "date", "dateTime", "anyURI", "gYear", "duration", "date_mdy")
+    for name in names:
         assert list(check_datatype_preferred(_rows((2, {"Datatype": name})), {"Datatype"})) == []
+
+
+def test_redcap_formats_get_a_harmonization_target():
+    (finding,) = list(
+        check_format_harmonization(_rows((2, {"Datatype": "date_mdy"})), {"Datatype"})
+    )
+    assert finding.check == "format-harmonization" and finding.level is Level.INFO
+    assert finding.suggestion == "date"
+    assert "valid as-is" in finding.message
+    (ts,) = list(
+        check_format_harmonization(_rows((2, {"Datatype": "timestamp"})), {"Datatype"})
+    )
+    assert ts.suggestion == "dateTime"
+
+
+def test_native_and_alias_datatypes_are_not_harmonization_flagged():
+    for name in ("date", "dateTime", "int", "string"):
+        assert (
+            list(check_format_harmonization(_rows((2, {"Datatype": name})), {"Datatype"})) == []
+        )
 
 
 # --- advisory: missing-unit --------------------------------------------------

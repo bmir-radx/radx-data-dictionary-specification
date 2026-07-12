@@ -72,8 +72,18 @@ UCUM_UNITS: tuple[UcumUnit, ...] = (
     UcumUnit("km", "kilometer", spellings=("kilometre", "kilometres")),
     UcumUnit("[in_i]", "inch", plural="inches", spellings=("in",)),
     UcumUnit("[ft_i]", "foot", plural="feet", spellings=("ft",)),
-    # --- volume
-    UcumUnit("L", "liter", spellings=("litre", "litres", "ltr")),
+    # --- lengths beyond the basics; areas / volumes of length (the exponent
+    # normalisation folds mm² and mm^2 onto mm2)
+    UcumUnit("um", "micrometer", spellings=("micron", "microns", "micrometre", "micrometres")),
+    UcumUnit("cm2", "square centimeter", spellings=("sq cm",)),
+    UcumUnit("mm2", "square millimeter", spellings=("sq mm",)),
+    UcumUnit("m3", "cubic meter", spellings=("cu m",)),
+    UcumUnit("cm3", "cubic centimeter", spellings=("cu cm",)),
+    UcumUnit("mm3", "cubic millimeter", spellings=("cu mm",)),
+    # --- volume ("l" is explicit and deliberate: l and L both mean liter in
+    # UCUM, so this case fix is safe — single letters generally are NOT case
+    # fixed, because a flip can change the unit: S is siemens, s is second)
+    UcumUnit("L", "liter", spellings=("l", "litre", "litres", "ltr")),
     UcumUnit("dL", "deciliter", spellings=("decilitre", "decilitres")),
     UcumUnit(
         "mL", "milliliter",
@@ -101,6 +111,9 @@ UCUM_UNITS: tuple[UcumUnit, ...] = (
     UcumUnit("[IU]/L", "international unit per liter"),
     UcumUnit("[IU]/mL", "international unit per milliliter"),
     UcumUnit("mmol/mol", "millimole per mole"),
+    UcumUnit("mg/L", "milligram per liter", spellings=("mgl",)),
+    UcumUnit("ug/L", "microgram per liter", spellings=("ugl",)),
+    UcumUnit("uS/cm", "microsiemens per centimeter", spellings=("uscm",)),
     UcumUnit("10*9/L", "billion per liter", spellings=("10^9/l", "x10^9/l")),
     UcumUnit("10*6/uL", "million per microliter"),
     UcumUnit("10*3/uL", "thousand per microliter"),
@@ -132,12 +145,15 @@ UCUM_UNITS: tuple[UcumUnit, ...] = (
     ),
     UcumUnit("kcal", "kilocalorie", spellings=("kilocalories",)),
     UcumUnit("kJ", "kilojoule", spellings=("kilojoules",)),
+    UcumUnit("kW.h", "kilowatt hour", spellings=("kwh", "kilowatt hours", "kw h")),
     # --- body / composite
     UcumUnit("kg/m2", "kilogram per square meter", spellings=("bmi",)),
     UcumUnit("m2", "square meter", spellings=("sq m", "square meters", "square metres")),
     UcumUnit("mg/kg", "milligram per kilogram"),
     # --- dimensionless
-    UcumUnit("%", "percent", spellings=("per cent", "pct", "percentage")),
+    UcumUnit("%", "percent", spellings=("per cent", "pct", "percentage", "perc")),
+    UcumUnit("[ppm]", "part per million", spellings=("ppm", "parts per million")),
+    UcumUnit("[ppb]", "part per billion", spellings=("ppb", "parts per billion")),
     UcumUnit("1", "dimensionless", spellings=("unitless", "no unit", "no units")),
 )
 
@@ -178,7 +194,14 @@ def _build_index() -> dict[str, str]:
             index[key] = code
 
     for unit in UCUM_UNITS:
-        claim(unit.code, unit.code)  # case/symbol-variant code spellings
+        # Case/symbol-variant code spellings — multi-character codes only.
+        # Single-letter case flips can silently change the unit (the corpus
+        # survey found 'S' meaning siemens, which a case fix would turn into
+        # 's', seconds; likewise A/a is ampere vs year). Exact single-letter
+        # codes still resolve; deliberate safe flips (l -> L) are explicit
+        # spellings.
+        if len(unit.code) > 1:
+            claim(unit.code, unit.code)
         claim(unit.name, unit.code)
         claim(unit.plural or _plural(unit.name) or "", unit.code)
         for spelling in unit.spellings:
