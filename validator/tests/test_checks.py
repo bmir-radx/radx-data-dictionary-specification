@@ -258,7 +258,9 @@ def test_duplicate_ids():
     rows = _rows((2, {"Id": "a"}), (3, {"Id": "b"}), (4, {"Id": "a"}))
     findings = list(check_duplicate_ids(rows, {"Id"}))
     assert [f.line for f in findings] == [4]
-    assert "first seen on line 2" in findings[0].message
+    # Cross-row messages locate the first occurrence by row position (what an
+    # editor shows) with the CSV line alongside.
+    assert "first used at row 1, line 2" in findings[0].message
 
 
 def test_no_duplicate_ids():
