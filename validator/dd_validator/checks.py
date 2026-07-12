@@ -292,7 +292,10 @@ def check_aliases(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable
         return
     rows = list(rows)
     ids = {row.get("Id").strip() for row in rows if row.get("Id").strip()}
-    first_claim: dict[str, int] = {}
+    # alias -> (claiming line, claiming Id): cross-row messages name the other
+    # element by Id, which reads the same in every rendering of the dictionary
+    # (a CSV line number means nothing in a grid or a LinkML view).
+    first_claim: dict[str, tuple[int, str]] = {}
     for row in rows:
         cell = row.get("Aliases")
         if cell.strip() == "":
@@ -314,14 +317,14 @@ def check_aliases(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable
                     "using it cannot be keyed unambiguously",
                     line=row.line, column="Aliases", value=alias,
                 )
-            if alias in first_claim and first_claim[alias] != row.line:
+            claimed = first_claim.get(alias)
+            if claimed is not None and claimed[0] != row.line:
                 yield Finding(
                     Level.WARNING, "duplicate-alias",
-                    f"alias {alias!r} is claimed by more than one element "
-                    f"(first on line {first_claim[alias]})",
+                    f"alias {alias!r} is already claimed by {claimed[1]!r}",
                     line=row.line, column="Aliases", value=alias,
                 )
-            first_claim.setdefault(alias, row.line)
+            first_claim.setdefault(alias, (row.line, row.get("Id").strip()))
 
 
 # --- examples ----------------------------------------------------------------
@@ -587,7 +590,9 @@ def check_label_quality(rows: Iterable[RawRow], columns_present: set[str]) -> It
     label on more than one element (usually a copy-paste slip)."""
     if "Label" not in columns_present:
         return
-    first_use: dict[str, int] = {}
+    # label -> Id of its first user: the message names the other element by
+    # Id, which reads the same in every rendering (line numbers do not).
+    first_use: dict[str, str] = {}
     for row in rows:
         label = row.get("Label").strip()
         if label == "":
@@ -601,10 +606,10 @@ def check_label_quality(rows: Iterable[RawRow], columns_present: set[str]) -> It
         if label in first_use:
             yield Finding(
                 Level.INFO, "duplicate-label",
-                f"label {label!r} is also used on line {first_use[label]}",
+                f"label {label!r} is also used by {first_use[label]!r}",
                 line=row.line, column="Label", value=label,
             )
-        first_use.setdefault(label, row.line)
+        first_use.setdefault(label, row.get("Id").strip() or "(no id)")
 
 
 def check_description_present(
@@ -872,16 +877,21 @@ def check_duplicate_ids(
     """
     if "Id" not in columns_present:
         return
-    first_seen_line: dict[str, int] = {}
-    for row in rows:
+    # The two occurrences share their Id, so the message locates the first by
+    # row position (1-based, in document order) — the number an editor shows —
+    # with the CSV line alongside for the text report.
+    first_seen: dict[str, tuple[int, int]] = {}
+    for position, row in enumerate(rows, start=1):
         row_id = row.get("Id").strip()
         if row_id == "":
             continue
-        if row_id in first_seen_line:
+        if row_id in first_seen:
+            first_position, first_line = first_seen[row_id]
             yield Finding(
                 Level.ERROR, "duplicate-id",
-                f"duplicate Id {row_id!r} (first seen on line {first_seen_line[row_id]})",
+                f"duplicate Id {row_id!r} (first used at row {first_position}, "
+                f"line {first_line})",
                 line=row.line, column="Id", value=row_id,
             )
         else:
-            first_seen_line[row_id] = row.line
+            first_seen[row_id] = (position, row.line)
