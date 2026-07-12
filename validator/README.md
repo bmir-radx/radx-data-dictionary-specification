@@ -34,6 +34,17 @@ Each finding has a severity:
 | Preferred datatype | INFO | A `Datatype` names a storage width (`int`, `short`, `token`) or an extension date format (`date_mdy`, `timestamp`) where the semantic builtin is usually meant (suggests it). |
 | Missing unit | INFO | A numeric, non-enumerated field has no `Unit` (counts and scores are legitimately unitless — see `--ignore`). |
 | Enumeration datatype | INFO | Every enumeration value is an integer but the `Datatype` is not (suggests `integer`). |
+| Alias / Id collision | WARNING | An alias equals an element `Id`, or is claimed by two elements — either breaks datafile-header keying. |
+| Empty list segment | WARNING | A pipe-delimited cell (`Aliases`, `Examples`) has an empty segment from a doubled or trailing pipe (suggests the cleaned cell). |
+| Examples conform | WARNING | An example is not in the field's enumeration, does not match its pattern, or does not fit its datatype (the specification's SHOULD, checked). |
+| Enumeration consistency | ERROR / INFO / WARNING | A value listed twice (ERROR); two values sharing a label (INFO); a value that is also a missing-value code — the field's or a standard one (WARNING); a value the field's own pattern rejects (WARNING). |
+| Precondition values | WARNING | A compared value is not in the referenced field's enumeration, or does not fit its datatype. |
+| Unit suggestion | INFO | A `Unit` written informally (`years`, `per year`, `mcg/ml`, `kg/m²`) gets its UCUM code as the suggestion, via `dd_core.ucum`. |
+| Unit on non-quantity | INFO | A `Unit` on a boolean / URI / temporal field. |
+| Boolean with enumeration | INFO | A boolean field also declares an enumeration — two representations of one thing. |
+| Label quality | INFO | A label that just repeats the `Id`; the same label on more than one element. |
+| Description present | INFO | A blank `Description` cell (only when the column exists). |
+| Fragmented sections | INFO | A `Section` that stops and later resumes — its elements are split into non-contiguous runs. |
 
 The datatype names, the enumeration grammar, and the missing-value-codes grammar
 are reused from the sibling [converter](../converter/), so the validator stays in
