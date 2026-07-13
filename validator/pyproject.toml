@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dd-validate"
-version = "0.0.7"
+version = "0.0.8"
 description = "Validate a data dictionary CSV against the specification and report violations"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -14,7 +14,7 @@ dependencies = [
     # enumeration / missing-value-codes grammars) are reused from the sibling
     # converter. It is not on PyPI, so depend on it directly from this
     # repository; this lets `pip/pipx install <validator>` pull it in one step.
-    "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.7#subdirectory=core",
+    "dd-core @ git+https://github.com/bmir-radx/radx-data-dictionary-specification.git@v0.0.8#subdirectory=core",
 ]
 
 [project.optional-dependencies]
