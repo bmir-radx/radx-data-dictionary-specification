@@ -665,12 +665,14 @@ _PREFERRED_DATATYPE: dict[str, str] = {
 def check_datatype_preferred(
     rows: Iterable[RawRow], columns_present: set[str]
 ) -> Iterable[Finding]:
-    """Advisory: prefer the semantic datatype name (INFO; the value is valid).
+    """Advisory: prefer the semantic datatype name. Two levels, by cost.
 
     ``int``/``short``/``token`` name a storage width or lexical class and map
-    silently onto the semantic builtin anyway; the extension date formats
-    (``date_mdy``, ``timestamp``) render as generated custom types where the
-    native ``date``/``dateTime`` is usually meant.
+    silently onto the semantic builtin anyway — the rename is free and always
+    right, so it is a WARNING. The extension date formats (``date_mdy``,
+    ``timestamp``) truthfully describe the source data and are standard in
+    REDCap; renaming is only right once the data itself is converted, so they
+    stay INFO — a heads-up, not a problem.
     """
     if "Datatype" not in columns_present:
         return
@@ -680,18 +682,20 @@ def check_datatype_preferred(
         if preferred is None:
             continue
         if name in CUSTOM_TYPES:
+            level = Level.INFO
             message = (
-                f"datatype {name!r} renders as a generated custom type; prefer "
-                f"the native {preferred!r} unless the datafile really stores "
-                f"that format"
+                f"datatype {name!r} is a standard REDCap format (valid as-is); "
+                f"if the data is ever converted/harmonized, change to "
+                f"{preferred!r} to match"
             )
         else:
+            level = Level.WARNING
             message = (
                 f"datatype {name!r} names a storage width, not a meaning; "
                 f"the semantic type is {preferred!r}"
             )
         yield Finding(
-            Level.INFO, "datatype-preferred", message,
+            level, "datatype-preferred", message,
             line=row.line, column="Datatype", value=name, suggestion=preferred,
         )
 

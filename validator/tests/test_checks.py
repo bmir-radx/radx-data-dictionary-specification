@@ -90,19 +90,24 @@ def test_cell_whitespace_skips_id_blank_and_whitespace_only_cells():
 
 # --- advisory: datatype-preferred -------------------------------------------
 
-def test_datatype_alias_prefers_semantic_name():
+def test_datatype_alias_warns_with_semantic_name():
+    # A pure rename: free and always right, so WARNING (not just INFO).
     (finding,) = list(check_datatype_preferred(_rows((2, {"Datatype": "int"})), {"Datatype"}))
-    assert finding.check == "datatype-preferred" and finding.level is Level.INFO
+    assert finding.check == "datatype-preferred" and finding.level is Level.WARNING
     assert finding.suggestion == "integer"
     assert "storage width" in finding.message
 
 
-def test_datatype_extension_format_prefers_native():
+def test_datatype_extension_format_is_an_info_heads_up():
+    # date_mdy truthfully describes REDCap source data; renaming is only
+    # right after the data itself is converted — INFO, and says so.
     (finding,) = list(
         check_datatype_preferred(_rows((2, {"Datatype": "date_mdy"})), {"Datatype"})
     )
+    assert finding.level is Level.INFO
     assert finding.suggestion == "date"
-    assert "custom type" in finding.message
+    assert "valid as-is" in finding.message
+    assert "converted/harmonized" in finding.message
 
 
 def test_datatype_semantic_and_deliberate_custom_names_are_silent():
