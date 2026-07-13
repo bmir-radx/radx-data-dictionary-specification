@@ -743,7 +743,8 @@ def check_units(rows: Iterable[RawRow], columns_present: set[str]) -> Iterable[F
         yield Finding(
             Level.INFO, "missing-unit",
             "numeric field has no Unit — a UCUM unit (or '1' for dimensionless "
-            "counts and scores) makes values interpretable",
+            "counts and scores) makes values reliably interpretable and is "
+            "supported by standards like LinkML",
             line=row.line, column="Unit",
         )
 
