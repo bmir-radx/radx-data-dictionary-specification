@@ -112,6 +112,8 @@ def test_redcap_formats_get_a_harmonization_target():
     assert finding.check == "format-harmonization" and finding.level is Level.INFO
     assert finding.suggestion == "date"
     assert "valid as-is" in finding.message
+    # A concrete transformation makes "harmonize" unambiguous.
+    assert "05/27/2014 becomes 2014-05-27" in finding.message
     (ts,) = list(
         check_format_harmonization(_rows((2, {"Datatype": "timestamp"})), {"Datatype"})
     )

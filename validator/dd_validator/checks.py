@@ -686,10 +686,13 @@ def check_datatype_preferred(
 # strings, Unix seconds): changing the dictionary alone would make it lie.
 # The recommendation is to harmonize the DATA, then the datatype — so the
 # suggestion is for migration pipelines, not for one-click dictionary edits.
-_HARMONIZATION_TARGETS: dict[str, str] = {
-    "date_mdy": "date",
-    "date_dmy": "date",
-    "timestamp": "dateTime",
+# format -> (harmonized target, concrete value example). The example makes
+# "harmonize" unambiguous: it is the DATA that changes shape, not just the
+# dictionary cell.
+_HARMONIZATION_TARGETS: dict[str, tuple[str, str]] = {
+    "date_mdy": ("date", "05/27/2014 becomes 2014-05-27"),
+    "date_dmy": ("date", "27/05/2014 becomes 2014-05-27"),
+    "timestamp": ("dateTime", "1401148800 becomes 2014-05-27T00:00:00Z"),
 }
 
 
@@ -701,20 +704,22 @@ def check_format_harmonization(
     ``date_mdy``/``date_dmy``/``timestamp`` are valid and honest about the
     source data; the finding records the recommended target (``date`` /
     ``dateTime``) as the suggestion for pipelines that migrate the datafile
-    along with the dictionary.
+    along with the dictionary, and the message shows a concrete value
+    transformation so "harmonize" is unambiguous.
     """
     if "Datatype" not in columns_present:
         return
     for row in rows:
         name = row.get("Datatype").strip()
-        target = _HARMONIZATION_TARGETS.get(name)
-        if target is None:
+        entry = _HARMONIZATION_TARGETS.get(name)
+        if entry is None:
             continue
+        target, example = entry
         yield Finding(
             Level.INFO, "format-harmonization",
             f"datatype {name!r} describes REDCap-style source data — valid "
             f"as-is; harmonizing the datafile (and then this field) to "
-            f"{target!r} is the recommended end-state",
+            f"{target!r} is the recommended end-state (so {example})",
             line=row.line, column="Datatype", value=name, suggestion=target,
         )
 
