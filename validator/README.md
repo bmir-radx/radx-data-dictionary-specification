@@ -31,7 +31,8 @@ Each finding has a severity:
 | Duplicate Id | ERROR | An `Id` appears on more than one row. |
 | Precondition | ERROR | A `Precondition` cell does not parse, references an unknown field, orders an unordered datatype, or uses `contains` on a single-valued field. |
 | Required | ERROR | A `Required` value is not `y` or blank. |
-| Preferred datatype | INFO | A `Datatype` names a storage width (`int`, `short`, `token`) or an extension date format (`date_mdy`, `timestamp`) where the semantic builtin is usually meant (suggests it). |
+| Preferred datatype | INFO | A `Datatype` names a storage width (`int`, `short`, `token`) — a free rename to the semantic builtin (suggests it). |
+| Format harmonization | INFO | A REDCap-style format (`date_mdy`, `date_dmy`, `timestamp`) — valid as-is; records the harmonized target (`date`/`dateTime`) for pipelines that migrate the datafile too. |
 | Missing unit | INFO | A numeric, non-enumerated field has no `Unit` (counts and scores are legitimately unitless — see `--ignore`). |
 | Enumeration datatype | INFO | Every enumeration value is an integer but the `Datatype` is not (suggests `integer`). |
 | Alias / Id collision | WARNING | An alias equals an element `Id`, or is claimed by two elements — either breaks datafile-header keying. |

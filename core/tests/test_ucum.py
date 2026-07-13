@@ -54,3 +54,27 @@ def test_unknown_and_valid_exotic_codes_stay_silent():
     assert suggest_ucum("nmol/L") is None  # valid UCUM, outside the subset
     assert suggest_ucum("") is None
     assert suggest_ucum("   ") is None
+
+
+def test_single_letter_case_flips_are_not_suggested():
+    # The corpus survey found 'S' meaning siemens; a case "fix" to 's'
+    # (seconds) would change the unit. Same hazard for D, A, G.
+    assert suggest_ucum("S") is None
+    assert suggest_ucum("D") is None
+    # ...but the deliberate, safe flip stays (l and L both mean liter):
+    assert suggest_ucum("l").code == "L"
+    # and exact single-letter codes still resolve.
+    assert ucum_unit("s").name == "second"
+    assert ucum_unit("A").name == "ampere"
+
+
+def test_corpus_informed_units_resolve():
+    assert suggest_ucum("ppm").code == "[ppm]"
+    assert suggest_ucum("uScm").code == "uS/cm"
+    assert suggest_ucum("mgL").code == "mg/L"
+    assert suggest_ucum("kWh").code == "kW.h"
+    assert suggest_ucum("micron").code == "um"
+    assert suggest_ucum("mm^3").code == "mm3"
+    assert suggest_ucum("perc").code == "%"
+    assert ucum_unit("mg/L") is not None  # curated: exact code, no suggestion
+    assert suggest_ucum("mg/L") is None

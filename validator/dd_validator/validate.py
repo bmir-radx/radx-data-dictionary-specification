@@ -73,6 +73,7 @@ def _run_all_checks(
     findings.extend(checks.check_label(rows, columns_present))
     findings.extend(checks.check_datatype(rows, columns_present))
     findings.extend(checks.check_datatype_preferred(rows, columns_present))
+    findings.extend(checks.check_format_harmonization(rows, columns_present))
     findings.extend(checks.check_cardinality(rows, columns_present))
     findings.extend(checks.check_pattern(rows, columns_present))
     findings.extend(checks.check_enumeration(rows, columns_present))
