@@ -38,6 +38,23 @@ def test_precondition_and_required_roundtrip_through_linkml():
     assert back["age"].get("Required") == ""
 
 
+def test_matches_emits_a_linkml_pattern_and_round_trips():
+    # LinkML's `pattern` is also a fully-anchored regular expression, so the
+    # precondition's semantics carry over without translation.
+    text = (
+        "Id,Label,Datatype,Precondition\n"
+        "flag,Flag,string,\"notes matches \"\".*fever.*\"\"\"\n"
+        "notes,Notes,string,\n"
+    )
+    schema_yaml = emit_schema(read_data_dictionary(io.StringIO(text)))
+    schema = yaml.safe_load(schema_yaml)
+    condition = schema["classes"]["Record"]["rules"][0]["preconditions"]["none_of"][0]
+    assert condition["slot_conditions"]["notes"]["pattern"] == ".*fever.*"
+
+    back = {r.id: r for r in read_data_dictionary(io.StringIO(schema_to_csv(schema_yaml)))}
+    assert back["flag"].get("Precondition") == 'notes matches ".*fever.*"'
+
+
 def test_strict_bound_emits_inclusive_bound_plus_not_equal():
 
 

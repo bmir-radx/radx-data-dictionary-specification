@@ -144,6 +144,23 @@ def test_precondition_renders_richly():
     assert 'title="smoker = &#34;1&#34; and packs_known &lt;&gt; &#34;&#34;"' in html
 
 
+def test_matches_precondition_renders_the_pattern_as_code():
+    import io
+
+    from dd_printer.load import load_dictionary
+    from dd_printer.render_html import render_html
+
+    text = (
+        "Id,Label,Datatype,Enumeration,Precondition,Required,Cardinality\n"
+        "notes,Notes,string,,,,\n"
+        'flag,Flag,string,,"notes matches "".*fever.*""",,\n'
+    )
+    html = render_html(load_dictionary(io.StringIO(text)))
+    # A pattern is a regular expression, not a value: shown verbatim in code
+    # style rather than resolved against the field's choices.
+    assert "matches <code>.*fever.*</code>" in html
+
+
 def test_visual_navigation_and_badges():
     import io
 
