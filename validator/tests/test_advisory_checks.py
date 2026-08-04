@@ -38,7 +38,8 @@ def test_alias_claimed_twice_is_warned_on_the_second_claim():
     )
     (finding,) = list(check_aliases(rows, {"Id", "Aliases"}))
     assert finding.check == "duplicate-alias" and finding.line == 3
-    assert "line 2" in finding.message
+    # Names the other element by Id — meaningful in every rendering.
+    assert "'a'" in finding.message
 
 
 def test_empty_alias_segment_suggests_cleaned_cell():
