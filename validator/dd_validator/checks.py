@@ -36,6 +36,7 @@ from dd_core import (
 from dd_core.grammar import (
     Comparison,
     Contains,
+    Matches,
     ParseError,
     parse_enumeration,
     parse_missing_value_codes,
@@ -497,6 +498,10 @@ def check_precondition_values(
             elif isinstance(atom, Contains):
                 ordering = False
                 values = [atom.value]
+            elif isinstance(atom, Matches):
+                # A regular expression is not a value: checking it against the
+                # field's enumeration or datatype would reject every pattern.
+                continue
             else:  # InSet
                 ordering = False
                 values = list(atom.values)
@@ -860,6 +865,30 @@ def check_preconditions(
                         Level.ERROR, "invalid-precondition-contains",
                         f"precondition uses 'contains' on {atom.field!r}, "
                         "which is not a multivalued field",
+                        line=row.line, column="Precondition", value=atom.field,
+                    )
+            if isinstance(atom, Matches):
+                # Same approximation as check_pattern: Python's dialect is not
+                # XSD's, but it catches the malformed expressions that matter.
+                try:
+                    re.compile(atom.value)
+                except re.error as exc:
+                    yield Finding(
+                        Level.ERROR, "malformed-precondition-pattern",
+                        f"precondition matches {atom.field!r} against an invalid "
+                        f"regular expression: {exc}",
+                        line=row.line, column="Precondition", value=atom.value,
+                    )
+                # A regex test on a numeric or temporal field compares against
+                # the lexical form, which the spec leaves to the datatype's value
+                # space elsewhere — almost always a modelling mistake.
+                datatype = referenced.get("Datatype").strip()
+                if datatype and datatype in ORDERED_DATATYPES:
+                    yield Finding(
+                        Level.WARNING, "precondition-matches-ordered-datatype",
+                        f"precondition applies 'matches' to {atom.field!r}, whose "
+                        f"datatype {datatype!r} is ordered; a regular expression "
+                        "tests the written text, not the value",
                         line=row.line, column="Precondition", value=atom.field,
                     )
 

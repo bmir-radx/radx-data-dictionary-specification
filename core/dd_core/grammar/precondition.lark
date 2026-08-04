@@ -3,7 +3,7 @@
 // A boolean expression over other fields' values: predicates joined by
 // and/or, with parentheses for grouping. `and` binds more tightly than `or`.
 // Keywords are case-insensitive and reserved (a field id cannot be named
-// "and", "or", "in" or "contains").
+// "and", "or", "in", "contains" or "matches").
 
 ?start: or_expression
 
@@ -15,19 +15,21 @@
 predicate: comparison
          | in_set
          | contains
+         | matches
 
 comparison: FIELD_ID COMPARATOR literal
 in_set: FIELD_ID _IN "{" literal ("," literal)* "}"
 contains: FIELD_ID _CONTAINS literal
+matches: FIELD_ID _MATCHES literal
 
 literal: STRING | NUMBER
 
-// Keyword terminals outrank FIELD_ID so `and`/`or`/`in`/`contains` never
-// lex as field ids.
+// Keyword terminals outrank FIELD_ID so the keywords never lex as field ids.
 _OR.2: "or"i
 _AND.2: "and"i
 _IN.2: "in"i
 _CONTAINS.2: "contains"i
+_MATCHES.2: "matches"i
 
 COMPARATOR: "<=" | ">=" | "<>" | "=" | "<" | ">"
 FIELD_ID: /[A-Za-z_][A-Za-z0-9_]*/

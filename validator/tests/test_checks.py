@@ -333,6 +333,52 @@ def test_contains_on_single_valued_field():
     assert f.check == "invalid-precondition-contains"
 
 
+def test_matches_on_a_string_field_is_fine():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "notes", "Datatype": "string"}, 2),
+        RawRow({"Id": "x", "Precondition": 'notes matches ".*fever.*"'}, 3),
+    )
+    assert list(check_preconditions(rows, cols)) == []
+
+
+def test_matches_with_an_invalid_regular_expression():
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "notes", "Datatype": "string"}, 2),
+        RawRow({"Id": "x", "Precondition": 'notes matches "[unclosed"'}, 3),
+    )
+    (f,) = list(check_preconditions(rows, cols))
+    assert f.check == "malformed-precondition-pattern"
+
+
+def test_matches_on_an_ordered_datatype_warns():
+    # A regular expression tests the written text, while the spec compares
+    # ordered datatypes in their value space — so this is a modelling mistake,
+    # but a warning rather than an error: the expression is still well formed.
+    from dd_validator.checks import check_preconditions
+    rows, cols = _precondition_rows(
+        RawRow({"Id": "age", "Datatype": "integer"}, 2),
+        RawRow({"Id": "x", "Precondition": 'age matches "^1.*"'}, 3),
+    )
+    (f,) = list(check_preconditions(rows, cols))
+    assert f.check == "precondition-matches-ordered-datatype"
+    assert f.level.name == "WARNING"
+
+
+def test_matches_pattern_is_not_checked_against_an_enumeration():
+    # The regression this guards: a Matches atom falling through to the
+    # value-space checks would report the pattern as "not in the enumeration".
+    from dd_validator.checks import check_precondition_values
+    rows, cols = _precondition_rows(
+        RawRow(
+            {"Id": "sex", "Datatype": "string", "Enumeration": '"1"=[M] | "2"=[F]'}, 2
+        ),
+        RawRow({"Id": "x", "Precondition": 'sex matches ".*1.*"'}, 3),
+    )
+    assert list(check_precondition_values(rows, cols)) == []
+
+
 def test_contains_on_multivalued_field_is_fine():
     from dd_validator.checks import check_preconditions
     rows, cols = _precondition_rows(

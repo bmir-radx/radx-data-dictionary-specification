@@ -8,10 +8,10 @@ specification)::
     status in {"1", "2"} or (symptoms contains "3" and severity > 2)
 
 :func:`parse_precondition` turns such a cell into a small typed tree:
-:class:`Comparison`, :class:`InSet` and :class:`Contains` atoms, combined by
-:class:`And` / :class:`Or`. Literal values are kept as the strings written in
-the cell (quotes stripped); interpreting them against a field's datatype is
-an evaluator's job, not the parser's.
+:class:`Comparison`, :class:`InSet`, :class:`Contains` and :class:`Matches`
+atoms, combined by :class:`And` / :class:`Or`. Literal values are kept as the
+strings written in the cell (quotes stripped); interpreting them against a
+field's datatype is an evaluator's job, not the parser's.
 """
 
 from __future__ import annotations
@@ -63,6 +63,20 @@ class Contains:
 
 
 @dataclass(frozen=True)
+class Matches:
+    """``field matches "regex"`` — the cell matches an XSD regular expression.
+
+    The pattern is implicitly anchored, as in the ``Pattern`` field and in XML
+    Schema generally: the *complete* value must match, so a substring test is
+    written explicitly as ``".*fever.*"``. The pattern is kept as written;
+    compiling and applying it is an evaluator's job, not the parser's.
+    """
+
+    field: str
+    value: str
+
+
+@dataclass(frozen=True)
 class And:
     """All clauses must hold."""
 
@@ -78,7 +92,7 @@ class Or:
 
 # A runtime alias (not a lazy annotation), so `X | Y` syntax would need
 # Python >= 3.10; Union keeps the package's 3.9 floor.
-Precondition = Union[Comparison, InSet, Contains, And, Or]  # noqa: UP007
+Precondition = Union[Comparison, InSet, Contains, Matches, And, Or]  # noqa: UP007
 
 
 def parse_precondition(cell: str) -> Precondition | None:
@@ -112,7 +126,7 @@ def referenced_fields(node: Precondition) -> set[str]:
     return {node.field}
 
 
-def atoms(node: Precondition) -> list[Comparison | InSet | Contains]:
+def atoms(node: Precondition) -> list[Comparison | InSet | Contains | Matches]:
     """Every atomic predicate in the expression, left to right."""
     if isinstance(node, (And, Or)):
         return [atom for clause in node.clauses for atom in atoms(clause)]
@@ -146,6 +160,9 @@ def _to_node(tree: Tree) -> Precondition:
     if tree.data == "contains":
         field, literal = tree.children
         return Contains(field=str(field), value=_literal_text(literal))
+    if tree.data == "matches":
+        field, literal = tree.children
+        return Matches(field=str(field), value=_literal_text(literal))
     raise AssertionError(f"unexpected parse node {tree.data!r}")  # pragma: no cover
 
 
@@ -169,7 +186,9 @@ def serialise_precondition(node: Precondition) -> str:
         return f'{node.field} {node.op} {_quote(node.value)}'
     if isinstance(node, InSet):
         return f'{node.field} in {{{", ".join(_quote(v) for v in node.values)}}}'
-    return f"{node.field} contains {_quote(node.value)}"
+    if isinstance(node, Contains):
+        return f"{node.field} contains {_quote(node.value)}"
+    return f"{node.field} matches {_quote(node.value)}"
 
 
 def _quote(value: str) -> str:

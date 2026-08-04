@@ -22,6 +22,7 @@ from dd_core.grammar import (
     Contains,
     EnumItem,
     InSet,
+    Matches,
     Or,
     parse_enumeration,
     parse_missing_value_codes,
@@ -369,6 +370,11 @@ class Emitter:
             return condition
         if isinstance(atom, InSet):
             condition.any_of = [AnonymousSlotExpression(equals_string=v) for v in atom.values]
+            return condition
+        if isinstance(atom, Matches):
+            # LinkML's `pattern` is likewise a fully-anchored regular expression,
+            # so the precondition's semantics carry over unchanged.
+            condition.pattern = atom.value
             return condition
         # Comparison.
         if atom.op == "=":

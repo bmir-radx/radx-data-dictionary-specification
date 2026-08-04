@@ -6,6 +6,7 @@ from dd_core.grammar import (
     Comparison,
     Contains,
     InSet,
+    Matches,
     Or,
     ParseError,
     atoms,
@@ -40,6 +41,28 @@ def test_in_set():
 
 def test_contains():
     assert parse_precondition('symptoms contains "3"') == Contains("symptoms", "3")
+
+
+def test_matches():
+    assert parse_precondition('notes matches ".*fever.*"') == Matches("notes", ".*fever.*")
+
+
+def test_matches_is_case_insensitive_like_the_other_keywords():
+    assert parse_precondition('notes MATCHES "x"') == Matches("notes", "x")
+
+
+def test_matches_keeps_the_pattern_verbatim():
+    # Regex metacharacters must survive the parser untouched — compiling and
+    # anchoring the expression is an evaluator's job.
+    for pattern in (r"^ABC[0-9]{3}$", r"a|b", r".*\\d+.*"):
+        assert parse_precondition(f'f matches "{pattern}"') == Matches("f", pattern)
+
+
+def test_matches_is_distinct_from_contains():
+    # The two mean different things: membership of a multi-valued field versus a
+    # test on the text of a value. Conflating them is the mistake the operator
+    # exists to make unnecessary.
+    assert parse_precondition('f contains "3"') != parse_precondition('f matches "3"')
 
 
 def test_and_binds_tighter_than_or():
@@ -92,6 +115,8 @@ def test_malformed_raises(bad):
         'a <> ""',
         'consented = "yes" and age >= 18',
         'status in {"a", "b"} or (symptoms contains "x" and severity > 2)',
+        'notes matches ".*fever.*"',
+        'a matches "^x$" and b contains "y"',
     ],
 )
 def test_serialise_round_trips(text):

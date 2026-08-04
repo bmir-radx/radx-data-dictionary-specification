@@ -311,6 +311,7 @@ predicate  := fieldId "=" literal
             | fieldId "in" "{" literal ("," literal)* "}"
             | fieldId ("<" | "<=" | ">" | ">=") literal
             | fieldId "contains" literal
+            | fieldId "matches" literal
 literal    := a double-quoted string ("65") or a bare numeral (65)
 ```
 
@@ -320,15 +321,17 @@ For example,
 smoker = "1"
 consented = "1" and age >= 18
 status in {"1", "2"} or (symptoms contains "3" and severity > 2)
+notes matches ".*fever.*"
 ```
 
 The following rules apply:
 
-- The keywords `and`, `or`, `in` and `contains` are matched case-insensitively.  Parentheses group sub-expressions; `and` binds more tightly than `or`.
+- The keywords `and`, `or`, `in`, `contains` and `matches` are matched case-insensitively.  Parentheses group sub-expressions; `and` binds more tightly than `or`.
 - A `fieldId` MUST be the `Id` of a field in the same data dictionary.
 - The predicate `fieldId <> ""` is true when the referenced field is non-blank.
 - The ordering predicates (`<`, `<=`, `>`, `>=`) are only valid on fields whose `Datatype` is ordered (the numeric datatypes, `date`, `time` and `dateTime`).  Comparison happens in the datatype's value space — never lexicographically on the cell text.
-- The `contains` predicate is only valid on fields whose `Cardinality` is `multiple`, and is true when the referenced value is one of the values held in the cell.
+- The `contains` predicate is only valid on fields whose `Cardinality` is `multiple`, and is true when the referenced value is one of the pipe-separated values held in the cell.  It tests **membership of a multi-valued field, not substring containment**: `symptoms contains "3"` asks whether `3` is one of the values, and never whether some value has `3` as a substring.  Use `matches` for a test on the text of a value.
+- The `matches` predicate is true when the field's value matches the given regular expression.  The expression MUST use the same [XML Schema regular expression](https://www.w3.org/TR/xmlschema-2/#regexs) dialect as the [Pattern](#field-pattern) field, and is likewise implicitly anchored: the *complete* value must match.  A substring test is therefore written explicitly, as in `notes matches ".*fever.*"`.  `matches` tests the value as written, so it is intended for string-valued fields; applying it to a numeric or temporal field compares against the lexical form rather than the value, which is rarely what is meant.
 - A blank cell makes every predicate on that field false.  A cell holding one of the field's `MissingValueCodes` likewise makes every predicate on that field false — a value that stands for "no data" neither equals, exceeds, nor contains anything.
 
 Function calls and any construct not shown in the grammar above are NOT part of the precondition language.  Conditions that cannot be expressed in this grammar should instead be explained, in prose, in the `Description` field.
